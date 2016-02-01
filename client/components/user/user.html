@@ -1,0 +1,13 @@
+<div ng-controller="UserCtrl">
+    <div class="user">
+        <a uib-popover-template="dynamicPopover.templateUrl" popover-animation="true" popover-placement="bottom"  tabindex="0" popover-trigger="focus" class="avatar-circle-container">
+            <img src="{{user.PictureUrl}}" alt="" class="avatar-circle "/>
+        </a>
+        <div class="user-name">Welcome, {{user.FirstName}}</div>
+    </div>
+    <script type="text/ng-template" id="userPopover.html">
+        <ul class="user-list">
+            <li ng-click='logout()'>Log out</li>
+        </ul>
+    </script>
+</div>

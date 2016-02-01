@@ -1,0 +1,16 @@
+<div class="side-panel" ng-controller="SidebarCtrl">
+    <div class="row side-logo">
+        <div class="side-logo-image"></div>
+    </div>
+
+    <div class="row side-dashboard">
+        <a ui-sref="dashboard" >
+            <div class="side-dashboard-image" ng-class="{active: isActive('/dashboard')}"></div>
+            <div class="side-dashboard-text" ng-class="{active: isActive('/dashboard')}">Dashboard</div>
+        </a>
+    </div>
+
+</div>
+<div id='spinner-container'>
+    <span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-1" ></span>
+</div>

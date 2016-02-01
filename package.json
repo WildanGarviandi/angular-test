@@ -1,0 +1,49 @@
+{
+  "name": "etobee-admin",
+  "version": "1.0.0",
+  "description": "Etobee Admin",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/etobee-techgroup/etobee-admin.git"
+  },
+  "keywords": [
+    "etobee",
+    "api"
+  ],
+  "author": "Etobee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/etobee-techgroup/etobee-admin/issues"
+  },
+  "homepage": "https://gitlab.com/etobee-techgroup/etobee-admin#README",
+  "dependencies": {
+    "aws-sdk": "^2.2.32",
+    "basic-auth-connect": "^1.0.0",
+    "body-parser": "^1.14.2",
+    "composable-middleware": "^0.3.0",
+    "cookie-parser": "^1.4.1",
+    "crypto": "0.0.3",
+    "debug": "^2.2.0",
+    "ejs": "~0.8.4",
+    "express": "^4.13.4",
+    "express-jwt": "^3.3.0",
+    "express-validator": "^2.19.0",
+    "google-distance": "^1.0.1",
+    "jsonwebtoken": "^5.5.4",
+    "merge": "^1.2.0",
+    "morgan": "^1.6.1",
+    "mssql": "^3.0.0",
+    "multer": "^1.1.0",
+    "node-geocoder": "^3.6.2",
+    "parsetrace": "^0.2.0",
+    "passport": "~0.2.0",
+    "passport-local": "^0.1.6",
+    "sequelize": "^3.18.0",
+    "tedious": "^1.13.2",
+    "underscore": "^1.8.3"
+  }
+}

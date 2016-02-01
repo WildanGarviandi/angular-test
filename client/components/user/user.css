@@ -1,0 +1,209 @@
+/* User section */
+
+.user {
+    padding-right: 35px;
+    padding-top: 20px;
+    height: 90px;
+    width: 100%;
+    min-width: 263px;
+}
+
+a.avatar-circle-container {
+    float: right;
+    width: 50px;
+    height: 50px;
+    text-decoration: none;
+    outline: none;
+}
+
+.avatar-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 35px;
+    color: #000;
+    line-height: 47px;
+    text-align: center;
+    background: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+    -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+    -moz-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+}
+
+.popover-content {
+    padding-left: 0;
+    padding-right: 22px;
+}
+
+.user-name {
+    margin-right: 15px;
+    float: right;
+    position: relative;
+    top: 15px;
+}
+
+.user-list li {
+    margin-top: 13px;
+    list-style-type: none;
+    cursor: pointer;
+    margin-left: -15px;
+}
+
+/* Order */
+
+.order .popover {
+    left: auto !important;
+    right: 50px !important;
+}
+
+.order .arrow {
+    margin-left: 14px !important;
+}
+
+.order .arrow:after {
+    margin-left: -8px !important;
+}
+
+
+/* Booking section */
+
+.booking .user > .popover {
+    left: auto !important;
+    right: 35px !important;
+}
+
+.booking .user {
+    position: relative !important;
+    top: 15px;
+}
+
+.booking .arrow {
+    margin-left: 12px !important;
+}
+
+.booking .arrow:after {
+    margin-left: -10px !important;
+}
+
+/* Wallet */
+
+.wallet .ngdialog-content {
+    padding: 0px !important;
+    width: 500px !important;
+}
+
+.wallet .ngdialog-close::before {
+    font-size: 35px !important;
+    right: 10px !important;
+    top: 6px !important;
+}
+
+.wallet-header {
+    color: white;
+    background: #381E39;
+    height: 50px;
+    font-family: 'Avenir-Heavy' !important;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 15px;
+}
+
+.wallet-balance {
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+}
+
+.wallet-balance-title {
+    text-transform: uppercase;
+    color: #a1a1a1;
+    margin-top: 40px;
+    font-size: 11px;
+}
+
+.wallet-balance-size {
+    color: #424448;
+    font-size: 28px;
+    margin-top: 8px;
+    font-family: 'Avenir-Heavy';
+}
+
+.wallet-topup-button {
+    margin-top: 36px;
+    margin-bottom: 50px;
+}
+
+.wallet-topup-button .row {
+    margin-top: 15px;
+}
+
+.wallet-topup-button .custom-amount {
+    margin-top: -5px
+}
+
+.wallet-topup-button .custom-amount-btn {
+    margin-left: -50px;
+}
+
+.wallet-topup-button a {
+    text-decoration: none;
+    text-transform: none;
+    text-align: center;
+    background: #FF5A60;
+    color: white;
+    font-family: 'Avenir';
+    font-size: 13px ;
+    cursor: pointer;
+    border-radius: 3px;
+    padding-top: 12px;
+    padding-bottom: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.wallet-free {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.wallet-free-title {
+    font-family: 'Avenir-Heavy';
+    text-transform: uppercase;
+    color: #424448;
+    font-size: 11px;
+}
+
+.wallet-free-body {
+    font-size: 12px;
+    line-height: 16px;
+    margin-top: 10px;
+}
+
+.wallet-free-code {
+    color: red;
+    font-family: 'Avenir-Heavy';
+    margin-top: 10px;
+}
+
+.wallet-free-share {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.wallet-free-share > a{
+    text-decoration: none;
+    text-transform: uppercase;
+    text-align: center;
+    background:#FFA75F;
+    color: white;
+    font-family: 'Avenir-Heavy';
+    font-size: 13px ;
+    cursor: pointer;
+    border-radius: 3px;
+    padding-top: 12px;
+    padding-bottom: 8px;
+    padding-left: 20px;
+    padding-right: 20px;
+}

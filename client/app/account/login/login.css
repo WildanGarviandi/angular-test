@@ -1,0 +1,80 @@
+/* Login */
+
+.description {
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #BEBCC2;
+    font-weight: bold;
+}
+
+.footer {
+    margin-top: 30px;
+    color:#7D7A8C;
+    text-align: center;
+}
+
+.login-background {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: rgba(0, 0, 0, 0) url("/assets/images/login-bg.jpg") no-repeat fixed center center / cover ;
+}
+
+.login-logo {
+    display: block;
+    margin: 100px auto 30px;
+    text-align: center;
+}
+
+.login-block {
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.login-content {
+    border-radius: 4px;
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #eee;
+    display: block;
+    padding: 30px;
+    margin: 0 auto;
+    max-width: 350px;
+}
+
+.forgot-password {
+    margin-top: 30px;
+}
+
+.login-form-header {
+    margin-bottom: 20px;
+    font-family: 'Avenir-Heavy';
+}
+
+.heading {
+    display: block;
+    font-size: 14px;
+    font-weight: 500 !important;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.button-orange {
+    background: #ff5a60 none repeat scroll 0 0;
+    border: 1px none;
+    color: #fff;
+    padding: 10px;
+}
+
+.button-orange:hover {
+    background: #433731 none repeat scroll 0 0;
+    color: #fff;
+}
+
+.sized {
+  width: 100%;
+  text-transform: uppercase;
+  font-family: 'Avenir-Heavy';
+}
