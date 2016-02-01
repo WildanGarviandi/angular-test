@@ -17,7 +17,7 @@ angular.module('bookingApp')
       get : {
         method: 'GET',
         params: {
-          module: 'webapi',
+          module: 'user',
           controller:'me'
         }
       }

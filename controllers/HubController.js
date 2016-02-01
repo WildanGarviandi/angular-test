@@ -4,15 +4,14 @@ var models    = require('../models');
 var router = express.Router();
 
 module.exports = function(di) {
-	router.get('/me',  function(req, res, next){
-		models.User.findOne({
-			where: {
-				UserID: req.cookies.userID
-			}
+	router.get('/all',  function(req, res, next){
+		models.Hubs.findAll({
+			offset: 10,
+			limit: 2
 		})
-		.then(function(user) {
+		.then(function(hubs) {
 			return res.status(200).json({
-		    profile: user
+		    hubs: hubs
 		  });
 		});
 	});

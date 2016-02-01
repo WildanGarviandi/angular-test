@@ -11,13 +11,19 @@ module.exports = function(di){
 		router.use(path, controller);
 	}
 
-	defineRoute(router, '/auth/local', 'Login')
-	defineRoute(router, '/webapi/me', 'User');
+	defineRoute(router, '/auth', 'Login');
+	defineRoute(router, '/user', 'User');
+	defineRoute(router, '/hubs', 'Hub');
 
-	app.route('/*')
+	//Routes all to index.html
+	router.get('*', function(req, res, next) {
+	  res.sendfile('client/index.html');
+	});
+
+	/*app.route('*')
     .get(function(req, res) {
       res.sendfile(app.get('appPath') + '/index.html');
-    });
+    });*/
 
 	return router;
 

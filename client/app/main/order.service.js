@@ -8,8 +8,8 @@ angular.module('bookingApp')
       get: {
         method: 'GET',
         params: {
-          module: 'webapi',
-          controller: 'hub'
+          module: 'hubs',
+          controller: 'all'
         },
       }
     });

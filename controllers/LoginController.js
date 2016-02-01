@@ -31,7 +31,7 @@ module.exports = function(di) {
 		});
 	}))
 
-	router.post('/', function(req, res, next) {
+	router.post('/local', function(req, res, next) {
 	  	passport.authenticate('local', function(user) {
 	    if (!user.UserID) {
 	      return res.status(404).json({
