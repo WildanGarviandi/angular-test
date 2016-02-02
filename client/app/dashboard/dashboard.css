@@ -40,58 +40,6 @@
     padding: 20px;
 }
 
-.summary-card {
-    padding: 10px;
-    margin-bottom: 20px;
-}
-
-.summary-card .container {
-    display: block;
-    width: 100%;
-    padding: 0px;
-    background: #fff;
-    color: #555;
-    border: solid 1px #ccc;
-    border-radius: 4px;
-}
-
-.summary-card .container .header {
-    display: block;
-    background: #efefef;
-    padding: 10px 15px 5px 15px;
-}
-
-.summary-card .container .header h4.title {
-    padding: 0px;
-    font-size: 13px;
-    font-weight: bold;
-}
-.summary-card .container .header h4.title > span {
-    color: #FF5A60;
-}
-
-.summary-card .container .content {
-    padding: 15px;
-}
-
-.summary-card .container .content.no-padding {
-    padding: 0px;
-}
-
-.summary-card .container .content .graph {
-    display: block;
-    min-height: 120px;
-}
-
-.summary-card .container .content .legend {
-}
-
-.summary-card .container .content .legend .item {
-    display: inline-block;
-    width: 48%;
-    text-align: center;
-    margin-bottom: 10px;
-}
 
 .legend .item .legend-icon {
     display: inline-block;
@@ -140,73 +88,105 @@
     color: #666;
 }
 
-.summary-card .summary-grid .col-item {
-    min-height: 72px;
-}
-
-.summary-card .summary-grid .col-item .details {
-    padding: 10px 5px;
-}
-
-.summary-grid .col-item .details .value {
-    display: block;
-    font-family: sans-serif;
-    font-size: 20px;
-    font-weight: bold;
-    text-align: left;
-}
-
-.summary-grid .col-item .details .value.medium {
-    font-size: 17px;
-}
-
-.summary-grid .col-item .details .value.green {
-    color: #37b392;
-}
-
-.summary-grid .col-item .details .value.red {
-    color: #FF5A60;
-}
-
-.summary-grid .col-item .details .description {
-    display: block;
-    font-size: 12px;
-    text-align: left;
-    text-transform: capitalize;
-    margin-bottom: 5px;
-    color: #666;
-}
-
-.summary-grid .col-item .details .ico {
-    display: block;
-    text-align: left;
-    width: 28px;
-    height: 28px;
-}
-
-.summary-grid .col-item .details .ico.ico-bike {
-    background: url("/assets/images/bike.png") center no-repeat;
-    background-size: 28px;
-}
-
-.summary-grid .col-item .details .ico.ico-van {
-    background: url("/assets/images/van 2.png") center no-repeat;
-    background-size: 28px;
-}
-
-.summary-grid .col-item .details .ico.ico-truck {
-    background: url("/assets/images/truck.png") center no-repeat;
-    background-size: 28px;
-}
-
 /* Small Devices, Tablets */
 @media only screen and (max-width : 830px) {
 
-    .summary-card .container .content .legend .item {
+    .container .content .legend .item {
         display: block;
         width: 100%;
         text-align: left;
         margin-bottom: 0px;
     }
 
+}
+
+.hub-container {
+    /*background: red;*/
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    width: 308px;
+    /*text-align: center;*/
+    padding: 0 !important;
+}
+
+.hub-buttons {
+    margin-top: 10px;
+}
+
+
+.hub-button {
+    width: 150px;
+    text-decoration:none;
+    /*text-shadow:0px 1px 0px #2f6627;*/
+    text-transform: uppercase;
+    background: #ff5c61;
+    display:inline-block;
+    cursor:pointer;
+    color:#ffffff;
+    padding: 10px;
+    border-radius: 3px;
+}
+.hub-button:hover {
+    text-decoration:none;
+    color:#ffffff;
+}
+.hub-button {
+    text-decoration:none;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.hub-button.button-full {
+    width: 100%;
+}
+.hub-button.button-green {   
+    background: #37b392;
+    border: 1px solid #37b392;
+}
+.hub-button.button-link {
+    background: transparent;
+    border: none;
+    color: #666;
+}
+.hub-button.button-cancel {
+    background: #eee;
+    border: #eee;
+    color: #666;
+}
+
+.hub-field {
+    padding: 0px;
+}
+.hub-field > input {
+    margin-bottom: 8px;
+    margin-left: 0px;
+    padding-left: 0px;
+    padding: 10px;
+    width: 262px;
+    height: 35px;
+    border: none;
+    /*background: transparent !important;*/
+    cursor: pointer;
+    outline: none;
+}
+.hub-field > input.first {
+    border-bottom: solid 1px #eee;
+}
+
+.maps {
+    width: 600px; 
+    height: 380px; 
+    background-color: rgb(229, 227, 223); 
+    overflow: hidden; 
+    position: absolute; 
+    margin-left: 300px; 
+    margin-top: -130px;
+}
+
+.selectParent {
+    width: 262px;
+}
+
+.addButton {
+    margin-bottom: 15px;
 }

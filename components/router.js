@@ -14,16 +14,12 @@ module.exports = function(di){
 	defineRoute(router, '/auth', 'Login');
 	defineRoute(router, '/user', 'User');
 	defineRoute(router, '/hubs', 'Hub');
+	defineRoute(router, '/location', 'Location');
 
 	//Routes all to index.html
 	router.get('*', function(req, res, next) {
 	  res.sendfile('client/index.html');
 	});
-
-	/*app.route('*')
-    .get(function(req, res) {
-      res.sendfile(app.get('appPath') + '/index.html');
-    });*/
 
 	return router;
 

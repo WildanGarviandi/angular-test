@@ -7,6 +7,7 @@ module.exports = function(sequelize, DataTypes) {
 			primaryKey: true,
 			autoIncrement: true
 		},
+		ParentHubID: DataTypes.INTEGER,
 		Name: DataTypes.STRING,
 		Type: DataTypes.STRING,
 		Latitude: DataTypes.DECIMAL,

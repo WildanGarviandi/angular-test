@@ -6,31 +6,31 @@ var LocalStrategy = require('passport-local').Strategy;
 var crypto = require('crypto');
 var router = express.Router();
 
-module.exports = function(di) {
-	passport.use(new LocalStrategy({
-    	usernameField: 'email',
-    	passwordField: 'password'
-  	}, function(username, password, done) {
-    	password = crypto.createHash('md5').update(password).digest("hex");
-    	models.UserLogins.belongsTo(models.User, {foreignKey: 'UserID'})
-    	models.UserLogins.findOne({
-    		include: [{
-            	model: models.User,
-            	where: {UserTypeID: 5}
-        	}],
-			where: {
-				LoginKeyword: username,
-				Password: password
-			}
-		})
-		.then(function(user) {	 
-			done(user.dataValues.User.dataValues);
-		})
-		.catch(function(error){
-			done(error);
-		});
-	}))
+passport.use(new LocalStrategy({
+	usernameField: 'email',
+	passwordField: 'password'
+	}, function(username, password, done) {
+	password = crypto.createHash('md5').update(password).digest("hex");
+	models.UserLogins.belongsTo(models.User, {foreignKey: 'UserID'})
+	models.UserLogins.findOne({
+		include: [{
+        	model: models.User,
+        	where: {UserTypeID: 5}
+    	}],
+		where: {
+			LoginKeyword: username,
+			Password: password
+		}
+	})
+	.then(function(user) {	 
+		done(user.dataValues.User.dataValues);
+	})
+	.catch(function(error){
+		done(error);
+	});
+}))
 
+module.exports = function(di) {
 	router.post('/local', function(req, res, next) {
 	  	passport.authenticate('local', function(user) {
 	    if (!user.UserID) {
