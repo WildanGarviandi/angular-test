@@ -6,7 +6,14 @@ angular.module('bookingApp')
       id: '@_id'
     }, {
       get: {
-        method: 'GET',
+        method: 'POST',
+        params: {
+          module: 'hubs',
+          controller: 'show'
+        },
+      },
+      getAll: {
+        method: 'POST',
         params: {
           module: 'hubs',
           controller: 'all'

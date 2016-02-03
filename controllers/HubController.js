@@ -4,19 +4,38 @@ var models    = require('../models');
 var router = express.Router();
 
 module.exports = function(di) {
-	router.get('/all',  function(req, res, next){
+	//Shows all hubs with params
+	router.post('/show',  function(req, res, next){
+		models.Hubs.count({where: {Name: {$like: '%'+req.body.search+'%'}}}).then(function(count) {
+  			models.Hubs.findAll({
+				limit: req.body.count,
+				offset: req.body.offset,
+				where: {Name: {$like: '%'+req.body.search+'%'}},
+				order: [['Name', 'ASC']]
+			})
+			.then(function(hubs) {
+				return res.status(200).json({
+			    hubs: hubs,
+			    count: count
+			  });
+			});
+		})		
+	});
+
+	//Shows all hubs without params
+	router.post('/all',  function(req, res, next){
 		models.Hubs.findAll({
-			limit: 10
+			order: [['Name', 'ASC']]
 		})
 		.then(function(hubs) {
 			return res.status(200).json({
 		    hubs: hubs
 		  });
-		});
+		});	
 	});
 
+	//Shows one single hub
 	router.get('/one',  function(req, res, next){
-		console.log(req.query._id);
 		models.Hubs.findOne({where: {HubID: req.query._id}})
 		.then(function(hub) {
 			models.Hubs.findOne({where: {HubID: hub.ParentHubID}})
@@ -28,9 +47,9 @@ module.exports = function(di) {
 		});
 	});
 
+	//Create single hub
 	router.post('/create',  function(req, res, next){
 		try {
-		    // Add to db
 			models.Hubs.create(req.body).then(function(hubs) {
 	  			return res.status(200).json({
 	  			status:true,
@@ -47,8 +66,8 @@ module.exports = function(di) {
 		  }
 	});
 
+	//Delete single hub
 	router.post('/delete',  function(req, res, next){
-		console.log(req.body._id)
 		try {
 			models.Hubs.destroy({
 			    where: {
@@ -69,9 +88,9 @@ module.exports = function(di) {
 		  }
 	});
 
+	//Update single hub
 	router.post('/update',  function(req, res, next){
 		try {
-		    // Update to db
 		    models.Hubs.findOne({
 				where: {
 					HubID: req.body.HubID

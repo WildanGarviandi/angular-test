@@ -9,35 +9,127 @@ angular.module('bookingApp')
     });
 
     $scope.hub = {
-        ParentHubID: null,
-        Name: '',
-        Type: '',
-        Address1: '',
-        Address2: '',
-        Latitude: -6.2115,
-        Longitude: 106.8452,
-        City: '',
-        State: '',
-        Country: '',
-        ZipCode: ''
+      ParentHubID: null,
+      Name: '',
+      Type: '',
+      Address1: '',
+      Address2: '',
+      Latitude: -6.2115,
+      Longitude: 106.8452,
+      City: '',
+      State: '',
+      Country: '',
+      ZipCode: ''
+    }
+
+    $scope.itemsByPage = 10;
+    $scope.offset = 0;
+
+    var createHub = function(callback) {
+      var hub = {
+        ParentHubID: $scope.hub.ParentHubID,
+        Name: $scope.hub.Name,
+        Type: $scope.hub.Type,
+        Latitude: $scope.hub.Latitude,
+        Longitude: $scope.hub.Longitude,
+        Address1: $scope.hub.Address1,
+        Address2: $scope.hub.Address2,
+        City: $scope.hub.City,
+        State: $scope.hub.State,
+        Country: $scope.hub.Country,
+        ZipCode: $scope.hub.ZipCode,
+        CountryCode: null,
+        CityID: null,
+        StateID: null,
+        CountryID: null
       }
+      console.log('create hub', hub);
+      $rootScope.$emit('startSpin');
+      Hub.createHub(hub)
+        .$promise.then(function(response) {
+          $rootScope.$emit('stopSpin');
+          console.log('create hub response', response);
+          if (response) {
+            return callback(null, response)
+          } else {
+            return callback('failed')
+          }
+        })
+        .catch(function() {
+          $rootScope.$emit('stopSpin');
+          return callback('failed')
+        });
+    }
+
+    var updateHub = function(callback) {
+      var hub = {
+        HubID: $stateParams.hubID,
+        ParentHubID: $scope.hub.ParentHubID,
+        Name: $scope.hub.Name,
+        Type: $scope.hub.Type,
+        Latitude: $scope.hub.Latitude,
+        Longitude: $scope.hub.Longitude,
+        Address1: $scope.hub.Address1,
+        Address2: $scope.hub.Address2,
+        City: $scope.hub.City,
+        State: $scope.hub.State,
+        Country: $scope.hub.Country,
+        ZipCode: $scope.hub.ZipCode,
+        CountryCode: null,
+        CityID: null,
+        StateID: null,
+        CountryID: null
+      }
+      console.log('update hub', hub);
+      $rootScope.$emit('startSpin');
+      Hub.updateHub(hub)
+        .$promise.then(function(response) {
+          $rootScope.$emit('stopSpin');
+          console.log('update hub response', response);
+          if (response) {
+            return callback(null, response)
+          } else {
+            return callback('failed')
+          }
+        })
+        .catch(function() {
+          $rootScope.$emit('stopSpin');
+          return callback('failed')
+        });
+    }
+
+    $scope.chooseParent = function(item) {
+      $scope.hub.ParentHubID = item.value;
+      $scope.parent = item;
+    }
+
+    $scope.addHub = function() {
+      window.location = '/add-hub';
+    }
+
+    $scope.editHub = function(id) {
+      window.location = '/update-hub/' + id;
+    }
+
+    /**
+     * Update address components
+     * 
+     * @return {void}
+     */
+    $scope.updateLocation = function(addressComponents) {
+      $scope.hub.Address1 = addressComponents.addressLine1;
+      //$scope.hub.City = addressComponents.city;
+      $scope.hub.State = addressComponents.stateOrProvince;
+      $scope.hub.ZipCode = addressComponents.postalCode;
+      //$scope.hub.Country = addressComponents.country;
+    }
 
     /**
      * Pick location from maps
      * 
      * @return {void}
      */
-    $scope.updateLocation = function(addressComponents) {
-      console.log(addressComponents)
-      $scope.hub.Address1 = addressComponents.addressLine1;
-      //$scope.hub.City = addressComponents.city;
-      $scope.hub.State = addressComponents.stateOrProvince;
-      $scope.hub.ZipCode = addressComponents.postalCode;
-      //$scope.hub.Country = addressComponents.country.long_name;
-    }
-
     $scope.locationPicker = function() {
-      console.log($scope.hub)
       $('#maps').locationpicker({
         location: {latitude: $scope.hub.Latitude, longitude: $scope.hub.Longitude},   
         radius: 300,
@@ -81,110 +173,55 @@ angular.module('bookingApp')
      * 
      * @return {void}
      */
-    $scope.getHub = function() {
+    $scope.getHubs = function() {
       $rootScope.$emit('startSpin');
+      if ($stateParams.query) {
+        $scope.reqSearchString = $stateParams.query;
+      }
       $scope.isLoading = true;
-      Hub.get().$promise.then(function(data) {
+      var params = {
+        offset: $scope.offset,
+        count: $scope.itemsByPage,
+        search: $scope.reqSearchString
+      }
+      Hub.get(params).$promise.then(function(data) {
         $scope.hubs = []; 
         data.hubs.forEach(function(hub) {
           $scope.hubs.push({key: hub.Name,value: hub.HubID});
         }) 
         $scope.displayed = data.hubs;
         $scope.isLoading = false;
+        $scope.tableState.pagination.numberOfPages = Math.ceil(
+          data.count / $scope.tableState.pagination.number);
         $rootScope.$emit('stopSpin');
       });
     }
 
-    $scope.chooseParent = function(item) {
-      $scope.hub.ParentHubID = item.value;
-      $scope.parent = item;
+    /**
+     * Get parent selection
+     * 
+     * @return {void}
+     */
+    $scope.getParents = function() {
+      Hub.getAll().$promise.then(function(data) {
+        $scope.hubs = []; 
+        data.hubs.forEach(function(hub) {
+          $scope.hubs.push({key: hub.Name,value: hub.HubID});
+        }) 
+      });
     }
 
-    $scope.loadManagePage = function() {
-      $scope.getHub();
-      if ($stateParams.hubID !== undefined) {
-        $scope.getHubDetails();
-        $scope.updatePage = true;
-        $scope.addPage = false;
-      } else {
-        $scope.addPage = true;
-        $scope.locationPicker();
-      }
-    }
-    
-    var createHub = function(callback) {
-      var hub = {
-        ParentHubID: $scope.hub.ParentHubID,
-        Name: $scope.hub.Name,
-    		Type: $scope.hub.Type,
-    		Latitude: $scope.hub.Latitude,
-    		Longitude: $scope.hub.Longitude,
-    		Address1: $scope.hub.Address1,
-    		Address2: $scope.hub.Address2,
-    		City: $scope.hub.City,
-    		State: $scope.hub.State,
-    		Country: $scope.hub.Country,
-    		ZipCode: $scope.hub.ZipCode,
-    		CountryCode: null,
-    		CityID: null,
-    		StateID: null,
-    		CountryID: null
-      }
-      console.log('create hub', hub);
-      $rootScope.$emit('startSpin');
-      Hub.createHub(hub)
-        .$promise.then(function(response) {
-          $rootScope.$emit('stopSpin');
-          console.log('create hub response', response);
-          if (response) {
-            //var result = _.first(response.result)
-            return callback(null, response)
-          } else {
-            return callback('failed')
-          }
-        })
-        .catch(function() {
-          $rootScope.$emit('stopSpin');
-          return callback('failed')
-        });
-    }
-
-    var updateHub = function(callback) {
-      var hub = {
-        HubID: $stateParams.hubID,
-        ParentHubID: $scope.hub.ParentHubID,
-        Name: $scope.hub.Name,
-        Type: $scope.hub.Type,
-        Latitude: $scope.hub.Latitude,
-        Longitude: $scope.hub.Longitude,
-        Address1: $scope.hub.Address1,
-        Address2: $scope.hub.Address2,
-        City: $scope.hub.City,
-        State: $scope.hub.State,
-        Country: $scope.hub.Country,
-        ZipCode: $scope.hub.ZipCode,
-        CountryCode: null,
-        CityID: null,
-        StateID: null,
-        CountryID: null
-      }
-      console.log('update hub', hub);
-      $rootScope.$emit('startSpin');
-      Hub.updateHub(hub)
-        .$promise.then(function(response) {
-          $rootScope.$emit('stopSpin');
-          console.log('update hub response', response);
-          if (response) {
-            //var result = _.first(response)
-            return callback(null, response)
-          } else {
-            return callback('failed')
-          }
-        })
-        .catch(function() {
-          $rootScope.$emit('stopSpin');
-          return callback('failed')
-        });
+    /**
+     * Add search params for getHubs()
+     * 
+     * @return {void}
+     */
+    $scope.reqSearchString = '';
+    $scope.search = function(event) {
+      if ((event && event.keyCode === 13) || !event) {
+        $scope.reqSearchString = $scope.searchQuery;
+        $scope.getHubs();
+      };
     }
 
     /**
@@ -231,30 +268,27 @@ angular.module('bookingApp')
           })
           .$promise.then(function(result) {  
             alert("Success")
-            $scope.getHub();
+            $scope.getHubs();
           }).catch(function() {
             alert("Failed")
           });
       }
     }
     
+    /**
+     * Init table state
+     * 
+     * @return {void}
+     */
     $scope.callServer = function(state) {
+      $scope.offset = state.pagination.start;
       $scope.tableState = state;
-      $scope.getHub();
+      $scope.getHubs();
       $scope.isFirstLoaded = true;
     }
 
-    $scope.addHub = function() {
-      window.location = '/add-hub';
-    }
-
-    $scope.editHub = function(id) {
-      window.location = '/update-hub/' + id;
-    }
-
-
     /**
-     * Get locations
+     * Get all countries
      * 
      * @return {void}
      */
@@ -269,8 +303,13 @@ angular.module('bookingApp')
         });
       });
     };
-    $scope.getCountries();
-    /*$scope.getCities = function(val) {
+
+    /**
+     * Get all cities
+     * 
+     * @return {void}
+     */
+    $scope.getCities = function(val) {
       return $http.get('http://localhost:3000/location/city/', {
         params: {
           address: val
@@ -282,6 +321,11 @@ angular.module('bookingApp')
       });
     };
 
+    /**
+     * Get all states
+     * 
+     * @return {void}
+     */
     $scope.getStates = function(val) {
       return $http.get('http://localhost:3000/location/state/', {
         params: {
@@ -294,9 +338,25 @@ angular.module('bookingApp')
       });
     };
 
-
-    $scope.getCities();
-    $scope.getStates();*/
+    /**
+     * Load manage page (add/update page)
+     * 
+     * @return {void}
+     */
+    $scope.loadManagePage = function() {
+      $scope.getCountries();
+      $scope.getStates();
+      $scope.getCities();
+      $scope.getParents();
+      if ($stateParams.hubID !== undefined) {
+        $scope.getHubDetails();
+        $scope.updatePage = true;
+        $scope.addPage = false;
+      } else {
+        $scope.addPage = true;
+        $scope.locationPicker();
+      }
+    }
 
     $scope.loadManagePage();
 

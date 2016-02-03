@@ -12,7 +12,13 @@
                 <div class="order" ng-include="'components/user/user.html'"></div>
             </div>
             <div class="col-md-3 col-sm-12">
-                <div class="hub-search">
+                <div class="order-search">
+                    <div class="input-group">
+                        <input type="search" name="" class="form-control" value="" placeholder="Search Hub" ng-model="searchQuery" ng-keyup="search($event)">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" type="button" ng-click="search()"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
