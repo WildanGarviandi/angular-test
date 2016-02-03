@@ -40,9 +40,12 @@ module.exports = function(di) {
 		.then(function(hub) {
 			models.Hubs.findOne({where: {HubID: hub.ParentHubID}})
 			.then(function(parent) {
-				return res.status(200).json({
-			    hub: hub, parent: parent
-			  });
+				models.HubZipCodes.findAll({where: {HubID: hub.HubID}})
+				.then(function(zipcodes) {
+					return res.status(200).json({
+				    hub: hub, parent: parent, zipcodes: zipcodes
+				  });
+				});
 			});
 		});
 	});
