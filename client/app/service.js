@@ -91,3 +91,4 @@ angular.module('adminApp')
             },
         },
     });
+});
