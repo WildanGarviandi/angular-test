@@ -14,8 +14,8 @@ module.exports = function(di) {
 		})
 		.then(function(cities) {
 			return res.status(200).json({
-		    cities: cities
-		  });
+		    	cities: cities
+		  	});
 		});
 	});
 
@@ -29,8 +29,8 @@ module.exports = function(di) {
 		})
 		.then(function(states) {
 			return res.status(200).json({
-		    states: states
-		  });
+		    	states: states
+		  	});
 		});
 	});
 
@@ -44,8 +44,8 @@ module.exports = function(di) {
 		})
 		.then(function(countries) {
 			return res.status(200).json({
-		    countries: countries
-		  });
+		    	countries: countries
+		  	});
 		});
 	});
 

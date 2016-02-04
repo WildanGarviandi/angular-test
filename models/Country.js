@@ -7,7 +7,8 @@ module.exports = function(sequelize, DataTypes) {
 			primaryKey: true,
 			autoIncrement: true
 		},
-		Name: DataTypes.STRING
+		Name: DataTypes.STRING,
+		CountryCode: DataTypes.STRING
 	}, {
 		tableName: 'Countries',
 		timestamps: false
