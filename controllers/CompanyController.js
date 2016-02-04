@@ -11,8 +11,8 @@ module.exports = function(di) {
 		})
 		.then(function(companies) {
 			return res.status(200).json({
-		    companies: companies
-		  });
+		    	companies: companies
+		  	});
 		});	
 	});
 

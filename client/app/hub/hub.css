@@ -101,12 +101,10 @@
 }
 
 .hub-container {
-    /*background: red;*/
     margin-left: 20px;
     margin-right: 20px;
     margin-top: 20px;
     width: 308px;
-    /*text-align: center;*/
     padding: 0 !important;
 }
 
@@ -114,11 +112,9 @@
     margin-top: 10px;
 }
 
-
 .hub-button {
     width: 150px;
     text-decoration:none;
-    /*text-shadow:0px 1px 0px #2f6627;*/
     text-transform: uppercase;
     background: #ff5c61;
     display:inline-block;
@@ -127,27 +123,33 @@
     padding: 10px;
     border-radius: 3px;
 }
+
 .hub-button:hover {
     text-decoration:none;
     color:#ffffff;
 }
+
 .hub-button {
     text-decoration:none;
     margin-bottom: 20px;
     text-align: center;
 }
+
 .hub-button.button-full {
     width: 100%;
 }
+
 .hub-button.button-green {   
     background: #37b392;
     border: 1px solid #37b392;
 }
+
 .hub-button.button-link {
     background: transparent;
     border: none;
     color: #666;
 }
+
 .hub-button.button-cancel {
     background: #eee;
     border: #eee;
@@ -157,6 +159,7 @@
 .hub-field {
     padding: 0px;
 }
+
 .hub-field > input {
     margin-bottom: 8px;
     margin-left: 0px;
@@ -165,10 +168,10 @@
     width: 262px;
     height: 35px;
     border: none;
-    /*background: transparent !important;*/
     cursor: pointer;
     outline: none;
 }
+
 .hub-field > input.first {
     border-bottom: solid 1px #eee;
 }
