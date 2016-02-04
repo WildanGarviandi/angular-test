@@ -48,5 +48,26 @@ angular.module('adminApp')
           id: null
         },
       },
+      showCompanies: {
+        method: 'GET',
+        params: {
+          module: 'company',
+          controller: 'all'
+        },
+      },
+      showLogisticPrices: {
+        method: 'POST',
+        params: {
+          module: 'price',
+          controller: 'logistic'
+        },
+      },
+      savePrices: {
+        method: 'POST',
+        params: {
+          module: 'price',
+          controller: 'saveLogistic'
+        },
+      },
     });
   });

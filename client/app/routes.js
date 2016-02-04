@@ -26,4 +26,10 @@ angular.module('adminApp')
         controller: 'HubCtrl',
         authenticate: true
       })
+      .state('pricing', {
+        url: '/pricing',
+        templateUrl: 'app/pricing/pricing.html',
+        controller: 'PricingCtrl',
+        authenticate: true
+      })
   });

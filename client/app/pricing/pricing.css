@@ -1,0 +1,15 @@
+.priceform {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    padding: 0 !important;
+}
+
+.table-price {
+    width:700px;
+}
+
+.cell-price {
+	border: 0px none;
+	background-color: transparent;
+}
