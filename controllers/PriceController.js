@@ -12,8 +12,8 @@ module.exports = function(di) {
 		})
 		.then(function(prices) {
 			return res.status(200).json({
-		    prices: prices
-		  });
+		    	prices: prices
+		  	});
 		});
 	});
 
@@ -40,8 +40,8 @@ module.exports = function(di) {
 		})
 		.then(function(prices) {
 			return res.status(200).json({
-		    prices: prices
-		  });
+		    	prices: prices
+		  	});
 		});
 	});
 
