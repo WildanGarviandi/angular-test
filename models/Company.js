@@ -8,6 +8,7 @@ module.exports = function(sequelize, DataTypes) {
 			autoIncrement: true
 		},
 		CompanyName: DataTypes.STRING,
+		FleetManagerID: DataTypes.STRING
 	}, {
 		tableName: 'CompanyDetail',
 		timestamp: true,

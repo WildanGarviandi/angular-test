@@ -15,9 +15,9 @@ module.exports = function(di) {
 			})
 			.then(function(hubs) {
 				return res.status(200).json({
-			    hubs: hubs,
-			    count: count
-			  });
+			    	hubs: hubs,
+			    	count: count
+			  	});
 			});
 		})		
 	});
@@ -29,8 +29,8 @@ module.exports = function(di) {
 		})
 		.then(function(hubs) {
 			return res.status(200).json({
-		    hubs: hubs
-		  });
+		    	hubs: hubs
+		  	});
 		});	
 	});
 
@@ -43,8 +43,10 @@ module.exports = function(di) {
 				models.HubZipCodes.findAll({where: {HubID: hub.HubID}})
 				.then(function(zipcodes) {
 					return res.status(200).json({
-				    hub: hub, parent: parent, zipcodes: zipcodes
-				  });
+				    	hub: hub, 
+				    	parent: parent, 
+				    	zipcodes: zipcodes
+				  	});
 				});
 			});
 		});
@@ -55,16 +57,16 @@ module.exports = function(di) {
 		try {
 			models.Hubs.create(req.body).then(function(hubs) {
 	  			return res.status(200).json({
-	  			status:true,
-			    data: hubs
-			  });
+	  				status:true,
+			    	data: hubs
+			  	});
 			})
 		} catch (e) {
 		    console.error(e.stack)
 		    console.log('Error in create hub: ', e);
 		    return res.json({
-		      status: false,
-		      description: e
+		      	status: false,
+		      	description: e
 		    }, 403);
 		  }
 	});
@@ -78,15 +80,15 @@ module.exports = function(di) {
 			    }
 			}).then(function() {
 				return res.status(200).json({
-			    status: true
-			  });
+			    	status: true
+			  	});
 			});
 		} catch (e) {
 		    console.error(e.stack)
 		    console.log('Error in delete hub: ', e);
 		    return res.json({
-		      status: false,
-		      description: e
+		      	status: false,
+		      	description: e
 		    }, 403);
 		  }
 	});
@@ -112,8 +114,8 @@ module.exports = function(di) {
 		    console.error(e.stack)
 		    console.log('Error in create hub: ', e);
 		    return res.json({
-		      status: false,
-		      description: e
+		      	status: false,
+		      	description: e
 		    }, 403);
 		  }
 	});

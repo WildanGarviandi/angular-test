@@ -33,18 +33,18 @@ passport.use(new LocalStrategy({
 module.exports = function(di) {
 	router.post('/local', function(req, res, next) {
 	  	passport.authenticate('local', function(user) {
-	    if (!user.UserID) {
-	      return res.status(404).json({
-	        message: 'Incorrect credentials'
-	      });
-	    }
-	    var token = auth.signToken(user);
-	    req.user = user;
-	    res.status(200).json({
-	      userID: user.UserID,
-	      token: token
-	    });
-	  })(req, res, next)
+		    if (!user.UserID) {
+		      	return res.status(404).json({
+		        	message: 'Incorrect credentials'
+		      	});
+		    }
+		    var token = auth.signToken(user);
+		    req.user = user;
+		    res.status(200).json({
+		      	userID: user.UserID,
+		      	token: token
+		    });
+	  	})(req, res, next)
 	});
 
 	return router;

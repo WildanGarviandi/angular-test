@@ -12,8 +12,8 @@ module.exports = function(di) {
 		})
 		.then(function(user) {
 			return res.status(200).json({
-		    profile: user
-		  });
+		    	profile: user
+		  	});
 		});
 	});
 
