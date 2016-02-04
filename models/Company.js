@@ -1,21 +1,20 @@
 "use strict";
 
 module.exports = function(sequelize, DataTypes) {
-	var UserLogins = sequelize.define("UserLogins", {
-		UserLoginID: {
+	var CompanyDetail = sequelize.define("CompanyDetail", {
+		CompanyDetailID: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
 			autoIncrement: true
 		},
-		UserID: DataTypes.INTEGER,
-		LoginKeyword: DataTypes.STRING,
-		Password: DataTypes.STRING
+		CompanyName: DataTypes.STRING,
+		FleetManagerID: DataTypes.STRING
 	}, {
-		tableName: 'UserLogins',
+		tableName: 'CompanyDetail',
 		timestamp: true,
 		createdAt: 'CreatedDate',
 		updatedAt: 'ModifiedDate'
 	});
 
-	return UserLogins;
+	return CompanyDetail;
 };

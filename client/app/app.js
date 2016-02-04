@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('bookingApp', [
+angular.module('adminApp', [
   'ngCookies',
   'ngAnimate',
   'ngResource',
@@ -23,7 +23,7 @@ angular.module('bookingApp', [
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
-      .otherwise('/dashboard');
+      .otherwise('/hub');
 
     $locationProvider.html5Mode(true);
     $httpProvider.interceptors.push('authInterceptor');

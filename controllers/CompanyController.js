@@ -4,17 +4,16 @@ var models    = require('../models');
 var router = express.Router();
 
 module.exports = function(di) {
-	router.get('/me',  function(req, res, next){
-		models.User.findOne({
-			where: {
-				UserID: req.cookies.userID
-			}
+	//Shows all companies
+	router.get('/all',  function(req, res, next){
+		models.CompanyDetail.findAll({
+			order: [['CompanyName', 'ASC']]
 		})
-		.then(function(user) {
+		.then(function(companies) {
 			return res.status(200).json({
-		    	profile: user
+		    	companies: companies
 		  	});
-		});
+		});	
 	});
 
 	return router;

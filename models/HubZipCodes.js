@@ -1,21 +1,20 @@
 "use strict";
 
 module.exports = function(sequelize, DataTypes) {
-	var UserLogins = sequelize.define("UserLogins", {
-		UserLoginID: {
+	var HubZipCodes = sequelize.define("HubZipCodes", {
+		HubZipCodeID: {
 			type: DataTypes.INTEGER,
 			primaryKey: true,
 			autoIncrement: true
 		},
-		UserID: DataTypes.INTEGER,
-		LoginKeyword: DataTypes.STRING,
-		Password: DataTypes.STRING
+		HubID: DataTypes.INTEGER,
+		ZipCode: DataTypes.STRING
 	}, {
-		tableName: 'UserLogins',
+		tableName: 'HubZipCodes',
 		timestamp: true,
 		createdAt: 'CreatedDate',
 		updatedAt: 'ModifiedDate'
 	});
 
-	return UserLogins;
+	return HubZipCodes;
 };

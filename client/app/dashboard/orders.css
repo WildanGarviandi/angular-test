@@ -1,0 +1,228 @@
+
+.container-orders {
+    margin-left: 100px;
+    background-color: #f1f1f1;
+    height: 100%;
+    position: relative;
+}
+
+.box-header {
+    height: 90px;
+    background: white;
+}
+
+.order-title-box {
+    /*height: 90px;*/
+    padding-top: 32px;
+    font-weight: bold;
+    font-size: 21px;
+    padding-left: 20px;
+}
+
+.order-search {
+    height: 90px;
+    width: 100%;
+    padding-top: 19px;
+}
+
+.order-search input {
+    height: 50px;
+}
+
+.order-search button {
+    height: 50px;
+}
+
+
+/* Filters */
+
+.box-order {
+    padding-left: 20px;
+    padding-right: 36px;
+}
+
+.filter {
+    padding-top: 10px;
+    float: left;
+    width: 100%;
+    margin-right: 30px;
+}
+
+.filter > select {
+    height: 35px;
+}
+
+.button-fix {
+    padding-top: 40px;
+    padding-left: 0 !important;
+}
+
+.order-buttons {
+    width: 100%;
+    text-decoration: none;
+    text-transform: uppercase;
+    text-align: center;
+    background: #ff5c61;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    /*padding: 10px;*/
+    padding-top: 10px;
+    font-size: 13px;
+    border-radius: 3px;
+    height: 35px;
+}
+
+.order-buttons > img {
+    margin-right: 5px;
+    position: relative;
+    bottom: 3px;
+}
+
+.order-buttons:hover, .order-buttons:focus {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.orders-table {
+    margin-top: 20px;
+    padding-right: 36px;
+    /*margin-left: 40px;*/
+    padding-left: 20px;
+    /*width: 90%;*/
+    border-radius: 2px;
+    overflow-x: scroll;
+}
+
+.orders-table table {
+    background: white;
+    border: 1px solid #ccc;
+}
+
+.orders-table table > tbody > tr > td.pickuptime-col {
+    min-width: 100px;
+}
+
+.orders-table table > tbody > tr > td.more {
+    min-width: 80px;
+}
+
+.table > thead > tr > th {
+    color: #ccc;
+    text-transform: uppercase;
+}
+
+.uploadXls {
+    margin-top: 10px;
+}
+
+.import-label {
+    margin-top: 10px;
+}
+
+.dropoff-col {
+    width: 400px;
+}
+
+.order-id {
+    color: #37b392;
+    font-family: 'Avenir-Heavy';
+    cursor: pointer;
+}
+
+.pickup-col {
+    width: 400px;
+}
+
+.more {
+    font-family: 'Avenir-Heavy';
+    color: #ff5c61;
+}
+
+.status-dot {
+    /*margin-left: 1px;*/
+    margin-left: 12px;
+}
+
+.success-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #37b392;
+}
+
+td {
+    vertical-align: middle !important;
+}
+
+.warning-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: orange;
+}
+
+.danger-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff5c61;
+}
+
+.more > .popover {
+    left: auto !important;
+    right: 40px !important;
+}
+
+.more > .popover > .arrow {
+    margin-left: 39px !important;
+}
+
+.order-details-list {
+  font-family: 'Avenir';
+    color: black;
+    margin-top: 13px;
+    list-style-type: none;
+    /*cursor: pointer;*/
+    margin-left: -15px;
+    font-size: 14px;
+}
+
+.order-details-list > li {
+  margin-top: 10px;
+  margin-right: 7px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+
+.order-import > a {
+    color: #428bca;
+    cursor: pointer;
+}
+
+.order-import > a:hover {
+    color: #428bca;
+}
+/* Fix ui-select */
+.selectize-dropdown [data-selectable], .selectize-dropdown .optgroup-header {
+    text-align: left;
+}
+
+.ngdialog.order-import-popup .ngdialog-content {
+    padding: 15px;
+}
+
+.ngdialog.order-import-popup .ngdialog-close:before {
+    color: #bbb;
+    font-size: 26px;
+    font-weight: 400;
+    right: 3px;
+    top: 3px;
+    width: 30px;
+}
