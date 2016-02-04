@@ -1,0 +1,80 @@
+<div ng-include="'components/sidebar/sidebar.html'"></div>
+<div class="container-fluid container-hubs">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    Logistic Pricing
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+            </div>
+        </div>
+    </div>
+    
+    <div class="booking-process">
+        <form class="form" name="hubForm" novalidate>
+            <div class="container-fluid hub-container">
+                <div class="row-fluid">                                   
+                    Select Company : 
+                    <ui-select ng-model="company" theme="selectize" ng-disabled="disabled" on-select="chooseCompany($item)">
+                        <ui-select-match placeholder="Choose company">{{$select.selected.key}}</ui-select-match>
+                        <ui-select-choices repeat="m in companies" selected>
+                            <span ng-bind-html="m.key"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">                                   
+                    Select Pickup Type : 
+                    <ui-select ng-model="pickup" theme="selectize" ng-disabled="disabled" on-select="choosePickup($item)">
+                        <ui-select-match placeholder="Choose pickup type">{{$select.selected.key}}</ui-select-match>
+                        <ui-select-choices repeat="m in pickupTypes" selected>
+                            <span ng-bind-html="m.key"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="clearfix"></div>                
+            </div>
+            <div class="row-flued priceform">
+                <table class="table-price">
+                    <tr>
+                        <th>MaxWeight</th>
+                        <th>MaxDimension1</th>
+                        <th>MaxDimension2</th>
+                        <th>MaxDimension3</th>
+                        <th>Price</th>
+                    </tr>
+                    <tr ng-repeat="price in prices">
+                        <td>
+                            <input class="cell-price" ng-model="price.MaxWeight" type="text" value="" disabled placeholder="">
+                        </td>
+                        <td>
+                            <input class="cell-price" ng-model="price.MaxDimension1" type="text" value="" disabled placeholder="">
+                        </td>
+                        <td>
+                            <input class="cell-price" ng-model="price.MaxDimension2" type="text" value="" disabled placeholder="">
+                        </td>
+                        <td>
+                            <input  class="cell-price"ng-model="price.MaxDimension3" type="text" value="" disabled placeholder="">
+                        </td>
+                        <td>
+                            <div>
+                                <input ng-model="price.Price" type="text" value="" placeholder="">
+                            </div>
+                        </td>
+                    </tr>
+                    
+                </table>
+               <div>     
+                   <button class="btn btn-primary" ng-click="savePrices();">SAVE</button>
+               </div>
+            </div>
+            <div class="clearfix"></div>
+        </form>
+    </div>
+</div>
