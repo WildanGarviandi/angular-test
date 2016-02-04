@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('bookingApp')
+angular.module('adminApp')
   .controller('LoginCtrl', function ($scope, Auth, $location) {
     $scope.user = {};
     $scope.errors = {};

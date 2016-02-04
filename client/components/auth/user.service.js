@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('bookingApp')
+angular.module('adminApp')
   .factory('User', function ($resource) {
     return $resource('/:module/:submodule/:id/:controller', {
       id: '@_id'
