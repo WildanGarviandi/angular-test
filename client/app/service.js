@@ -69,6 +69,20 @@ angular.module('adminApp')
                 controller: 'saveLogistic'
             },
         },
+        showCustomerPrices: {
+            method: 'POST',
+            params: {
+               module: 'price',
+               controller: 'customer'
+            },
+        },
+        saveCustomerPrices: {
+            method: 'POST',
+            params: {
+               module: 'price',
+               controller: 'saveCustomer'
+            },
+        },
         getCountries: {
             method: 'GET',
             params: {

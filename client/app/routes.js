@@ -32,4 +32,10 @@ angular.module('adminApp')
             controller: 'PricingCtrl',
             authenticate: true
         })
+        .state('custpricing', {
+            url: '/custpricing',
+            templateUrl: 'app/custpricing/custpricing.html',
+            controller: 'CustPricingCtrl',
+            authenticate: true
+        })
     });
