@@ -36,6 +36,31 @@ angular.module('adminApp')
         value: '1'
     };
 
+    $scope.defaultPrices = [{
+        MaxWeight: 3,
+        MaxDimension1: 30,
+        MaxDimension2: 20,
+        MaxDimension3: 10,
+        Price: null
+    }, {
+        MaxWeight: 6,
+        MaxDimension1: 30,
+        MaxDimension2: 30,
+        MaxDimension3: 15,
+        Price: null
+    }, {
+        MaxWeight: 10,
+        MaxDimension1: 60,
+        MaxDimension2: 60,
+        MaxDimension3: 30,
+        Price: null
+    } ];
+
+    /**
+     * Assign pickup type to the chosen item
+     * 
+     * @return {void}
+     */
     $scope.choosePickup = function(item) {
         $scope.pickup = item;
         if (!$stateParams.query) {
@@ -58,21 +83,14 @@ angular.module('adminApp')
             if (data.prices.length === 3) {
                 $scope.prices = data.prices
             } else {
-                $scope.prices.push({'MaxWeight':3, 
-                                    'MaxDimension1':30, 
-                                    'MaxDimension2':20, 
-                                    'MaxDimension3':10, 
-                                    'Price': data.prices[0] ? data.prices[0].Price : null })
-                $scope.prices.push({'MaxWeight':6, 
-                                    'MaxDimension1':30, 
-                                    'MaxDimension2':30, 
-                                    'MaxDimension3':15, 
-                                    'Price': data.prices[1] ? data.prices[1].Price : null})
-                $scope.prices.push({'MaxWeight':10, 
-                                    'MaxDimension1':60, 
-                                    'MaxDimension2':60, 
-                                    'MaxDimension3':30, 
-                                    'Price': data.prices[2] ? data.prices[2].Price : null})
+                var idx = 0;
+                $scope.defaultPrices.forEach(function(price) {
+                    if (data.prices[idx]) {
+                        price.Price = data.prices[idx].Price;
+                    }
+                    $scope.prices.push(price);
+                    idx++;
+                });
             }
             $rootScope.$emit('stopSpin');
         });
