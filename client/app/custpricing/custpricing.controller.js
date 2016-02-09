@@ -140,16 +140,15 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.savePrices = function() {
-        console.log($scope.prices)
+    $scope.savePrices = function() {   
         var params = {
             WebstoreUserID: $scope.webstore.value,
             PickupType: $scope.pickup.value,
             Prices: $scope.prices
         }
         Services.saveCustomerPrices(params).$promise.then(function(data) {
-            alert("Save success")
             $scope.getPrices();
+            alert('Save success')
         });
     }
 
