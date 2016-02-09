@@ -36,6 +36,16 @@ angular.module('adminApp')
         value: '1'
     };
 
+    $scope.webstores = [{
+        key: 'Master',
+        value: '0'
+    }]
+
+    $scope.webstore = {
+        key: 'Master',
+        value: '0'
+    };
+
     $scope.defaultPrices = [{
         MaxWeight: 3,
         MaxDimension1: 30,
@@ -69,6 +79,34 @@ angular.module('adminApp')
     }
 
     /**
+     * Assign webstore to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.chooseWebstore = function(item) {
+        $scope.webstore = item;
+        if (!$stateParams.query) {
+            $scope.getPrices();
+        }
+    }
+
+    /**
+     * Get all webstores
+     * 
+     * @return {void}
+     */
+    $scope.getWebstores = function() {
+        $rootScope.$emit('startSpin');
+        Services.showWebstores().$promise.then(function(data) {
+            $scope.webstores = $scope.webstores; 
+            data.webstores.forEach(function(webstores) {
+                $scope.webstores.push({key: webstores.FirstName.concat(' ',webstores.LastName), value: webstores.UserID});
+            }) 
+            $rootScope.$emit('stopSpin');
+        });
+    }
+
+    /**
      * Get all customer prices
      * 
      * @return {void}
@@ -77,6 +115,7 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         $scope.prices = []
         var params = {
+            WebstoreUserID: $scope.webstore.value,
             PickupType: $scope.pickup.value
         }
         Services.showCustomerPrices(params).$promise.then(function(data) {
@@ -104,6 +143,7 @@ angular.module('adminApp')
     $scope.savePrices = function() {
         console.log($scope.prices)
         var params = {
+            WebstoreUserID: $scope.webstore.value,
             PickupType: $scope.pickup.value,
             Prices: $scope.prices
         }
@@ -113,6 +153,8 @@ angular.module('adminApp')
         });
     }
 
+
+    $scope.getWebstores();
     $scope.getPrices();
 
   });

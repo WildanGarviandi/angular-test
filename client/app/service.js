@@ -55,6 +55,13 @@ angular.module('adminApp')
                 controller: 'all'
             },
         },
+        showWebstores: {
+            method: 'GET',
+            params: {
+                module: 'webstore',
+                controller: 'all'
+            },
+        },
         showLogisticPrices: {
             method: 'POST',
             params: {

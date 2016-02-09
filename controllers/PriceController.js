@@ -35,7 +35,7 @@ module.exports = function(di) {
     //Customer Flat Prices
     router.post('/customer',  function(req, res, next){
         models.CustomerFlatPrices.findAll({
-            where: {PickupType: req.body.PickupType},
+            where: {PickupType: req.body.PickupType, WebstoreUserID: req.body.WebstoreUserID},
             order: [['MaxWeight', 'ASC']]
         })
         .then(function(prices) {
@@ -48,7 +48,7 @@ module.exports = function(di) {
     router.post('/saveCustomer',  function(req, res, next){
         req.body.Prices.forEach(function(y) {
             models.CustomerFlatPrices.findOrCreate({where: 
-            {PickupType: req.body.PickupType, MaxWeight: y.MaxWeight}})
+            {WebstoreUserID: req.body.WebstoreUserID, PickupType: req.body.PickupType, MaxWeight: y.MaxWeight}})
             .spread(function(price, created) {
                 price.update(y).then(function(data) {
                     

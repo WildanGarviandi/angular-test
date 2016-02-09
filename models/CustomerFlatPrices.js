@@ -7,6 +7,7 @@ module.exports = function(sequelize, DataTypes) {
             primaryKey: true,
             autoIncrement: true
         },
+        WebstoreUserID: DataTypes.INTEGER,
         MaxWeight: DataTypes.INTEGER,
         MaxDimension1: DataTypes.INTEGER,
         MaxDimension2: DataTypes.INTEGER,
