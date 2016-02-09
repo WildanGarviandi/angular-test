@@ -134,7 +134,7 @@ angular.module('adminApp')
     }
 
     /**
-     * Assign parent to the chosen item
+     * Assign type to the chosen item
      * 
      * @return {void}
      */
@@ -181,7 +181,7 @@ angular.module('adminApp')
     }
 
     /**
-     * Redirect to edit hub page
+     * Redirect to manage zipcodes page
      * 
      * @return {void}
      */
@@ -190,7 +190,7 @@ angular.module('adminApp')
     }
 
     /**
-     * Redirect to add hub page
+     * Redirect to previous page
      * 
      * @return {void}
      */
