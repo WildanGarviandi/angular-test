@@ -120,5 +120,30 @@ module.exports = function(di) {
 		  }
 	});
 
+	//Save zipcodes
+	router.post('/add-zipcodes',  function(req, res, next){
+		try {
+			models.HubZipCodes.destroy({
+			    where: {
+			      HubID: req.body._id
+			    }
+			}).then(function() {
+				models.HubZipCodes.bulkCreate(req.body.params).then(function(hubs) {
+		  			return res.status(200).json({
+		  				status:true,
+				    	data: hubs
+				  	});
+				})
+			});
+		} catch (e) {
+		    console.error(e.stack)
+		    console.log('Error in save zipcodes: ', e);
+		    return res.json({
+		      	status: false,
+		      	description: e
+		    }, 403);
+		  }
+	});
+
 	return router;
 };

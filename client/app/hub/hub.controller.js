@@ -34,6 +34,21 @@ angular.module('adminApp')
         ZipCode: ''
     }
 
+    $scope.types = [{
+        key: 'CENTRAL',
+        value: 'CENTRAL'
+    }, {
+        key: 'GENERAL',
+        value: 'GENERAL'
+    },  ];
+
+    $scope.zipcodes = [{
+        key: 0,
+        value: ''
+    }];
+
+    $scope.sumZipField = 1;
+
     $scope.itemsByPage = 10;
     $scope.offset = 0;
 
@@ -119,6 +134,35 @@ angular.module('adminApp')
     }
 
     /**
+     * Assign parent to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.chooseType = function(item) {
+        $scope.hub.Type = item.value;
+        $scope.type = item;
+    }
+
+    /**
+     * Add zipcode field
+     * 
+     * @return {void}
+     */
+    $scope.addField = function() {
+        $scope.zipcodes.push({key: $scope.sumZipField, value: ''});
+        $scope.sumZipField++;
+    }
+
+    /**
+     * Remove zipcode field
+     * 
+     * @return {void}
+     */
+    $scope.deleteField = function(idx) {
+        $scope.zipcodes.splice(idx, 1);
+    }
+
+    /**
      * Redirect to add hub page
      * 
      * @return {void}
@@ -134,6 +178,24 @@ angular.module('adminApp')
      */
     $scope.editHub = function(id) {
         window.location = '/update-hub/' + id;
+    }
+
+    /**
+     * Redirect to edit hub page
+     * 
+     * @return {void}
+     */
+    $scope.manageZipcodes = function(id) {
+        window.location = '/manage-zipcodes/' + id;
+    }
+
+    /**
+     * Redirect to add hub page
+     * 
+     * @return {void}
+     */
+    $scope.backButton = function() {
+        $window.history.back();
     }
 
     /**
@@ -155,7 +217,7 @@ angular.module('adminApp')
     $scope.locationPicker = function() {
         $('#maps').locationpicker({
             location: {latitude: $scope.hub.Latitude, longitude: $scope.hub.Longitude},   
-            radius: 300,
+            radius: null,
             inputBinding: {
                 latitudeInput: $('#us2-lat'),
                 longitudeInput: $('#us2-lon'),
@@ -182,12 +244,19 @@ angular.module('adminApp')
             _id: $scope.id,
         }).$promise.then(function(data) {
             $scope.hub = data.hub;
+            $scope.type = {key: data.hub.Type, value: data.hub.Type};
             if (data.parent) {
                 $scope.parent = {key: data.parent.Name, value: data.parent.HubID};
             }
-                $scope.locationPicker();
-                $scope.isLoading = false;
-                $rootScope.$emit('stopSpin');
+            if (data.zipcodes.length > 0) {
+                $scope.zipcodes = []
+                data.zipcodes.forEach(function(zip, idx) {
+                    $scope.zipcodes.push({key: idx, value: zip.ZipCode});
+                }) 
+            }
+            $scope.locationPicker();
+            $scope.isLoading = false;
+            $rootScope.$emit('stopSpin');
         });
     }
 
@@ -353,6 +422,30 @@ angular.module('adminApp')
             });
         });
     };
+
+    /**
+     * Save zip codes
+     * 
+     * @return {void}
+     */
+    $scope.addZipCode = function() {
+        $rootScope.$emit('startSpin');
+        var params = []
+        $scope.zipcodes.forEach(function(zip) {
+            var HubZipcodes = {}
+            HubZipcodes['HubID'] = $stateParams.hubID,
+            HubZipcodes['ZipCode'] = zip.value
+            params.push(HubZipcodes);
+        }) 
+        Services.addZipCodes({
+            _id: $stateParams.hubID,
+            params:params
+        }).$promise.then(function(data) {
+            alert('Success');
+            window.location = '/update-hub/' + $stateParams.hubID;
+            $rootScope.$emit('stopSpin');
+        });
+    }
 
     /**
      * Load manage page (add/update page)

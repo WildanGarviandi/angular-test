@@ -1,0 +1,56 @@
+<div ng-include="'components/sidebar/sidebar.html'"></div>
+<div class="container-fluid container-hubs">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    Hub Management
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <div class="hub-search">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="booking-process">
+        <form class="form" name="hubForm" novalidate>
+            <div class="container-fluid hub-container">
+                <div>   
+                    <i class="glyphicon glyphicon-plus" ng-click="addField()"></i>               
+                </div>
+                <div class="row-fluid"> 
+                    <div ng-repeat="item in zipcodes">
+                        <label>Zip Code {{$index+1}}:</label>
+                        <input ng-model="item.value" type="text"/>
+                        <i ng-click="deleteField($index)" class="glyphicon glyphicon-remove"></i>
+                    </div> 
+                </div>
+                <div class="row-fluid">
+                    <a class="btn btn-primary" ng-click="backButton()">Cancel</a>
+                    <a class="btn btn-primary" ng-click="addZipCode()">Save</a>
+                </div>
+                
+
+                <!-- Error block -->
+                <div class="form-group has-error">
+                    <p class="help-block" ng-show="hubForm.name.$error.required && submitted">
+                        Please enter a name
+                    </p>
+                </div>
+                <!-- Error block ends -->
+                
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+
+</script>
+

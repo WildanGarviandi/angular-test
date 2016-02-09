@@ -69,5 +69,13 @@ angular.module('adminApp')
                     controller: 'city'
                 },
             },
+            addZipCodes: {
+                method: 'POST',
+                params: {
+                    module: 'hubs',
+                    controller: 'add-zipcodes',
+                    id: null
+                },
+            },
         });
     });
