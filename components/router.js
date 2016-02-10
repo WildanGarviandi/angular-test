@@ -15,6 +15,8 @@ module.exports = function(di){
 	defineRoute(router, '/user', 'User');
 	defineRoute(router, '/hubs', 'Hub');
 	defineRoute(router, '/location', 'Location');
+	defineRoute(router, '/company', 'Company');
+	defineRoute(router, '/price', 'Price');
 
 	//Routes all to index.html
 	router.get('*', function(req, res, next) {
