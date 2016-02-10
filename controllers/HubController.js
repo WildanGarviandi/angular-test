@@ -68,7 +68,7 @@ module.exports = function(di) {
                 status: false,
                 description: e
             }, 403);
-          }
+        }
     });
 
     //Delete single hub
@@ -90,7 +90,7 @@ module.exports = function(di) {
                 status: false,
                 description: e
             }, 403);
-          }
+        }
     });
 
     //Update single hub
@@ -117,7 +117,7 @@ module.exports = function(di) {
                 status: false,
                 description: e
             }, 403);
-          }
+        }
     });
 
     //Save zipcodes
@@ -142,7 +142,7 @@ module.exports = function(di) {
                 status: false,
                 description: e
             }, 403);
-          }
+        }
     });
 
     return router;
