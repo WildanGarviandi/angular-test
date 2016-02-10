@@ -36,15 +36,12 @@ angular.module('adminApp')
         value: '1'
     };
 
-    $scope.webstores = [{
-        key: 'Master',
-        value: '0'
-    }]
-
     $scope.webstore = {
         key: 'Master',
         value: '0'
     };
+
+    $scope.webstores = [$scope.webstore]
 
     $scope.defaultPrices = [{
         MaxWeight: 3,
@@ -100,7 +97,7 @@ angular.module('adminApp')
         Services.showWebstores().$promise.then(function(data) {
             $scope.webstores = $scope.webstores; 
             data.webstores.forEach(function(webstores) {
-                $scope.webstores.push({key: webstores.FirstName.concat(' ',webstores.LastName), value: webstores.UserID});
+                $scope.webstores.push({key: webstores.FirstName.concat(' ', webstores.LastName), value: webstores.UserID});
             }) 
             $rootScope.$emit('stopSpin');
         });
