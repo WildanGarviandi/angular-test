@@ -63,7 +63,8 @@ module.exports = function(di) {
             models.LogisticFlatPrices.findOrCreate({where:{
                 CompanyDetailID: req.body.CompanyDetailID, 
                 PickupType: req.body.PickupType, 
-                MaxWeight: y.MaxWeight, 
+                MaxWeight: y.MaxWeight,
+                MaxCBM: y.MaxCBM, 
                 VehicleID: y.VehicleID
             }})
             .spread(function(price, created) {
