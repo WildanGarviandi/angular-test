@@ -21,9 +21,11 @@
     <div class="booking-process">
         <form class="form" name="hubForm" novalidate>
             <div class="container-fluid hub-container">
-                <div class="row-fluid">                    
-                    Parent Hub : 
-                    <ui-select class="selectParent" 
+                <div class="row-fluid">                
+                    <div class="label-input">
+                        Parent :
+                    </div>  
+                    <ui-select class="hub-field select-field" 
                         ng-model="parent" 
                         theme="selectize" 
                         ng-disabled="disabled" 
@@ -33,20 +35,36 @@
                             <span ng-bind-html="m.key"></span>
                         </ui-select-choices>
                     </ui-select>
-                <div class="row-fluid">
-                    <div class="col-xs-10 hub-field">
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Name :
+                    </div>  
+                    <div class="hub-field">
                         <input ng-model="hub.Name" type="text" name="name" value="" placeholder="Name" required class="first">
                     </div>
                 </div>
                 <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-xs-10 hub-field">
-                        <input ng-model="hub.Type" type="text" name="type" value="" placeholder="Type" required class="first">
-                    </div>
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Type :
+                    </div>  
+                    <ui-select class="hub-field select-field" 
+                        ng-model="type" 
+                        theme="selectize" 
+                        ng-disabled="disabled" 
+                        on-select="chooseType($item)">
+                        <ui-select-match placeholder="Choose type">{{$select.selected.key}}</ui-select-match>
+                        <ui-select-choices repeat="m in types" selected>
+                            <span ng-bind-html="m.key"></span>
+                        </ui-select-choices>
+                    </ui-select>
                 </div>
                 <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-xs-10 hub-field">
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Address :
+                    </div> 
+                    <div class="hub-field">
                         <input id="us2-address" 
                             ng-model="hub.Address1" 
                             type="text" 
@@ -57,17 +75,24 @@
                     </div>
                 </div>
                 <div class="clearfix"></div>
-                <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div id="maps" class="maps"></div>      
-                    <div class="col-xs-10 hub-field">
+                    <div id="maps" class="maps"></div> 
+                    <div class="label-input">
+                        Latitude :
+                    </div>    
+                    <div class="hub-field">
                         <input id="us2-lat" 
                             ng-model="hub.Latitude" 
                             type="text" 
                             name="latitude" 
                             value="" 
                             placeholder="Latitude" 
-                            required class="first">           
+                            required class="first">
+                    </div>         
+                    <div class="label-input">
+                        Longitude :
+                    </div>     
+                    <div class="hub-field"> 
                         <input id="us2-lon" 
                             ng-model="hub.Longitude" 
                             type="text" 
@@ -77,8 +102,11 @@
                             required class="first"> 
                     </div>
                 <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-xs-10 hub-field">
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Country :
+                    </div> 
+                    <div class="hub-field">
                     <input type="text" 
                         ng-model="hub.Country" 
                         placeholder="Country" 
@@ -94,7 +122,10 @@
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div class="col-xs-10 hub-field">
+                    <div class="label-input">
+                        State :
+                    </div> 
+                    <div class="hub-field">
                     <input type="text" 
                         ng-model="hub.State" 
                         placeholder="State" 
@@ -109,15 +140,34 @@
                     </div>
                 </div>
                 <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-xs-10 hub-field">
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        City :
+                    </div> 
+                    <div class="hub-field">
                         <input ng-model="hub.City" type="text" name="city" value="" placeholder="City" required class="first">
                     </div>
                 </div>
                 <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-xs-10 hub-field">
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Zip Code :
+                    </div> 
+                    <div class="hub-field">
                         <input ng-model="hub.ZipCode" type="text" name="zipcode" value="" placeholder="Zipcode" required class="first">
+                    </div>
+                </div>
+                <div ng-if="updatePage" class="hubzipcodes-form">                    
+                    <div>
+                        Hub Zip Codes :
+                    </div> 
+                    <div>                  
+                        <span class="zip-item" ng-repeat="item in zipcodes">
+                            {{item.value}}
+                        </span>
+                        <div>
+                            <button class="btn btn-primary" ng-click="manageZipcodes(hub.HubID)">Manage Zipcodes</button>
+                        </div>
                     </div>
                 </div>
                 <div class="clearfix"></div>
