@@ -45,20 +45,38 @@ module.exports = function(di) {
         });
     });
 
-    router.post('/saveCustomer',  function(req, res, next){
-        req.body.Prices.forEach(function(y) {
-            models.CustomerFlatPrices.findOrCreate({where: 
-            {WebstoreUserID: req.body.WebstoreUserID, PickupType: req.body.PickupType, MaxWeight: y.MaxWeight}})
+    router.post('/saveCustomer',  function(req, res, next){        
+        saveCustomerPrices(req, req.body.Prices.bike)
+        saveCustomerPrices(req, req.body.Prices.van)
+        saveCustomerPrices(req, req.body.Prices.smalltruck)
+        saveCustomerPrices(req, req.body.Prices.mediumtruck)
+        return res.status(200).json({
+            status: true
+        });     
+    });
+
+
+    /**
+     * Save customer flat prices
+     * 
+     * @return {void}
+     */
+    function saveCustomerPrices(req, vehiclePrices) {
+        vehiclePrices.forEach(function(y) {
+            models.CustomerFlatPrices.findOrCreate({where:{
+                WebstoreUserID: req.body.WebstoreUserID, 
+                PickupType: req.body.PickupType, 
+                MaxWeight: y.MaxWeight, 
+                MaxCBM: y.MaxCBM, 
+                VehicleID: y.VehicleID
+            }})
             .spread(function(price, created) {
                 price.update(y).then(function(data) {
                     
                 })
             })
         });
-        return res.status(200).json({
-            status: true
-        });     
-    });
+    }
 
     return router;
 };
