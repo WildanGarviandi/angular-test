@@ -234,7 +234,7 @@ angular.module('adminApp')
     }
 
     /**
-     * Assign price with desired prices
+     * Assign price with new prices
      * 
      * @return {void}
      */
