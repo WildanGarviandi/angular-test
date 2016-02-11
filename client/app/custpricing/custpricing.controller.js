@@ -27,7 +27,7 @@ angular.module('adminApp')
         key: 'Next Day',
         value: '2'
     },  {
-        key: 'Corporate',
+        key: 'Corporate on Demand',
         value: '3'
     },];
 
@@ -234,7 +234,7 @@ angular.module('adminApp')
     }
 
     /**
-     * Assign price with desired prices
+     * Assign price with new prices
      * 
      * @return {void}
      */
@@ -317,7 +317,6 @@ angular.module('adminApp')
             $scope.assignDefaultPrices();
             $rootScope.$emit('stopSpin');
         });
-        console.log($scope.prices)
     }
 
     /**

@@ -61,54 +61,99 @@
                             <td align="right" colspan="6">Percentage</td>
                             <td>
                                 <div>
-                                    <input ng-model="percentage.bike.LogisticShare" type="text" ng-keyup="changePrices('bike')">
+                                    <input ng-model="percentage.bike.LogisticShare" 
+                                        type="text" 
+                                        ng-keyup="changePrices('bike')">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input ng-model="percentage.bike.OurShare" type="text" ng-keyup="changePrices('bike')">
+                                    <input ng-model="percentage.bike.OurShare" 
+                                        type="text" 
+                                        ng-keyup="changePrices('bike')">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input ng-model="percentage.bike.DriverShare" type="text" ng-keyup="changePrices('bike')">
+                                    <input ng-model="percentage.bike.DriverShare" 
+                                        type="text" 
+                                        ng-keyup="changePrices('bike')">
                                 </div>
                             </td>
                         </tr>
                         <tr ng-repeat="price in prices.bike">
                             <td>
-                                <input class="cell-price" ng-model="price.MaxWeight" type="text" value="" disabled placeholder="">
+                                <input class="cell-price"
+                                    ng-model="price.MaxWeight" 
+                                    type="text" value="" 
+                                    disabled 
+                                    placeholder="">
                             </td>
                             <td>
-                                <input class="cell-price" ng-model="price.MaxDimension1" type="text" value="" disabled placeholder="">
+                                <input class="cell-price"
+                                    ng-model="price.MaxDimension1" 
+                                    type="text" 
+                                    value="" 
+                                    disabled 
+                                    placeholder="">
                             </td>
                             <td>
-                                <input class="cell-price" ng-model="price.MaxDimension2" type="text" value="" disabled placeholder="">
+                                <input class="cell-price"
+                                    ng-model="price.MaxDimension2" 
+                                    type="text" 
+                                    value="" 
+                                    disabled 
+                                    placeholder="">
                             </td>
                             <td>
-                                <input  class="cell-price"ng-model="price.MaxDimension3" type="text" value="" disabled placeholder="">
+                                <input class="cell-price"
+                                    ng-model="price.MaxDimension3" 
+                                    type="text" 
+                                    value="" 
+                                    disabled 
+                                    placeholder="">
                             </td>
                             <td>
-                                <input  class="cell-price"ng-model="price.MaxCBM" type="text" value="" disabled placeholder="">
+                                <input class="cell-price"
+                                    ng-model="price.MaxCBM" 
+                                    type="text" 
+                                    value="" 
+                                    disabled 
+                                    placeholder="">
                             </td>
                             <td>
                                 <div>
-                                    <input ng-model="price.Price" ng-keyup="changePrices('bike')" type="text" value="" placeholder="">
+                                    <input ng-model="price.Price" 
+                                        ng-keyup="changePrices('bike')" 
+                                        type="text" 
+                                        value="" placeholder="">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input disabled ng-model="price.LogisticShare" type="text" value="" placeholder="">
+                                    <input disabled 
+                                        ng-model="price.LogisticShare" 
+                                        type="text" 
+                                        value="" 
+                                        placeholder="">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input disabled ng-model="price.OurShare" type="text" value="" placeholder="">
+                                    <input disabled 
+                                        ng-model="price.OurShare" 
+                                        type="text" 
+                                        value="" 
+                                        placeholder="">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input disabled ng-model="price.DriverShare" type="text" value="" placeholder="">
+                                    <input disabled 
+                                        ng-model="price.DriverShare" 
+                                        type="text" 
+                                        value="" 
+                                        placeholder="">
                                 </div>
                             </td>
                         </tr>                        
@@ -130,27 +175,41 @@
                             <td align="right" colspan="2">Percentage</td>
                             <td>
                                 <div>
-                                    <input ng-model="percentage.van.LogisticShare" type="text" ng-keyup="changePrices('van')">
+                                    <input ng-model="percentage.van.LogisticShare" 
+                                        type="text" 
+                                        ng-keyup="changePrices('van')">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input ng-model="percentage.van.OurShare" type="text" ng-keyup="changePrices('van')">
+                                    <input ng-model="percentage.van.OurShare" 
+                                        type="text" 
+                                        ng-keyup="changePrices('van')">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input ng-model="percentage.van.DriverShare" type="text" ng-keyup="changePrices('van')">
+                                    <input ng-model="percentage.van.DriverShare" 
+                                        type="text" 
+                                        ng-keyup="changePrices('van')">
                                 </div>
                             </td>
                         </tr>
                         <tr ng-repeat="price in prices.van">
                             <td>
-                                <input class="cell-price" ng-model="price.MaxCBM" type="text" value="" disabled placeholder="">
+                                <input class="cell-price" 
+                                    ng-model="price.MaxCBM" 
+                                    type="text" value="" 
+                                    disabled 
+                                    placeholder="">
                             </td>
                             <td>
                                 <div>
-                                    <input ng-model="price.Price" ng-keyup="changePrices('van')" type="text" value="" placeholder="">
+                                    <input ng-model="price.Price" 
+                                        ng-keyup="changePrices('van')" 
+                                        type="text" 
+                                        value="" 
+                                        placeholder="">
                                 </div>
                             </td>
                             <td>
@@ -187,42 +246,69 @@
                             <td align="right" colspan="2">Percentage</td>
                             <td>
                                 <div>
-                                    <input ng-model="percentage.smalltruck.LogisticShare" type="text" ng-keyup="changePrices('smalltruck')">
+                                    <input ng-model="percentage.smalltruck.LogisticShare" 
+                                        type="text" 
+                                        ng-keyup="changePrices('smalltruck')">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input ng-model="percentage.smalltruck.OurShare" type="text" ng-keyup="changePrices('smalltruck')">
+                                    <input ng-model="percentage.smalltruck.OurShare" 
+                                        type="text" 
+                                        ng-keyup="changePrices('smalltruck')">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input ng-model="percentage.smalltruck.DriverShare" type="text" ng-keyup="changePrices('smalltruck')">
+                                    <input ng-model="percentage.smalltruck.DriverShare" 
+                                        type="text" 
+                                        ng-keyup="changePrices('smalltruck')">
                                 </div>
                             </td>
                         </tr>
                         <tr ng-repeat="price in prices.smalltruck">
                             <td>
-                                <input class="cell-price" ng-model="price.MaxCBM" type="text" value="" disabled placeholder="">
+                                <input class="cell-price" 
+                                    ng-model="price.MaxCBM" 
+                                    type="text" 
+                                    value="" 
+                                    disabled 
+                                    placeholder="">
                             </td>
                             <td>
                                 <div>
-                                    <input ng-keyup="changePrices('smalltruck')" ng-model="price.Price" type="text" value="" placeholder="">
+                                    <input ng-keyup="changePrices('smalltruck')" 
+                                        ng-model="price.Price" 
+                                        type="text" 
+                                        value="" 
+                                        placeholder="">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input disabled ng-model="price.LogisticShare" type="text" value="" placeholder="">
+                                    <input disabled 
+                                        ng-model="price.LogisticShare" 
+                                        type="text" 
+                                        value="" 
+                                        placeholder="">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input disabled ng-model="price.OurShare" type="text" value="" placeholder="">
+                                    <input disabled 
+                                        ng-model="price.OurShare" 
+                                        type="text" 
+                                        value="" 
+                                        placeholder="">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input disabled ng-model="price.DriverShare" type="text" value="" placeholder="">
+                                    <input disabled 
+                                        ng-model="price.DriverShare" 
+                                        type="text" 
+                                        value="" 
+                                        placeholder="">
                                 </div>
                             </td>
                         </tr>                        
@@ -244,17 +330,23 @@
                             <td align="right" colspan="2">Percentage</td>
                             <td>
                                 <div>
-                                    <input ng-model="percentage.mediumtruck.LogisticShare" type="text" ng-keyup="changePrices('mediumtruck')">
+                                    <input ng-model="percentage.mediumtruck.LogisticShare" 
+                                        type="text" 
+                                        ng-keyup="changePrices('mediumtruck')">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input ng-model="percentage.mediumtruck.OurShare" type="text" ng-keyup="changePrices('mediumtruck')">
+                                    <input ng-model="percentage.mediumtruck.OurShare" 
+                                        type="text" 
+                                        ng-keyup="changePrices('mediumtruck')">
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <input ng-model="percentage.mediumtruck.DriverShare" type="text" ng-keyup="changePrices('mediumtruck')">
+                                    <input ng-model="percentage.mediumtruck.DriverShare" 
+                                        type="text" 
+                                        ng-keyup="changePrices('mediumtruck')">
                                 </div>
                             </td>
                         </tr>
@@ -264,7 +356,11 @@
                             </td>
                             <td>
                                 <div>
-                                    <input ng-keyup="changePrices('mediumtruck')" ng-model="price.Price" type="text" value="" placeholder="">
+                                    <input ng-keyup="changePrices('mediumtruck')" 
+                                        ng-model="price.Price" 
+                                        type="text" 
+                                        value="" 
+                                        placeholder="">
                                 </div>
                             </td>
                             <td>
