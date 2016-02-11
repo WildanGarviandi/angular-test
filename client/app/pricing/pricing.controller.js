@@ -26,6 +26,9 @@ angular.module('adminApp')
     }, {
         key: 'Next Day',
         value: '2'
+    }, {
+        key: 'Corporate On Demand',
+        value: '3'
     },  ];
 
     $scope.company = {
