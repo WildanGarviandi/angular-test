@@ -26,6 +26,12 @@ angular.module('adminApp')
             controller: 'HubCtrl',
             authenticate: true
         })
+        .state('manage-zipcodes', {
+            url: '/manage-zipcodes/:hubID',
+            templateUrl: 'app/hub/manage-zipcodes.html',
+            controller: 'HubCtrl',
+            authenticate: true
+        })
         .state('pricing', {
             url: '/pricing',
             templateUrl: 'app/pricing/pricing.html',

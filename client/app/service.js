@@ -76,6 +76,14 @@ angular.module('adminApp')
                 controller: 'saveLogistic'
             },
         },
+        addZipCodes: {
+            method: 'POST',
+            params: {
+                module: 'hubs',
+                controller: 'add-zipcodes',
+                id: null
+            },
+        },
         showCustomerPrices: {
             method: 'POST',
             params: {

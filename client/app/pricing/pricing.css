@@ -7,8 +7,8 @@
 
 .cell-price {
     width: 30px;
-    border: 0px none;
-    background-color: transparent;
+	border: 0px none;
+	background-color: transparent;
     padding: 5px;
 }
 
@@ -29,4 +29,3 @@
     margin-top: 20px;
     margin-bottom: 20px;
 }
-

@@ -1,0 +1,114 @@
+{
+    "defaultPrices": {
+        "bike": [{
+            "VehicleID": 1,
+            "MaxWeight": 3,
+            "MaxDimension1": 30,
+            "MaxDimension2": 20,
+            "MaxDimension3": 10,
+            "MaxCBM": 0.1,
+            "LogisticShare": null,
+            "OurShare": null,
+            "DriverShare": null,
+            "Price": null
+        }, {
+            "VehicleID": 1,
+            "MaxWeight": 6,
+            "MaxDimension1": 30,
+            "MaxDimension2": 30,
+            "MaxDimension3": 15,
+            "MaxCBM": 0.1,
+            "LogisticShare": null,
+            "OurShare": null,
+            "DriverShare": null,
+            "Price": null
+        }, {
+            "VehicleID": 1,
+            "MaxWeight": 10,
+            "MaxDimension1": 60,
+            "MaxDimension2": 60,
+            "MaxDimension3": 30,
+            "MaxCBM": 0.1,
+            "LogisticShare": null,
+            "OurShare": null,
+            "DriverShare": null,
+            "Price": null
+        }],
+        "van": [{
+            "VehicleID": 2,
+            "MaxCBM": 1,
+            "LogisticShare": null,
+            "OurShare": null,
+            "DriverShare": null,
+            "Price": null
+        }, {
+            "VehicleID": 2,
+            "MaxCBM": 2,
+            "LogisticShare": null,
+            "OurShare": null,
+            "DriverShare": null,
+            "Price": null
+        }],
+        "smalltruck": [{
+            "VehicleID": 3,
+            "MaxCBM": 3,
+            "LogisticShare": null,
+            "OurShare": null,
+            "DriverShare": null,
+            "Price": null
+        }, {
+            "VehicleID": 3,
+            "MaxCBM": 4,
+            "LogisticShare": null,
+            "OurShare": null,
+            "DriverShare": null,
+            "Price": null
+        }, {
+            "VehicleID": 3,
+            "MaxCBM": 5,
+            "LogisticShare": null,
+            "OurShare": null,
+            "DriverShare": null,
+            "Price": null
+        }],
+        "mediumtruck": [{
+            "VehicleID": 4,
+            "MaxCBM": 7,
+            "LogisticShare": null,
+            "OurShare": null,
+            "DriverShare": null,
+            "Price": null
+        }, {
+            "VehicleID": 4,
+            "MaxCBM": 8,
+            "LogisticShare": null,
+            "OurShare": null,
+            "DriverShare": null,
+            "Price": null
+        }, {
+            "VehicleID": 4,
+            "MaxCBM": 10,
+            "LogisticShare": null,
+            "OurShare": null,
+            "DriverShare": null,
+            "Price": null
+        }, {
+            "VehicleID": 4,
+            "MaxCBM": 11,
+            "LogisticShare": null,
+            "OurShare": null,
+            "DriverShare": null,
+            "Price": null
+        }]
+    },
+    "pickupTypes": [{
+        "key": "Same Day",
+        "value":1
+    }, {
+        "key": "Next Day",
+        "value":2
+    }, {
+        "key": "Corporate on Demand",
+        "value":3
+    }]
+}

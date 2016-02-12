@@ -4,7 +4,6 @@ var models    = require('../models');
 var router = express.Router();
 
 module.exports = function(di) {
-    //Logistic Flat Prices
     router.post('/logistic',  function(req, res, next){
         models.LogisticFlatPrices.findAll({
             where: {PickupType: req.body.PickupType, CompanyDetailID: req.body.CompanyDetailID},
@@ -18,21 +17,15 @@ module.exports = function(di) {
     });
 
     router.post('/saveLogistic',  function(req, res, next){
-        req.body.Prices.forEach(function(y) {
-            models.LogisticFlatPrices.findOrCreate({where: 
-            {CompanyDetailID: req.body.CompanyDetailID, PickupType: req.body.PickupType, MaxWeight: y.MaxWeight}})
-            .spread(function(price, created) {
-                price.update(y).then(function(data) {
-                    
-                })
-            })
-        });
+        saveLogisticPrices(req, req.body.Prices.bike)
+        saveLogisticPrices(req, req.body.Prices.van)
+        saveLogisticPrices(req, req.body.Prices.smalltruck)
+        saveLogisticPrices(req, req.body.Prices.mediumtruck)
         return res.status(200).json({
             status: true
         });     
     });
 
-    //Customer Flat Prices
     router.post('/customer',  function(req, res, next){
         models.CustomerFlatPrices.findAll({
             where: {PickupType: req.body.PickupType, WebstoreUserID: req.body.WebstoreUserID},
@@ -67,6 +60,28 @@ module.exports = function(di) {
                 WebstoreUserID: req.body.WebstoreUserID, 
                 PickupType: req.body.PickupType, 
                 MaxWeight: y.MaxWeight, 
+                MaxCBM: y.MaxCBM, 
+                VehicleID: y.VehicleID
+            }})
+            .spread(function(price, created) {
+                price.update(y).then(function(data) {
+                    
+                })
+            })
+        });
+    }
+
+    /**
+     * Save logistic flat prices
+     * 
+     * @return {void}
+     */
+    function saveLogisticPrices(req, vehiclePrices) {
+        vehiclePrices.forEach(function(y) {
+            models.LogisticFlatPrices.findOrCreate({where:{
+                CompanyDetailID: req.body.CompanyDetailID, 
+                PickupType: req.body.PickupType, 
+                MaxWeight: y.MaxWeight,
                 MaxCBM: y.MaxCBM, 
                 VehicleID: y.VehicleID
             }})
