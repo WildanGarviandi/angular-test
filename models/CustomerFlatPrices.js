@@ -12,6 +12,7 @@ module.exports = function(sequelize, DataTypes) {
         MaxDimension1: DataTypes.INTEGER,
         MaxDimension2: DataTypes.INTEGER,
         MaxDimension3: DataTypes.INTEGER,
+        MaxCBM: DataTypes.INTEGER,
         Price: DataTypes.DECIMAL,
         LogisticShare: DataTypes.DECIMAL,
         OurShare: DataTypes.DECIMAL,

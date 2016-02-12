@@ -16,6 +16,7 @@ module.exports = function(di){
 	defineRoute(router, '/hubs', 'Hub');
 	defineRoute(router, '/location', 'Location');
 	defineRoute(router, '/company', 'Company');
+	defineRoute(router, '/webstore', 'Webstore');
 	defineRoute(router, '/price', 'Price');
 
 	//Routes all to index.html
