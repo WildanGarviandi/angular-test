@@ -32,28 +32,9 @@ angular.module('adminApp')
 
     $scope.webstores = [$scope.webstore];
 
-    $scope.percentage = {
-        bike: {
-            LogisticShare: null,
-            OurShare: null,
-            DriverShare: null
-        },
-        van: {
-            LogisticShare: null,
-            OurShare: null,
-            DriverShare: null
-        },
-        smalltruck: {
-            LogisticShare: null,
-            OurShare: null,
-            DriverShare: null
-        },
-        mediumtruck: {
-            LogisticShare: null,
-            OurShare: null,
-            DriverShare: null
-        }
-    };
+    $scope.percentage = {};
+    $scope.defaultPrices = {};
+    $scope.pickupTypes = [];
 
     /**
      * Change prices based on vehicle's Price, LogisticShare, OurShare or DriverShare
@@ -87,6 +68,7 @@ angular.module('adminApp')
         $http.get('config/defaultValues.json').success(function(data) {
            $scope.defaultPrices = data.defaultPrices;
            $scope.pickupTypes = data.pickupTypes;
+           $scope.percentage = data.percentage;
         });
     }
     $scope.getDefaultValues();    
@@ -117,16 +99,16 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.assignNewPrices = function(price) {
-        if (price.VehicleID===1) {
+        if (price.VehicleID === 1) {
             $scope.prices.bike.push(price);
         }
-        if (price.VehicleID===2) {
+        if (price.VehicleID === 2) {
             $scope.prices.van.push(price);
         }
-        if (price.VehicleID===3) {
+        if (price.VehicleID === 3) {
             $scope.prices.smalltruck.push(price);
         }
-        if (price.VehicleID===4) {
+        if (price.VehicleID === 4) {
             $scope.prices.mediumtruck.push(price);
         }
     }

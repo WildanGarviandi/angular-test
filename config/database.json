@@ -1,0 +1,10 @@
+{
+    "mssql": {
+        "host": "localhost",
+        "database": "",
+        "user": "",
+        "password": "",
+        "requestTimeout": 90000,
+        "connectTimeout": 15000
+    }
+}

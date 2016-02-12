@@ -1,0 +1,20 @@
+{
+    "env": "development",
+    "hostname": "localhost",
+    "port": 3000,
+    "app": {
+        "debug": true,
+        "url": "http://localhost:3000",
+        "request_limit": "50mb"
+    },
+    "ajax": {
+        "origins": ["http://localhost"]
+    },
+    "crypt": {
+        "salt_work_factor": 10
+    },
+    "pagination": {
+        "perpage": 20
+    },
+    "secret_codes": "admin-app"
+}
