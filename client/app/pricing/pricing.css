@@ -5,11 +5,27 @@
     padding: 0 !important;
 }
 
-.table-price {
-    width:700px;
-}
-
 .cell-price {
+    width: 30px;
 	border: 0px none;
 	background-color: transparent;
+    padding: 5px;
+}
+
+.vehicle-title {
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 5px;
+}
+
+.table-price th, .table-price td {
+    padding: 5px;
+    font-size: 12px;
+}
+
+.save-button {
+    margin-top: 20px;
+    margin-bottom: 20px;
 }

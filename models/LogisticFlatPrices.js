@@ -12,8 +12,13 @@ module.exports = function(sequelize, DataTypes) {
         MaxDimension1: DataTypes.INTEGER,
         MaxDimension2: DataTypes.INTEGER,
         MaxDimension3: DataTypes.INTEGER,
+        MaxCBM: DataTypes.INTEGER,
         Price: DataTypes.DECIMAL,
-        PickupType: DataTypes.INTEGER
+        LogisticShare: DataTypes.DECIMAL,
+        OurShare: DataTypes.DECIMAL,
+        DriverShare: DataTypes.DECIMAL,
+        PickupType: DataTypes.INTEGER,
+        VehicleID: DataTypes.INTEGER
     }, {
         tableName: 'LogisticFlatPrices',
         timestamp: true,
