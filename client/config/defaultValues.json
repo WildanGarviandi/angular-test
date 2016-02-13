@@ -36,6 +36,10 @@
         }],
         "van": [{
             "VehicleID": 2,
+            "MaxWeight": 200,
+            "MaxDimension1": 200,
+            "MaxDimension2": 200,
+            "MaxDimension3": 200,
             "MaxCBM": 1,
             "LogisticShare": null,
             "OurShare": null,
@@ -43,6 +47,10 @@
             "Price": null
         }, {
             "VehicleID": 2,
+            "MaxWeight": 200,
+            "MaxDimension1": 200,
+            "MaxDimension2": 200,
+            "MaxDimension3": 200,
             "MaxCBM": 2,
             "LogisticShare": null,
             "OurShare": null,
@@ -51,6 +59,10 @@
         }],
         "smalltruck": [{
             "VehicleID": 3,
+            "MaxWeight": 500,
+            "MaxDimension1": 300,
+            "MaxDimension2": 300,
+            "MaxDimension3": 300,
             "MaxCBM": 3,
             "LogisticShare": null,
             "OurShare": null,
@@ -58,6 +70,10 @@
             "Price": null
         }, {
             "VehicleID": 3,
+            "MaxWeight": 500,
+            "MaxDimension1": 300,
+            "MaxDimension2": 300,
+            "MaxDimension3": 300,
             "MaxCBM": 4,
             "LogisticShare": null,
             "OurShare": null,
@@ -65,6 +81,10 @@
             "Price": null
         }, {
             "VehicleID": 3,
+            "MaxWeight": 500,
+            "MaxDimension1": 300,
+            "MaxDimension2": 300,
+            "MaxDimension3": 300,
             "MaxCBM": 5,
             "LogisticShare": null,
             "OurShare": null,
@@ -73,6 +93,10 @@
         }],
         "mediumtruck": [{
             "VehicleID": 4,
+            "MaxWeight": 1000,
+            "MaxDimension1": 500,
+            "MaxDimension2": 500,
+            "MaxDimension3": 500,
             "MaxCBM": 7,
             "LogisticShare": null,
             "OurShare": null,
@@ -80,6 +104,10 @@
             "Price": null
         }, {
             "VehicleID": 4,
+            "MaxWeight": 1000,
+            "MaxDimension1": 500,
+            "MaxDimension2": 500,
+            "MaxDimension3": 500,
             "MaxCBM": 8,
             "LogisticShare": null,
             "OurShare": null,
@@ -87,6 +115,10 @@
             "Price": null
         }, {
             "VehicleID": 4,
+            "MaxWeight": 1000,
+            "MaxDimension1": 500,
+            "MaxDimension2": 500,
+            "MaxDimension3": 500,
             "MaxCBM": 10,
             "LogisticShare": null,
             "OurShare": null,
@@ -94,6 +126,10 @@
             "Price": null
         }, {
             "VehicleID": 4,
+            "MaxWeight": 1000,
+            "MaxDimension1": 500,
+            "MaxDimension2": 500,
+            "MaxDimension3": 500,
             "MaxCBM": 11,
             "LogisticShare": null,
             "OurShare": null,
