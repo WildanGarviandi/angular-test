@@ -56,18 +56,22 @@ module.exports = function(di) {
      */
     function saveCustomerPrices(req, vehiclePrices) {
         vehiclePrices.forEach(function(y) {
-            models.CustomerFlatPrices.findOrCreate({where:{
-                WebstoreUserID: req.body.WebstoreUserID, 
-                PickupType: req.body.PickupType, 
-                MaxWeight: y.MaxWeight, 
-                MaxCBM: y.MaxCBM, 
-                VehicleID: y.VehicleID
-            }})
-            .spread(function(price, created) {
-                price.update(y).then(function(data) {
-                    
+            if (y.Price) {
+                models.CustomerFlatPrices.findOrCreate({
+                    where: {
+                        WebstoreUserID: req.body.WebstoreUserID, 
+                        PickupType: req.body.PickupType, 
+                        MaxWeight: y.MaxWeight, 
+                        MaxCBM: y.MaxCBM, 
+                        VehicleID: y.VehicleID
+                    }
                 })
-            })
+                .spread(function(price, created) {
+                    price.update(y).then(function(data) {
+                        
+                    })
+                })
+            }
         });
     }
 
@@ -78,18 +82,22 @@ module.exports = function(di) {
      */
     function saveLogisticPrices(req, vehiclePrices) {
         vehiclePrices.forEach(function(y) {
-            models.LogisticFlatPrices.findOrCreate({where:{
-                CompanyDetailID: req.body.CompanyDetailID, 
-                PickupType: req.body.PickupType, 
-                MaxWeight: y.MaxWeight,
-                MaxCBM: y.MaxCBM, 
-                VehicleID: y.VehicleID
-            }})
-            .spread(function(price, created) {
-                price.update(y).then(function(data) {
-                    
+            if (y.Price) {
+                models.LogisticFlatPrices.findOrCreate({
+                    where: {
+                        CompanyDetailID: req.body.CompanyDetailID, 
+                        PickupType: req.body.PickupType, 
+                        MaxWeight: y.MaxWeight,
+                        MaxCBM: y.MaxCBM, 
+                        VehicleID: y.VehicleID
+                    }
                 })
-            })
+                .spread(function(price, created) {
+                    price.update(y).then(function(data) {
+                        
+                    })
+                })
+            }
         });
     }
 
