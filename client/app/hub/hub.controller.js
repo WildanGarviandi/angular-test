@@ -14,7 +14,7 @@ angular.module('adminApp')
             $location, 
             $http, 
             $window
-        ){
+        ) {
 
     Auth.getCurrentUser().$promise.then(function(data) {
         $scope.user = data.profile;
@@ -149,7 +149,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.addField = function() {
-        $scope.zipcodes.push({key: $scope.sumZipField, value: ''});
+        $scope.zipcodes.push({ key: $scope.sumZipField, value: '' });
         $scope.sumZipField++;
     }
 

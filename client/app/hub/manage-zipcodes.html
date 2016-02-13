@@ -22,15 +22,24 @@
         <form class="form" name="hubForm" novalidate>
             <div class="container-fluid hub-container">
                 <div>   
-                    <i class="glyphicon glyphicon-plus" ng-click="addField()"></i>               
+                    <button class="btn btn-primary"
+                        ng-click="addField()">
+                        <i class="glyphicon glyphicon-plus"></i>Add
+                    </button>
                 </div>
+                <div class="clearfix"><br/></div>
                 <div class="row-fluid"> 
                     <div ng-repeat="item in zipcodes">
-                        <label>Zip Code {{$index+1}}:</label>
-                        <input ng-model="item.value" type="text"/>
-                        <i ng-click="deleteField($index)" class="glyphicon glyphicon-remove"></i>
+                        <div class="row">
+                            <label class="col-xs-4">Zip Code {{$index+1}}:</label>
+                            <div class="col-xs-6">
+                                <input ng-model="item.value" type="text" class="form-control" />
+                            </div>
+                            <i ng-click="deleteField($index)" class="glyphicon glyphicon-remove col-xs-2"></i>
+                        </div>
                     </div> 
                 </div>
+                <div class="clearfix"><br/><br/></div>
                 <div class="row-fluid">
                     <a class="btn btn-primary" ng-click="backButton()">Cancel</a>
                     <a class="btn btn-primary" ng-click="addZipCode()">Save</a>
