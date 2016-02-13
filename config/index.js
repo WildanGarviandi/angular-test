@@ -16,7 +16,9 @@ var config = {};
 function loadConfigFiles() {
     fs.readdirSync(__dirname)
     .filter(function(file) {
-        return (file.indexOf('.') !== 0) && (file !== 'index.js');
+        return (file.indexOf('.') !== 0) 
+            && (file.indexOf('env.json') !== 0) 
+            && (file !== 'index.js');
     })
     .forEach(function(file) {
         var conf = require('./' + file);
@@ -35,7 +37,7 @@ function loadConfigFiles() {
  */
 function loadEnv() {
     try {
-        var env = require('./.env.json');
+        var env = require('./env.json');
         if (env) {
             // merge 1 level only
             _.each(env, function(value, key) {
