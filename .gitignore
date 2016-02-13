@@ -3,5 +3,5 @@ logs
 npm-debug.log*
 node_modules
 build
-config/env.json
 client/bower_components
+config

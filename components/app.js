@@ -11,7 +11,7 @@ var config = require('../config');
 
 var app = express();
 
-module.exports = function(di){
+module.exports = function(di) {
 
     app.set('port', di.config.port);
     app.use(logger('dev'));
