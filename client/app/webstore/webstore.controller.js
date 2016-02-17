@@ -364,11 +364,10 @@ angular.module('adminApp')
         if ($state.current.name === 'update-webstore') {
             $scope.getWebstoreDetails();
             setTimeout(function() {
-                console.log($scope.webstore.UserID)
                 if ($scope.webstore.UserID === undefined) {
                     window.location = '/webstore';
                 }
-            }, 2000);
+            }, 2500);
             $scope.updatePage = true;
             $scope.addPage = false;
         } else if ($state.current.name === 'add-webstore') {
