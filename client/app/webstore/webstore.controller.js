@@ -303,7 +303,7 @@ angular.module('adminApp')
                 $location.path('/webstore');
             })        
         } else {
-            alert("Please fill all required fields");
+            alert('Please fill all required fields');
         }
     }
 
@@ -322,7 +322,7 @@ angular.module('adminApp')
                 $location.path('/webstore');
             })
         } else {
-            alert("Please fill all required fields");
+            alert('Please fill all required fields');
         }
     }    
     
@@ -361,11 +361,17 @@ angular.module('adminApp')
     $scope.loadManagePage = function() {
         $scope.getCountries();
         $scope.getHubs();
-        if ($stateParams.webstoreID !== undefined) {
+        if ($state.current.name === 'update-webstore') {
             $scope.getWebstoreDetails();
+            setTimeout(function() {
+                console.log($scope.webstore.UserID)
+                if ($scope.webstore.UserID === undefined) {
+                    window.location = '/webstore';
+                }
+            }, 2000);
             $scope.updatePage = true;
             $scope.addPage = false;
-        } else {
+        } else if ($state.current.name === 'add-webstore') {
             $scope.addPage = true;
             $scope.locationPicker();
         }
