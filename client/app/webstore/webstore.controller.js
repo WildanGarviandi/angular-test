@@ -368,7 +368,7 @@ angular.module('adminApp')
                 if ($scope.webstore.UserID === undefined) {
                     window.location = '/webstore';
                 }
-            }, 2500);
+            }, 4000);
             $scope.updatePage = true;
             $scope.addPage = false;
         } else if ($state.current.name === 'add-webstore') {
