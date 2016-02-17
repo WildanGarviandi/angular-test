@@ -5,6 +5,12 @@ var crypto = require('crypto');
 var router = express.Router();
 
 module.exports = function(di) {
+    //Relationship
+    models.User.hasOne(models.WebstoreCompany, {foreignKey: 'UserID'})
+    models.User.hasOne(models.UserLogins, {foreignKey: 'UserID'})
+    models.WebstoreCompany.belongsTo(models.Hubs, {foreignKey: 'HubID'})
+    models.WebstoreCompany.belongsTo(models.UserAddress, {foreignKey: 'UserAddressID'})
+
     //Shows all webstores
     router.get('/all',  function(req, res, next){
         models.User.findAll({
@@ -20,9 +26,6 @@ module.exports = function(di) {
 
     //Shows all webstores with params
     router.post('/show',  function(req, res, next){
-        //Relationship
-        models.User.hasOne(models.WebstoreCompany, {foreignKey: 'UserID'})
-        models.WebstoreCompany.belongsTo(models.UserAddress, {foreignKey: 'UserAddressID'})
         //Count users
         models.User.count({
             where: {
@@ -62,10 +65,6 @@ module.exports = function(di) {
 
     //Shows one single webstore
     router.get('/one',  function(req, res, next){
-        //Relationship
-        models.User.hasOne(models.WebstoreCompany, {foreignKey: 'UserID'})
-        models.WebstoreCompany.belongsTo(models.Hubs, {foreignKey: 'HubID'})
-        models.WebstoreCompany.belongsTo(models.UserAddress, {foreignKey: 'UserAddressID'})
         //Find User
         models.User.findOne({
             include: [{
@@ -138,7 +137,6 @@ module.exports = function(di) {
             if (req.body.Password) {
                 req.body.Password = crypto.createHash('md5').update(req.body.Password).digest("hex");
             }
-            models.User.hasOne(models.UserLogins, {foreignKey: 'UserID'})
             //Find User
             models.User.findOne({
                 include: [

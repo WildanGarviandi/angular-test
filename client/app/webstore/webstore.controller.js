@@ -240,9 +240,10 @@ angular.module('adminApp')
             if (data.hasAddress) {
                 $scope.webstore.UserAddress = data.User.WebstoreCompany.UserAddress;
             } else {
-                $scope.webstore.UserAddress = {};
-                $scope.webstore.UserAddress.Latitude = -6.2115;
-                $scope.webstore.UserAddress.Longitude = 106.8452; 
+                $scope.webstore.UserAddress = {
+                    Latitude: -6.2115, 
+                    Longitude: 106.8452
+                };
             }            
             $scope.locationPicker();
             $scope.isLoading = false;
