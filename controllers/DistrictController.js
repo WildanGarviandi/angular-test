@@ -149,6 +149,63 @@ module.exports = function(di) {
             }, 403);
         }
     }); 
-    
+
+    // C & U Zipcodes
+    // Add / Re-add zipcodes
+    // All format of request are :
+    //      {   districtid = 3133
+    //          zipcodes = 23112,24321,56345      }
+    //  or  {   districtid = 3452   } will empty all zipcodes      
+    router.post('/add-zipcodes', function(req, res, next){
+        try {
+            models.DistrictZipCodes.destroy({
+                where: {
+                  DistrictID: req.body.districtid
+                }
+            }).then(function() {
+                var arZipCodes = req.body.zipcodes.split(',');
+                console.log(arZipCodes);
+                arZipCodes.forEach(function (val, index, array) {
+                    array[index] = { 
+                        DistrictID: req.body.districtid,
+                        ZipCode: val
+                    };
+                });
+                console.log(arZipCodes);
+                models.DistrictZipCodes.bulkCreate(arZipCodes)
+                .then(function(zipCodes) {
+                    // note that due to limitation of bulkCreate method,
+                    // not all value is returned, in this case all zipCodes
+                    // wont return with DisctrictZipCodeID value (null)
+                    return res.status(200).json({
+                        data: zipCodes
+                    });
+                });
+            });
+        } catch (e) {
+            console.error(e.stack);
+            console.log('Error in save zipcodes: ', e);
+            return res.json({
+                status: false,
+                description: e
+            }, 403);
+        }
+    });
+
+    // R
+    // Get zipcodes of district 
+    router.get('/get-zipcodes', function(req, res, next) {
+        models.DistrictZipCodes.findAll({
+            where: {
+                DistrictID: req.query.districtid
+            }
+        })
+        .then(function(zipCodes) {
+            return res.status(200).json({
+                data: zipCodes
+            });
+        });
+    });
+
     return router;
 };
