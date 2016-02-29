@@ -61,5 +61,11 @@ angular.module('adminApp')
             templateUrl: 'app/district/manage-district.html',
             controller: 'DistrictCtrl',
             authenticate: true
+        })
+        .state('manage-district-zipcodes', {
+            url: '/district/:districtID/zipcodes',
+            templateUrl: 'app/district/manage-zipcodes.html',
+            controller: 'DistrictCtrl',
+            authenticate: true
         });
     });

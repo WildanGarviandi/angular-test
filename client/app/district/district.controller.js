@@ -10,8 +10,8 @@ angular.module('adminApp')
             moment, 
             lodash, 
             $state, 
-            $stateParams,
-            $location, 
+            $stateParams, 
+            $location,
             $http, 
             $window
         ) {
@@ -21,25 +21,12 @@ angular.module('adminApp')
     });
 
     $scope.district = {
-        ParentDistrictID: null,
+        DistrictID: null,
         Name: '',
-        Type: '',
-        Address1: '',
-        Address2: '',
-        Latitude: -6.2115,
-        Longitude: 106.8452,
         City: '',
         Province: '',
         ZipCodes: ''
     };
-
-    $scope.types = [{
-        key: 'CENTRAL',
-        value: 'CENTRAL'
-    }, {
-        key: 'GENERAL',
-        value: 'GENERAL'
-    },  ];
 
     $scope.zipcodes = [{
         key: 0,
@@ -51,99 +38,11 @@ angular.module('adminApp')
     $scope.itemsByPage = 10;
     $scope.offset = 0;
 
-    var createDistrict = function(callback) {
-        var district = {
-            name: $scope.district.Name,
-            city: $scope.district.City,
-            province: $scope.district.Province
-        };
-        console.log('update district', district);
-        $rootScope.$emit('startSpin');
-        Services.createDistrict(district).$promise.then(function (result) {
-            console.log('update district response', result);
-            var ZipCodes = {
-                districtid: result.data.DistrictID,
-                zipcodes: $scope.district.ZipCodes
-            };
-            Services.addDistrictZipCodes(ZipCodes).$promise.then(function (status) {
-                $rootScope.$emit('stopSpin');
-                console.log('add distric zipcodes', status);
-                if (district) {
-                    return callback(null, result);
-                } else {
-                    return callback('failed');
-                }
-            })
-            .catch(function() {
-                $rootScope.$emit('stopSpin');
-                return callback('failed');
-            });        
-        })
-        .catch(function() {
-            $rootScope.$emit('stopSpin');
-            return callback('failed');
-        });
-    };
 
-    // TODO: make district update and zipcodes add in one request
-    var updateDistrict = function(callback) {
-        var district = {
-            _id: $stateParams.districtID,
-            name: $scope.district.Name,
-            city: $scope.district.City,
-            province: $scope.district.Province
-        };
-        var ZipCodes = {
-            districtid: $stateParams.districtID,
-            zipcodes: $scope.district.ZipCodes
-        };
-        console.log('update district', district);
-        console.log('update zipcodes: ', ZipCodes);
-        $rootScope.$emit('startSpin');
-        Services.updateDistrict(district).$promise.then(function (result) {
-            Services.addDistrictZipCodes(ZipCodes).$promise.then(function (status) {
-                $rootScope.$emit('stopSpin');
-                console.log('update district response', result);
-                console.log('add distric zipcodes', status);
-                if (district) {
-                    return callback(null, result);
-                } else {
-                    return callback('failed');
-                }
-            })
-            .catch(function() {
-                $rootScope.$emit('stopSpin');
-                return callback('failed');
-            });        
-        })
-        .catch(function() {
-            $rootScope.$emit('stopSpin');
-            return callback('failed');
-        });
-    };
+    // APP FLOW PART
 
     /**
-     * Assign parent to the chosen item
-     * 
-     * @return {void}
-     */
-    $scope.chooseParent = function(item) {
-        $scope.district.ParentDistrictID = item.value;
-        $scope.parent = item;
-    };
-
-    /**
-     * Assign type to the chosen item
-     * 
-     * @return {void}
-     */
-    $scope.chooseType = function(item) {
-        $scope.district.Type = item.value;
-        $scope.type = item;
-    };
-
-    /**
-     * Add zipcode field
+     * Add zipcode field on manage-zip
      * 
      * @return {void}
      */
@@ -185,7 +84,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.manageZipcodes = function(id) {
-        window.location = '/manage-zipcodes/' + id;
+        window.location = '/district/' + id + '/zipcodes';
     };
 
     /**
@@ -197,41 +96,105 @@ angular.module('adminApp')
         $window.history.back();
     };
 
-    /**
-     * Update address components
-     * 
-     * @return {void}
-     */
-    $scope.updateLocation = function(addressComponents) {
-        $scope.district.Address1 = addressComponents.addressLine1;
-        $scope.district.State = addressComponents.stateOrProvince;
-        $scope.district.ZipCode = addressComponents.postalCode;
-    };
+
+    // REQUEST PART
 
     /**
-     * Pick location from maps
+     * Make a request to creating district
      * 
-     * @return {void}
+     * @return callback
      */
-    $scope.locationPicker = function() {
-        $('#maps').locationpicker({
-            location: {latitude: $scope.district.Latitude, longitude: $scope.district.Longitude},   
-            radius: null,
-            inputBinding: {
-                latitudeInput: $('#us2-lat'),
-                longitudeInput: $('#us2-lon'),
-                locationNameInput: $('#us2-address') 
-            },
-            enableAutocomplete: true,
-            onchanged: function (currentLocation, radius, isMarkerDropped) {
-                var addressComponents = $(this).locationpicker('map').location.addressComponents;
-                $scope.updateLocation(addressComponents);
-            },
+    var createDistrict = function(callback) {
+        var district = {
+            name: $scope.district.Name,
+            city: $scope.district.City,
+            province: $scope.district.Province
+        };
+        console.log('update district', district);
+        $rootScope.$emit('startSpin');
+        Services.createDistrict(district).$promise.then(function (result) {
+            if (result.error) {
+                $rootScope.$emit('stopSpin');
+                alert(result.error.join('\n'));
+            } else {
+                console.log('update district response', result);
+                var ZipCodes = {
+                    districtid: result.data.DistrictID,
+                    zipcodes: $scope.district.ZipCodes
+                };
+                Services.addDistrictZipCodes(ZipCodes).$promise.then(function (status) {
+                    $rootScope.$emit('stopSpin');
+                    console.log('add distric zipcodes', status);
+                    if (district) {
+                        return callback(null, result);
+                    } else {
+                        return callback('failed');
+                    }
+                })
+                .catch(function() {
+                    $rootScope.$emit('stopSpin');
+                    return callback('failed');
+                });   
+            }
+                 
+        })
+        .catch(function() {
+            $rootScope.$emit('stopSpin');
+            return callback('failed');
+        });
+    };
+
+    // TODO: make district update and zipcodes add in one request
+    /**
+     * Make a request to update district data
+     * 
+     * @return callback
+     */
+    var updateDistrict = function(callback) {
+        var district = {
+            _id: $stateParams.districtID,
+            name: $scope.district.Name,
+            city: $scope.district.City,
+            province: $scope.district.Province
+        };
+        
+        $rootScope.$emit('startSpin');
+        Services.updateDistrict(district).$promise.then(function (result) {
+            if (result.error) {
+                $rootScope.$emit('stopSpin');
+                alert(result.error.join('\n'));
+            } else {
+                if ($scope.district.ZipCodes !== '') {
+                    var ZipCodes = {
+                        districtid: $stateParams.districtID,
+                        zipcodes: $scope.district.ZipCodes
+                    };
+                    Services.addDistrictZipCodes(ZipCodes).$promise.then(function (status) {
+                        $rootScope.$emit('stopSpin');
+                        if (district) {
+                            return callback(null, result);
+                        } else {
+                            return callback('failed');
+                        }
+                    })
+                    .catch(function() {
+                        $rootScope.$emit('stopSpin');
+                        return callback('failed');
+                    });  
+                } else {
+                    $rootScope.$emit('stopSpin');
+                    return callback(null, result);
+                }
+            }        
+        })
+        .catch(function() {
+            $rootScope.$emit('stopSpin');
+            return callback('failed');
         });
     };
 
     /**
-     * Get single district
+     * Get single district for updating data
      * 
      * @return {void}
      */
@@ -253,7 +216,7 @@ angular.module('adminApp')
                 $scope.district.ZipCodes = '';
                 data.zipcodes.forEach(function(zip, idx) {
                     $scope.zipcodes.push({key: idx, value: zip.ZipCode});
-                    if (idx == 0 ) {
+                    if (idx === 0 ) {
                         $scope.district.ZipCodes = $scope.district.ZipCodes + zip.ZipCode;
                     } else {
                         $scope.district.ZipCodes = $scope.district.ZipCodes + ',' + zip.ZipCode;
@@ -261,7 +224,6 @@ angular.module('adminApp')
                     
                 });
             }
-            $scope.locationPicker();
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
@@ -290,23 +252,10 @@ angular.module('adminApp')
             });
             $scope.displayed = data.districts;
             $scope.isLoading = false;
+            console.log(data.count);
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.count / $scope.tableState.pagination.number);
             $rootScope.$emit('stopSpin');
-        });
-    };
-
-    /**
-     * Get parent selection
-     * 
-     * @return {void}
-     */
-    $scope.getParents = function() {
-        Services.getAll().$promise.then(function(data) {
-            $scope.districts = []; 
-            data.districts.forEach(function(district) {
-                $scope.districts.push({key: district.Name, value: district.DistrictID});
-            });
         });
     };
 
@@ -375,6 +324,32 @@ angular.module('adminApp')
     };
     
     /**
+     * Save zip codes
+     * 
+     * @return {void}
+     */
+    $scope.addZipCode = function() {
+        $rootScope.$emit('startSpin');
+        var zipcodes = [];
+        $scope.zipcodes.forEach(function(zip) {
+            if (zip.value !== '') {
+                zipcodes.push(zip.value);
+            }
+        });
+        Services.addDistrictZipCodes({
+            districtid: $stateParams.districtID,
+            zipcodes: zipcodes.toString()
+        }).$promise.then(function(data) {
+            alert('Success');
+            window.location = '/update-district/' + $stateParams.districtID;
+            $rootScope.$emit('stopSpin');
+        });
+    };
+
+
+    // INITIALIZATION PART
+
+    /**
      * Init table state
      * 
      * @return {void}
@@ -387,48 +362,11 @@ angular.module('adminApp')
     };
 
     /**
-     * Save zip codes
-     * 
-     * @return {void}
-     */
-    $scope.addZipCode = function() {
-        $rootScope.$emit('startSpin');
-        var params = [];
-        $scope.zipcodes.forEach(function(zip) {
-            var DistrictZipcodes = {};
-            DistrictZipcodes.DistrictID = $stateParams.districtID;
-            DistrictZipcodes.ZipCode = zip.value;
-            params.push(DistrictZipcodes);
-        });
-        Services.addZipCodes({
-            _id: $stateParams.districtID,
-            params:params
-        }).$promise.then(function(data) {
-            alert('Success');
-            window.location = '/update-district/' + $stateParams.districtID;
-            $rootScope.$emit('stopSpin');
-        });
-    };
-
-    /**
      * Load manage page (add/update page)
      * 
      * @return {void}
      */
     $scope.loadManagePage = function() {
-        // $scope.getCountries();
-        // $scope.getStates();
-        // $scope.getCities();
-        // $scope.getParents();
-        // if ($stateParams.districtID !== undefined) {
-        //     $scope.getDistrictDetails();
-        //     $scope.updatePage = true;
-        //     $scope.addPage = false;
-        // } else {
-        //     $scope.addPage = true;
-        //     $scope.locationPicker();
-        // }
-        // $scope.getDistricts();
         if ($stateParams.districtID !== undefined) {
             $scope.getDistrictDetails();
             $scope.updatePage = true;

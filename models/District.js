@@ -7,9 +7,25 @@ module.exports = function(sequelize, DataTypes) {
             primaryKey: true,
             autoIncrement: true
         },
-        Name: DataTypes.STRING,
-        City: DataTypes.STRING,
-        Province: DataTypes.STRING
+        Name: {
+            type: DataTypes.STRING,
+            validate: { 
+                len: [0, 100],
+                notEmpty: true
+            }
+        },
+        City: {
+            type: DataTypes.STRING,
+            validate: { 
+                len: [0, 100]
+            }
+        },
+        Province: {
+            type: DataTypes.STRING,
+            validate: { 
+                len: [0, 100]
+            }
+        }
     }, {
         tableName: 'Districts',
         timestamps: true,

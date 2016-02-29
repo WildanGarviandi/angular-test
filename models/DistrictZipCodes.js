@@ -7,8 +7,19 @@ module.exports = function(sequelize, DataTypes) {
             primaryKey: true,
             autoIncrement: true
         },
-        DistrictID: DataTypes.INTEGER,
-        ZipCode: DataTypes.STRING
+        DistrictID: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            isNumeric: true,
+        },
+        ZipCode: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+                len: [5,5]
+            }
+        }
     }, {
         tableName: 'DistrictZipCodes',
         timestamps: true,

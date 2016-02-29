@@ -3,20 +3,45 @@ var models    = require('../models');
 
 var router = express.Router();
 
+/**
+ * Handling Sequelize error and send all error messages
+ *     in a readable way on frontend side
+ * @param  {Object} e - error object from sequelize
+ * @return {Array} errors  - rray of error messages
+ */
+var errorHandling = function (e) {
+    var errors = [];
+
+    e.errors.forEach(function (val) {
+        if (/.* len .*/.test(val.message)) {
+            errors.push(val.path + ' too long');
+        } else if (/.* notEmpty .*/.test(val.message)) {
+            errors.push(val.path + ' cannot be empty');
+        }
+    });
+
+    return errors;
+};
+
 module.exports = function(di) {
     // C
     // Create single district
-    router.post('/create',  function(req, res, next){
+    router.post('/create',  function (req, res, next){
         try {
             models.Districts.create({
                 Name: req.body.name,
                 City: req.body.city,
                 Province: req.body.province
             })
-            .then(function(district) {
+            .then(function (district) {
                 return res.status(200).json({
                     status:true,
                     data: district
+                });
+            })
+            .catch(function (e) {
+                return res.json({
+                    error: errorHandling(e)
                 });
             });
         } catch (e) {
@@ -32,27 +57,17 @@ module.exports = function(di) {
     // R
     // Shows all districts with params for searching purpose
     router.get('/search',  function(req, res, next){
-        models.Districts.count({where: {Name: {$like: '%'+req.query.q+'%'}}})
-        .then(function(count) {
-            if (count != 0) {   
-                models.Districts.findAll({
-                    limit: parseInt(req.query.limit),
-                    offset: parseInt(req.query.offset),
-                    where: {Name: {$like: '%'+req.query.q+'%'}},
-                    order: [['Name', 'ASC']]
-                })
-                .then(function(districts) {
-                    return res.status(200).json({
-                        districts: districts,
-                        count: count
-                    });
-                });
-            } else {
-                return res.status(200).json({
-                    districts: districts,
-                    count: count
-                });
-            }
+        models.Districts.findAndCountAll({
+            limit: parseInt(req.query.limit),
+            offset: parseInt(req.query.offset),
+            where: {Name: {$like: '%'+req.query.q+'%'}},
+            order: [['Name', 'ASC']]
+        })
+        .then(function(districts) {
+            return res.status(200).json({
+                districts: districts.rows,
+                count: districts.count
+            });
         });
     });
 
@@ -64,8 +79,6 @@ module.exports = function(di) {
             offset: parseInt(req.query.offset),
         })
         .then(function(districts) {
-            console.log(districts.count);
-            console.log(districts.rows);
             return res.status(200).json({
                 districts: districts.rows,
                 count: districts.count
@@ -116,6 +129,11 @@ module.exports = function(di) {
                         data: district,
                         status: true
                     });
+                })
+                .catch(function (e) {
+                    return res.json({
+                        error: errorHandling(e)
+                    });
                 });
             });
         } catch (e) {
@@ -160,9 +178,9 @@ module.exports = function(di) {
     // C & U Zipcodes
     // Add / Re-add zipcodes
     // All format of request are :
-    //      {   districtid = 3133
+    //  this    {   districtid = 1
     //          zipcodes = 23112,24321,56345      }
-    //  or  {   districtid = 3452   } will empty all zipcodes      
+    //  or this  {   districtid = 1, zipcodes = ''   } will empty all zipcodes      
     router.post('/add-zipcodes', function(req, res, next){
         try {
             models.DistrictZipCodes.destroy({
