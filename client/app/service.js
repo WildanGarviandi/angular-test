@@ -155,7 +155,7 @@ angular.module('adminApp')
             },
         },
         deleteDistrict: {
-            method: 'delete',
+            method: 'DELETE',
             params: {
                 module: 'districts',
                 controller: 'delete'

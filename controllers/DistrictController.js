@@ -24,8 +24,16 @@ var errorHandling = function (e) {
 };
 
 module.exports = function(di) {
+
     // C
-    // Create single district
+    // Create single district.
+    //  Usage:
+    //  POST localhost.com/districts/create
+    //  {
+    //      Name: string
+    //      City: string
+    //      Province: string
+    //  }
     router.post('/create',  function (req, res, next){
         try {
             models.Districts.create({
@@ -55,7 +63,9 @@ module.exports = function(di) {
     });
 
     // R
-    // Shows all districts with params for searching purpose
+    // Shows all districts with params for searching purpose.
+    //  Usage :
+    // GET localhost.com/districts/search/?q=jakarta&limit=10&offset=20
     router.get('/search',  function(req, res, next){
         models.Districts.findAndCountAll({
             limit: parseInt(req.query.limit),
@@ -71,7 +81,9 @@ module.exports = function(di) {
         });
     });
 
-    // Shows all with or without params for populating data
+    // Shows all with or without params for populating data.
+    //  Usage:
+    //  GET localhost.com/districts/all/?limit=10&offset=20
     router.get('/all',  function(req, res, next){
         models.Districts.findAndCountAll({
             order: [['Name', 'ASC']],
@@ -86,10 +98,12 @@ module.exports = function(di) {
         }); 
     });
 
-    // Shows one single district
-    router.get('/one',  function(req, res, next){
+    // Shows one single district.
+    //  Usage:
+    //  GET localhost.com/districts/one/1234
+    router.get('/one/:id',  function(req, res, next){
         models.Districts.findOne({
-            where: {DistrictID: parseInt(req.query._id)}
+            where: {DistrictID: parseInt(req.params.id)}
         })
         .then(function(district) {
             if (district) {   
@@ -111,6 +125,8 @@ module.exports = function(di) {
     });
 
     // Update single district
+    //  Usage:
+    //  PUT localhost.com/districts/update/1234
     router.put('/update/:id',  function(req, res, next){
         try {
             models.Districts.findOne({
@@ -148,11 +164,13 @@ module.exports = function(di) {
 
     // D
     // Delete single district
-    router.delete('/delete',  function(req, res, next){
+    //  Usage:
+    //  DELETE localhost.com/districts/delete/1234
+    router.delete('/delete/:id',  function(req, res, next){
         try {
             models.Districts.destroy({
                 where: {
-                  DistrictID: req.query._id
+                  DistrictID: req.params.id
                 }
             }).then(function() {
                 models.DistrictZipCodes.destroy({
@@ -177,10 +195,10 @@ module.exports = function(di) {
 
     // C & U Zipcodes
     // Add / Re-add zipcodes
-    // All format of request are :
-    //  this    {   districtid = 1
-    //          zipcodes = 23112,24321,56345      }
-    //  or this  {   districtid = 1, zipcodes = ''   } will empty all zipcodes      
+    //  Usages :
+    //  POST localhost.com/districts/add-zipcodes
+    //  with this    {   districtid = 1, zipcodes = 23112,24321,56345      }
+    //  or this  {   districtid = 1, zipcodes = ''   } will empty/delete all zipcodes on that id
     router.post('/add-zipcodes', function(req, res, next){
         try {
             models.DistrictZipCodes.destroy({
@@ -219,6 +237,8 @@ module.exports = function(di) {
 
     // R
     // Get zipcodes of district 
+    //  Usage:
+    //  GET localhost.com/districts/get-zipcodes?districtid=11
     router.get('/get-zipcodes', function(req, res, next) {
         models.DistrictZipCodes.findAll({
             where: {

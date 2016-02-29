@@ -203,7 +203,7 @@ angular.module('adminApp')
         $scope.isLoading = true;
         $scope.id = $stateParams.districtID;
         Services.getOneDistrict({
-            _id: $scope.id,
+            id: $scope.id,
         }).$promise.then(function(data) {
             $scope.district = data.district;
             $scope.type = {key: data.district.Type, value: data.district.Type};
@@ -312,7 +312,7 @@ angular.module('adminApp')
     $scope.deleteDistrict = function(id) {
         if ($window.confirm('Are you sure you want to delete this district?')) {
         Services.deleteDistrict({
-            _id: id,
+            id: id,
         }).$promise.then(function(result) {  
             console.log(result.status);
             alert('Success');
