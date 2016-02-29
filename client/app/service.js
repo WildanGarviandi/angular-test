@@ -119,5 +119,54 @@ angular.module('adminApp')
                 controller: 'city'
             },
         },
+        getOneDistrict: {
+            method: 'GET',
+            params: {
+                module: 'districts',
+                controller: 'one'
+            }
+        },
+        getAllDistricts: {
+            method: 'GET',
+            params: {
+                module: 'districts',
+                controller: 'all'
+            }
+        },
+        getSomeDistricts: {
+            method: 'GET',
+            params: {
+                module: 'districts',
+                controller: 'search'
+            }
+        },
+        createDistrict: {
+            method: 'POST',
+            params: {
+                module: 'districts',
+                controller: 'create'
+            },
+        },
+        updateDistrict: {
+            method: 'PUT',
+            params: {
+                module: 'districts',
+                controller: 'update'
+            },
+        },
+        deleteDistrict: {
+            method: 'delete',
+            params: {
+                module: 'districts',
+                controller: 'delete'
+            },
+        },
+        addDistrictZipCodes: {
+            method: 'POST',
+            params: {
+                module: 'districts',
+                controller: 'add-zipcodes'
+            },
+        },
     });
 });

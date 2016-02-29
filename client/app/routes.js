@@ -44,4 +44,22 @@ angular.module('adminApp')
             controller: 'CustPricingCtrl',
             authenticate: true
         })
+        .state('district', {
+            url: '/district',
+            templateUrl: 'app/district/district.html',
+            controller: 'DistrictCtrl',
+            authenticate: true
+        })
+        .state('update-district', {
+            url: '/update-district/:districtID',
+            templateUrl: 'app/district/manage-district.html',
+            controller: 'DistrictCtrl',
+            authenticate: true
+        })
+        .state('add-district', {
+            url: '/add-district',
+            templateUrl: 'app/district/manage-district.html',
+            controller: 'DistrictCtrl',
+            authenticate: true
+        });
     });

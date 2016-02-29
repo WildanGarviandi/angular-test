@@ -37,7 +37,7 @@ module.exports = function(di) {
             if (count != 0) {   
                 models.Districts.findAll({
                     limit: parseInt(req.query.limit),
-                    offset: req.query.offset,
+                    offset: parseInt(req.query.offset),
                     where: {Name: {$like: '%'+req.query.q+'%'}},
                     order: [['Name', 'ASC']]
                 })
@@ -58,24 +58,31 @@ module.exports = function(di) {
 
     // Shows all with or without params for populating data
     router.get('/all',  function(req, res, next){
-        models.Districts.findAll({
+        models.Districts.findAndCountAll({
             order: [['Name', 'ASC']],
             limit: parseInt(req.query.limit),
-            offset: req.query.offset,
+            offset: parseInt(req.query.offset),
         })
         .then(function(districts) {
+            console.log(districts.count);
+            console.log(districts.rows);
             return res.status(200).json({
-                districts: districts
+                districts: districts.rows,
+                count: districts.count
             });
         }); 
     });
 
     // Shows one single district
     router.get('/one',  function(req, res, next){
-        models.Districts.findOne({where: {DistrictID: parseInt(req.query._id)}})
+        models.Districts.findOne({
+            where: {DistrictID: parseInt(req.query._id)}
+        })
         .then(function(district) {
             if (district) {   
-                models.DistrictZipCodes.findAll({where: {DistrictID: district.DistrictID}})
+                models.DistrictZipCodes.findAll({
+                    where: {DistrictID: district.DistrictID}
+                })
                 .then(function(zipcodes) {
                     return res.status(200).json({
                         district: district,  
@@ -91,18 +98,18 @@ module.exports = function(di) {
     });
 
     // Update single district
-    router.put('/update',  function(req, res, next){
+    router.put('/update/:id',  function(req, res, next){
         try {
             models.Districts.findOne({
                 where: {
-                    DistrictID: req.body._id
+                    DistrictID: req.params.id
                 }
             })
             .then(function(district) {
                 district.updateAttributes({
-                    Name: req.body.Name,
-                    City: req.body.City,
-                    Province: req.body.Province
+                    Name: req.body.name,
+                    City: req.body.city,
+                    Province: req.body.province
                 })
                 .then(function(district) {
                     return res.status(200).json({
@@ -127,7 +134,7 @@ module.exports = function(di) {
         try {
             models.Districts.destroy({
                 where: {
-                  DistrictID: req.body._id
+                  DistrictID: req.query._id
                 }
             }).then(function() {
                 models.DistrictZipCodes.destroy({
