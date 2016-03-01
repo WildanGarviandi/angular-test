@@ -13,7 +13,8 @@ angular.module('adminApp')
             $stateParams, 
             $location,
             $http, 
-            $window
+            $window,
+            $q
         ) {
 
     Auth.getCurrentUser().$promise.then(function(data) {
@@ -104,43 +105,45 @@ angular.module('adminApp')
      * 
      * @return callback
      */
-    var createDistrict = function(callback) {
-        var district = {
-            name: $scope.district.Name,
-            city: $scope.district.City,
-            province: $scope.district.Province
-        };
-        console.log('update district', district);
-        $rootScope.$emit('startSpin');
-        Services.createDistrict(district).$promise.then(function (result) {
-            if (result.error) {
+    var createDistrict = function() {
+        return $q(function (resolve, reject) {
+            var district = {
+                name: $scope.district.Name,
+                city: $scope.district.City,
+                province: $scope.district.Province
+            };
+            console.log('update district', district);
+            $rootScope.$emit('startSpin');
+            Services.createDistrict(district).$promise.then(function (result) {
+                if (result.error) {
+                    $rootScope.$emit('stopSpin');
+                    alert(result.error.join('\n'));
+                } else {
+                    console.log('update district response', result);
+                    var ZipCodes = {
+                        districtid: result.data.DistrictID,
+                        zipcodes: $scope.district.ZipCodes
+                    };
+                    Services.addDistrictZipCodes(ZipCodes).$promise.then(function (status) {
+                        $rootScope.$emit('stopSpin');
+                        console.log('add distric zipcodes', status);
+                        if (district) {
+                            resolve(result);
+                        } else {
+                            reject('failed');
+                        }
+                    })
+                    .catch(function() {
+                        $rootScope.$emit('stopSpin');
+                        reject('failed');
+                    });   
+                }
+                     
+            })
+            .catch(function() {
                 $rootScope.$emit('stopSpin');
-                alert(result.error.join('\n'));
-            } else {
-                console.log('update district response', result);
-                var ZipCodes = {
-                    districtid: result.data.DistrictID,
-                    zipcodes: $scope.district.ZipCodes
-                };
-                Services.addDistrictZipCodes(ZipCodes).$promise.then(function (status) {
-                    $rootScope.$emit('stopSpin');
-                    console.log('add distric zipcodes', status);
-                    if (district) {
-                        return callback(null, result);
-                    } else {
-                        return callback('failed');
-                    }
-                })
-                .catch(function() {
-                    $rootScope.$emit('stopSpin');
-                    return callback('failed');
-                });   
-            }
-                 
-        })
-        .catch(function() {
-            $rootScope.$emit('stopSpin');
-            return callback('failed');
+                reject('failed');
+            });
         });
     };
 
@@ -150,46 +153,49 @@ angular.module('adminApp')
      * 
      * @return callback
      */
-    var updateDistrict = function(callback) {
-        var district = {
-            _id: $stateParams.districtID,
-            name: $scope.district.Name,
-            city: $scope.district.City,
-            province: $scope.district.Province
-        };
-        
-        $rootScope.$emit('startSpin');
-        Services.updateDistrict(district).$promise.then(function (result) {
-            if (result.error) {
-                $rootScope.$emit('stopSpin');
-                alert(result.error.join('\n'));
-            } else {
-                if ($scope.district.ZipCodes !== '') {
-                    var ZipCodes = {
-                        districtid: $stateParams.districtID,
-                        zipcodes: $scope.district.ZipCodes
-                    };
-                    Services.addDistrictZipCodes(ZipCodes).$promise.then(function (status) {
-                        $rootScope.$emit('stopSpin');
-                        if (district) {
-                            return callback(null, result);
-                        } else {
-                            return callback('failed');
-                        }
-                    })
-                    .catch(function() {
-                        $rootScope.$emit('stopSpin');
-                        return callback('failed');
-                    });  
-                } else {
+    var updateDistrict = function() {
+        return $q(function (resolve, reject) {
+            var district = {
+                _id: $stateParams.districtID,
+                name: $scope.district.Name,
+                city: $scope.district.City,
+                province: $scope.district.Province
+            };
+            
+            $rootScope.$emit('startSpin');
+            Services.updateDistrict(district).$promise.then(function (result) {
+                if (result.error) {
                     $rootScope.$emit('stopSpin');
-                    return callback(null, result);
-                }
-            }        
-        })
-        .catch(function() {
-            $rootScope.$emit('stopSpin');
-            return callback('failed');
+                    alert(result.error.join('\n'));
+                } else {
+                    if ($scope.district.ZipCodes !== '') {
+                        var ZipCodes = {
+                            districtid: $stateParams.districtID,
+                            zipcodes: $scope.district.ZipCodes
+                        };
+                        Services.addDistrictZipCodes(ZipCodes).$promise.then(function (status) {
+                            $rootScope.$emit('stopSpin');
+                            if (district) {
+                                resolve(result);
+                            } else {
+                                reject('failed');
+                            }
+                        })
+                        .catch(function() {
+                            $rootScope.$emit('stopSpin');
+                            reject('failed');
+                        });  
+                    } else {
+                        // no zipcode assigned
+                        $rootScope.$emit('stopSpin');
+                        resolve(result);
+                    }
+                }        
+            })
+            .catch(function() {
+                $rootScope.$emit('stopSpin');
+                reject('failed');
+            });
         });
     };
 
@@ -278,12 +284,16 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.createDistrict = function() {
-        createDistrict(function(err, district) {        
+        createDistrict()
+        .then(function (district) {        
             if (district.status === false) {
                 alert('error');
             }
             alert('Your district ID:' + district.data.DistrictID + ' has been successfully created.');
             $location.path('/district');
+        })
+        .catch(function (e) {
+            alert(e);
         });
     };
 
@@ -293,14 +303,17 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.updateDistrict = function() {
-        console.log('update');
-        updateDistrict(function(err, district) {
+        updateDistrict()
+        .then(function(district) {
             console.log(district);
             if (district.status === false) {
                 alert('error');
             }
             alert('Your district ID:' + district.data.DistrictID + ' has been successfully updated.');
             $location.path('/district');
+        })
+        .catch(function (e) {
+            alert(e);
         });
     };
 
