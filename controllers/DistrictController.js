@@ -35,31 +35,30 @@ module.exports = function(di) {
     //      Province: string
     //  }
     router.post('/create',  function (req, res, next){
-        try {
-            models.Districts.create({
-                Name: req.body.name,
-                City: req.body.city,
-                Province: req.body.province
-            })
-            .then(function (district) {
-                return res.status(200).json({
-                    status:true,
-                    data: district
-                });
-            })
-            .catch(function (e) {
+        models.Districts.create({
+            Name: req.body.name,
+            City: req.body.city,
+            Province: req.body.province
+        })
+        .then(function (district) {
+            return res.status(200).json({
+                status:true,
+                data: district
+            });
+        })
+        .catch(function (e) {
+            if (e.errors) {
                 return res.json({
                     error: errorHandling(e)
                 });
-            });
-        } catch (e) {
-            console.error(e.stack);
-            console.log('Error in create district: ', e);
-            return res.json({
-                status: false,
-                description: e
-            }, 403);
-        }
+            } else {
+                console.log('Error in creating district: ', e);
+                res.json({
+                    status: false,
+                    description: 'Error in creating district'
+                }, 403);
+            }
+        });
     });
 
     // R
@@ -78,6 +77,14 @@ module.exports = function(di) {
                 districts: districts.rows,
                 count: districts.count
             });
+        })
+        .catch(function (e) {
+            // sequelize error
+            console.log('Error in finding district: ', e);
+            return res.json({
+                status: false,
+                description: 'Error in finding district'
+            }, 403);
         });
     });
 
@@ -95,7 +102,15 @@ module.exports = function(di) {
                 districts: districts.rows,
                 count: districts.count
             });
-        }); 
+        })
+        .catch(function (e) {
+            // sequelize error
+            console.log('Error in finding district: ', e);
+            return res.json({
+                status: false,
+                description: 'Error in finding district'
+            }, 403);
+        });
     });
 
     // Shows one single district.
@@ -121,6 +136,13 @@ module.exports = function(di) {
                     district: 'district not found'
                 });
             }
+        }).catch(function (e) {
+            // sequelize error
+            console.log('Error in finding district: ', e);
+            return res.json({
+                status: false,
+                description: 'Error in finding district'
+            }, 403);
         });
     });
 
@@ -128,38 +150,37 @@ module.exports = function(di) {
     //  Usage:
     //  PUT localhost.com/districts/update/1234
     router.put('/update/:id',  function(req, res, next){
-        try {
-            models.Districts.findOne({
-                where: {
-                    DistrictID: req.params.id
-                }
+        models.Districts.findOne({
+            where: {
+                DistrictID: req.params.id
+            }
+        })
+        .then(function(district) {
+            district.updateAttributes({
+                Name: req.body.name,
+                City: req.body.city,
+                Province: req.body.province
             })
             .then(function(district) {
-                district.updateAttributes({
-                    Name: req.body.name,
-                    City: req.body.city,
-                    Province: req.body.province
-                })
-                .then(function(district) {
-                    return res.status(200).json({
-                        data: district,
-                        status: true
-                    });
-                })
-                .catch(function (e) {
+                return res.status(200).json({
+                    data: district,
+                    status: true
+                });
+            })
+            .catch(function (e) {
+                if (e.errors) { // validation error
                     return res.json({
                         error: errorHandling(e)
                     });
-                });
+                } else { // sequelize error
+                    console.log('Error in updating district: ', e);
+                    res.json({
+                        status: false,
+                        description: 'Error in updating district'
+                    }, 403);
+                }
             });
-        } catch (e) {
-            console.error(e.stack);
-            console.log('Error in update district: ', e);
-            return res.json({
-                status: false,
-                description: e
-            }, 403);
-        }
+        });
     });
 
     // D
@@ -167,30 +188,29 @@ module.exports = function(di) {
     //  Usage:
     //  DELETE localhost.com/districts/delete/1234
     router.delete('/delete/:id',  function(req, res, next){
-        try {
-            models.Districts.destroy({
+        models.Districts.destroy({
+            where: {
+              DistrictID: req.params.id
+            }
+        }).then(function() {
+            models.DistrictZipCodes.destroy({
                 where: {
-                  DistrictID: req.params.id
+                  DistrictID: req.body.districtid
                 }
-            }).then(function() {
-                models.DistrictZipCodes.destroy({
-                    where: {
-                      DistrictID: req.body.districtid
-                    }
-                }).then(function(){
-                        return res.status(200).json({
-                        status: true
-                    });
+            }).then(function(){
+                return res.status(200).json({
+                    status: true
                 });
             });
-        } catch (e) {
-            console.error(e.stack);
-            console.log('Error in delete district: ', e);
+        })
+        .catch(function (e) {
+            // sequelize error
+            console.log('Error in deleting district: ', e);
             return res.json({
                 status: false,
-                description: e
+                description: 'Error in deleting district'
             }, 403);
-        }
+        });
     }); 
 
     // C & U Zipcodes
@@ -200,39 +220,43 @@ module.exports = function(di) {
     //  with this    {   districtid = 1, zipcodes = 23112,24321,56345      }
     //  or this  {   districtid = 1, zipcodes = ''   } will empty/delete all zipcodes on that id
     router.post('/add-zipcodes', function(req, res, next){
-        try {
-            models.DistrictZipCodes.destroy({
-                where: {
-                  DistrictID: req.body.districtid
-                }
-            }).then(function() {
-                var arZipCodes = req.body.zipcodes.split(',');
-                console.log(arZipCodes);
-                arZipCodes.forEach(function (val, index, array) {
-                    array[index] = { 
-                        DistrictID: req.body.districtid,
-                        ZipCode: val
-                    };
-                });
-                console.log(arZipCodes);
-                models.DistrictZipCodes.bulkCreate(arZipCodes)
-                .then(function(zipCodes) {
-                    // note that due to limitation of bulkCreate method,
-                    // not all value is returned, in this case all zipCodes
-                    // wont return with DisctrictZipCodeID value (null)
-                    return res.status(200).json({
-                        data: zipCodes
-                    });
+        models.DistrictZipCodes.destroy({
+            where: {
+              DistrictID: req.body.districtid
+            }
+        }).then(function() {
+            var arZipCodes = req.body.zipcodes.split(',');
+            console.log(arZipCodes);
+            arZipCodes.forEach(function (val, index, array) {
+                array[index] = { 
+                    DistrictID: req.body.districtid,
+                    ZipCode: val
+                };
+            });
+            console.log(arZipCodes);
+            models.DistrictZipCodes.bulkCreate(arZipCodes)
+            .then(function(zipCodes) {
+                // note that due to limitation of bulkCreate method,
+                // not all value is returned, in this case all zipCodes
+                // wont return with DisctrictZipCodeID value (null)
+                return res.status(200).json({
+                    status: true
                 });
             });
-        } catch (e) {
-            console.error(e.stack);
-            console.log('Error in save zipcodes: ', e);
-            return res.json({
-                status: false,
-                description: e
-            }, 403);
-        }
+        })
+        .catch(function (e) {
+            if (e.errors) { // validation error
+                return res.json({
+                    error: errorHandling(e)
+                });
+            } else { // sequelize error
+                console.log('Error in updating zipcodes: ', e);
+                res.json({
+                    status: false,
+                    description: 'Error in updating zipcodes'
+                }, 403);
+            }
+        });
     });
 
     // R
@@ -249,6 +273,14 @@ module.exports = function(di) {
             return res.status(200).json({
                 data: zipCodes
             });
+        })
+        .catch(function (e) {
+            // sequelize error
+            console.log('Error in finding zipcode: ', e);
+            return res.json({
+                status: false,
+                description: 'Error in finding zipcode'
+            }, 403);
         });
     });
 

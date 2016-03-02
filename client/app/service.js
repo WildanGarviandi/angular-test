@@ -119,21 +119,21 @@ angular.module('adminApp')
                 controller: 'city'
             },
         },
-        getOneDistrict: {
+        getOneDistrictData: {
             method: 'GET',
             params: {
                 module: 'districts',
                 controller: 'one'
             }
         },
-        getAllDistricts: {
+        getAllDistrictsData: {
             method: 'GET',
             params: {
                 module: 'districts',
                 controller: 'all'
             }
         },
-        getSomeDistricts: {
+        searchDistricts: {
             method: 'GET',
             params: {
                 module: 'districts',

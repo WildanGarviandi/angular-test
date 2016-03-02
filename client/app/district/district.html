@@ -15,9 +15,19 @@
             <div class="col-md-3 col-sm-12">
                 <div class="district-search">
                     <div class="input-group">
-                        <input type="search" name="" class="form-control" value="" placeholder="Search District" ng-model="searchQuery" ng-keyup="search($event)">
+                        <input  type="search" 
+                                name="" 
+                                class="form-control" 
+                                value="" 
+                                placeholder="Search District" 
+                                ng-model="searchQuery" 
+                                ng-keyup="search($event)">
                         <div class="input-group-btn">
-                            <button class="btn btn-default" type="button" ng-click="search()"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                            <button class="btn btn-default" 
+                                    type="button" 
+                                    ng-click="search()"
+                                ><span  class="glyphicon glyphicon-search" 
+                                        aria-hidden="true"></span></button>
                         </div>
                     </div>
                 </div>
@@ -58,10 +68,16 @@
                         <td>{{district.City}}</td>
                         <td>{{district.Province}}</td>
                         <td>
-                            <button class="btn btn-primary" type="button" ng-click="editDistrict(district.DistrictID)">Edit</button>
+                            <button class="btn btn-primary" 
+                                    type="button" 
+                                    ng-click="editDistrict(district.DistrictID)"
+                                >Edit</button>
                         </td>
                         <td>
-                            <button class="btn btn-primary" type="button" ng-click="deleteDistrict(district.DistrictID)">Delete</button>
+                            <button class="btn btn-primary" 
+                                    type="button" 
+                                    ng-click="deleteDistrict(district.DistrictID)"
+                                >Delete</button>
                         </td>
                     </tr>
                 </tbody>
