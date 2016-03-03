@@ -25,24 +25,40 @@ var errorHandling = function (e) {
 
 module.exports = function(di) {
 
-    // C
-    // Create single district.
-    //  Usage:
-    //  POST localhost.com/districts/create
-    //  {
-    //      Name: string
-    //      City: string
-    //      Province: string
-    //  }
+    /* C
+     * Create single district.
+     *  Usage:
+     *  POST localhost.com/district/create
+     *  {
+     *      name: string
+     *      city: string
+     *      province: string
+     *  }
+     */
     router.post('/create',  function (req, res, next){
-        models.Districts.create({
+        if (req.body.zipcodes){   
+            var arZipCodes = req.body.zipcodes.split(',');
+            arZipCodes.forEach(function (val, index, array) {
+                array[index] = { 
+                    ZipCode: val
+                };
+            });
+        }
+
+        models.District.create({
             Name: req.body.name,
             City: req.body.city,
-            Province: req.body.province
+            Province: req.body.province,
+            DistrictZipCode: arZipCodes
+        }, {
+            include: [{
+                model: models.DistrictZipCode,
+                attributes: ['ZipCode']
+            }]
         })
         .then(function (district) {
             return res.status(200).json({
-                status:true,
+                status: true,
                 data: district
             });
         })
@@ -61,12 +77,13 @@ module.exports = function(di) {
         });
     });
 
-    // R
-    // Shows all districts with params for searching purpose.
-    //  Usage :
-    // GET localhost.com/districts/search/?q=jakarta&limit=10&offset=20
+    /* R
+     * Shows all district with params for searching purpose.
+     *  Usage :
+     * GET localhost.com/district/search/?q=jakarta&limit=10&offset=20
+     */
     router.get('/search',  function(req, res, next){
-        models.Districts.findAndCountAll({
+        models.District.findAndCountAll({
             limit: parseInt(req.query.limit),
             offset: parseInt(req.query.offset),
             where: {Name: {$like: '%'+req.query.q+'%'}},
@@ -88,14 +105,24 @@ module.exports = function(di) {
         });
     });
 
-    // Shows all with or without params for populating data.
-    //  Usage:
-    //  GET localhost.com/districts/all/?limit=10&offset=20
+    /* Shows all with or without params for populating data.
+     *  Usage:
+     *  GET localhost.com/district/all/?limit=10&offset=20&zipcode=true
+     *      if zipcode=true, data will come with it zipcodes
+     */
     router.get('/all',  function(req, res, next){
-        models.Districts.findAndCountAll({
+        var withZipCode = [];
+        if (req.query.zipcode === 'true') {
+            withZipCode = [{
+                model: models.DistrictZipCode,
+                attributes: ['ZipCode']
+            }];
+        }
+        models.District.findAndCountAll({
             order: [['Name', 'ASC']],
             limit: parseInt(req.query.limit),
             offset: parseInt(req.query.offset),
+            include: withZipCode
         })
         .then(function(districts) {
             return res.status(200).json({
@@ -113,23 +140,24 @@ module.exports = function(di) {
         });
     });
 
-    // Shows one single district.
-    //  Usage:
-    //  GET localhost.com/districts/one/1234
+    /* Shows one single district.
+     *  Usage:
+     *  GET localhost.com/district/one/1234
+     */
     router.get('/one/:id',  function(req, res, next){
-        models.Districts.findOne({
-            where: {DistrictID: parseInt(req.params.id)}
+        models.District.findOne({
+            where: {
+                DistrictID: parseInt(req.params.id)
+            },
+            include: [{
+                model: models.DistrictZipCode,
+                attributes: ['ZipCode']
+            }]
         })
         .then(function(district) {
             if (district) {   
-                models.DistrictZipCodes.findAll({
-                    where: {DistrictID: district.DistrictID}
-                })
-                .then(function(zipcodes) {
-                    return res.status(200).json({
-                        district: district,  
-                        zipcodes: zipcodes
-                    });
+                return res.status(200).json({
+                    district: district
                 });
             } else {
                 return res.status(200).json({
@@ -146,20 +174,21 @@ module.exports = function(di) {
         });
     });
 
-    // Update single district
-    //  Usage:
-    //  PUT localhost.com/districts/update/1234
+    /* Update single district
+     *  Usage:
+     *  PUT localhost.com/district/update/1234
+     */
     router.put('/update/:id',  function(req, res, next){
-        models.Districts.findOne({
+        models.District.findOne({
             where: {
-                DistrictID: req.params.id
+                DistrictID: parseInt(req.params.id)
             }
         })
-        .then(function(district) {
+        .then(function(district) {         
             district.updateAttributes({
                 Name: req.body.name,
                 City: req.body.city,
-                Province: req.body.province
+                Province: req.body.province,
             })
             .then(function(district) {
                 return res.status(200).json({
@@ -183,17 +212,18 @@ module.exports = function(di) {
         });
     });
 
-    // D
-    // Delete single district
-    //  Usage:
-    //  DELETE localhost.com/districts/delete/1234
+    /* D
+     * Delete single district
+     *  Usage:
+     *  DELETE localhost.com/district/delete/1234
+     */
     router.delete('/delete/:id',  function(req, res, next){
-        models.Districts.destroy({
+        models.District.destroy({
             where: {
               DistrictID: req.params.id
             }
         }).then(function() {
-            models.DistrictZipCodes.destroy({
+            models.DistrictZipCode.destroy({
                 where: {
                   DistrictID: req.body.districtid
                 }
@@ -213,36 +243,41 @@ module.exports = function(di) {
         });
     }); 
 
-    // C & U Zipcodes
-    // Add / Re-add zipcodes
-    //  Usages :
-    //  POST localhost.com/districts/add-zipcodes
-    //  with this    {   districtid = 1, zipcodes = 23112,24321,56345      }
-    //  or this  {   districtid = 1, zipcodes = ''   } will empty/delete all zipcodes on that id
+    /* C & U Zipcodes
+     * Add / Re-add zipcodes
+     *  Usages :
+     *  POST localhost.com/district/add-zipcodes
+     *  with this    {   districtid = 1, zipcodes = 23112,24321,56345      }
+     *  or this  {   districtid = 1, zipcodes = ''   } will empty/delete all zipcodes on that id
+     */
     router.post('/add-zipcodes', function(req, res, next){
-        models.DistrictZipCodes.destroy({
+        models.DistrictZipCode.destroy({
             where: {
               DistrictID: req.body.districtid
             }
         }).then(function() {
-            var arZipCodes = req.body.zipcodes.split(',');
-            console.log(arZipCodes);
-            arZipCodes.forEach(function (val, index, array) {
-                array[index] = { 
-                    DistrictID: req.body.districtid,
-                    ZipCode: val
-                };
-            });
-            console.log(arZipCodes);
-            models.DistrictZipCodes.bulkCreate(arZipCodes)
-            .then(function(zipCodes) {
-                // note that due to limitation of bulkCreate method,
-                // not all value is returned, in this case all zipCodes
-                // wont return with DisctrictZipCodeID value (null)
+            if (req.body.zipcodes) {
+                var arZipCodes = req.body.zipcodes.split(',');
+                arZipCodes.forEach(function (val, index, array) {
+                    array[index] = { 
+                        DistrictID: req.body.districtid,
+                        ZipCode: val
+                    };
+                });
+                models.DistrictZipCode.bulkCreate(arZipCodes)
+                .then(function(zipCodes) {
+                    // note that due to limitation of bulkCreate method,
+                    // not all value is returned, in this case all zipCodes
+                    // wont return with DisctrictZipCodeID value (null)
+                    return res.status(200).json({
+                        status: true
+                    });
+                });
+            } else {
                 return res.status(200).json({
                     status: true
                 });
-            });
+            }
         })
         .catch(function (e) {
             if (e.errors) { // validation error
@@ -259,12 +294,13 @@ module.exports = function(di) {
         });
     });
 
-    // R
-    // Get zipcodes of district 
-    //  Usage:
-    //  GET localhost.com/districts/get-zipcodes?districtid=11
+    /* R
+     * Get zipcodes of district 
+     *  Usage:
+     *  GET localhost.com/district/get-zipcodes?districtid=11
+     */
     router.get('/get-zipcodes', function(req, res, next) {
-        models.DistrictZipCodes.findAll({
+        models.DistrictZipCode.findAll({
             where: {
                 DistrictID: req.query.districtid
             }

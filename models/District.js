@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function(sequelize, DataTypes) {
-	var Districts = sequelize.define("Districts", {
+	var District = sequelize.define("District", {
         DistrictID: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -30,8 +30,17 @@ module.exports = function(sequelize, DataTypes) {
         tableName: 'Districts',
         timestamps: true,
         createdAt: 'CreatedDate',
-        updatedAt: 'ModifiedDate'
+        updatedAt: 'ModifiedDate',
+        classMethods: {
+            associate: function (models) {
+                District.hasMany(models.DistrictZipCode, {
+                    foreignKey: 'DistrictID',
+                    onDelete: 'CASCADE',
+                    onUpdate: 'CASCADE'
+                });
+            }
+        }
     });
     
-    return Districts;
+    return District;
 };

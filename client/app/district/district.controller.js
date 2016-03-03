@@ -110,10 +110,7 @@ angular.module('adminApp')
             var district = {
                 name: $scope.district.Name,
                 city: $scope.district.City,
-                province: $scope.district.Province
-            };
-    		var ZipCodes = {
-                districtid: '',
+                province: $scope.district.Province,
                 zipcodes: $scope.district.ZipCodes
             };
 
@@ -127,28 +124,13 @@ angular.module('adminApp')
             	if (result.error) {
                     $rootScope.$emit('stopSpin');
                     alert(result.error.join('\n'));
-                } else if (!result.error && ZipCodes.zipcodes !== '') {
-            		ZipCodes.districtid = result.data.DistrictID;
-                    return Services.addDistrictZipCodes(ZipCodes).$promise;
-                } else { // district doesn't have zipcodes
-            		resolve();
-            	}
-            };
-
-            var addZipCodes = function (status) {
-				$rootScope.$emit('stopSpin');
-				if (status) {
-					if (status !== false) {
-	                    resolve();
-	                } else {
-	                    reject();
-	                }
-				}
+                } else {
+                	resolve();
+                }
             };
 
             create(district)
             	.then(checkResult)
-        		.then(addZipCodes)
             	.catch(function(e) {
                     $rootScope.$emit('stopSpin');
                     reject();
@@ -233,17 +215,16 @@ angular.module('adminApp')
                 $scope.parent = {key: data.parent.Name, value: data.parent.DistrictID};
             }
             // If has zipcodes
-            if ((typeof data.zipcodes.length) !== 'undefined') {
+            if ((typeof data.district.DistrictZipCodes.length) !== 'undefined') {
                 $scope.zipcodes = [];
                 $scope.district.ZipCodes = '';
-                data.zipcodes.forEach(function(zip, idx) {
+                data.district.DistrictZipCodes.forEach(function(zip, idx) {
                     $scope.zipcodes.push({key: idx, value: zip.ZipCode});
                     if (idx === 0 ) {
                         $scope.district.ZipCodes = $scope.district.ZipCodes + zip.ZipCode;
                     } else {
                         $scope.district.ZipCodes = $scope.district.ZipCodes + ',' + zip.ZipCode;
                     }
-                    console.log('a');
                 });
             }
             $scope.isLoading = false;

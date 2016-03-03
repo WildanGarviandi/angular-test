@@ -1,16 +1,11 @@
 "use strict";
 
 module.exports = function(sequelize, DataTypes) {
-    var DistrictZipCodes = sequelize.define("DistrictZipCodes", {
+    var DistrictZipCode = sequelize.define("DistrictZipCode", {
         DistrictZipCodeID: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
-        },
-        DistrictID: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            isNumeric: true,
         },
         ZipCode: {
             type: DataTypes.STRING,
@@ -24,8 +19,13 @@ module.exports = function(sequelize, DataTypes) {
         tableName: 'DistrictZipCodes',
         timestamps: true,
         createdAt: 'CreatedDate',
-        updatedAt: 'ModifiedDate'
+        updatedAt: 'ModifiedDate',
+        classMethods: {
+            associate: function (models) {
+                DistrictZipCode.belongsTo(models.District, {foreignKey: 'DistrictID'});
+            }
+        }
     });
 
-    return DistrictZipCodes;
+    return DistrictZipCode;
 };
