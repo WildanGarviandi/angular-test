@@ -4,6 +4,7 @@ angular.module('adminApp')
   .controller('LoginCtrl', function ($scope, Auth, $location) {
     $scope.user = {};
     $scope.errors = {};
+    $scope.currentDate = new Date();
 
     $scope.login = function(form) {
         $scope.submitted = true;
