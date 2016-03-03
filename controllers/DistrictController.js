@@ -115,7 +115,17 @@ module.exports = function(di) {
         models.District.findAndCountAll({
             limit: parseInt(req.query.limit),
             offset: parseInt(req.query.offset),
-            where: {Name: {$like: '%'+req.query.q+'%'}},
+            where: {
+                $or: [{
+                    Name: { $like: '%' + req.query.q + '%' }
+                },
+                {
+                    City: { $like: req.query.q + '%' }
+                },
+                {
+                    Province: { $like: req.query.q + '%' }
+                }]
+            },
             order: [['Name', 'ASC']]
         })
         .then(function(districts) {
