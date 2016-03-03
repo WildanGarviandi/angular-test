@@ -1,0 +1,74 @@
+<div ng-include="'components/sidebar/sidebar.html'"></div>
+<div class="container-fluid container-districts">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="district-title-box">
+                    District Management
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="district" ng-include="'components/user/user.html'"></div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <div class="district-search">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="booking-process">
+        <form class="form" name="districtForm" novalidate>
+            <div class="container-fluid district-container">
+                <div>
+                    <button class="btn btn-primary" ng-click="addField()">
+                    <i class="glyphicon glyphicon-plus"></i>Add
+                    </button>
+                </div>
+                <div class="clearfix">
+                    <br/>
+                </div>
+                <div class="row-fluid">
+                    <div ng-repeat="item in zipcodes">
+                        <div class="row">
+                            <label class="col-xs-4">Zip Code {{$index+1}}:</label>
+                            <div class="col-xs-6">
+                                <input  ng-model="item.value" 
+                                        name="zipcode" 
+                                        type="text" 
+                                        class="form-control" 
+                                        ng-minlength="5" 
+                                        ng-maxlength="5" />
+                            </div>
+                            <a  href="#" 
+                                ng-click="deleteField($index)" 
+                                class="glyphicon glyphicon-remove col-xs-2"
+                                ></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <br/>
+                    <br/>
+                </div>
+                <!-- Error block -->
+                <div role="alert">
+                    <span class="error" ng-show="districtForm.zipcode.$error.minlength">
+                    length must be 5</span>
+                    <span class="error" ng-show="districtForm.zipcode.$error.maxlength">
+                    length must be 5</span>
+                </div>
+                <!-- Error block ends -->
+                <div class="row-fluid">
+                    <a class="btn btn-primary" ng-click="backButton()">Cancel</a>
+                    <a  class="btn btn-primary"
+                        ng-click="addZipCode()" 
+                        ng-disabled="districtForm.$invalid"
+                        >Save</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+</script>

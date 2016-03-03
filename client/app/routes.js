@@ -44,6 +44,30 @@ angular.module('adminApp')
             controller: 'CustPricingCtrl',
             authenticate: true
         })
+        .state('district', {
+            url: '/district',
+            templateUrl: 'app/district/district.html',
+            controller: 'DistrictCtrl',
+            authenticate: true
+        })
+        .state('update-district', {
+            url: '/update-district/:districtID',
+            templateUrl: 'app/district/manage-district.html',
+            controller: 'DistrictCtrl',
+            authenticate: true
+        })
+        .state('add-district', {
+            url: '/add-district',
+            templateUrl: 'app/district/manage-district.html',
+            controller: 'DistrictCtrl',
+            authenticate: true
+        })
+        .state('manage-district-zipcodes', {
+            url: '/district/:districtID/zipcodes',
+            templateUrl: 'app/district/manage-zipcodes.html',
+            controller: 'DistrictCtrl',
+            authenticate: true
+        })
         .state('webstore', {
             url: '/webstore',
             templateUrl: 'app/webstore/webstore.html',
@@ -61,5 +85,5 @@ angular.module('adminApp')
             templateUrl: 'app/webstore/manage-webstore.html',
             controller: 'WebstoreCtrl',
             authenticate: true
-        })
+        });
     });
