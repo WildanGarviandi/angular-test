@@ -15,7 +15,7 @@ passport.use(new LocalStrategy({
 	models.UserLogins.findOne({
 		include: [{
         	model: models.User,
-        	where: {UserTypeID: 5}
+        	where: {UserTypeID: 2}
     	}],
 		where: {
 			LoginKeyword: username,

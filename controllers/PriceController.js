@@ -7,7 +7,7 @@ module.exports = function(di) {
     router.post('/logistic',  function(req, res, next){
         models.LogisticFlatPrices.findAll({
             where: {PickupType: req.body.PickupType, CompanyDetailID: req.body.CompanyDetailID},
-            order: [['MaxWeight', 'ASC']]
+            order: [['MaxWeight', 'ASC'], ['MaxCBM', 'ASC']]
         })
         .then(function(prices) {
             return res.status(200).json({
@@ -29,7 +29,7 @@ module.exports = function(di) {
     router.post('/customer',  function(req, res, next){
         models.CustomerFlatPrices.findAll({
             where: {PickupType: req.body.PickupType, WebstoreUserID: req.body.WebstoreUserID},
-            order: [['MaxWeight', 'ASC']]
+            order: [['MaxWeight', 'ASC'], ['MaxCBM', 'ASC']]
         })
         .then(function(prices) {
             return res.status(200).json({

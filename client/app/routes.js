@@ -67,5 +67,23 @@ angular.module('adminApp')
             templateUrl: 'app/district/manage-zipcodes.html',
             controller: 'DistrictCtrl',
             authenticate: true
+        })
+        .state('webstore', {
+            url: '/webstore',
+            templateUrl: 'app/webstore/webstore.html',
+            controller: 'WebstoreCtrl',
+            authenticate: true
+        })
+        .state('add-webstore', {
+            url: '/add-webstore',
+            templateUrl: 'app/webstore/manage-webstore.html',
+            controller: 'WebstoreCtrl',
+            authenticate: true
+        })
+        .state('update-webstore', {
+            url: '/update-webstore/:webstoreID',
+            templateUrl: 'app/webstore/manage-webstore.html',
+            controller: 'WebstoreCtrl',
+            authenticate: true
         });
     });
