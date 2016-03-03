@@ -119,5 +119,33 @@ angular.module('adminApp')
                 controller: 'city'
             },
         },
+        getWebstores: {
+            method: 'POST',
+            params: {
+                module: 'webstore',
+                controller: 'show'
+            },
+        },
+        getWebstoreDetails: {
+            method: 'GET',
+            params: {
+                module: 'webstore',
+                controller: 'one'
+            },
+        },
+        createWebstore: {
+            method: 'POST',
+            params: {
+                module: 'webstore',
+                controller: 'create'
+            },
+        },
+        updateWebstore: {
+            method: 'POST',
+            params: {
+                module: 'webstore',
+                controller: 'update'
+            },
+        },
     });
 });
