@@ -10,17 +10,40 @@ var router = express.Router();
  * @return {Array} errors  - rray of error messages
  */
 var errorHandling = function (e) {
-    var errors = [];
+
+    // NOTE: when DistrictZipCode get validation error in creating a District,
+    //      Sequelize still works on bad way, so it will creating a District
+    //      with all valid zipcode format THEN throw an error, so 'model' are 
+    //      needed to differentiate between a uncreated district on database, 
+    //      and (unfortunately) created district.
+
+    var error = {
+        messages: [],
+        model: ''
+    };
 
     e.errors.forEach(function (val) {
         if (/.* len .*/.test(val.message)) {
-            errors.push(val.path + ' too long');
+            var message = 'WARNING some ' + val.path + ' are too long or too short.';
+            if (val.path === 'ZipCode') { 
+                message = message + ' Will be removed';
+                error.model = 'zipcode'; 
+            } else if (val.path === 'Name') {
+                error.model = 'district';
+            }
+            error.messages.push(message);
         } else if (/.* notEmpty .*/.test(val.message)) {
-            errors.push(val.path + ' cannot be empty');
+            error.messages.push(val.path + ' cannot be empty. Please give a name');
+            error.model = 'district';
+        } else if (/.* null.*/.test(val.message)){
+            error.messages.push("WARNING Don't put a comma in the end of zipcode");
+            error.model = 'zipcode';
+        } else {
+            error.messages.push(val.message);
         }
     });
 
-    return errors;
+    return error;
 };
 
 module.exports = function(di) {
@@ -36,20 +59,25 @@ module.exports = function(di) {
      *  }
      */
     router.post('/create',  function (req, res, next){
+        var arZipCodes = [];
         if (req.body.zipcodes){   
-            var arZipCodes = req.body.zipcodes.split(',');
+            arZipCodes = req.body.zipcodes.split(',');
             arZipCodes.forEach(function (val, index, array) {
-                array[index] = { 
-                    ZipCode: val
-                };
+                if (val !== '') {
+                    array[index] = { 
+                        ZipCode: val
+                    }; 
+                }
             });
         }
+
+        var tempDistrict = {};
 
         models.District.create({
             Name: req.body.name,
             City: req.body.city,
             Province: req.body.province,
-            DistrictZipCode: arZipCodes
+            DistrictZipCodes: arZipCodes
         }, {
             include: [{
                 model: models.DistrictZipCode,
@@ -57,6 +85,7 @@ module.exports = function(di) {
             }]
         })
         .then(function (district) {
+            tempDistrict = district;
             return res.status(200).json({
                 status: true,
                 data: district
@@ -188,7 +217,7 @@ module.exports = function(di) {
             district.updateAttributes({
                 Name: req.body.name,
                 City: req.body.city,
-                Province: req.body.province,
+                Province: req.body.province
             })
             .then(function(district) {
                 return res.status(200).json({
@@ -259,10 +288,12 @@ module.exports = function(di) {
             if (req.body.zipcodes) {
                 var arZipCodes = req.body.zipcodes.split(',');
                 arZipCodes.forEach(function (val, index, array) {
-                    array[index] = { 
-                        DistrictID: req.body.districtid,
-                        ZipCode: val
-                    };
+                    if (val !== '') {
+                        array[index] = { 
+                            DistrictID: req.body.districtid,
+                            ZipCode: val
+                        };
+                    }
                 });
                 models.DistrictZipCode.bulkCreate(arZipCodes)
                 .then(function(zipCodes) {

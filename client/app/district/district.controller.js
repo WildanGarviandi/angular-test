@@ -121,9 +121,12 @@ angular.module('adminApp')
             };
 
             var checkResult = function (result) {
-            	if (result.error) {
+            	if (result.error.model === 'district') {
                     $rootScope.$emit('stopSpin');
-                    alert(result.error.join('\n'));
+                    alert(result.error.messages.join('\n'));
+                } else if (result.error.model === 'zipcode'){
+                    $rootScope.$emit('stopSpin');
+                    resolve(result.error.messages);
                 } else {
                 	resolve();
                 }
@@ -281,8 +284,8 @@ angular.module('adminApp')
      */
     $scope.createDistrict = function() {
         createDistrict()
-	        .then(function () {        
-	        	alert('District successfully created');
+	        .then(function (message) {        
+	        	alert('District successfully created.\n' + message);
 	            $location.path('/district');
 	        })
 	        .catch(function () {
