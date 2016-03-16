@@ -86,16 +86,17 @@ module.exports = function(di) {
         })
         .then(function (district) {
             tempDistrict = district;
-            return res.status(200).json({
+            return res.json({
                 status: true,
                 data: district
-            });
+            }, 200);
         })
         .catch(function (e) {
             if (e.errors) {
                 return res.json({
+                    status: false,
                     error: errorHandling(e)
-                });
+                }, 200);
             } else {
                 console.log('Error in creating district: ', e);
                 res.json({

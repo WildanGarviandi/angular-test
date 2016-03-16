@@ -121,14 +121,16 @@ angular.module('adminApp')
             };
 
             var checkResult = function (result) {
-            	if (result.error.model === 'district') {
-                    $rootScope.$emit('stopSpin');
-                    alert(result.error.messages.join('\n'));
-                } else if (result.error.model === 'zipcode'){
-                    $rootScope.$emit('stopSpin');
-                    resolve(result.error.messages);
+                if (result.status === false) {
+                    if (result.error.model === 'district') {
+                        $rootScope.$emit('stopSpin');
+                        alert(result.error.messages.join('\n'));
+                    } else if (result.error.model === 'zipcode'){
+                        $rootScope.$emit('stopSpin');
+                        resolve(result.error.messages);
+                    }
                 } else {
-                	resolve();
+                    resolve('No warning');
                 }
             };
 
