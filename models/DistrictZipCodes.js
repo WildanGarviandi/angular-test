@@ -7,6 +7,7 @@ module.exports = function(sequelize, DataTypes) {
             primaryKey: true,
             autoIncrement: true
         },
+        DistrictID: DataTypes.INTEGER,
         ZipCode: {
             type: DataTypes.STRING,
             allowNull: false,
