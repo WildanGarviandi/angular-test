@@ -10,6 +10,7 @@ module.exports = function(sequelize, DataTypes) {
         ZipCode: {
             type: DataTypes.STRING,
             allowNull: false,
+            unique: true,
             validate: {
                 notEmpty: true,
                 len: [5,5]
