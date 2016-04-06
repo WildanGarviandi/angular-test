@@ -85,5 +85,11 @@ angular.module('adminApp')
             templateUrl: 'app/webstore/manage-webstore.html',
             controller: 'WebstoreCtrl',
             authenticate: true
+        })
+        .state('map', {
+            url: '/map',
+            templateUrl: 'app/map/map.html',
+            controller: 'MapCtrl',
+            authenticate: true
         });
     });

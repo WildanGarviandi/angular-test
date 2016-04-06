@@ -168,6 +168,13 @@ angular.module('adminApp')
                 controller: 'add-zipcodes'
             }
         },
+        getAllWebstores: {
+            method: 'GET',
+            params: {
+                module: 'webstore',
+                controller: 'all'
+            },
+        },
         getWebstores: {
             method: 'POST',
             params: {

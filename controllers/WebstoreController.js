@@ -15,7 +15,14 @@ module.exports = function(di) {
     router.get('/all',  function(req, res, next){
         models.User.findAll({
             where: {UserTypeID: 5},
-            order: [['FirstName', 'ASC'], ['LastName', 'ASC']]
+            order: [['FirstName', 'ASC'], ['LastName', 'ASC']],
+            include: [{
+                    model: models.WebstoreCompany,
+                    include: [
+                        {model: models.UserAddress}
+                        ]
+                    }
+                ]
         })
         .then(function(webstores) {
             return res.status(200).json({
