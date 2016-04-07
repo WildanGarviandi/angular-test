@@ -112,21 +112,38 @@ module.exports = function(di) {
      *  Usage :
      * GET localhost.com/district/search/?q=jakarta&limit=10&offset=20
      */
-    router.get('/search',  function(req, res, next){
+    router.get('/search',  function(req, res, next){ 
+        var zipcode = {};
+        var district = {
+                    $or: [{
+                            Name: { $like: '%' + req.query.q + '%' }
+                        },
+                        {
+                            City: { $like: '%' + req.query.q + '%' }
+                        },
+                        {
+                            Province: { $like: '%' + req.query.q + '%' }
+                        }
+                    ]
+                };
+        // Guess, is req.query.q a zipcode or not
+        if (req.query.q !== '' && !isNaN(req.query.q)) {
+            zipcode = {
+                ZipCode: req.query.q
+            };
+            district = {};
+        }
+
         models.District.findAndCountAll({
             limit: parseInt(req.query.limit),
             offset: parseInt(req.query.offset),
-            where: {
-                $or: [{
-                    Name: { $like: '%' + req.query.q + '%' }
-                },
-                {
-                    City: { $like: req.query.q + '%' }
-                },
-                {
-                    Province: { $like: req.query.q + '%' }
-                }]
-            },
+            attributes: {exclude: ['CreatedDate', 'ModifiedDate']},
+            include: [{
+                model: models.DistrictZipCode,
+                attributes: ['ZipCode'],
+                where: zipcode
+            }], 
+            where: district,
             order: [['Name', 'ASC']]
         })
         .then(function(districts) {
