@@ -40,6 +40,7 @@
     height: 80px;
     margin-top: 20px;
     padding-left: 5px;
+    padding-right: 5px;
     cursor: pointer;
 }
 
@@ -55,7 +56,6 @@
     color: #8E7A8D;
     text-decoration: none;
     position: relative;
-    right: 5px;
     text-align: center;
 }
 
@@ -71,6 +71,54 @@
 
 .side-dashboard-text.active {
     color: white;
+}
+
+.side-hub-image {
+    background-image: url('../../assets/images/nav-hub.png');
+    background-repeat: no-repeat;
+    height: 50px;
+    width: 50px;
+    margin: 0 auto;
+}
+
+.side-webstore-image {
+    background-image: url('../../assets/images/nav-webstore.png');
+    background-repeat: no-repeat;
+    height: 50px;
+    width: 50px;
+    margin: 0 auto;
+}
+
+.side-logistic-image {
+    background-image: url('../../assets/images/nav-logistic.png');
+    background-repeat: no-repeat;
+    height: 50px;
+    width: 70px;
+    margin: 0 auto;
+}
+
+.side-pricing-image {
+    background-image: url('../../assets/images/nav-pricing.png');
+    background-repeat: no-repeat;
+    height: 50px;
+    width: 50px;
+    margin: 0 auto;
+}
+
+.side-district-image {
+    background-image: url('../../assets/images/nav-district.png');
+    background-repeat: no-repeat;
+    height: 50px;
+    width: 50px;
+    margin: 0 auto;
+}
+
+.side-map-image {
+    background-image: url('../../assets/images/nav-map.png');
+    background-repeat: no-repeat;
+    height: 50px;
+    width: 50px;
+    margin: 0 auto;
 }
 
 /* Booking */
@@ -118,6 +166,7 @@
     height: 80px;
     /*margin-top: 20px;*/
     cursor: pointer;
+    padding-right: 5px;
 }
 
 .side-order-image {
@@ -132,7 +181,6 @@
     color: #8E7A8D;
     text-decoration: none;
     position: relative;
-    right: 5px;
     text-align: center;
 }
 
