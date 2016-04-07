@@ -5,36 +5,43 @@
 
     <div class="row side-dashboard">
         <a ui-sref="hub" >
-            <div class="side-dashboard-image" ng-class="{active: isActive('/hub')}"></div>
+            <div class="side-hub-image" ng-class="{active: isActive('/hub')}"></div>
             <div class="side-dashboard-text" ng-class="{active: isActive('/hub')}">Hub Management</div>
         </a>
     </div>
 
     <div class="row side-dashboard">
         <a ui-sref="webstore" >
-            <div class="side-dashboard-image" ng-class="{active: isActive('/webstore')}"></div>
+            <div class="side-webstore-image" ng-class="{active: isActive('/webstore')}"></div>
             <div class="side-dashboard-text" ng-class="{active: isActive('/webstore')}">Webstore Management</div>
+        </a>
+    </div>
+
+    <div class="row side-dashboard">
+        <a ui-sref="district" >
+            <div class="side-district-image" ng-class="{active: isActive('/district')}"></div>
+            <div class="side-dashboard-text" ng-class="{active: isActive('/district')}">District Management</div>
         </a>
     </div>
 
     <div class="row side-order">
         <a ui-sref="pricing" >
-            <div class="side-order-image"  ng-class="{active: isActive('/pricing')}"></div>
+            <div class="side-logistic-image"  ng-class="{active: isActive('/pricing')}"></div>
             <div class="side-order-text"  ng-class="{active: isActive('/pricing')}">Logistic Pricing</div>
         </a>
     </div>
 
     <div class="row side-order">
         <a ui-sref="custpricing" >
-            <div class="side-order-image"  ng-class="{active: isActive('/custpricing')}"></div>
+            <div class="side-pricing-image"  ng-class="{active: isActive('/custpricing')}"></div>
             <div class="side-order-text"  ng-class="{active: isActive('/custpricing')}">Customer Pricing</div>
         </a>
     </div>
 
     <div class="row side-dashboard">
-        <a ui-sref="district" >
-            <div class="side-dashboard-image" ng-class="{active: isActive('/district')}"></div>
-            <div class="side-dashboard-text" ng-class="{active: isActive('/district')}">District Management</div>
+        <a ui-sref="map" >
+            <div class="side-map-image" ng-class="{active: isActive('/map')}"></div>
+            <div class="side-dashboard-text" ng-class="{active: isActive('/map')}">Map</div>
         </a>
     </div>
 
