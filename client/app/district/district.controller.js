@@ -310,32 +310,6 @@ angular.module('adminApp')
 	            alert('UPDATING DISTRICT FAILED');
 	        });
     };
-
-    /**
-     * Delete single district
-     * 
-     * @return {void}
-     */
-    $scope.deleteDistrict = function(id) {
-        if ($window.confirm('Are you sure you want to delete this district?')) {
-        	$rootScope.$emit('startSpin');
-	        Services.deleteDistrict({
-	            id: id,
-	        }).$promise.then(function(result) {
-	        	$rootScope.$emit('stopSpin');
-	        	if (result.status === true) {
-	        		alert('District successfully deleted');
-	            	$scope.getDistricts();
-	        	} else {
-	        		alert('DELETING DISTRICT FAILED');
-	        	}
-	            
-	        }).catch(function() {
-	        	$rootScope.$emit('stopSpin');
-	            alert('DELETING DISTRICT FAILED');
-	        });
-      }
-    };
     
     /**
      * Save zip codes

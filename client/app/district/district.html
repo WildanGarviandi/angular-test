@@ -3,7 +3,7 @@
     <div class="clearfix"></div>
     <div class="row-fluid box-header">
         <div>
-            <div class="col-md-6 col-sm-7">
+            <div class="col-md-5 col-sm-7">
                 <div class="district-title-box">
                     District Management
                 </div>
@@ -12,14 +12,14 @@
                 <div class="district" ng-include="'components/user/user.html'"></div>
             </div>
             <!-- Search box -->
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-4 col-sm-12">
                 <div class="district-search">
                     <div class="input-group">
                         <input  type="search" 
                                 name="" 
                                 class="form-control" 
                                 value="" 
-                                placeholder="Search District" 
+                                placeholder="Search by name, city, province, or zipcode" 
                                 ng-model="searchQuery" 
                                 ng-keyup="search($event)">
                         <div class="input-group-btn">
@@ -72,12 +72,6 @@
                                     type="button" 
                                     ng-click="editDistrict(district.DistrictID)"
                                 >Edit</button>
-                        </td>
-                        <td>
-                            <button class="btn btn-primary" 
-                                    type="button" 
-                                    ng-click="deleteDistrict(district.DistrictID)"
-                                >Delete</button>
                         </td>
                     </tr>
                 </tbody>
