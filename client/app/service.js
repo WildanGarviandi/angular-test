@@ -69,11 +69,12 @@ angular.module('adminApp')
                 controller: 'logistic'
             },
         },
-        savePrices: {
+        saveLogisticFee: {
             method: 'POST',
             params: {
                 module: 'price',
-                controller: 'saveLogistic'
+                controller: 'logistic',
+                action: 'update'
             },
         },
         addZipCodes: {
@@ -222,5 +223,12 @@ angular.module('adminApp')
                 module: 'status'
             },
         },
+        getVehicles: {
+            method: 'GET',
+            params: {
+                module: 'price',
+                controller: 'vehicles'
+            }
+        }
     });
 });

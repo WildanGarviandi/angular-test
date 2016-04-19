@@ -32,10 +32,10 @@ angular.module('adminApp')
             controller: 'HubCtrl',
             authenticate: true
         })
-        .state('pricing', {
-            url: '/pricing',
-            templateUrl: 'app/pricing/pricing.html',
-            controller: 'PricingCtrl',
+        .state('logistic', {
+            url: '/logistic',
+            templateUrl: 'app/logistic/logistic.html',
+            controller: 'LogisticFeeCtrl',
             authenticate: true
         })
         .state('custpricing', {
