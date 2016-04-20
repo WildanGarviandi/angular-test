@@ -102,7 +102,7 @@ module.exports = function(di) {
                 res.json({
                     status: false,
                     description: 'Error in creating district'
-                }, 403);
+                }, 500);
             }
         });
     });
@@ -158,7 +158,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in finding district'
-            }, 403);
+            }, 500);
         });
     });
 
@@ -193,7 +193,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in finding district'
-            }, 403);
+            }, 500);
         });
     });
 
@@ -227,7 +227,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in finding district'
-            }, 403);
+            }, 500);
         });
     });
 
@@ -263,7 +263,7 @@ module.exports = function(di) {
                     res.json({
                         status: false,
                         description: 'Error in updating district'
-                    }, 403);
+                    }, 500);
                 }
             });
         });
@@ -296,7 +296,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in deleting district'
-            }, 403);
+            }, 500);
         });
     }); 
 
@@ -348,7 +348,7 @@ module.exports = function(di) {
                 res.json({
                     status: false,
                     description: 'Error in updating zipcodes'
-                }, 403);
+                }, 500);
             }
         });
     });
@@ -375,7 +375,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in finding zipcode'
-            }, 403);
+            }, 500);
         });
     });
 
