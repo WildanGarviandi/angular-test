@@ -1,0 +1,79 @@
+<div ng-include="'components/sidebar/sidebar.html'"></div>
+<div class="container-fluid container-hubs">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    City Management
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <div class="hub-search">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="booking-process">
+        <form class="form" name="hubForm" novalidate>
+            <div class="container-fluid hub-container">
+                <div class="row-fluid-city">                    
+                    <div class="label-input-city">
+                        Name :
+                    </div>  
+                    <div class="city-field">
+                        <input ng-model="city.Name"
+                            type="text"
+                            name="name"
+                            value=""
+                            placeholder="Name"
+                            required
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div>                
+                <div class="row-fluid-city">                    
+                    <div class="label-input-city">
+                        E-Commerce Price :
+                    </div>  
+                    <div class="city-field checkbox-city">
+                        <input ng-model="city.EcommercePriceReferenced"
+                            type="checkbox"
+                            name="EcommercePriceReferenced"
+                            value=""
+                            placeholder="ECommerce Price"
+                            required
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+                <div ng-if="addPage" class="row-fluid">
+                    <a class="hub-buttons" ng-click="createCity()">Create City</a>
+                </div>
+                <div ng-if="updatePage" class="row-fluid">
+                    <a class="hub-buttons" ng-click="updateCity()">Update City</a>
+                </div>
+                
+
+                <!-- Error block -->
+                <div class="form-group has-error">
+                    <p class="help-block" ng-show="hubForm.name.$error.required && submitted">
+                        Please enter a name
+                    </p>
+                </div>
+                <!-- Error block ends -->
+                
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+
+</script>
+

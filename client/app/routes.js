@@ -91,5 +91,23 @@ angular.module('adminApp')
             templateUrl: 'app/map/map.html',
             controller: 'MapCtrl',
             authenticate: true
+        })
+        .state('city', {
+            url: '/cities',
+            templateUrl: 'app/city/city.html',
+            controller: 'CityCtrl',
+            authenticate: true
+        })
+        .state('add-city', {
+            url: '/add-city',
+            templateUrl: 'app/city/manage-city.html',
+            controller: 'CityCtrl',
+            authenticate: true
+        })
+        .state('update-city', {
+            url: '/update-city/:cityID',
+            templateUrl: 'app/city/manage-city.html',
+            controller: 'CityCtrl',
+            authenticate: true
         });
     });

@@ -7,7 +7,8 @@ module.exports = function(sequelize, DataTypes) {
 			primaryKey: true,
 			autoIncrement: true
 		},
-		Name: DataTypes.STRING
+		Name: DataTypes.STRING,
+		EcommercePriceReferenced: DataTypes.INTEGER
 	}, {
 		tableName: 'Cities',
 		timestamps: false

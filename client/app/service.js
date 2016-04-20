@@ -203,5 +203,33 @@ angular.module('adminApp')
                 controller: 'update'
             },
         },
+        getAllCities: {
+            method: 'GET',
+            params: {
+                module: 'city',
+                id: null
+            },
+        },
+        createCity: {
+            method: 'POST',
+            params: {
+                module: 'city',
+                controller: 'create'
+            },
+        },
+        updateCity: {
+            method: 'POST',
+            params: {
+                module: 'city',
+                controller: 'update'
+            },
+        },
+        deleteCity: {
+            method: 'POST',
+            params: {
+                module: 'city',
+                controller: 'delete'
+            },
+        },
     });
 });
