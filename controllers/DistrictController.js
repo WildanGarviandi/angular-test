@@ -77,6 +77,8 @@ module.exports = function(di) {
             Name: req.body.name,
             City: req.body.city,
             Province: req.body.province,
+            Latitude: req.body.lat,
+            Longitude: req.body.lng,
             DistrictZipCodes: arZipCodes
         }, {
             include: [{
@@ -245,7 +247,9 @@ module.exports = function(di) {
             district.updateAttributes({
                 Name: req.body.name,
                 City: req.body.city,
-                Province: req.body.province
+                Province: req.body.province,
+                Latitude: req.body.lat,
+                Longitude: req.body.lng
             })
             .then(function(district) {
                 return res.status(200).json({

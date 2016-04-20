@@ -18,90 +18,111 @@
         </div>
     </div>
     
-    <div class="booking-process">
+    <div class="booking-process container-fluid district-container">
         <form class="form" name="districtForm" novalidate>
-            <div class="container-fluid district-container">
-                <div class="row-fluid">                    
-                    <div class="label-input">
-                        Name :
-                    </div>  
-                    <div class="district-field">
-                        <input ng-model="district.Name"
-                            type="text"
-                            name="name"
-                            value=""
-                            placeholder="Name"
-                            required
-                            class="first form-control" />
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="label-input">
-                        City :
-                    </div> 
-                    <div class="district-field">
-                        <input ng-model="district.City"
-                            type="text"
-                            name="city"
-                            value=""
-                            placeholder="Province"
-                            required
-                            class="first form-control" />
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">                    
-                    <div class="label-input">
-                        Province :
-                    </div> 
-                    <div class="district-field">
-                        <input ng-model="district.Province"
-                            type="text"
-                            name="province"
-                            value=""
-                            placeholder="Province"
-                            required
-                            class="first form-control" />
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">                    
-                    <div class="label-input">
-                        Zip Code :
-                    </div> 
-                    <div class="district-field">
-                        <input ng-model="district.ZipCodes"
-                            type="text"
-                            name="zipcode"
-                            value=""
-                            placeholder="ex: 11111,22222,33333"
-                            required
-                            class="first form-control">
-                    </div>
-                </div>
-                <div ng-if="updatePage" class="districtzipcodes-form">                    
-                    <div>
-                        District Zip Codes :
-                    </div> 
-                    <div>                  
-                        <span class="zip-item" ng-repeat="item in zipcodes">
-                            {{ item.value }}
-                        </span>
-                        <div>
-                            <button class="btn btn-primary"
-                                ng-click="manageZipcodes(district.DistrictID)">Manage Zipcodes</button>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="row-fluid">                    
+                        <div class="label-input">
+                            Name :
+                        </div>  
+                        <div class="district-field">
+                            <input ng-model="district.Name"
+                                type="text"
+                                name="name"
+                                value=""
+                                placeholder="Name"
+                                required
+                                class="first form-control" />
                         </div>
                     </div>
+                    <div class="clearfix"></div>
+                    <div class="row-fluid">
+                        <div class="label-input">
+                            City :
+                        </div> 
+                        <div class="district-field">
+                            <input ng-model="district.City"
+                                type="text"
+                                name="city"
+                                value=""
+                                placeholder="Province"
+                                required
+                                class="first form-control" />
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row-fluid">                    
+                        <div class="label-input">
+                            Province :
+                        </div> 
+                        <div class="district-field">
+                            <input ng-model="district.Province"
+                                type="text"
+                                name="province"
+                                value=""
+                                placeholder="Province"
+                                required
+                                class="first form-control" />
+                        </div>
+                    </div>
+                    <div class="row-fluid">                    
+                        <div class="label-input">
+                            Latitude :
+                        </div> 
+                        <div class="district-field">
+                            <input id="us2-lat"
+                                ng-model="district.Latitude"
+                                type="text"
+                                name="latitude"
+                                value=""
+                                placeholder="Latitude"
+                                required
+                                class="first form-control" />
+                        </div>
+                    </div>
+                    <div class="row-fluid">                    
+                        <div class="label-input">
+                            Longitude :
+                        </div> 
+                        <div class="district-field">
+                            <input id="us2-lon"
+                                ng-model="district.Longitude"
+                                type="text"
+                                name="province"
+                                value=""
+                                placeholder="Longitude"
+                                required
+                                class="first form-control" />
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="row-fluid">                    
+                        <div class="label-input">
+                            Zip Code :
+                        </div> 
+                        <div class="district-field">
+                            <input ng-model="district.ZipCodes"
+                                type="text"
+                                name="zipcode"
+                                value=""
+                                placeholder="ex: 11111,22222,33333"
+                                required
+                                class="first form-control">
+                        </div>
+                        <button class="btn btn-primary pull-right"
+                            ng-click="manageZipcodes(district.DistrictID)">Manage Zipcodes
+                        </button>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div ng-if="addPage" class="row-fluid">
+                        <a class="district-buttons" ng-click="createDistrict()">Create District</a>
+                    </div>
+                    <div ng-if="updatePage" class="row-fluid">
+                        <a class="district-buttons" ng-click="updateDistrict()">Update District</a>
+                    </div>
                 </div>
-                <div class="clearfix"></div>
-                <div ng-if="addPage" class="row-fluid">
-                    <a class="district-buttons" ng-click="createDistrict()">Create District</a>
-                </div>
-                <div ng-if="updatePage" class="row-fluid">
-                    <a class="district-buttons" ng-click="updateDistrict()">Update District</a>
-                </div>
-                
+                <div id="maps" class="maps-district"></div> 
 
                 <!-- Error block -->
                 <div class="form-group has-error">
