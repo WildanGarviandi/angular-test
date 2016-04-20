@@ -104,7 +104,6 @@
     margin-left: 20px;
     margin-right: 20px;
     margin-top: 20px;
-    width: 348px;
     padding: 0 !important;
 }
 
@@ -158,8 +157,8 @@
 
 .district-field {
     padding: 0px;
-    width: 70%;
-    float: left;
+    width: 10%;
+    display: table-cell;
     margin-left: 5px;
 }
 
@@ -193,8 +192,6 @@
     background-color: #transparent;
     overflow: hidden;
     position: absolute;
-    margin-left: 400px;
-    margin-top: -60px;
 }
 
 .select-field {
@@ -207,12 +204,20 @@
 }
 
 .label-input {
-    float: left;
     margin-top: 7px;
-    width: 25%;
+    display: table-cell;
 }
 
 .zip-item {
     font-weight: bold;
+    padding-left: 5px;
+    line-height: 1.5;
 }
-
+.maps-district {
+    width: 650px; 
+    height: 480px; 
+    background-color: rgb(229, 227, 223); 
+    overflow: hidden; 
+    position: absolute; 
+    margin-left: 400px;
+}

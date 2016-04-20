@@ -77,6 +77,8 @@ module.exports = function(di) {
             Name: req.body.name,
             City: req.body.city,
             Province: req.body.province,
+            Latitude: req.body.lat,
+            Longitude: req.body.lng,
             DistrictZipCodes: arZipCodes
         }, {
             include: [{
@@ -102,7 +104,7 @@ module.exports = function(di) {
                 res.json({
                     status: false,
                     description: 'Error in creating district'
-                }, 403);
+                }, 500);
             }
         });
     });
@@ -158,7 +160,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in finding district'
-            }, 403);
+            }, 500);
         });
     });
 
@@ -193,7 +195,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in finding district'
-            }, 403);
+            }, 500);
         });
     });
 
@@ -227,7 +229,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in finding district'
-            }, 403);
+            }, 500);
         });
     });
 
@@ -245,7 +247,9 @@ module.exports = function(di) {
             district.updateAttributes({
                 Name: req.body.name,
                 City: req.body.city,
-                Province: req.body.province
+                Province: req.body.province,
+                Latitude: req.body.lat,
+                Longitude: req.body.lng
             })
             .then(function(district) {
                 return res.status(200).json({
@@ -263,7 +267,7 @@ module.exports = function(di) {
                     res.json({
                         status: false,
                         description: 'Error in updating district'
-                    }, 403);
+                    }, 500);
                 }
             });
         });
@@ -296,7 +300,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in deleting district'
-            }, 403);
+            }, 500);
         });
     }); 
 
@@ -348,7 +352,7 @@ module.exports = function(di) {
                 res.json({
                     status: false,
                     description: 'Error in updating zipcodes'
-                }, 403);
+                }, 500);
             }
         });
     });
@@ -375,7 +379,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in finding zipcode'
-            }, 403);
+            }, 500);
         });
     });
 
