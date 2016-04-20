@@ -138,6 +138,18 @@
     background-image: url('../../assets/images/nav-map-active.png');
 }
 
+.side-city-image {
+    background-image: url('../../assets/images/nav-city.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
+.side-city-image.active {
+    background-image: url('../../assets/images/nav-city-active.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
 /* Booking */
 
 .side-booking-image {
