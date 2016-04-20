@@ -25,6 +25,19 @@ angular.module('adminApp')
         EcommercePriceReferenced: false
     };
 
+    $scope.cityStatus = {
+        key: 'Active',
+        value: '1'
+    };
+
+    $scope.cityStatuses = [$scope.cityStatus,  {
+        key: 'Inactive',
+        value: '0'
+    }, {
+        key: 'All',
+        value: 'all'
+    }];
+
     $scope.itemsByPage = 10;
     $scope.offset = 0;
 
@@ -102,6 +115,19 @@ angular.module('adminApp')
     }
 
     /**
+     * Choose status E-Commerce Price
+     * 
+     * @return {void}
+     */
+    $scope.chooseStatus = function(item) {
+            $scope.cityStatus = item;
+            $scope.offset = 0;
+            if (!$stateParams.query) {
+                $scope.getCities();
+            }
+        };
+
+    /**
      * Create single city
      * 
      * @return {void}
@@ -164,7 +190,8 @@ angular.module('adminApp')
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
-            search: $scope.reqSearchString
+            search: $scope.reqSearchString,
+            status: $scope.cityStatus.value
         };
         Services.getAllCities(params).$promise.then(function(data) {
             $scope.displayed = data.city.rows;

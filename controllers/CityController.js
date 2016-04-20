@@ -9,12 +9,14 @@ module.exports = function(di) {
         clause.limit = parseInt(req.query.limit) || 10;
         clause.offset = parseInt(req.query.offset) || 0;
         clause.order = [['Name', 'ASC']];
+        clause.where = {};
         if (req.query.search) {
-            clause.where = {
-                Name: {
-                    $like: '%'+req.query.search+'%'
-                }
-            }
+            clause.where.Name = {
+                $like: '%'+req.query.search+'%'
+            };
+        }
+        if (req.query.status !== 'all') {
+            clause.where.EcommercePriceReferenced = req.query.status;
         }
         models.City.findAndCountAll(clause)
         .then(function(city) {
