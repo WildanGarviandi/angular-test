@@ -12,6 +12,14 @@ module.exports = function(di) {
     models.Trip.belongsTo(models.District, { foreignKey: 'DistrictID' });
     models.Trip.belongsTo(models.Container, {foreignKey: 'ContainerNumber', targetKey: 'ContainerNumber'});
     models.Trip.hasMany(models.UserOrderRoute, { foreignKey: 'TripID' });
+    models.UserOrderRoute.belongsTo(models.UserOrder, { foreignKey: 'UserOrderID' });
+    models.UserOrderRoute.belongsTo(models.OrderStatus, { foreignKey: 'Status' });
+    models.UserOrderRoute.belongsTo(models.UserAddress, { as: 'PickupAddress', foreignKey: 'PickupAddressID' });
+    models.UserOrderRoute.belongsTo(models.UserAddress, { as: 'DropoffAddress', foreignKey: 'DropoffAddressID' });
+    models.UserOrder.hasMany(models.UserOrderRoute, { foreignKey: 'UserOrderID' });
+    models.UserOrder.belongsTo(models.OrderStatus, { foreignKey: 'OrderStatusID' });
+    models.UserOrder.belongsTo(models.UserAddress, { as: 'PickupAddress', foreignKey: 'PickupAddressID' });
+    models.UserOrder.belongsTo(models.UserAddress, { as: 'DropoffAddress', foreignKey: 'DropoffAddressID' });
 
     router.get('/',  function(req, res, next){
         var params = req.query || {},
@@ -67,11 +75,6 @@ module.exports = function(di) {
             required: false,
             where: {}
         };
-        var clauseRoute = {
-            model: models.UserOrderRoute,
-            required: false,
-            where: {}
-        };
 
         if (tripNumber) {
             clause.where.tripNumber = {$like: '%' + tripNumber + '%'};
@@ -121,7 +124,6 @@ module.exports = function(di) {
             clausePickup,
             clauseStatus,
             clauseDriver,
-            clauseRoute,
             clauseContainer,
             clauseDistrict
         ];
@@ -132,6 +134,81 @@ module.exports = function(di) {
             return res.status(200).json({
                 trips: trips,
                 count: trips.count
+            });
+        });    
+    });
+
+    router.get('/:tripID',  function(req, res, next){
+        var clause = {
+            where: {
+                TripID: req.params.tripID
+            }
+        };
+        var clausePickup = {
+            model: models.UserAddress, 
+            as: 'PickupAddress',
+            required: false,
+            where: {}
+        };
+        var clauseDropoff = {
+            model: models.UserAddress, 
+            as: 'DropoffAddress',
+            required: false,
+            where: {}
+        };
+        var clauseDistrict = {
+            model: models.District,
+            required: false,
+            where: {}
+        };
+        var clauseDriver = {
+            model: models.User,
+            as: 'Driver',
+            required: false,
+            where: {}
+        };
+        var clauseStatus = {
+            model: models.OrderStatus,
+            required: false,
+            where: {}
+        };
+        var clauseContainer = {
+            model: models.Container,
+            required: false,
+            where: {}
+        };
+        var clauseRoute = {
+            model: models.UserOrderRoute,
+            required: false,
+            where: {},
+            include: [{
+                model: models.UserOrder,
+                include: [{
+                    model: models.OrderStatus
+                }, {                    
+                    model: models.UserAddress, 
+                    as: 'DropoffAddress',
+                }, {
+                    model: models.UserAddress, 
+                    as: 'PickupAddress',
+                }]
+            }]
+        };
+
+        clause.include = [
+            clauseDropoff,
+            clausePickup,
+            clauseStatus,
+            clauseDriver,
+            clauseRoute,
+            clauseContainer,
+            clauseDistrict
+        ];        
+        
+        models.Trip.findOne(clause)
+        .then(function(trip) {
+            return res.status(200).json({
+                trip: trip
             });
         });    
     });

@@ -27,7 +27,7 @@
                         <th>Pickup Address</th>
                         <th>Dropoff Address</th>
                         <th>Driver</th>
-                        <th>ContainerNumber</th>
+                        <th>Container Number</th>
                         <th>District</th>
                         <th>Status</th>
                         <th>Pickup Time</th>
@@ -144,15 +144,15 @@
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="trip in displayed">
-                        <td>{{trip.TripNumber}}</td>
-                        <td>{{trip.PickupAddress.Address1}}</td>
-                        <td>{{trip.DropoffAddress.Address1}}</td>
-                        <td>{{trip.Driver.FirstName}} {{trip.Driver.LastName}}</td>
-                        <td>{{trip.ContainerNumber}}</td>
-                        <td>{{trip.District.Name}}</td>
-                        <td>{{trip.OrderStatus.OrderStatus}}</td>
-                        <td>{{trip.PickupTime}}</td>
-                        <td>{{trip.DropoffTime}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.TripNumber}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.PickupAddress.Address1}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffAddress.Address1}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.Driver.FirstName}} {{trip.Driver.LastName}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.ContainerNumber}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.District.Name}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.OrderStatus.OrderStatus}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.PickupTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">

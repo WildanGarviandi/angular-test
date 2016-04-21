@@ -97,5 +97,11 @@ angular.module('adminApp')
             templateUrl: 'app/trip/trip.html',
             controller: 'TripCtrl',
             authenticate: true
+        })
+        .state('trip-details', {
+            url: '/trip/details/:tripID',
+            templateUrl: 'app/trip/trip_details.html',
+            controller: 'TripCtrl',
+            authenticate: true
         });
     });

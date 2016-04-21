@@ -60,7 +60,7 @@ angular.module('adminApp')
             $scope.statuses.push($scope.status);
             data.status.rows.forEach(function(status) {
                 $scope.statuses.push({key: status.OrderStatus, value: status.OrderStatusID});
-            }) 
+            }); 
         });
     }
 
@@ -224,6 +224,43 @@ angular.module('adminApp')
     $scope.pickerFocus = function() {
         focus('date-picker');
     };
+
+    $scope.detailsPage = function(id) {
+        window.location = '/trip/details/' + id;
+    };
+
+    /**
+     * Get single trip
+     * 
+     * @return {void}
+     */
+    $scope.getTripDetails = function() {
+        $rootScope.$emit('startSpin');
+        $scope.isLoading = true;
+        $scope.id = $stateParams.tripID;
+        Services.getTripDetails({
+            id: $scope.id,
+        }).$promise.then(function(data) {
+            $scope.trip = data.trip;
+            console.log($scope.trip);
+            $scope.isLoading = false;
+            $rootScope.$emit('stopSpin');
+        });
+    }
+
+    /**
+     * Load details
+     * 
+     * @return {void}
+     */
+    $scope.loadDetails = function() {
+        if ($stateParams.tripID !== undefined) {
+            $scope.getTripDetails();
+        }
+    }
+
+    $scope.loadDetails();
+    $scope.isCollapsed = true;
 
 
   });
