@@ -19,6 +19,8 @@ module.exports = function(di){
 	defineRoute(router, '/webstore', 'Webstore');
 	defineRoute(router, '/price', 'Price');
 	defineRoute(router, '/districts', 'District');
+	defineRoute(router, '/trip', 'Trip');
+	defineRoute(router, '/status', 'Status');
 
 	//Routes all to index.html
 	router.get('*', function(req, res, next) {
