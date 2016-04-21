@@ -38,10 +38,10 @@ angular.module('adminApp')
             controller: 'PricingCtrl',
             authenticate: true
         })
-        .state('custpricing', {
-            url: '/custpricing',
-            templateUrl: 'app/custpricing/custpricing.html',
-            controller: 'CustPricingCtrl',
+        .state('ecommerce-pricing', {
+            url: '/pricing/ecommerce',
+            templateUrl: 'app/ecommerce/ecommerce.html',
+            controller: 'EcommercePricingCtrl',
             authenticate: true
         })
         .state('district', {

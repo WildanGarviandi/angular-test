@@ -170,5 +170,37 @@
             "OurShare": null,
             "DriverShare": null
         }
+    },
+    "weight": [
+        {
+            "value": 3,
+            "description": "< 3 kg"
+        },
+        {
+            "value": 6,
+            "description": "3 < 6 kg"
+        },
+        {
+            "value": 10,
+            "description": "6 < 10 kg"
+        }
+    ],
+    "discount": [
+        {
+            "id": 1,
+            "description": "No discount"
+        },
+        {
+            "id": 2,
+            "description": "100 orders / day"
+        },
+        {
+            "id": 3,
+            "description": "500 orders / day"
+        }
+    ],
+    "country": {
+        "id": "95",
+        "name": "Indonesia"
     }
 }
