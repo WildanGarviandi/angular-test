@@ -21,6 +21,9 @@ angular.module('adminApp', [
   'ngLodash',
   'LocalStorageModule'
 ])
+  .constant("config", {
+      "url": "http://localhost:3001/v2/admin/"
+  })
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
       .otherwise('/hub');

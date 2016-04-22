@@ -2,8 +2,8 @@
 
 var url = 'http://localhost:3001/v2/admin/';
 angular.module('adminApp')
-    .factory('Services2', function($resource) {
-    return $resource(url + ':module/:submodule/:controller/:action/:id', {
+    .factory('Services2', function($resource, config) {
+    return $resource(config.url + ':module/:submodule/:controller/:action/:id', {
         id: '@_id'
     }, {
         getTrip: {

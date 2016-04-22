@@ -62,7 +62,6 @@ angular.module('adminApp')
             data.rows.forEach(function(status) {
                 $scope.statuses.push({key: status.OrderStatus, value: status.OrderStatusID});
             }); 
-            console.log($scope.statuses);
         });
     }
 
