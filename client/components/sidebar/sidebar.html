@@ -24,20 +24,35 @@
             </a>
         </li>
 
-        <li class="row">
-            <a ui-sref="pricing" >
-                <div class="side-image side-logistic-image"  ng-class="{active: isActive('/pricing')}"></div>
-                <div class="side-text"  ng-class="{active: isActive('/pricing')}">Logistic Pricing</div>
+        <li class="row have-sub" data-dropdown="pricing">
+            <a>
+                <div    class="side-image side-price-image"  
+                    ng-class="{active: isActive('/pricing') || isActive('/custpricing')}"></div>
+                <div    class="side-text"  
+                    ng-class="{active: isActive('/pricing') || isActive('/custpricing')}"
+                    >Pricing<span class="fa fa-caret-down fa-lg pull-right caret-icon"
+                                dropdown-caret="pricing"></span>
+                </div>
             </a>
+            <ul class="sub-panel hidden" dropdown-id="pricing">
+                <li class="row">
+                    <a ui-sref="pricing" >
+                        <div    class="side-image side-logistic-image"  
+                                ng-class="{active: isActive('/pricing')}"></div>
+                        <div    class="side-text"  
+                                ng-class="{active: isActive('/pricing')}">Logistic Pricing</div>
+                    </a>
+                </li>
+                <li class="row">
+                    <a ui-sref="custpricing" >
+                        <div    class="side-image side-pricing-image"  
+                                ng-class="{active: isActive('/custpricing')}"></div>
+                        <div    class="side-text"  
+                                ng-class="{active: isActive('/custpricing')}">Customer Pricing</div>
+                    </a>
+                </li>
+            </ul>
         </li>
-
-        <li class="row">
-            <a ui-sref="custpricing" >
-                <div class="side-image side-pricing-image"  ng-class="{active: isActive('/custpricing')}"></div>
-                <div class="side-text"  ng-class="{active: isActive('/custpricing')}">Customer Pricing</div>
-            </a>
-        </li>
-
         <li class="row">
             <a ui-sref="map" >
                 <div class="side-image side-map-image" ng-class="{active: isActive('/map')}"></div>
@@ -52,6 +67,9 @@
             </a>
         </li>
     </ul>
+    <div class="expand-button">
+        <span id="expand" class="fa fa-angle-double-right fa-angle-double-left fa-3x"></span>
+    </div>
 </div>
 <div id='spinner-container'>
     <span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-1" ></span>
