@@ -26,12 +26,12 @@
                         <th>Trip Number</th>
                         <th>Pickup Address</th>
                         <th>Dropoff Address</th>
+                        <th>Pickup Time</th>
+                        <th>Dropoff Time</th>
                         <th>Driver</th>
                         <th>Container Number</th>
                         <th>District</th>
                         <th>Status</th>
-                        <th>Pickup Time</th>
-                        <th>Dropoff Time</th>
                     </tr>
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
@@ -80,6 +80,28 @@
                         <th>
                             <div class="filter-table">
                                 <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    date-range-picker 
+                                    ng-model="pickupDatePicker" 
+                                    options="optionsDatepicker" />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    date-range-picker 
+                                    ng-model="dropoffDatePicker" 
+                                    options="optionsDatepicker" />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
                                     type="search" 
                                     class="form-control input-table" 
                                     value="" 
@@ -117,28 +139,6 @@
                                 </ui-select>
                             </div>
                         </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    date-range-picker 
-                                    ng-model="pickupDatePicker" 
-                                    options="optionsDatepicker" />
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    date-range-picker 
-                                    ng-model="dropoffDatePicker" 
-                                    options="optionsDatepicker" />
-                            </div>
-                        </th>
                     </tr>
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
@@ -147,12 +147,12 @@
                         <td ng-click="detailsPage(trip.TripID)">{{trip.TripNumber}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.PickupAddress.Address1}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffAddress.Address1}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.PickupTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.Driver.FirstName}} {{trip.Driver.LastName}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.ContainerNumber}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.District.Name}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.OrderStatus.OrderStatus}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.PickupTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">

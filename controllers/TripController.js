@@ -185,7 +185,7 @@ module.exports = function(di) {
             model: models.UserOrderRoute,
             required: false,
             where: {},
-            order: ['CreatedDate', 'DESC'],
+            order: [['CreatedDate', 'DESC']],
             include: [{
                 model: models.UserOrder,
                 include: [{
