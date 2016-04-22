@@ -67,7 +67,7 @@ angular.module('adminApp', [
       request: function (config) {
         config.headers = config.headers || {};
         if ($cookieStore.get('token')) {
-          config.headers.Authorization = 'Bearer ' + $cookieStore.get('token');
+          config.headers.LoginSessionKey = $cookieStore.get('token');
         }
         return config;
       },

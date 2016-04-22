@@ -20,13 +20,14 @@ angular.module('adminApp')
                 var cb = callback || angular.noop;
                 var deferred = $q.defer();
 
-                $http.post('/auth/local', {
-                    email: user.email,
+                $http.post('http://localhost:3001/v2/admin/sign-in', {
+                    username: user.username,
                     password: user.password
                 }).
                 success(function(data) {
-                    $cookieStore.put('token', data.token);
-                    $cookieStore.put('userID', data.userID);
+                    data = data.data.SignIn;
+                    $cookieStore.put('token', data.LoginSessionKey);
+                    $cookieStore.put('userID', data.UserID);
                     currentUser = User.get();
                     deferred.resolve(data);
                     return cb();

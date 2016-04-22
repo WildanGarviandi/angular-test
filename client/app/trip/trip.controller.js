@@ -7,6 +7,7 @@ angular.module('adminApp')
             Auth, 
             $rootScope, 
             Services, 
+            Services2,
             moment, 
             lodash, 
             $state, 
@@ -55,12 +56,13 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getStatus = function() {
-        Services.getStatus().$promise.then(function(data) {
+        Services2.getStatus().$promise.then(function(data) {
             $scope.statuses = []; 
             $scope.statuses.push($scope.status);
-            data.status.rows.forEach(function(status) {
+            data.rows.forEach(function(status) {
                 $scope.statuses.push({key: status.OrderStatus, value: status.OrderStatusID});
             }); 
+            console.log($scope.statuses);
         });
     }
 
@@ -121,8 +123,8 @@ angular.module('adminApp')
             startDropoff: $scope.dropoffDatePicker.startDate,
             endDropoff: $scope.dropoffDatePicker.endDate,
         }
-        Services.getTrip(params).$promise.then(function(data) {
-            $scope.displayed = data.trips.rows;
+        Services2.getTrip(params).$promise.then(function(data) {
+            $scope.displayed = data.rows;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.count / $scope.tableState.pagination.number);
@@ -238,10 +240,10 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         $scope.isLoading = true;
         $scope.id = $stateParams.tripID;
-        Services.getTripDetails({
+        Services2.getTripDetails({
             id: $scope.id,
         }).$promise.then(function(data) {
-            $scope.trip = data.trip;
+            $scope.trip = data;
             if ($scope.trip.UserOrderRoutes) {
                 $scope.trip.UserOrderRoutes.forEach(function(route){
                     route.UserOrder.PickupType = (route.UserOrder.PickupType === 1) ? 'Later' : 'Now';

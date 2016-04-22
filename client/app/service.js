@@ -1,9 +1,8 @@
 'use strict';
 
-var url = 'http://localhost:3000/';
 angular.module('adminApp')
     .factory('Services', function($resource) {
-    return $resource(url + ':module/:submodule/:controller/:action/:id', {
+    return $resource(':module/:submodule/:controller/:action/:id', {
         id: '@_id'
     }, {
         get: {
