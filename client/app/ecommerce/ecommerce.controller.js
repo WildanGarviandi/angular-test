@@ -49,6 +49,8 @@ angular.module('adminApp')
         enableCellEditOnFocus: true
     };
 
+    $scope.blankCounter = 0;
+
     /**
      * Get default values from config
      * 
@@ -267,8 +269,12 @@ angular.module('adminApp')
                 enableColumnMenu: false,
                 enableSorting: false,
                 cellClass: 'text-center',
-                cellTemplate: 
-                    '<div class="ui-grid-cell-contents" title="TOOLTIP">' +
+                cellTemplate:
+                    '<div class="ui-grid-cell-contents blank" title="TOOLTIP" ' +
+                        'ng-if="COL_FIELD CUSTOM_FILTERS.source === ' + "'nosource'" + '">' +
+                    '</div>' +
+                    '<div class="ui-grid-cell-contents" title="TOOLTIP" ' +
+                        'ng-if="COL_FIELD CUSTOM_FILTERS.source !== ' + "'nosource'" + '">' +
                         '<div ng-if="COL_FIELD CUSTOM_FILTERS.source === ' + "'webstore'" + '">' +
                             '{{COL_FIELD CUSTOM_FILTERS.price}}' + '</div>' +
                         '<div class="red" ng-if="COL_FIELD CUSTOM_FILTERS.source === ' + "'master'" + '">' +
@@ -306,6 +312,13 @@ angular.module('adminApp')
                         price: price.Price,
                         old: price.Price
                     };
+                } else {
+                    rowContent[dest.CityID] = {
+                        source: 'nosource',
+                        price: '',
+                        old: ''
+                    };
+                    $scope.blankCounter++;
                 }
             });
             $scope.gridOptions.data.push(rowContent);

@@ -9,10 +9,9 @@
     font-family: Helvetica,serif;
 }
 
-.myGrid {
-    width: 500px;
-    height: 250px;
-  }
+.grid {
+  height: 400px;
+}
 
 .ui-grid-header-cell {
     height: 40px;
@@ -41,4 +40,8 @@
 
 .text-left {
     text-align: left;
+}
+
+.blank {
+    background-color: red !important;
 }

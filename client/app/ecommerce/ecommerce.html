@@ -88,6 +88,11 @@
             <div class="clearfix"></div>
             <br>
         </div>
+        <div class="red text-center" ng-if="blankCounter !== 0">
+            <strong>WARNING!</strong> {{blankCounter}} 
+                <ng-pluralize count="blankCounter" when="{ '1': 'price', 'other': 'prices'}"></ng-pluralize>
+                 is still not assigned
+        </div>
         <div ui-grid="gridOptions" class="grid" ui-grid-edit ui-grid-pinning ui-grid-cellNav></div>
         <h6><strong>Note:</strong> <span class="red">Red prices</span> is from master / default price</h6>
     </div>
