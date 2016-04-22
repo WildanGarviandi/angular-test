@@ -2,7 +2,7 @@
 
 angular.module('adminApp')
     .factory('Services', function($resource) {
-    return $resource(':module/:submodule/:controller/:action/:id', {
+    return $resource('/:module/:submodule/:controller/:action/:id', {
         id: '@_id'
     }, {
         get: {
