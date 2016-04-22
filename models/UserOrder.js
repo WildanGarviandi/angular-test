@@ -87,7 +87,8 @@ module.exports = function(sequelize, DataTypes) {
         PriceMargin: DataTypes.DECIMAL,
         CurrentUserOrderRouteID: {
             type: DataTypes.INTEGER
-        }
+        },
+        PaidByParent: DataTypes.BOOLEAN,
     }, {
         tableName: 'UserOrder',
         timestamps: true,

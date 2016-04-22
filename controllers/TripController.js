@@ -16,10 +16,14 @@ module.exports = function(di) {
     models.UserOrderRoute.belongsTo(models.OrderStatus, { foreignKey: 'Status' });
     models.UserOrderRoute.belongsTo(models.UserAddress, { as: 'PickupAddress', foreignKey: 'PickupAddressID' });
     models.UserOrderRoute.belongsTo(models.UserAddress, { as: 'DropoffAddress', foreignKey: 'DropoffAddressID' });
+    models.UserOrderRoute.belongsTo(models.User, { as: 'FleetManager', foreignKey: 'FleetManagerID' });
     models.UserOrder.hasMany(models.UserOrderRoute, { foreignKey: 'UserOrderID' });
     models.UserOrder.belongsTo(models.OrderStatus, { foreignKey: 'OrderStatusID' });
     models.UserOrder.belongsTo(models.UserAddress, { as: 'PickupAddress', foreignKey: 'PickupAddressID' });
     models.UserOrder.belongsTo(models.UserAddress, { as: 'DropoffAddress', foreignKey: 'DropoffAddressID' });
+    models.UserOrder.belongsTo(models.User, { as: 'User', foreignKey: 'UserID' });
+    models.UserOrder.belongsTo(models.User, { as: 'WebstoreUser', foreignKey: 'WebstoreUserID' });
+    models.UserOrder.belongsTo(models.User, { as: 'FleetManager', foreignKey: 'FleetManagerID' });
 
     router.get('/',  function(req, res, next){
         var params = req.query || {},
@@ -181,6 +185,7 @@ module.exports = function(di) {
             model: models.UserOrderRoute,
             required: false,
             where: {},
+            order: ['CreatedDate', 'DESC'],
             include: [{
                 model: models.UserOrder,
                 include: [{
@@ -191,7 +196,24 @@ module.exports = function(di) {
                 }, {
                     model: models.UserAddress, 
                     as: 'PickupAddress',
+                }, {
+                    model: models.User,
+                    as: 'User'
+                }, {
+                    model: models.User,
+                    as: 'WebstoreUser'
                 }]
+            }, {
+                model: models.OrderStatus
+            }, {
+                model: models.UserAddress,
+                as: 'PickupAddress'
+            }, {
+                model: models.UserAddress,
+                as: 'DropoffAddress'
+            }, {
+                model: models.User,
+                as: 'FleetManager'
             }]
         };
 

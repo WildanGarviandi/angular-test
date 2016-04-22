@@ -76,8 +76,8 @@
             <div class="row-fluid order-details-body">
                 <div class="clearfix"></div>
                 <div ng-repeat="route in trip.UserOrderRoutes" class="row-fluid order-detail-from-address">
-                    <accordion>
-                    <accordion-group heading="Route {{$index + 1}}">                    
+                    <uib-accordion>
+                    <uib-accordion-group heading="Route {{$index + 1}}">                    
                         <div class="order-status-container-body">
                             Pickup: {{route.PickupAddress.Address1}} at {{route.PickupTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}
                         </div>
@@ -93,19 +93,31 @@
                         <div class="order-status-container-body">
                             Delivery Fee: {{route.DeliveryFee}}
                         </div>
-                        <accordion>
-                        <accordion-group heading="Order">
-                            <div class="order-status-container-body">
-                                Pickup: {{route.UserOrder.PickupAddress.Address1}} at {{route.UserOrder.PickupTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}
-                            </div>
-                            <div class="order-status-container-body">
-                                Dropoff: {{route.UserOrder.DropoffAddress.Address1}} at {{route.UserOrder.DropoffTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}
-                            </div>
+                        <div class="order-status-container-body">
+                            Net Margin: {{route.NetMargin}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Status: {{route.OrderStatus.OrderStatus}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Fleet Manager: {{route.FleetManager.FirstName}} {{route.FleetManager.LastName}} / 
+                            {{route.FleetManager.Email}} / {{route.FleetManager.PhoneNumber}}
+                        </div>
+                        <uib-accordion>
+                        <uib-accordion-group heading="Order">
                             <div class="order-status-container-body">
                                 UserOrderNumber: {{route.UserOrder.UserOrderNumber}}
                             </div>
                             <div class="order-status-container-body">
                                 WebOrderID: {{route.UserOrder.WebOrderID}}
+                            </div>
+                            <div class="order-status-container-body">
+                                User: {{route.UserOrder.User.FirstName}} {{route.UserOrder.User.LastName}} / 
+                                {{route.UserOrder.User.Email}} / {{route.UserOrder.User.PhoneNumber}}
+                            </div>
+                            <div class="order-status-container-body">
+                                Webstore: {{route.UserOrder.WebstoreUser.FirstName}} {{route.UserOrder.WebstoreUser.LastName}} / 
+                                {{route.UserOrder.WebstoreUser.Email}} / {{route.UserOrder.WebstoreUser.PhoneNumber}}
                             </div>
                             <div class="order-status-container-body">
                                 PickupType: {{route.UserOrder.PickupType}}
@@ -114,15 +126,21 @@
                                 PaymentType: {{route.UserOrder.PaymentType}}
                             </div>
                             <div class="order-status-container-body">
+                                Pickup: {{route.UserOrder.PickupAddress.Address1}} 
+                            </div>
+                            <div class="order-status-container-body">
+                                Dropoff: {{route.UserOrder.DropoffAddress.Address1}} 
+                            </div>
+                            <div class="order-status-container-body">
                                 Status: {{route.UserOrder.OrderStatus.OrderStatus}}
                             </div>
                             <div class="order-status-container-body">
                                 PaidByParent: {{route.UserOrder.PaidByParent}}
                             </div>
-                        </accordion-group>   
-                        </accordion>
-                    </accordion-group>   
-                    </accordion>                        
+                        </uib-accordion-group>   
+                        </uib-accordion>
+                    </uib-accordion-group>   
+                    </uib-accordion>                        
                 </div>
             </div>
         </div>

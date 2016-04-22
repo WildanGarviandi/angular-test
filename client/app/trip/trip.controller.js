@@ -242,7 +242,12 @@ angular.module('adminApp')
             id: $scope.id,
         }).$promise.then(function(data) {
             $scope.trip = data.trip;
-            console.log($scope.trip);
+            if ($scope.trip.UserOrderRoutes) {
+                $scope.trip.UserOrderRoutes.forEach(function(route){
+                    route.UserOrder.PickupType = (route.UserOrder.PickupType === 1) ? 'Later' : 'Now';
+                    route.UserOrder.PaymentType = (route.UserOrder.PaymentType === 2) ? 'Wallet' : 'Cash';
+                })
+            }
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
