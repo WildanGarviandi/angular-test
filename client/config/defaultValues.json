@@ -144,9 +144,6 @@
         }, {
             "key": "Next Day",
             "value":2
-        }, {
-            "key": "Corporate on Demand",
-            "value":3
         }
     ],
     "percentage": {
