@@ -151,7 +151,7 @@ angular.module('adminApp')
     $scope.updateCity = function() {
         updateCity(function(err, city) {
             if (city.data.City) {
-                alert('Your hub ID:' + city.data.City.CityID + ' has been successfully updated.');
+                alert('Your city ID:' + city.data.City.CityID + ' has been successfully updated.');
                 $location.path('/cities');
             } else {
                 alert('Error:' + err );             
