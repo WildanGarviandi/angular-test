@@ -1,50 +1,57 @@
 <div class="side-panel" ng-controller="SidebarCtrl">
-    <div class="row side-logo">
+    <div class="side-logo">
         <div class="side-logo-image"></div>
     </div>
+    <ul>
+       <li class="row">
+            <a ui-sref="hub" >
+                <div class="side-image side-hub-image" ng-class="{active: isActive('/hub')}"></div>
+                <div class="side-text" ng-class="{active: isActive('/hub')}">Hub Management</div>
+            </a>
+        </li>
 
-    <div class="row side-dashboard">
-        <a ui-sref="hub" >
-            <div class="side-dashboard-image" ng-class="{active: isActive('/hub')}"></div>
-            <div class="side-dashboard-text" ng-class="{active: isActive('/hub')}">Hub Management</div>
-        </a>
-    </div>
+        <li class="row">
+            <a ui-sref="webstore" >
+                <div class="side-image side-webstore-image" ng-class="{active: isActive('/webstore')}"></div>
+                <div class="side-text" ng-class="{active: isActive('/webstore')}">Webstore Management</div>
+            </a>
+        </li>
 
-    <div class="row side-dashboard">
-        <a ui-sref="webstore" >
-            <div class="side-dashboard-image" ng-class="{active: isActive('/webstore')}"></div>
-            <div class="side-dashboard-text" ng-class="{active: isActive('/webstore')}">Webstore Management</div>
-        </a>
-    </div>
+        <li class="row">
+            <a ui-sref="district" >
+                <div class="side-image side-district-image" ng-class="{active: isActive('/district')}"></div>
+                <div class="side-text" ng-class="{active: isActive('/district')}">District Management</div>
+            </a>
+        </li>
 
-    <div class="row side-order">
-        <a ui-sref="pricing" >
-            <div class="side-order-image"  ng-class="{active: isActive('/pricing')}"></div>
-            <div class="side-order-text"  ng-class="{active: isActive('/pricing')}">Logistic Pricing</div>
-        </a>
-    </div>
+        <li class="row">
+            <a ui-sref="pricing" >
+                <div class="side-image side-logistic-image"  ng-class="{active: isActive('/pricing')}"></div>
+                <div class="side-text"  ng-class="{active: isActive('/pricing')}">Logistic Pricing</div>
+            </a>
+        </li>
 
-    <div class="row side-order">
-        <a ui-sref="custpricing" >
-            <div class="side-order-image"  ng-class="{active: isActive('/custpricing')}"></div>
-            <div class="side-order-text"  ng-class="{active: isActive('/custpricing')}">Customer Pricing</div>
-        </a>
-    </div>
+        <li class="row">
+            <a ui-sref="custpricing" >
+                <div class="side-image side-pricing-image"  ng-class="{active: isActive('/custpricing')}"></div>
+                <div class="side-text"  ng-class="{active: isActive('/custpricing')}">Customer Pricing</div>
+            </a>
+        </li>
 
-    <div class="row side-dashboard">
-        <a ui-sref="district" >
-            <div class="side-dashboard-image" ng-class="{active: isActive('/district')}"></div>
-            <div class="side-dashboard-text" ng-class="{active: isActive('/district')}">District Management</div>
-        </a>
-    </div>
+        <li class="row">
+            <a ui-sref="map" >
+                <div class="side-image side-map-image" ng-class="{active: isActive('/map')}"></div>
+                <div class="side-text" ng-class="{active: isActive('/map')}">Map</div>
+            </a>
+        </li>
 
-    <div class="row side-dashboard">
-        <a ui-sref="map" >
-            <div class="side-dashboard-image" ng-class="{active: isActive('/map')}"></div>
-            <div class="side-dashboard-text" ng-class="{active: isActive('/map')}">Map</div>
-        </a>
-    </div>
-
+        <li class="row">
+            <a ui-sref="trip" >
+                <div class="side-image side-trip-image" ng-class="{active: isActive('/trips')}"></div>
+                <div class="side-text" ng-class="{active: isActive('/trips')}">Trip Management</div>
+            </a>
+        </li>
+    </ul>
 </div>
 <div id='spinner-container'>
     <span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-1" ></span>

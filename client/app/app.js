@@ -19,7 +19,8 @@ angular.module('adminApp', [
   'chart.js',
   'angularMoment',
   'ngLodash',
-  'LocalStorageModule'
+  'LocalStorageModule',
+  'config'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
@@ -67,7 +68,7 @@ angular.module('adminApp', [
       request: function (config) {
         config.headers = config.headers || {};
         if ($cookieStore.get('token')) {
-          config.headers.Authorization = 'Bearer ' + $cookieStore.get('token');
+          config.headers.LoginSessionKey = $cookieStore.get('token');
         }
         return config;
       },

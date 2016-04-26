@@ -203,5 +203,24 @@ angular.module('adminApp')
                 controller: 'update'
             },
         },
+        getTrip: {
+            method: 'GET',
+            params: {
+                module: 'trip'
+            },
+        },
+        getTripDetails: {
+            method: 'GET',
+            params: {
+                module: 'trip',
+                id: null
+            },
+        },
+        getStatus: {
+            method: 'GET',
+            params: {
+                module: 'status'
+            },
+        },
     });
 });
