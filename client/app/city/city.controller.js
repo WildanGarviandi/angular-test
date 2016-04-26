@@ -134,8 +134,12 @@ angular.module('adminApp')
      */
     $scope.createCity = function() {
         createCity(function(err, city) {   
-            alert('Your city ID:' + city.CityID + ' has been successfully created.')
-            $location.path('/cities');
+            if (city.data.City) { 
+                alert('Your city ID:' + city.data.City.CityID + ' has been successfully created.');
+                $location.path('/cities');
+            } else {
+                alert('Error:' + err );             
+            }
         });
     }    
 
@@ -146,8 +150,12 @@ angular.module('adminApp')
      */
     $scope.updateCity = function() {
         updateCity(function(err, city) {
-            alert('Your city ID:' + city.data.CityID + ' has been successfully updated.')
-            $location.path('/cities');
+            if (city.data.City) {
+                alert('Your hub ID:' + city.data.City.CityID + ' has been successfully updated.');
+                $location.path('/cities');
+            } else {
+                alert('Error:' + err );             
+            }
         });
     }   
 
@@ -163,7 +171,7 @@ angular.module('adminApp')
         Services2.getOneCity({
             id: $scope.id,
         }).$promise.then(function(data) {
-            $scope.city = data;
+            $scope.city = data.data.City;
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
@@ -187,7 +195,7 @@ angular.module('adminApp')
             status: $scope.cityStatus.value
         };
         Services2.getCities(params).$promise.then(function(data) {
-            $scope.displayed = data.rows;
+            $scope.displayed = data.data.Cities.rows;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.count / $scope.tableState.pagination.number);
@@ -217,8 +225,12 @@ angular.module('adminApp')
         if ($window.confirm('Are you sure you want to delete this city?')) {
         Services2.deleteCity({
             id: id,
-        }, {}).$promise.then(function(result) {  
-            alert('Delete success');
+        }, {}).$promise.then(function(result) {
+            if (result.data.Status === 1) {
+                alert('Delete success');
+            } else {
+                alert('Failed');                
+            }  
             $scope.getCities();
         }).catch(function() {
             alert('Delete failed');
