@@ -7,6 +7,7 @@ angular.module('adminApp')
             Auth, 
             $rootScope, 
             Services, 
+            Services2,
             moment, 
             lodash, 
             $state, 
@@ -46,9 +47,8 @@ angular.module('adminApp')
             Name: $scope.city.Name,
             EcommercePriceReferenced: $scope.city.EcommercePriceReferenced
         };
-        console.log('create city', city);
         $rootScope.$emit('startSpin');
-        Services.createCity(city).$promise.then(function(response) {
+        Services2.createCity(city).$promise.then(function(response) {
             $rootScope.$emit('stopSpin');
             if (response) {
                 return callback(null, response);
@@ -67,13 +67,13 @@ angular.module('adminApp')
             $scope.city.EcommercePriceReferenced = false;
         }
         var city = {
-            id: $stateParams.cityID,
             Name: $scope.city.Name,
             EcommercePriceReferenced: $scope.city.EcommercePriceReferenced
         };
-        console.log('update city', city);
         $rootScope.$emit('startSpin');
-        Services.updateCity(city).$promise.then(function(response) {
+        Services2.updateCity({
+            id: $stateParams.cityID
+        }, city).$promise.then(function(response) {
             $rootScope.$emit('stopSpin');
             if (response) {
                 return callback(null, response);
@@ -133,11 +133,8 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.createCity = function() {
-        createCity(function(err, city) {        
-            if (city.status === false) {
-                alert('error');
-            };
-            alert('Your city ID:' + city.data.CityID + ' has been successfully created.')
+        createCity(function(err, city) {   
+            alert('Your city ID:' + city.CityID + ' has been successfully created.')
             $location.path('/cities');
         });
     }    
@@ -149,10 +146,6 @@ angular.module('adminApp')
      */
     $scope.updateCity = function() {
         updateCity(function(err, city) {
-            console.log(city)
-            if (city.status === false) {
-                alert('error')
-            }
             alert('Your city ID:' + city.data.CityID + ' has been successfully updated.')
             $location.path('/cities');
         });
@@ -167,10 +160,10 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         $scope.isLoading = true;
         $scope.id = $stateParams.cityID;
-        Services.getAllCities({
+        Services2.getOneCity({
             id: $scope.id,
         }).$promise.then(function(data) {
-            $scope.city = data.city;
+            $scope.city = data;
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
@@ -193,8 +186,8 @@ angular.module('adminApp')
             search: $scope.reqSearchString,
             status: $scope.cityStatus.value
         };
-        Services.getAllCities(params).$promise.then(function(data) {
-            $scope.displayed = data.city.rows;
+        Services2.getCities(params).$promise.then(function(data) {
+            $scope.displayed = data.rows;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.count / $scope.tableState.pagination.number);
@@ -222,9 +215,9 @@ angular.module('adminApp')
      */
     $scope.deleteCity = function(id) {
         if ($window.confirm('Are you sure you want to delete this city?')) {
-        Services.deleteCity({
+        Services2.deleteCity({
             id: id,
-        }).$promise.then(function(result) {  
+        }, {}).$promise.then(function(result) {  
             alert('Delete success');
             $scope.getCities();
         }).catch(function() {
@@ -241,11 +234,12 @@ angular.module('adminApp')
      */
     $scope.toggleTrue = function(id) {
         var city = {
-            id: id,
             EcommercePriceReferenced: true
         }
         if ($window.confirm('Are you sure you want check this city?')) {
-        Services.updateCity(city).$promise.then(function(result) {  
+        Services2.updateCity({
+            id: id
+        }, city).$promise.then(function(result) {  
             alert('Check success');
             $scope.getCities();
         }).catch(function() {
@@ -262,11 +256,12 @@ angular.module('adminApp')
      */
     $scope.toggleFalse = function(id) {
         var city = {
-            id: id,
             EcommercePriceReferenced: false
         }
         if ($window.confirm('Are you sure you want uncheck this city?')) {
-        Services.updateCity(city).$promise.then(function(result) {  
+        Services2.updateCity({
+            id: id
+        }, city).$promise.then(function(result) {  
             alert('Uncheck success');
             $scope.getCities();
         }).catch(function() {

@@ -24,5 +24,39 @@ angular.module('adminApp')
                 module: 'status'
             },
         },
+        getCities: {
+            method: 'GET',
+            params: {
+                module: 'city'
+            },
+        },
+        getOneCity: {
+            method: 'GET',
+            params: {
+                module: 'city',
+                id: null
+            },
+        },
+        createCity: {
+            method: 'POST',
+            params: {
+                module: 'city',
+            },
+        },
+        updateCity: {
+            method: 'POST',
+            params: {
+                module: 'city',
+                id: null
+            },
+        },
+        deleteCity: {
+            method: 'POST',
+            params: {
+                module: 'city',
+                controller: 'delete',
+                id: null
+            },
+        },
     });
 });

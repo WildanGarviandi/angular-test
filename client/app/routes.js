@@ -109,7 +109,7 @@ angular.module('adminApp')
             templateUrl: 'app/city/manage-city.html',
             controller: 'CityCtrl',
             authenticate: true
-        });
+        })
         .state('trip', {
             url: '/trips',
             templateUrl: 'app/trip/trip.html',
