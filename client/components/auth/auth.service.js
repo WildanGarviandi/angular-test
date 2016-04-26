@@ -20,7 +20,7 @@ angular.module('adminApp')
                 var cb = callback || angular.noop;
                 var deferred = $q.defer();
 
-                $http.post(config.url + 'sign-in', {
+                $http.post(config.url + config.url.endpoints.signIn, {
                     username: user.username,
                     password: user.password
                 }).

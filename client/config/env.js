@@ -22,7 +22,10 @@ function env() {
             var url = 'http://localhost:3001';
     } 
     return  {
-        'url': url + '/v2/admin/' 
+        'url': url + '/v2/admin/',
+        'endpoints': {
+            'signIn': 'sign-in'
+        } 
     }
 }
 
