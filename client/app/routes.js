@@ -110,4 +110,16 @@ angular.module('adminApp')
             controller: 'CityCtrl',
             authenticate: true
         });
+        .state('trip', {
+            url: '/trips',
+            templateUrl: 'app/trip/trip.html',
+            controller: 'TripCtrl',
+            authenticate: true
+        })
+        .state('trip-details', {
+            url: '/trip/details/:tripID',
+            templateUrl: 'app/trip/trip_details.html',
+            controller: 'TripCtrl',
+            authenticate: true
+        });
     });

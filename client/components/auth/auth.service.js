@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('adminApp')
-    .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
+    .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q, config) {
         var currentUser = {};
         if ($cookieStore.get('token')) {
           currentUser = User.get();
@@ -20,13 +20,14 @@ angular.module('adminApp')
                 var cb = callback || angular.noop;
                 var deferred = $q.defer();
 
-                $http.post('/auth/local', {
-                    email: user.email,
+                $http.post(config.url + 'sign-in', {
+                    username: user.username,
                     password: user.password
                 }).
                 success(function(data) {
-                    $cookieStore.put('token', data.token);
-                    $cookieStore.put('userID', data.userID);
+                    data = data.data.SignIn;
+                    $cookieStore.put('token', data.LoginSessionKey);
+                    $cookieStore.put('userID', data.UserID);
                     currentUser = User.get();
                     deferred.resolve(data);
                     return cb();

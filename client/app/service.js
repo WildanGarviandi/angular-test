@@ -231,5 +231,24 @@ angular.module('adminApp')
                 controller: 'delete'
             },
         },
+        getTrip: {
+            method: 'GET',
+            params: {
+                module: 'trip'
+            },
+        },
+        getTripDetails: {
+            method: 'GET',
+            params: {
+                module: 'trip',
+                id: null
+            },
+        },
+        getStatus: {
+            method: 'GET',
+            params: {
+                module: 'status'
+            },
+        },
     });
 });
