@@ -14,9 +14,18 @@
             <div class="col-md-3 col-sm-12">
                 <div class="hub-search">
                     <div class="input-group">
-                        <input type="search" name="" class="form-control" value="" placeholder="Search City" ng-model="searchQuery" ng-keyup="search($event)">
+                        <input type="search" 
+                            name="" 
+                            class="form-control" 
+                            value="" 
+                            placeholder="Search City" 
+                            ng-model="searchQuery" 
+                            ng-keyup="search($event)">
                         <div class="input-group-btn">
-                            <button class="btn btn-default" type="button" ng-click="search()"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                            <button class="btn btn-default" type="button" ng-click="search()">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true">
+                                </span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -65,8 +74,10 @@
                     <tr ng-repeat="city in displayed">
                         <td>{{city.Name}}</td>
                         <td >
-                            <div ng-if="city.EcommercePriceReferenced" ng-click="toggleFalse(city.CityID)" class="check-true"></div>
-                            <div ng-if="!city.EcommercePriceReferenced" ng-click="toggleTrue(city.CityID)" class="check-false"></div>
+                            <div ng-if="city.EcommercePriceReferenced" ng-click="toggleFalse(city.CityID)" class="check-true">
+                            </div>
+                            <div ng-if="!city.EcommercePriceReferenced" ng-click="toggleTrue(city.CityID)" class="check-false">
+                            </div>
                         </td>
                         <td>
                             <button class="btn btn-primary" type="button" ng-click="editCity(city.CityID)">Edit</button>
