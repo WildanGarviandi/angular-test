@@ -60,7 +60,7 @@
                         Pickup Time
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{trip.PickupTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}
+                        {{trip.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -70,7 +70,7 @@
                         Dropoff Time
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{trip.DropoffTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}
+                        {{trip.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -89,10 +89,10 @@
                     <uib-accordion>
                     <uib-accordion-group heading="Route {{$index + 1}}">                    
                         <div class="order-status-container-body">
-                            Pickup: {{route.PickupAddress.Address1}} at {{route.PickupTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}
+                            Pickup: {{route.PickupAddress.Address1}} at {{route.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}
                         </div>
                         <div class="order-status-container-body">
-                            Dropoff: {{route.DropoffAddress.Address1}} at {{route.DropoffTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}
+                            Dropoff: {{route.DropoffAddress.Address1}} at {{route.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}
                         </div>
                         <div class="order-status-container-body">
                             Distance: {{route.Distance}}

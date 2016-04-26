@@ -245,7 +245,19 @@ angular.module('adminApp')
             $scope.trip = data;
             if ($scope.trip.UserOrderRoutes) {
                 $scope.trip.UserOrderRoutes.forEach(function(route){
-                    route.UserOrder.PickupType = (route.UserOrder.PickupType === 1) ? 'Later' : 'Now';
+                    switch (route.UserOrder.PickupType) {
+                        case 1:
+                            route.UserOrder.PickupType = 'Now';
+                            break;        
+                        case 2:
+                            route.UserOrder.PickupType = 'Later';
+                            break;    
+                        case 3:
+                            route.UserOrder.PickupType = 'On Demand';
+                            break;    
+                        default:
+                            route.UserOrder.PickupType = '-';
+                    }
                     route.UserOrder.PaymentType = (route.UserOrder.PaymentType === 2) ? 'Wallet' : 'Cash';
                 })
             }

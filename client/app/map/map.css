@@ -57,3 +57,35 @@
 #map {
     height: 530px;
 }
+
+#legend {
+    font-family: Arial, sans-serif;
+    background: #fff;
+    padding: 5px;
+    margin: 5px;
+    width: 200px;
+    border: 1px solid #000;
+}
+#legend div {
+    margin-bottom: 5px;
+    position: relative;
+}
+#legend h5 {
+    margin-top: 0;
+    display: inline;
+    vertical-align: middle;
+    font-size: 12px;
+}
+#legend .legend-icon {
+    font-size: 25px;
+    color: white;
+    position: absolute;
+    left: 11px;
+    top: 8px;
+}
+#legend svg {
+    vertical-align: middle;
+}
+#legend img {
+    vertical-align: middle;
+}
