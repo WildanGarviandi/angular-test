@@ -131,7 +131,10 @@
                         </th>
                         <th>
                             <div class="filter-table">
-                                <ui-select ng-model="status" theme="selectize" on-select="chooseStatus($item)" class="booking-order-type">
+                                <ui-select ng-model="status" 
+                                    theme="selectize" 
+                                    on-select="chooseStatus($item)" 
+                                    class="booking-order-type">
                                     <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
                                     <ui-select-choices repeat="ot in statuses | filter: $select.search" selected>
                                         <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
@@ -147,8 +150,8 @@
                         <td ng-click="detailsPage(trip.TripID)">{{trip.TripNumber}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.PickupAddress.Address1}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffAddress.Address1}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.PickupTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffTime | date:'dd-MM-yyyy HH:mm:ss' : 'UTC'}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.Driver.FirstName}} {{trip.Driver.LastName}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.ContainerNumber}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.District.Name}}</td>
