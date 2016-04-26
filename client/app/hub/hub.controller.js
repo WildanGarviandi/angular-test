@@ -241,14 +241,14 @@ angular.module('adminApp')
         Services2.getOneHub({
             id: $scope.id,
         }).$promise.then(function(data) {
-            $scope.hub = data;
-            $scope.type = {key: data.Type, value: data.Type};
-            if (data.ParentHub) {
-                $scope.parent = {key: data.ParentHub.Name, value: data.ParentHub.HubID};
+            $scope.hub = data.data.Hub;
+            $scope.type = {key: $scope.hub.Type, value: $scope.hub.Type};
+            if ($scope.hub.ParentHub) {
+                $scope.parent = {key: $scope.hub.ParentHub.Name, value: $scope.hub.ParentHub.HubID};
             }
-            if (data.HubZipCodes.length > 0) {
+            if ($scope.hub.HubZipCodes.length > 0) {
                 $scope.zipcodes = []
-                data.HubZipCodes.forEach(function(zip, idx) {
+                $scope.hub.HubZipCodes.forEach(function(zip, idx) {
                     $scope.zipcodes.push({key: idx, value: zip.ZipCode});
                 }) 
             }
@@ -275,11 +275,12 @@ angular.module('adminApp')
             search: $scope.reqSearchString
         };
         Services2.getHubs(params).$promise.then(function(data) {
+            var hubs = data.data.Hubs.rows;
             $scope.hubs = []; 
-            data.rows.forEach(function(hub) {
+            hubs.forEach(function(hub) {
                 $scope.hubs.push({key: hub.Name, value: hub.HubID});
             });
-            $scope.displayed = data.rows;
+            $scope.displayed = hubs;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.count / $scope.tableState.pagination.number);
@@ -295,7 +296,7 @@ angular.module('adminApp')
     $scope.getParents = function() {
         Services2.getHubs().$promise.then(function(data) {
             $scope.hubs = []; 
-            data.rows.forEach(function(hub) {
+            data.data.Hubs.rows.forEach(function(hub) {
                 $scope.hubs.push({key: hub.Name, value: hub.HubID});
             });
         });
@@ -320,9 +321,13 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.createHub = function() {
-        createHub(function(err, hub) {    
-            alert('Your hub ID:' + hub.HubID + ' has been successfully created.');
-            $location.path('/dashboard');
+        createHub(function(err, hub) {   
+            if (hub.data.Hub) { 
+                alert('Your hub ID:' + hub.data.Hub.HubID + ' has been successfully created.');
+                $location.path('/dashboard');
+            } else {
+                alert('Error:' + err );             
+            }
         })
     }
 
@@ -334,11 +339,12 @@ angular.module('adminApp')
     $scope.updateHub = function() {
         console.log('update')
         updateHub(function(err, hub) {
-            if (!hub.status) {
-                alert('error');
+            if (hub.data.Hub) {
+                alert('Your hub ID:' + hub.data.Hub.HubID + ' has been successfully updated.');
+                $location.path('/dashboard');
+            } else {
+                alert('Error:' + err );             
             }
-            alert('Your hub ID:' + hub.data.HubID + ' has been successfully updated.');
-            $location.path('/dashboard');
         })
     }    
 
@@ -352,7 +358,11 @@ angular.module('adminApp')
         Services2.deleteHub({
             id: id,
         }, {}).$promise.then(function(result) {  
-            alert('Success');
+            if (result.data.Status === 1) {
+                alert('Success');
+            } else {
+                alert('Failed');                
+            }
             $scope.getHubs();
         }).catch(function() {
             alert('Failed');
@@ -436,8 +446,12 @@ angular.module('adminApp')
         }, {
             params:params
         }).$promise.then(function(data) {
-            alert('Success');
-            window.location = '/update-hub/' + $stateParams.hubID;
+            if (data.data.Hubs) {
+                alert('Success');
+                window.location = '/update-hub/' + $stateParams.hubID;
+            } else {
+                alert('Failed');                 
+            }
             $rootScope.$emit('stopSpin');
         });
     }
