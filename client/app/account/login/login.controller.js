@@ -9,9 +9,9 @@ angular.module('adminApp')
     $scope.login = function(form) {
         $scope.submitted = true;
 
-        if(form.$valid) {
+        if (form.$valid) {
             Auth.login({
-                email: $scope.user.email,
+                username: $scope.user.username,
                 password: $scope.user.password
             })
             .then( function() {
