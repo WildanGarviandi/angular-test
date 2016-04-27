@@ -132,12 +132,9 @@
     margin-right: 0px;
 }
 
-.content {
-}
-
 /* Translate content */
 
-.content.isOpen {
+.container-hubs.isOpen {
     transform: translate3d(130px, 0, 0);
     width: calc(100% - 200px);
 }
