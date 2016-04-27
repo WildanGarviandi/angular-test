@@ -162,6 +162,18 @@
     background-repeat: no-repeat;
 }
 
+.side-driver-image {
+    background-image: url('../../assets/images/nav-driver.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
+.side-driver-image.active {
+    background-image: url('../../assets/images/nav-driver-active.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
 /* Booking */
 
 .side-booking-image {
