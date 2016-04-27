@@ -121,5 +121,17 @@ angular.module('adminApp')
             templateUrl: 'app/trip/trip_details.html',
             controller: 'TripCtrl',
             authenticate: true
+        })
+        .state('driver', {
+            url: '/drivers',
+            templateUrl: 'app/driver/driver.html',
+            controller: 'DriverCtrl',
+            authenticate: true
+        })
+        .state('update-driver', {
+            url: '/update-driver/:driverID',
+            templateUrl: 'app/driver/manage-driver.html',
+            controller: 'DriverCtrl',
+            authenticate: true
         });
     });

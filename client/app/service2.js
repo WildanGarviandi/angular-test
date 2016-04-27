@@ -100,5 +100,38 @@ angular.module('adminApp')
                 id: null
             },
         },
+        getDrivers: {
+            method: 'GET',
+            params: {
+                module: 'driver'
+            },
+        },
+        getOneDriver: {
+            method: 'GET',
+            params: {
+                module: 'driver',
+                id: null
+            },
+        },
+        createDriver: {
+            method: 'POST',
+            params: {
+                module: 'driver',
+            },
+        },
+        updateDriver: {
+            method: 'POST',
+            params: {
+                module: 'driver',
+                id: null
+            },
+        },
+        getUserStatus: {
+            method: 'GET',
+            params: {
+                module: 'status',
+                controller: 'user',
+            },
+        },
     });
 });
