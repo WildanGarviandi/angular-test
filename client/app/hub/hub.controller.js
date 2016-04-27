@@ -283,7 +283,7 @@ angular.module('adminApp')
             $scope.displayed = hubs;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
-                data.count / $scope.tableState.pagination.number);
+                data.data.Hubs.count / $scope.tableState.pagination.number);
             $rootScope.$emit('stopSpin');
         });
     }
