@@ -4,7 +4,6 @@
     width: 70px;
     height: 100%;
     background-color: #371e38;
-    transition: all 300ms ease;
     overflow-x: hidden;
     overflow-y: scroll
     z-index:10;
@@ -16,8 +15,9 @@
     display: table;
     width: 200px;
     padding-left: 0px;
-    padding-right: 5px;
 }
+
+/* Sidebar Menu */
 
 .side-panel > ul > li {
     display: table-row;
@@ -36,6 +36,17 @@
     color: white;
 }
 
+/* Sub menu */
+.side-panel > ul > li > ul {
+    margin-left: -30px;
+    display: table;
+    transition: all 300ms ease;
+}
+
+.side-panel > ul > li > ul > li {
+    display: table-row;
+}
+
 .side-panel > ul > li > ul > li > a {
     color: #8E7A8D;
 }
@@ -44,15 +55,7 @@
     color: white;
 }
 
-.side-panel > ul > li > ul {
-    margin-left: -20px;
-    display: table;
-    transition: all 300ms ease;
-}
-
-.side-panel > ul > li > ul > li {
-    display: table-row;
-}
+/* Menu Elements */
 
 .side-image {
     display: table-cell;
@@ -63,6 +66,8 @@
     text-align: center;
     background-position: center;
     background-size: 25px;
+    padding: 7px;
+    vertical-align: middle;
 }
 
 .side-text {
@@ -83,6 +88,43 @@
     vertical-align: middle;
 }
 
+/* Other elements */
+
+.expand-button {
+    width: inherit;
+    bottom: 0;
+    position: fixed;
+    background-color: #462445;
+    height: 40px;
+    cursor: pointer;
+    text-align: center;
+    color: grey;
+}
+
+.side-panel::-webkit-scrollbar {
+  width: 6px;
+  height: 14px;
+  z-index: 20;
+}
+
+.side-panel::-webkit-scrollbar-thumb {
+  height: 6px;
+  background-clip: padding-box;
+  -webkit-border-radius: 4px;
+  background-color: #7a4078;
+  -webkit-box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+}
+
+.side-panel::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.side-panel::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
 /*  BOOTSTRAP FIX  */
 
 .row {
@@ -91,7 +133,6 @@
 }
 
 .content {
-    transition: all 300ms ease;
 }
 
 /* Translate content */
@@ -106,6 +147,7 @@
 }
 
 /* LOGO */
+
 .side-logo {
     background-color: #462445;
     height: 90px;
@@ -120,18 +162,7 @@
     background-position: center;
 }
 
-.expand-button {
-    width: inherit;
-    bottom: 0;
-    position: fixed;
-    background-color: #462445;
-    height: 40px;
-    cursor: pointer;
-    text-align: center;
-    color: grey;
-}
-
-/* Dashboard */
+/* All menu image */
 
 .side-dashboard-image {
     background-image: url('../../assets/images/nav-dashboard.png');
@@ -200,58 +231,24 @@
 
 .side-trip-image {
     background-image: url('../../assets/images/nav-trip.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
 }
 
 .side-trip-image.active {
     background-image: url('../../assets/images/nav-trip-active.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
 }
-
-/* Booking */
 
 .side-booking-image {
     background-image: url('../../assets/images/nav-book.png');
 }
 
 .side-booking-image.active {
-    background-image: url('../../assets/images/nav-book-selected.png') !important;
-    background-repeat: no-repeat;
+    background-image: url('../../assets/images/nav-book-selected.png');
 }
-
-/* Order */
 
 .side-order-image {
     background-image: url('../../assets/images/nav-track.png');
 }
 
 .side-order-image.active {
-    background-image: url('../../assets/images/nav-track-selected.png') !important;
-    background-repeat: no-repeat;
-}
-
-.side-panel::-webkit-scrollbar {
-  width: 6px;
-  height: 14px;
-  z-index: 20;
-}
-
-.side-panel::-webkit-scrollbar-thumb {
-  height: 6px;
-  background-clip: padding-box;
-  -webkit-border-radius: 4px;
-  background-color: #7a4078;
-  -webkit-box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
-}
-
-.side-panel::-webkit-scrollbar-button {
-  width: 0;
-  height: 0;
-  display: none;
-}
-
-.side-panel::-webkit-scrollbar-corner {
-  background-color: transparent;
+    background-image: url('../../assets/images/nav-track-selected.png');
 }

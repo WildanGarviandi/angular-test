@@ -22,16 +22,12 @@ angular.module('adminApp')
                 $('.content').toggleClass('isOpen');
                 $('.side-panel').toggleClass('isOpen');
                 $('#expand').toggleClass('fa-angle-double-right');
-                $("[dropdown-id]").addClass('hidden');
-                $("[dropdown-caret]").removeClass('fa-caret-up');
+                $('.header-caret').toggleClass('hidden');
             });
             $('.have-sub').click(function () {
                 var data = $(this).data('dropdown');
                 $("[dropdown-id='" + data + "']").toggleClass('hidden');
                 $("[dropdown-caret='" + data + "']").toggleClass('fa-caret-up');
-                $('.content').addClass('isOpen');
-                $('.side-panel').addClass('isOpen');
-                $('#expand').removeClass('fa-angle-double-right');
             });
         });
     });

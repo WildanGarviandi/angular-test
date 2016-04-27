@@ -27,14 +27,21 @@
         <li class="row have-sub" data-dropdown="pricing">
             <a>
                 <div    class="side-image side-price-image"  
-                    ng-class="{active: isActive('/pricing') || isActive('/custpricing')}"></div>
+                    ng-class="{active: isActive('/pricing') || isActive('/custpricing')}">
+                    <span class="fa fa-caret-down fa-lg pull-right caret-icon header-caret"
+                        ng-class="{'fa-caret-up': isActive('/pricing') || isActive('/custpricing')}"
+                                dropdown-caret="pricing"></span></div>
                 <div    class="side-text"  
                     ng-class="{active: isActive('/pricing') || isActive('/custpricing')}"
-                    >Pricing<span class="fa fa-caret-down fa-lg pull-right caret-icon"
+                    >Pricing
+                    <span class="fa fa-caret-down fa-lg pull-right caret-icon"
+                            ng-class="{'fa-caret-up': isActive('/pricing') || isActive('/custpricing')}"
                                 dropdown-caret="pricing"></span>
                 </div>
             </a>
-            <ul class="sub-panel hidden" dropdown-id="pricing">
+            <ul class="sub-panel"
+                ng-class="{hidden: !isActive('/pricing') && !isActive('/custpricing')}"
+                dropdown-id="pricing">
                 <li class="row">
                     <a ui-sref="pricing" >
                         <div    class="side-image side-logistic-image"  
