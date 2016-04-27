@@ -32,8 +32,8 @@ angular.module('adminApp')
             controller: 'HubCtrl',
             authenticate: true
         })
-        .state('logistic', {
-            url: '/logistic',
+        .state('logistic-pricing', {
+            url: '/pricing/logistic',
             templateUrl: 'app/logistic/logistic.html',
             controller: 'LogisticFeeCtrl',
             authenticate: true
