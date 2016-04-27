@@ -32,10 +32,9 @@ angular.module('adminApp')
             },
         },
         deleteHub: {
-            method: 'POST',
+            method: 'DELETE',
             params: {
                 module: 'hub',
-                controller: 'delete',
                 id: null
             },
         },
