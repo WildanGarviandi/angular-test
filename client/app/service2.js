@@ -113,12 +113,6 @@ angular.module('adminApp')
                 id: null
             },
         },
-        createDriver: {
-            method: 'POST',
-            params: {
-                module: 'driver',
-            },
-        },
         updateDriver: {
             method: 'POST',
             params: {

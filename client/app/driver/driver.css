@@ -1,39 +1,20 @@
-.check-true {
-    background-image: url('../../assets/images/checkbox.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
-    height: 30px;
-    width: 30px;
-    cursor:pointer;
-}
-
-.check-false {
-    background-image: url('../../assets/images/checkbox.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
-    height: 30px;
-    width: 30px;
-    opacity: 0.4;
-    cursor:pointer;
-}
-
-.row-fluid-city {
+.row-fluid-driver {
     width: 400px;
 }
 
-.label-input-city {
+.label-input-driver {
     width: 50%;
     float: left;
     margin-top: 10px;
 }
 
-.city-field {
+.driver-field {
     width: 50%;
     float: left;
     margin-top: 10px;
 }
 
-.checkbox-city {
+.checkbox-driver {
     margin-left: -90px;
     margin-top: -2px;
 }
