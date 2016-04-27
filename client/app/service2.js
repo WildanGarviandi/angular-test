@@ -51,10 +51,9 @@ angular.module('adminApp')
             },
         },
         deleteCity: {
-            method: 'POST',
+            method: 'DELETE',
             params: {
                 module: 'city',
-                controller: 'delete',
                 id: null
             },
         },
