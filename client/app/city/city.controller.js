@@ -48,17 +48,17 @@ angular.module('adminApp')
             EcommercePriceReferenced: $scope.city.EcommercePriceReferenced
         };
         $rootScope.$emit('startSpin');
-        Services2.createCity(city).$promise.then(function(response) {
+        Services2.createCity(city).$promise.then(function(response, error) {
             $rootScope.$emit('stopSpin');
             if (response) {
                 return callback(null, response);
             } else {
-                return callback('failed');
+                return callback(error);
             }
         })
         .catch(function() {
             $rootScope.$emit('stopSpin');
-            return callback('failed');
+            return callback(error);
         });
     }
 
@@ -73,17 +73,17 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         Services2.updateCity({
             id: $stateParams.cityID
-        }, city).$promise.then(function(response) {
+        }, city).$promise.then(function(response, error) {
             $rootScope.$emit('stopSpin');
             if (response) {
                 return callback(null, response);
             } else {
-                return callback('failed');
+                return callback(error);
             }
         })
-        .catch(function() {
+        .catch(function(error) {
             $rootScope.$emit('stopSpin');
-            return callback('failed');
+            return callback(error);
         });
     }
 
@@ -134,12 +134,12 @@ angular.module('adminApp')
      */
     $scope.createCity = function() {
         createCity(function(err, city) {   
-            if (city.data.City) { 
+            if (err) {
+                alert('Error: '+ err.data.error.message );
+            } else {
                 alert('Your city ID:' + city.data.City.CityID + ' has been successfully created.');
                 $location.path('/cities');
-            } else {
-                alert('Error:' + err );             
-            }
+            } 
         });
     }    
 
@@ -150,12 +150,12 @@ angular.module('adminApp')
      */
     $scope.updateCity = function() {
         updateCity(function(err, city) {
-            if (city.data.City) {
+            if (err) {
+                alert('Error: '+ err.data.error.message );
+            } else {
                 alert('Your city ID:' + city.data.City.CityID + ' has been successfully updated.');
                 $location.path('/cities');
-            } else {
-                alert('Error:' + err );             
-            }
+            } 
         });
     }   
 
@@ -198,7 +198,7 @@ angular.module('adminApp')
             $scope.displayed = data.data.Cities.rows;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
-                data.count / $scope.tableState.pagination.number);
+                data.data.Cities.count / $scope.tableState.pagination.number);
             $rootScope.$emit('stopSpin');
         });
     }
