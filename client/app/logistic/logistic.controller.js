@@ -142,7 +142,6 @@ angular.module('adminApp')
             PerItemFee: (fee.PerItemFee) ? fee.PerItemFee : 0
         };
         Services.saveLogisticFee(params).$promise.then(function (data) {
-            console.log('data', data);
             $rootScope.$emit('stopSpin');
             getFees();
         });
