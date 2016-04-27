@@ -71,17 +71,17 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         Services2.updateDriver({
             id: $stateParams.driverID
-        }, driver).$promise.then(function(response) {
+        }, driver).$promise.then(function(response, error) {
             $rootScope.$emit('stopSpin');
             if (response) {
                 return callback(null, response);
             } else {
-                return callback('failed');
+                return callback(error);
             }
         })
-        .catch(function() {
+        .catch(function(err) {
             $rootScope.$emit('stopSpin');
-            return callback('failed');
+            return callback(err);
         });
     }
 
@@ -160,12 +160,12 @@ angular.module('adminApp')
      */
     $scope.updateDriver = function() {
         updateDriver(function(err, driver) {
-            if (driver.data.Driver) {
+            if (err) {
+                alert('Error: '+ err.data.error.message );
+            } else {
                 alert('Your driver ID:' + driver.data.Driver.UserID + ' has been successfully updated.');
                 $location.path('/drivers');
-            } else {
-                alert('Error:' + err );             
-            }
+            } 
         });
     }   
 
