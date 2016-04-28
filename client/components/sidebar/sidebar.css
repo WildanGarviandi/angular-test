@@ -1,5 +1,5 @@
 .side-panel {
-    position: absolute;
+    position: fixed;
     float: left;
     width: 70px;
     height: 100%;
