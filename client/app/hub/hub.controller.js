@@ -72,17 +72,17 @@ angular.module('adminApp')
             CountryID: null
         };
         $rootScope.$emit('startSpin');
-        Services2.createHub(hub).$promise.then(function(response) {
+        Services2.createHub(hub).$promise.then(function(response, error) {
             $rootScope.$emit('stopSpin');
             if (response) {
-                return callback(null, response)
+                return callback(null, response);
             } else {
-                return callback('failed')
+                return callback(error);
             }
         })
-        .catch(function() {
+        .catch(function(error) {
             $rootScope.$emit('stopSpin');
-            return callback('failed')
+            return callback(error);
         });
     }
 
@@ -107,17 +107,17 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         Services2.updateHub({
             id: $stateParams.hubID,
-        }, hub).$promise.then(function(response) {
+        }, hub).$promise.then(function(response, error) {
             $rootScope.$emit('stopSpin');
             if (response) {
-                return callback(null, response)
+                return callback(null, response);
             } else {
-                return callback('failed')
+                return callback(error);
             }
         })
-        .catch(function() {
+        .catch(function(error) {
             $rootScope.$emit('stopSpin');
-            return callback('failed')
+            return callback(error);
         });
     }
 
@@ -283,7 +283,7 @@ angular.module('adminApp')
             $scope.displayed = hubs;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
-                data.count / $scope.tableState.pagination.number);
+                data.data.Hubs.count / $scope.tableState.pagination.number);
             $rootScope.$emit('stopSpin');
         });
     }
@@ -322,12 +322,12 @@ angular.module('adminApp')
      */
     $scope.createHub = function() {
         createHub(function(err, hub) {   
-            if (hub.data.Hub) { 
+            if (err) {
+                alert('Error: '+ err.data.error.message );
+            } else {
                 alert('Your hub ID:' + hub.data.Hub.HubID + ' has been successfully created.');
                 $location.path('/dashboard');
-            } else {
-                alert('Error:' + err );             
-            }
+            } 
         })
     }
 
@@ -337,14 +337,13 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.updateHub = function() {
-        console.log('update')
         updateHub(function(err, hub) {
-            if (hub.data.Hub) {
+            if (err) {
+                alert('Error: '+ err.data.error.message );
+            } else {
                 alert('Your hub ID:' + hub.data.Hub.HubID + ' has been successfully updated.');
                 $location.path('/dashboard');
-            } else {
-                alert('Error:' + err );             
-            }
+            } 
         })
     }    
 
