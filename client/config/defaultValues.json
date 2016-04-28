@@ -199,5 +199,47 @@
     "country": {
         "id": "95",
         "name": "Indonesia"
-    }
+    },
+    "masterLogistic": [
+        {
+            "FleetManagerID": 0,
+            "VehicleID": 1,
+            "PricePerKM": 2000,
+            "MinimumFee": 5000,
+            "PerItemFee": 1000,
+            "VehicleType": "Motorcycle"
+        },
+        {
+            "FleetManagerID": 0,
+            "VehicleID": 2,
+            "PricePerKM": 3000,
+            "MinimumFee": 10000,
+            "PerItemFee": 1000,
+            "VehicleType": "Mini Van"
+        },
+        {
+            "FleetManagerID": 0,
+            "VehicleID": 3,
+            "PricePerKM": 5000,
+            "MinimumFee": 15000,
+            "PerItemFee": 1000,
+            "VehicleType": "Small Truck"
+        },
+        {
+            "FleetManagerID": 0,
+            "VehicleID": 4,
+            "PricePerKM": 1000,
+            "MinimumFee": 17000,
+            "PerItemFee": 2000,
+            "VehicleType": "Big Truck"
+        },
+        {
+            "FleetManagerID": 0,
+            "VehicleID": 6,
+            "PricePerKM": 1000,
+            "MinimumFee": 5000,
+            "PerItemFee": 2000,
+            "VehicleType": "Bicycle"
+        }
+    ]
 }

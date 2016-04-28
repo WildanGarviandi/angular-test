@@ -32,10 +32,10 @@ angular.module('adminApp')
             controller: 'HubCtrl',
             authenticate: true
         })
-        .state('pricing', {
-            url: '/pricing',
-            templateUrl: 'app/pricing/pricing.html',
-            controller: 'PricingCtrl',
+        .state('logistic-pricing', {
+            url: '/pricing/logistic',
+            templateUrl: 'app/logistic/logistic.html',
+            controller: 'LogisticFeeCtrl',
             authenticate: true
         })
         .state('ecommerce-pricing', {
@@ -92,6 +92,24 @@ angular.module('adminApp')
             controller: 'MapCtrl',
             authenticate: true
         })
+        .state('city', {
+            url: '/cities',
+            templateUrl: 'app/city/city.html',
+            controller: 'CityCtrl',
+            authenticate: true
+        })
+        .state('add-city', {
+            url: '/add-city',
+            templateUrl: 'app/city/manage-city.html',
+            controller: 'CityCtrl',
+            authenticate: true
+        })
+        .state('update-city', {
+            url: '/update-city/:cityID',
+            templateUrl: 'app/city/manage-city.html',
+            controller: 'CityCtrl',
+            authenticate: true
+        })
         .state('trip', {
             url: '/trips',
             templateUrl: 'app/trip/trip.html',
@@ -102,6 +120,18 @@ angular.module('adminApp')
             url: '/trip/details/:tripID',
             templateUrl: 'app/trip/trip_details.html',
             controller: 'TripCtrl',
+            authenticate: true
+        })
+        .state('driver', {
+            url: '/drivers',
+            templateUrl: 'app/driver/driver.html',
+            controller: 'DriverCtrl',
+            authenticate: true
+        })
+        .state('update-driver', {
+            url: '/update-driver/:driverID',
+            templateUrl: 'app/driver/manage-driver.html',
+            controller: 'DriverCtrl',
             authenticate: true
         });
     });

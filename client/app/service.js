@@ -69,11 +69,12 @@ angular.module('adminApp')
                 controller: 'logistic'
             },
         },
-        savePrices: {
+        saveLogisticFee: {
             method: 'POST',
             params: {
                 module: 'price',
-                controller: 'saveLogistic'
+                controller: 'logistic',
+                action: 'update'
             },
         },
         addZipCodes: {
@@ -208,6 +209,34 @@ angular.module('adminApp')
             params: {
                 module: 'webstore',
                 controller: 'update'
+            },
+        },
+        getAllCities: {
+            method: 'GET',
+            params: {
+                module: 'city',
+                id: null
+            },
+        },
+        createCity: {
+            method: 'POST',
+            params: {
+                module: 'city',
+                controller: 'create'
+            },
+        },
+        updateCity: {
+            method: 'POST',
+            params: {
+                module: 'city',
+                controller: 'update'
+            },
+        },
+        deleteCity: {
+            method: 'POST',
+            params: {
+                module: 'city',
+                controller: 'delete'
             },
         },
         getTrip: {

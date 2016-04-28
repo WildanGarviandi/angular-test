@@ -59,7 +59,7 @@ angular.module('adminApp')
         Services2.getStatus().$promise.then(function(data) {
             $scope.statuses = []; 
             $scope.statuses.push($scope.status);
-            data.rows.forEach(function(status) {
+            data.data.rows.forEach(function(status) {
                 $scope.statuses.push({key: status.OrderStatus, value: status.OrderStatusID});
             }); 
         });
