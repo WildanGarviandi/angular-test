@@ -105,11 +105,10 @@ angular.module('adminApp')
             StatusID: 2,
             UserTypeID: 5
         };
-        console.log('create webstore', webstore);
         $rootScope.$emit('startSpin');
         Webstores.createWebstore(webstore).$promise.then(function(response) {
             $rootScope.$emit('stopSpin');
-            console.log('create webstore response', response);
+
             if (response) {
                 return callback(null, response.data)
             } else {
@@ -148,7 +147,6 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         Webstores.updateWebstore({_id: $stateParams.webstoreID, webstore: webstore}).$promise.then(function(response) {
             $rootScope.$emit('stopSpin');
-            console.log('update webstore response', response);
             if (response) {
                 return callback(null, response.data)
             } else {
@@ -215,7 +213,6 @@ angular.module('adminApp')
             },
             enableAutocomplete: true,
             onchanged: function (currentLocation, radius, isMarkerDropped) {
-                console.log($(this).locationpicker('map').location)
                 var addressComponents = $(this).locationpicker('map').location.addressComponents;
                 $scope.updateLocation(addressComponents);
             },
@@ -298,7 +295,6 @@ angular.module('adminApp')
             limit: $scope.itemsByPage
         };
         Webstores.getWebstore(params).$promise.then(function(data) {
-            console.log('d', data);
             $scope.displayed = _.map(data.data.webstores, function(webstore) {
                 return _.assign({}, webstore.webstore, {
                     RegistrationStatus: webstore.status
@@ -447,7 +443,6 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         Webstores.verifyWebstore({_id: $stateParams.webstoreID, HubID: $scope.webstore.HubID}).$promise.then(function(response) {
             $rootScope.$emit('stopSpin');
-            console.log('Verify webstore response', response);
             if (response) {
                 alert('Your webstore ID:' + $stateParams.webstoreID + ' has been successfully verified.');
                 $location.path('/webstore');

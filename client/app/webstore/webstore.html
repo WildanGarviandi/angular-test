@@ -55,11 +55,11 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="text" class="webstore-filter" /></td>
-                        <td><input type="text" class="webstore-filter" /></td>
+                        <td><input type="text" ng-model="searchFilter.name" class="webstore-filter" ng-keyup="$event.keyCode == 13 && getWebstores()"/></td>
+                        <td><input type="text" ng-model="searchFilter.email" class="webstore-filter" ng-keyup="$event.keyCode == 13 && getWebstores()"/></td>
                         <td></td>
                         <td></td>
-                        <td><input type="text" class="webstore-filter" /></td>
+                        <td><input type="text" ng-model="searchFilter.address" class="webstore-filter" ng-keyup="$event.keyCode == 13 && getWebstores()"/></td>
                         <td></td>
                         <td class="webstore-status-cell">
                             <ui-select class="webstore-status-field" 
@@ -75,6 +75,7 @@
                                 </ui-select-choices>
                             </ui-select>
                         </td>
+                        <td></td>
                     </tr>
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length == 0">
