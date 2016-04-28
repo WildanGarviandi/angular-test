@@ -111,7 +111,7 @@ angular.module('adminApp')
             $rootScope.$emit('stopSpin');
             console.log('create webstore response', response);
             if (response) {
-                return callback(null, response)
+                return callback(null, response.data)
             } else {
                 return callback('failed')
             }
@@ -150,7 +150,7 @@ angular.module('adminApp')
             $rootScope.$emit('stopSpin');
             console.log('update webstore response', response);
             if (response) {
-                return callback(null, response.data.webstore)
+                return callback(null, response.data)
             } else {
                 return callback('failed', {});
             }
@@ -331,11 +331,11 @@ angular.module('adminApp')
      */
     $scope.createWebstore = function(form) {
         if(form.$valid) {
-            createWebstore(function(err, webstore) {        
-                if (webstore.status === false) {
+            createWebstore(function(err, result) {        
+                if (result.status === false) {
                     alert('error');
                 };
-                alert('Your webstore ID:' + webstore.data.UserID + ' has been successfully created.')
+                alert('Your webstore ID:' + result.webstore.UserID + ' has been successfully created.')
                 $location.path('/webstore');
             })        
         } else {
@@ -350,11 +350,11 @@ angular.module('adminApp')
      */
     $scope.updateWebstore = function(form) {
         if(form.$valid) {
-            updateWebstore(function(err, webstore) {
-                if (!webstore.status) {
+            updateWebstore(function(err, result) {
+                if (!result.status) {
                     alert(err);
                 } else {
-                    alert('Your webstore ID:' + webstore.data.UserID + ' has been successfully updated.')
+                    alert('Your webstore ID:' + result.webstore.UserID + ' has been successfully updated.')
                     $location.path('/webstore');
                 }
             })
