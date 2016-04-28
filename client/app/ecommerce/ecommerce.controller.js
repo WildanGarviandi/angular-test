@@ -33,7 +33,6 @@ angular.module('adminApp')
         value: 0
     };
 
-
     $scope.webstores = [$scope.ctrl.webstore];
 
     $scope.percentage = {};
@@ -48,6 +47,13 @@ angular.module('adminApp')
         flatEntityAccess: true,
         enableCellEditOnFocus: true
     };
+
+    $scope.tabs = [
+        { heading: 'Price', value: 'price' },
+        { heading: 'Additional Price', value: 'additional' }
+    ];
+
+    $scope.filter = 'price';
 
     $scope.blankCounter = 0;
 
@@ -146,7 +152,6 @@ angular.module('adminApp')
     var getVehicles = function () {
         return $q(function (resolve) {
             Services.getVehicles().$promise.then(function (data) {
-                console.log(data);
                 $scope.vehicleTypes = $scope.vehicleTypes.concat(data.vehicles);
                 $scope.ctrl.vehicle = $scope.vehicleTypes[0];
                 resolve();
@@ -164,7 +169,6 @@ angular.module('adminApp')
                 CountryID: $scope.countryID
             };
             Services.getCountryStates(params).$promise.then(function (data) {
-                console.log('states', data.states);
                 $scope.states = data.states;
                 data.states.forEach(function (state) {
                     if (state.Cities) {
@@ -203,7 +207,6 @@ angular.module('adminApp')
         };
         // Get Master price
         Services.getEcommercePrice(paramsMaster).$promise.then(function (data) {
-            console.log('master prices', data.prices);
             $scope.masterPrices = data.prices;
             if ($scope.ctrl.webstore.value === 0) {
                 buildDefault();
@@ -211,7 +214,6 @@ angular.module('adminApp')
             } else {
                 // Get webstore price
                 Services.getEcommercePrice(params).$promise.then(function (data) {
-                    console.log('webstore prices', data.prices);
                     $scope.prices = data.prices;
                     buildDefault();
                     buildMatrix();
@@ -229,7 +231,7 @@ angular.module('adminApp')
      * @param  {number} price    - new price value
      * 
      */
-    var savePrice = function(originID, destID, price) {
+    var savePrice = function(originID, destID, price, additional) {
         $rootScope.$emit('startSpin');
         var params = {
             WebstoreUserID: $scope.ctrl.webstore.value,
@@ -239,10 +241,10 @@ angular.module('adminApp')
             DiscountID: $scope.ctrl.discount.id,
             OriginID: originID,
             DestinationID: destID,
-            Price: price
         };
+        if (price) { params.Price = price; }
+        if (additional) { params.AdditionalPrice = additional; }
         Services.addEcommercePrice(params).$promise.then(function (result) {
-            console.log(result);
             $rootScope.$emit('stopSpin');
             getPrices();
         })
@@ -299,18 +301,25 @@ angular.module('adminApp')
      */
     var buildDefault = function () {
         $scope.gridOptions.data = [];
+        $scope.blankCounter = 0;
         $scope.cities.forEach(function (origin) {
             var rowContent = {};
             rowContent.id = origin.CityID;
             rowContent.origin = origin.Name;
             $scope.cities.forEach(function (dest) {
-                var price = lodash.find($scope.masterPrices, {
+                var data = lodash.find($scope.masterPrices, {
                     'OriginID': origin.CityID, 'DestinationID': dest.CityID});
-                if (price) {
+                var price = 0;
+                if (data) {
+                    if ($scope.filter === 'price') {
+                        price = data.Price;
+                    } else {
+                        price = data.AdditionalPrice;
+                    }
                     rowContent[dest.CityID] = {
                         source: 'master',
-                        price: price.Price,
-                        old: price.Price
+                        price: price,
+                        old: price
                     };
                 } else {
                     rowContent[dest.CityID] = {
@@ -332,13 +341,19 @@ angular.module('adminApp')
     var buildMatrix = function () {
         $scope.cities.forEach(function (origin, i) {
             $scope.cities.forEach(function (dest) {
-                var price = lodash.find($scope.prices, {
+                var data = lodash.find($scope.prices, {
                     'OriginID': origin.CityID, 'DestinationID': dest.CityID});
-                if (price) {
+                var price = 0;
+                if (data) {
+                    if ($scope.filter === 'price') {
+                        price = data.Price;
+                    } else {
+                        price = data.AdditionalPrice;
+                    }
                     $scope.gridOptions.data[i][dest.CityID] = {
                         source: 'webstore',
-                        price: price.Price,
-                        old: price.Price
+                        price: price,
+                        old: price
                     };
                 }
             });
@@ -357,11 +372,14 @@ angular.module('adminApp')
             // Because of templating in ui.grid.edit, oldValue is not working as it used to be
             if (newValue) {
                 if (newValue.price !== newValue.old) {
-                    console.log('newValue:' + newValue.price + ' oldValue:' + newValue.old);
                     // If new value is a valid number
                     var price = parseInt(newValue.price);
                     if (price) {
-                        savePrice(rowEntity.id, colDef.name, price);
+                        if ($scope.filter === 'price') {
+                            savePrice(rowEntity.id, colDef.name, price, null);
+                        } else {
+                            savePrice(rowEntity.id, colDef.name, null, price);
+                        }
                     } else {
                         alert('Empty or contains non number character');
                         getPrices();
@@ -369,6 +387,12 @@ angular.module('adminApp')
                 }
             }
         });
+    };
+
+    $scope.filterTab = function (value) {
+        $scope.filter = value;
+        buildDefault();
+        buildMatrix();
     };
 
     $rootScope.$emit('startSpin');

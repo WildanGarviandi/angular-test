@@ -33,6 +33,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         DiscountID: DataTypes.INTEGER,
         Price: DataTypes.FLOAT,
+        AdditionalPrice: DataTypes.FLOAT
             
     }, {
         tableName: 'EcommercePrices',
