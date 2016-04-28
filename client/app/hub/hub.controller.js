@@ -75,14 +75,14 @@ angular.module('adminApp')
         Services2.createHub(hub).$promise.then(function(response, error) {
             $rootScope.$emit('stopSpin');
             if (response) {
-                return callback(null, response)
+                return callback(null, response);
             } else {
-                return callback(error)
+                return callback(error);
             }
         })
         .catch(function(error) {
             $rootScope.$emit('stopSpin');
-            return callback(error)
+            return callback(error);
         });
     }
 
@@ -110,14 +110,14 @@ angular.module('adminApp')
         }, hub).$promise.then(function(response, error) {
             $rootScope.$emit('stopSpin');
             if (response) {
-                return callback(null, response)
+                return callback(null, response);
             } else {
-                return callback(error)
+                return callback(error);
             }
         })
         .catch(function(error) {
             $rootScope.$emit('stopSpin');
-            return callback(error)
+            return callback(error);
         });
     }
 
