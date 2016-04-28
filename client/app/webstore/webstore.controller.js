@@ -56,6 +56,7 @@ angular.module('adminApp')
         UserTypeID: 5
     };
 
+    $scope.searchFilter = {};
     $scope.itemsByPage = 10;
     $scope.offset = 0;
 
@@ -289,12 +290,13 @@ angular.module('adminApp')
         }
         $scope.isLoading = true;
         var params = {
+            name: $scope.searchFilter.name,
+            email: $scope.searchFilter.email,
+            address: $scope.searchFilter.address,
             status: $scope.statusFilter.key,
             offset: $scope.offset,
             limit: $scope.itemsByPage
-            // search: $scope.reqSearchString
         };
-        // Services.getWebstores(params).$promise.then(function(data) {
         Webstores.getWebstore(params).$promise.then(function(data) {
             console.log('d', data);
             $scope.displayed = _.map(data.data.webstores, function(webstore) {
@@ -302,7 +304,6 @@ angular.module('adminApp')
                     RegistrationStatus: webstore.status
                 });
             });
-            // $scope.displayed = data.webstores;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.data.count / $scope.tableState.pagination.number);
