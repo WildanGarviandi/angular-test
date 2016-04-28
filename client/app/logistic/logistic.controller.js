@@ -34,26 +34,26 @@ angular.module('adminApp')
         value: '1'
     };
 
-    $scope.defaultPrices = {};
     $scope.pickupTypes = [];
     $scope.vehicleTypes = [];
     $scope.showing = false;
-
 
     /**
      * Get default values from config
      * 
      * @return {void}
      */
-    $scope.getDefaultValues = function() {
-        $http.get('config/defaultValues.json').success(function(data) {
-           $scope.defaultPrices = data.defaultPrices;
-           $scope.pickupTypes = data.pickupTypes;
-           $scope.percentage = data.percentage;
-           $scope.masterLogistic = data.masterLogistic;
+    var getDefaultValues = function() {
+        return $q(function (resolve) {
+            $http.get('config/defaultValues.json').success(function(data) {
+                $scope.pickupTypes = data.pickupTypes;
+                $scope.percentage = data.percentage;
+                $scope.masterLogistic = data.masterLogistic;
+                $scope.displayed = $scope.masterLogistic;
+                resolve();
+            });
         });
     };
-    $scope.getDefaultValues();    
 
     /**
      * Assign company to the chosen item
@@ -147,8 +147,9 @@ angular.module('adminApp')
         });
     };
 
-    getCompanies().then(function () {
-        getVehicles().then(getFees());
-    });
-
-  });
+    getDefaultValues().then(function (){
+        getCompanies().then(function () {
+            getVehicles().then(getFees());
+        });
+    });   
+});
