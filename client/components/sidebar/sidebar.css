@@ -257,13 +257,39 @@
     background-image: url('../../assets/images/nav-map-active.png');
 }
 
+.side-city-image {
+    background-image: url('../../assets/images/nav-city.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
 .side-trip-image {
     background-image: url('../../assets/images/nav-trip.png');
+}
+
+.side-city-image.active {
+    background-image: url('../../assets/images/nav-city-active.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
 }
 
 .side-trip-image.active {
     background-image: url('../../assets/images/nav-trip-active.png');
 }
+
+.side-driver-image {
+    background-image: url('../../assets/images/nav-driver.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
+.side-driver-image.active {
+    background-image: url('../../assets/images/nav-driver-active.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
+/* Booking */
 
 .side-booking-image {
     background-image: url('../../assets/images/nav-book.png');

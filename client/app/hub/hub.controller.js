@@ -6,7 +6,8 @@ angular.module('adminApp')
             $scope, 
             Auth, 
             $rootScope, 
-            Services, 
+            Services,
+            Services2, 
             moment, 
             lodash, 
             $state, 
@@ -32,7 +33,7 @@ angular.module('adminApp')
         State: '',
         Country: '',
         ZipCode: ''
-    }
+    };
 
     $scope.types = [{
         key: 'CENTRAL',
@@ -69,12 +70,10 @@ angular.module('adminApp')
             CityID: null,
             StateID: null,
             CountryID: null
-        }
-        console.log('create hub', hub);
+        };
         $rootScope.$emit('startSpin');
-        Services.createHub(hub).$promise.then(function(response) {
+        Services2.createHub(hub).$promise.then(function(response) {
             $rootScope.$emit('stopSpin');
-            console.log('create hub response', response);
             if (response) {
                 return callback(null, response)
             } else {
@@ -89,7 +88,6 @@ angular.module('adminApp')
 
     var updateHub = function(callback) {
         var hub = {
-            HubID: $stateParams.hubID,
             ParentHubID: $scope.hub.ParentHubID,
             Name: $scope.hub.Name,
             Type: $scope.hub.Type,
@@ -106,11 +104,11 @@ angular.module('adminApp')
             StateID: null,
             CountryID: null
         }
-        console.log('update hub', hub);
         $rootScope.$emit('startSpin');
-        Services.updateHub(hub).$promise.then(function(response) {
+        Services2.updateHub({
+            id: $stateParams.hubID,
+        }, hub).$promise.then(function(response) {
             $rootScope.$emit('stopSpin');
-            console.log('update hub response', response);
             if (response) {
                 return callback(null, response)
             } else {
@@ -240,17 +238,17 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         $scope.isLoading = true;
         $scope.id = $stateParams.hubID;
-        Services.getOne({
-            _id: $scope.id,
+        Services2.getOneHub({
+            id: $scope.id,
         }).$promise.then(function(data) {
-            $scope.hub = data.hub;
-            $scope.type = {key: data.hub.Type, value: data.hub.Type};
-            if (data.parent) {
-                $scope.parent = {key: data.parent.Name, value: data.parent.HubID};
+            $scope.hub = data.data.Hub;
+            $scope.type = {key: $scope.hub.Type, value: $scope.hub.Type};
+            if ($scope.hub.ParentHub) {
+                $scope.parent = {key: $scope.hub.ParentHub.Name, value: $scope.hub.ParentHub.HubID};
             }
-            if (data.zipcodes.length > 0) {
+            if ($scope.hub.HubZipCodes.length > 0) {
                 $scope.zipcodes = []
-                data.zipcodes.forEach(function(zip, idx) {
+                $scope.hub.HubZipCodes.forEach(function(zip, idx) {
                     $scope.zipcodes.push({key: idx, value: zip.ZipCode});
                 }) 
             }
@@ -273,15 +271,16 @@ angular.module('adminApp')
         $scope.isLoading = true;
         var params = {
             offset: $scope.offset,
-            count: $scope.itemsByPage,
+            limit: $scope.itemsByPage,
             search: $scope.reqSearchString
-        }
-        Services.get(params).$promise.then(function(data) {
+        };
+        Services2.getHubs(params).$promise.then(function(data) {
+            var hubs = data.data.Hubs.rows;
             $scope.hubs = []; 
-            data.hubs.forEach(function(hub) {
+            hubs.forEach(function(hub) {
                 $scope.hubs.push({key: hub.Name, value: hub.HubID});
-            }) 
-            $scope.displayed = data.hubs;
+            });
+            $scope.displayed = hubs;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.count / $scope.tableState.pagination.number);
@@ -295,11 +294,11 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getParents = function() {
-        Services.getAll().$promise.then(function(data) {
+        Services2.getHubs().$promise.then(function(data) {
             $scope.hubs = []; 
-            data.hubs.forEach(function(hub) {
+            data.data.Hubs.rows.forEach(function(hub) {
                 $scope.hubs.push({key: hub.Name, value: hub.HubID});
-            }) 
+            });
         });
     }
 
@@ -322,12 +321,13 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.createHub = function() {
-        createHub(function(err, hub) {        
-            if (hub.status === false) {
-                alert('error')
-            };
-            alert('Your hub ID:' + hub.data.HubID + ' has been successfully created.')
-            $location.path('/dashboard');
+        createHub(function(err, hub) {   
+            if (hub.data.Hub) { 
+                alert('Your hub ID:' + hub.data.Hub.HubID + ' has been successfully created.');
+                $location.path('/dashboard');
+            } else {
+                alert('Error:' + err );             
+            }
         })
     }
 
@@ -339,12 +339,12 @@ angular.module('adminApp')
     $scope.updateHub = function() {
         console.log('update')
         updateHub(function(err, hub) {
-            console.log(hub)
-            if (hub.status === false) {
-                alert('error')
+            if (hub.data.Hub) {
+                alert('Your hub ID:' + hub.data.Hub.HubID + ' has been successfully updated.');
+                $location.path('/dashboard');
+            } else {
+                alert('Error:' + err );             
             }
-            alert('Your hub ID:' + hub.data.HubID + ' has been successfully updated.')
-            $location.path('/dashboard');
         })
     }    
 
@@ -355,13 +355,17 @@ angular.module('adminApp')
      */
     $scope.deleteHub = function(id) {
         if ($window.confirm('Are you sure you want to delete this hub?')) {
-        Services.deleteHub({
-            _id: id,
-        }).$promise.then(function(result) {  
-            alert('Success')
+        Services2.deleteHub({
+            id: id,
+        }, {}).$promise.then(function(result) {  
+            if (result.data.Status === 1) {
+                alert('Success');
+            } else {
+                alert('Failed');                
+            }
             $scope.getHubs();
         }).catch(function() {
-            alert('Failed')
+            alert('Failed');
         });
       }
     }
@@ -432,17 +436,22 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         var params = []
         $scope.zipcodes.forEach(function(zip) {
-            var HubZipcodes = {}
-            HubZipcodes['HubID'] = $stateParams.hubID,
-            HubZipcodes['ZipCode'] = zip.value
+            var HubZipcodes = {};
+            HubZipcodes['HubID'] = $stateParams.hubID;
+            HubZipcodes['ZipCode'] = zip.value;
             params.push(HubZipcodes);
         }) 
-        Services.addZipCodes({
-            _id: $stateParams.hubID,
+        Services2.saveZipcodes({
+            id: $stateParams.hubID,
+        }, {
             params:params
         }).$promise.then(function(data) {
-            alert('Success');
-            window.location = '/update-hub/' + $stateParams.hubID;
+            if (data.data.Hubs) {
+                alert('Success');
+                window.location = '/update-hub/' + $stateParams.hubID;
+            } else {
+                alert('Failed');                 
+            }
             $rootScope.$emit('stopSpin');
         });
     }

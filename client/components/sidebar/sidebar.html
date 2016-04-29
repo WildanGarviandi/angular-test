@@ -71,9 +71,23 @@
         </li>
 
         <li class="row">
+            <a ui-sref="app.city" >
+                <div class="side-image side-city-image" ng-class="{active: isActive('/cities')}"></div>
+                <div class="side-text" ng-class="{active: isActive('/cities')}">City Management</div>
+            </a>
+        </li>
+            
+        <li class="row">
             <a ui-sref="app.trip" >
                 <div class="side-image side-trip-image" ng-class="{active: isActive(['/trips'])}"></div>
                 <div class="side-text" ng-class="{active: isActive(['/trips'])}">Trip Management</div>
+            </a>
+        </li>
+
+        <li class="row">
+            <a ui-sref="driver" >
+                <div class="side-image side-driver-image" ng-class="{active: isActive('/drivers')}"></div>
+                <div class="side-text" ng-class="{active: isActive('/drivers')}">Driver Management</div>
             </a>
         </li>
     </ul>

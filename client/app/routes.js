@@ -161,6 +161,36 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('city', {
+            url: '/cities',
+            views: {
+                'content@': {
+                    templateUrl: 'app/city/city.html',
+                    controller: 'CityCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('add-city', {
+            url: '/add-city',
+            views: {
+                'content@': {
+                    templateUrl: 'app/city/manage-city.html',
+                    controller: 'CityCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('update-city', {
+            url: '/update-city/:cityID',
+            views: {
+                'content@': {
+                    templateUrl: 'app/city/manage-city.html',
+                    controller: 'CityCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.trip', {
             url: 'trips',
              views: {
@@ -179,6 +209,18 @@ angular.module('adminApp')
                     controller: 'TripCtrl',
                 }
             },
+            authenticate: true
+        })
+        .state('driver', {
+            url: '/drivers',
+            templateUrl: 'app/driver/driver.html',
+            controller: 'DriverCtrl',
+            authenticate: true
+        })
+        .state('update-driver', {
+            url: '/update-driver/:driverID',
+            templateUrl: 'app/driver/manage-driver.html',
+            controller: 'DriverCtrl',
             authenticate: true
         });
     });
