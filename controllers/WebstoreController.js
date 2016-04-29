@@ -139,7 +139,8 @@ module.exports = function(di) {
 
 
     //Update single webstore
-    router.post('/update',  function(req, res, next){        
+    router.post('/update',  function(req, res, next){      
+        console.log('body', req.body);  
         try {
             if (req.body.Password) {
                 req.body.Password = crypto.createHash('md5').update(req.body.Password).digest("hex");
@@ -172,7 +173,8 @@ module.exports = function(di) {
                                 //Update webstore if found
                                 webstore.update({
                                     HubID: req.body.HubID,
-                                    UserAddressID: address.UserAddressID
+                                    UserAddressID: address.UserAddressID,
+                                    AllowCOD: req.body.AllowCOD
                                 }).then(function(webstore) {
                                     return res.status(200).json({
                                         data:user,
