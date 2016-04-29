@@ -153,7 +153,7 @@
 /* Translate content */
 
 .content.isOpen {
-    transform: translate3d(130px, 0, 0);
+    transform: translate3d(120px, 0, 0);
     width: calc(100% - 200px);
 }
 

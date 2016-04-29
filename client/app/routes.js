@@ -151,22 +151,34 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('map', {
-            url: '/map',
-            templateUrl: 'app/map/map.html',
-            controller: 'MapCtrl',
+        .state('app.map', {
+            url: 'map',
+            views: {
+                'content@': {
+                    templateUrl: 'app/map/map.html',
+                    controller: 'MapCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('trip', {
-            url: '/trips',
-            templateUrl: 'app/trip/trip.html',
-            controller: 'TripCtrl',
+        .state('app.trip', {
+            url: 'trips',
+             views: {
+                'content@': {
+                    templateUrl: 'app/trip/trip.html',
+                    controller: 'TripCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('trip-details', {
-            url: '/trip/details/:tripID',
-            templateUrl: 'app/trip/trip_details.html',
-            controller: 'TripCtrl',
+        .state('app.trip-details', {
+            url: 'trip/details/:tripID',
+             views: {
+                'content@': {
+                    templateUrl: 'app/trip/trip_details.html',
+                    controller: 'TripCtrl',
+                }
+            },
             authenticate: true
         });
     });
