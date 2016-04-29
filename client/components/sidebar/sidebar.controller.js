@@ -13,22 +13,40 @@ angular.module('adminApp')
             document.getElementById("spinner-container").removeAttribute('class', 'overlay');
         });
 
-        $scope.isActive = function(route) {
-            return route === $location.path();
+        $scope.isActive = function(routes) {
+            var active = false;
+            routes.forEach(function (route) {
+                if (route === $location.path()) { 
+                    active = true; 
+                }
+            });
+            return active;
+        };
+
+        $scope.isNotActive = function (routes) {
+            var hidden = true;
+            routes.forEach(function (route) {
+                if (route === $location.path()) { 
+                    hidden = false; 
+                }
+            });
+            return hidden;
         };
 
         var toggleExpand = function () {
-            $('.container-hubs').toggleClass('isOpen');
-            $('.side-panel').toggleClass('isOpen');
+            $('.content').toggleClass('isOpen');
+            $('.sidebar').toggleClass('isOpen');
+            $('.side-image').toggleClass('isOpen');
+            $('.side-text').toggleClass('isOpen');
+            $('.side-caret').toggleClass('isOpen');
             $('#expand').toggleClass('fa-angle-double-right');
             $('.image-caret').toggleClass('hidden');
         };
 
-        if (localStorageService.get('isExpanded') === true) {
-            toggleExpand();
-        }
-
         $(document).ready(function() {
+            if (localStorageService.get('isExpanded') === true) {
+                toggleExpand();
+            }
             $('.expand-button').click(function() {
                 toggleExpand();
                 if (localStorageService.get('isExpanded') === true) {
@@ -39,8 +57,8 @@ angular.module('adminApp')
             });
             $('.have-sub').click(function () {
                 var data = $(this).data('dropdown');
-                $("[dropdown-id='" + data + "']").toggleClass('hidden');
-                $("[dropdown-caret='" + data + "']").toggleClass('fa-caret-up');
+                $("[id-dropdown='" + data + "']").toggleClass('hidden');
+                $("[caret-dropdown='" + data + "']").toggleClass('fa-caret-up');
             });
         });
     });

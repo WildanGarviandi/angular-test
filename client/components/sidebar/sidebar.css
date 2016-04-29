@@ -1,8 +1,16 @@
-.side-panel {
+.sidebar {
+    width: 80px;
     position: fixed;
     float: left;
-    width: 70px;
     height: 100%;
+}
+
+.sidebar .ng-scope {
+    width: inherit;
+    height: inherit;
+}
+
+.side-panel {
     background-color: #371e38;
     overflow-x: hidden;
     overflow-y: scroll
@@ -38,7 +46,7 @@
 
 /* Sub menu */
 .side-panel > ul > li > ul {
-    margin-left: -30px;
+    margin-left: -20px;
     display: table;
     transition: all 300ms ease;
 }
@@ -61,22 +69,32 @@
     display: table-cell;
     background-repeat: no-repeat;
     height: 40px;
-    width: 70px;
+    width: 80px;
     margin: 0 auto;
     text-align: center;
     background-position: center;
     background-size: 25px;
-    padding: 7px;
+    padding-right: 12px;
     vertical-align: middle;
 }
 
 .side-text {
-    display: table-cell;
+    display: none;
     text-decoration: none;
     text-align: left;
     vertical-align: middle;
     font-size: 12px;
     width: 110px;
+}
+
+.side-caret {
+    display: none;
+    text-decoration: none;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 12px;
+    width: 10px;
+    padding: 2px;
 }
 
 .side-text.active {
@@ -134,13 +152,26 @@
 
 /* Translate content */
 
-.container-hubs.isOpen {
+.content.isOpen {
     transform: translate3d(130px, 0, 0);
     width: calc(100% - 200px);
 }
 
-.side-panel.isOpen {
+.sidebar.isOpen {
     width: 200px;
+}
+
+.side-image.isOpen {
+    width: 50px;
+}
+
+.side-text.isOpen {
+    display: table-cell;
+    width: 120px;
+}
+
+.side-caret.isOpen {
+    display: table-cell;
 }
 
 /* LOGO */
