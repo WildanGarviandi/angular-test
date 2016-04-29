@@ -36,7 +36,6 @@
     <!-- injector:css -->
     <link rel="stylesheet" href="app/account/login/login.css">
     <link rel="stylesheet" href="app/admin/admin.css">
-    <link rel="stylesheet" href="app/app.css">
     <link rel="stylesheet" href="app/hub/hub.css">
     <link rel="stylesheet" href="app/district/district.css">
     <link rel="stylesheet" href="app/details/details.css">
@@ -49,6 +48,8 @@
     <link rel="stylesheet" href="app/pricing/pricing.css">
     <link rel="stylesheet" href="app/city/city.css">
     <link rel="stylesheet" href="app/driver/driver.css">
+    <link rel="stylesheet" href="app/webstore/webstore.css">
+    <link rel="stylesheet" href="app/logistic/logistic.css">
     <link rel="stylesheet" href="components/modal/modal.css">
     <link rel="stylesheet" href="components/sidebar/sidebar.css">
     <link rel="stylesheet" href="components/user/user.css">
@@ -162,8 +163,9 @@
     <script src="app/account/login/login.controller.js"></script>
     <script src="app/hub/hub.controller.js"></script>
     <script src="app/district/district.controller.js"></script>
-    <script src="app/pricing/pricing.controller.js"></script>
+    <script src="app/logistic/logistic.controller.js"></script>
     <script src="app/custpricing/custpricing.controller.js"></script>
+    <script src="app/webstore/webstore.service.js"></script>
     <script src="app/webstore/webstore.controller.js"></script>
     <script src="app/map/map.controller.js"></script>
     <script src="app/city/city.controller.js"></script>
@@ -175,6 +177,14 @@
     <script src="components/user/user.controller.js"></script>
     <!-- endinjector -->
     <!-- endbuild -->
+    
+    <div class="sidebar">
+        <div ui-view="sidebar"></div>
+    </div>
+    <div class="content">
+        <div ui-view="content"></div>
+    </div>
+    
 </body>
 
 </html>

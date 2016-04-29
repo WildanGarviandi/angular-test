@@ -9,7 +9,11 @@ module.exports = function(sequelize, DataTypes) {
         },
         UserID: DataTypes.INTEGER,
         HubID: DataTypes.INTEGER,
-        UserAddressID: DataTypes.INTEGER
+        UserAddressID: DataTypes.INTEGER,
+        AllowCOD: DataTypes.BOOLEAN,
+        Categories: DataTypes.STRING,
+        PickupOptions: DataTypes.STRING,
+        AverageWeights: DataTypes.STRING,
     }, {
         tableName: 'WebstoreCompany',
         timestamps: false
