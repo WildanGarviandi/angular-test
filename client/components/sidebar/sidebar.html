@@ -27,39 +27,39 @@
         <li class="row">
             <div class="have-sub" data-dropdown="pricing">
                 <div class="side-image side-price-image"  
-                    ng-class="{active: isActive(['/pricing', '/pricing/ecommerce'])}">
+                    ng-class="{active: isActive(['/pricing/logistic', '/pricing/ecommerce'])}">
                     <span class="fa fa-caret-down fa-lg pull-right caret-icon image-caret"
-                        ng-class="{'fa-caret-up': isActive(['/pricing', '/pricing/ecommerce'])}"
+                        ng-class="{'fa-caret-up': isActive(['/pricing/logistic', '/pricing/ecommerce'])}"
                         caret-dropdown="pricing"></span>
                 </div>
                 <div class="side-text"  
-                    ng-class="{active: isActive(['/pricing', '/pricing/ecommerce'])}"
+                    ng-class="{active: isActive(['/pricing/logistic', '/pricing/ecommerce'])}"
                     >Pricing
                 </div>
                 <div class="side-caret">
                     <span class="fa fa-caret-down fa-lg caret-icon"
-                        ng-class="{'fa-caret-up': isActive(['/pricing', '/pricing/ecommerce'])}"
+                        ng-class="{'fa-caret-up': isActive(['/pricing/logistic', '/pricing/ecommerce'])}"
                         caret-dropdown="pricing"></span>
                 </div>
             </div>
             <ul class="sub-panel"
-                ng-class="{hidden: ! isActive(['/pricing', '/pricing/ecommerce'])}"
+                ng-class="{hidden: ! isActive(['/pricing/logistic', '/pricing/ecommerce'])}"
                 id-dropdown="pricing">
                 <li class="row">
-                    <a ui-sref="app.pricing" >
+                    <a ui-sref="app.logistic-fees" >
                         <div class="side-image side-logistic-image"  
-                            ng-class="{active: isActive(['/pricing'])}"></div>
+                            ng-class="{active: isActive(['/pricing/logistic'])}"></div>
                         <div class="side-text"  
-                            ng-class="{active: isActive(['/pricing'])}">Logistic Fees</div>
+                            ng-class="{active: isActive(['/pricing/logistic'])}">Logistic Fees</div>
                     </a>
                 </li>
 
                 <li class="row side-order">
                     <a ui-sref="app.ecommerce-pricing" >
                         <div class="side-image side-order-image"
-                            ng-class="{active: isActive('/pricing/ecommerce')}"></div>
+                            ng-class="{active: isActive(['/pricing/ecommerce'])}"></div>
                         <div class="side-text"
-                            ng-class="{active: isActive('/pricing/ecommerce')}">Ecommerce Pricing</div>
+                            ng-class="{active: isActive(['/pricing/ecommerce'])}">Ecommerce Pricing</div>
                     </a>
                 </li>
             </ul>
@@ -74,8 +74,8 @@
 
         <li class="row">
             <a ui-sref="app.city" >
-                <div class="side-image side-city-image" ng-class="{active: isActive('/cities')}"></div>
-                <div class="side-text" ng-class="{active: isActive('/cities')}">City Management</div>
+                <div class="side-image side-city-image" ng-class="{active: isActive(['/cities'])}"></div>
+                <div class="side-text" ng-class="{active: isActive(['/cities'])}">City Management</div>
             </a>
         </li>
             
@@ -88,8 +88,8 @@
 
         <li class="row">
             <a ui-sref="app.driver" >
-                <div class="side-image side-driver-image" ng-class="{active: isActive('/drivers')}"></div>
-                <div class="side-text" ng-class="{active: isActive('/drivers')}">Driver Management</div>
+                <div class="side-image side-driver-image" ng-class="{active: isActive(['/drivers'])}"></div>
+                <div class="side-text" ng-class="{active: isActive(['/drivers'])}">Driver Management</div>
             </a>
         </li>
     </ul>

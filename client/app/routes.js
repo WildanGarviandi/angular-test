@@ -61,26 +61,6 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('app.pricing', {
-            url: 'pricing',
-            views: {
-                'content@': {
-                    templateUrl: 'app/pricing/pricing.html',
-                    controller: 'PricingCtrl',
-                }
-            },
-            authenticate: true
-        })
-        .state('app.custpricing', {
-            url: 'custpricing',
-            views: {
-                'content@': {
-                    templateUrl: 'app/custpricing/custpricing.html',
-                    controller: 'CustPricingCtrl',
-                }
-            },
-            authenticate: true
-        })
         .state('app.district', {
             url: 'district',
             views: {
@@ -217,6 +197,16 @@ angular.module('adminApp')
                 'content@': {
                     templateUrl: 'app/ecommerce/ecommerce.html',
                     controller: 'EcommercePricingCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.logistic-fees', {
+            url: 'pricing/logistic',
+             views: {
+                'content@': {
+                    templateUrl: 'app/logistic/logistic.html',
+                    controller: 'LogisticFeeCtrl',
                 }
             },
             authenticate: true

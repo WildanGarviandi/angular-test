@@ -23,16 +23,6 @@ angular.module('adminApp')
             return active;
         };
 
-        $scope.isNotActive = function (routes) {
-            var hidden = true;
-            routes.forEach(function (route) {
-                if (route === $location.path()) { 
-                    hidden = false; 
-                }
-            });
-            return hidden;
-        };
-
         var toggleExpand = function () {
             $('.content').toggleClass('isOpen');
             $('.sidebar').toggleClass('isOpen');
