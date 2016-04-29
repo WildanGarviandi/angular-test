@@ -26,16 +26,18 @@
 
         <li class="row">
             <div class="have-sub" data-dropdown="pricing">
-                <div    class="side-image side-price-image"  
+                <div class="side-image side-price-image"  
                     ng-class="{active: isActive(['/pricing', '/custpricing'])}">
                     <span class="fa fa-caret-down fa-lg pull-right caret-icon image-caret"
                         ng-class="{'fa-caret-up': isActive(['/pricing', '/custpricing'])}"
-                                caret-dropdown="pricing"></span></div>
-                <div    class="side-text"  
+                        caret-dropdown="pricing"></span>
+                </div>
+                <div class="side-text"  
                     ng-class="{active: isActive(['/pricing', '/custpricing'])}"
                     >Pricing
                 </div>
-                <div class="side-caret"><span class="fa fa-caret-down fa-lg caret-icon"
+                <div class="side-caret">
+                    <span class="fa fa-caret-down fa-lg caret-icon"
                         ng-class="{'fa-caret-up': isActive(['/pricing', '/custpricing'])}"
                         caret-dropdown="pricing"></span>
                 </div>
@@ -45,18 +47,18 @@
                 id-dropdown="pricing">
                 <li class="row">
                     <a ui-sref="app.pricing" >
-                        <div    class="side-image side-logistic-image"  
-                                ng-class="{active: isActive(['/pricing'])}"></div>
-                        <div    class="side-text"  
-                                ng-class="{active: isActive(['/pricing'])}">Logistic Pricing</div>
+                        <div class="side-image side-logistic-image"  
+                            ng-class="{active: isActive(['/pricing'])}"></div>
+                        <div class="side-text"  
+                            ng-class="{active: isActive(['/pricing'])}">Logistic Pricing</div>
                     </a>
                 </li>
                 <li class="row">
                     <a ui-sref="app.custpricing" >
-                        <div    class="side-image side-pricing-image"  
-                                ng-class="{active: isActive(['/custpricing'])}"></div>
-                        <div    class="side-text"  
-                                ng-class="{active: isActive(['/custpricing'])}">Customer Pricing</div>
+                        <div class="side-image side-pricing-image"  
+                            ng-class="{active: isActive(['/custpricing'])}"></div>
+                        <div class="side-text"  
+                            ng-class="{active: isActive(['/custpricing'])}">Customer Pricing</div>
                     </a>
                 </li>
             </ul>

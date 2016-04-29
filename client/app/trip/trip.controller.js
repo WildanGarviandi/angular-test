@@ -59,7 +59,7 @@ angular.module('adminApp')
         Services2.getStatus().$promise.then(function(data) {
             $scope.statuses = []; 
             $scope.statuses.push($scope.status);
-            data.rows.forEach(function(status) {
+            data.data.rows.forEach(function(status) {
                 $scope.statuses.push({key: status.OrderStatus, value: status.OrderStatusID});
             }); 
         });
@@ -123,10 +123,10 @@ angular.module('adminApp')
             endDropoff: $scope.dropoffDatePicker.endDate,
         }
         Services2.getTrip(params).$promise.then(function(data) {
-            $scope.displayed = data.rows;
+            $scope.displayed = data.data.rows;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
-                data.count / $scope.tableState.pagination.number);
+                data.data.count / $scope.tableState.pagination.number);
             $rootScope.$emit('stopSpin');
         });
     }
@@ -242,7 +242,7 @@ angular.module('adminApp')
         Services2.getTripDetails({
             id: $scope.id,
         }).$promise.then(function(data) {
-            $scope.trip = data;
+            $scope.trip = data.data;
             if ($scope.trip.UserOrderRoutes) {
                 $scope.trip.UserOrderRoutes.forEach(function(route){
                     switch (route.UserOrder.PickupType) {
