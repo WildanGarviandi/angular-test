@@ -161,8 +161,8 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('city', {
-            url: '/cities',
+        .state('app.city', {
+            url: 'cities',
             views: {
                 'content@': {
                     templateUrl: 'app/city/city.html',
@@ -171,8 +171,8 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('add-city', {
-            url: '/add-city',
+        .state('app.add-city', {
+            url: 'add-city',
             views: {
                 'content@': {
                     templateUrl: 'app/city/manage-city.html',
@@ -181,8 +181,8 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('update-city', {
-            url: '/update-city/:cityID',
+        .state('app.update-city', {
+            url: 'update-city/:cityID',
             views: {
                 'content@': {
                     templateUrl: 'app/city/manage-city.html',
@@ -211,8 +211,8 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('ecommerce-pricing', {
-            url: '/pricing/ecommerce',
+        .state('app.ecommerce-pricing', {
+            url: 'pricing/ecommerce',
              views: {
                 'content@': {
                     templateUrl: 'app/ecommerce/ecommerce.html',
@@ -221,8 +221,8 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('driver', {
-            url: '/drivers',
+        .state('app.driver', {
+            url: 'drivers',
              views: {
                 'content@': {
                     templateUrl: 'app/driver/driver.html',
@@ -231,8 +231,8 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('update-driver', {
-            url: '/update-driver/:driverID',
+        .state('app.update-driver', {
+            url: 'update-driver/:driverID',
              views: {
                 'content@': {
                     templateUrl: 'app/driver/manage-driver.html',
