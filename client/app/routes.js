@@ -179,7 +179,6 @@ angular.module('adminApp')
                     controller: 'TripCtrl',
                 }
             },
->>>>>>> v2.0
             authenticate: true
         });
     });
