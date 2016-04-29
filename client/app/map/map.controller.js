@@ -43,36 +43,36 @@ angular.module('adminApp')
 
     var icons = {
         hub: {
-                icon: {
-                    path: MAP_PIN,
-                    fillColor: '#4A148C',
-                    fillOpacity: 1,
-                    strokeColor: '',
-                    strokeWeight: 0
-                },
-                map_icon_label: '<span class="map-icon map-icon-storage legend-icon"></span>'
+            icon: {
+                path: MAP_PIN,
+                fillColor: '#4A148C',
+                fillOpacity: 1,
+                strokeColor: '',
+                strokeWeight: 0
             },
+            map_icon_label: '<span class="map-icon map-icon-storage legend-icon"></span>'
+        },
         webstore: {
-                icon: {
-                    path: MAP_PIN,
-                    fillColor: '#00C853',
-                    fillOpacity: 1,
-                    strokeColor: '',
-                    strokeWeight: 0
-                },
-                map_icon_label: '<span class="map-icon map-icon-grocery-or-supermarket legend-icon"></span>'
-            }
+            icon: {
+                path: MAP_PIN,
+                fillColor: '#00C853',
+                fillOpacity: 1,
+                strokeColor: '',
+                strokeWeight: 0
+            },
+            map_icon_label: '<span class="map-icon map-icon-grocery-or-supermarket legend-icon"></span>'
+        }
     };
 
     var legend = document.getElementById('legend');
     for (var key in icons) {
-      var type = icons[key];
-      var div = document.createElement('div');
-      div.innerHTML = 
+        var type = icons[key];
+        var div = document.createElement('div');
+        div.innerHTML = 
             '<svg baseProfile="basic" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">' + 
             '<path fill="' + type.icon.fillColor +'" d="M24 0c-9.8 0-17.7 7.8-17.7 17.4 0 15.5 17.7 30.6 17.7 30.6s17.7-15.4 17.7-30.6c0-9.6-7.9-17.4-17.7-17.4z">' +
             '</path></svg>' + type.map_icon_label + '<h5>' + key + '</h5>';
-      legend.appendChild(div);
+        legend.appendChild(div);
     }
     for (var key in lines) {
         var type = lines[key];
@@ -311,5 +311,4 @@ angular.module('adminApp')
             });
         });
     });
-    
 });
