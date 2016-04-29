@@ -20,7 +20,11 @@ angular.module('adminApp', [
   'angularMoment',
   'ngLodash',
   'LocalStorageModule',
-  'config'
+  'config',
+  'ui.grid',
+  'ui.grid.edit',
+  'ui.grid.pinning',
+  'ui.grid.cellNav'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider

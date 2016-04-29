@@ -34,6 +34,22 @@ module.exports = function(di) {
 		});
 	});
 
+	router.post('/states',  function(req, res, next){
+		models.State.findAll({
+			where: {
+				CountryID: req.body.CountryID,
+			},
+			include: [{
+				model: models.City
+			}]
+		})
+		.then(function(states) {
+			return res.status(200).json({
+		    	states: states
+		  	});
+		});
+	});
+
 	router.get('/country',  function(req, res, next){
 		models.Country.findAll({
 			where: {

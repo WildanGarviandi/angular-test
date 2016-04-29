@@ -211,16 +211,34 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('ecommerce-pricing', {
+            url: '/pricing/ecommerce',
+             views: {
+                'content@': {
+                    templateUrl: 'app/ecommerce/ecommerce.html',
+                    controller: 'EcommercePricingCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('driver', {
             url: '/drivers',
-            templateUrl: 'app/driver/driver.html',
-            controller: 'DriverCtrl',
+             views: {
+                'content@': {
+                    templateUrl: 'app/driver/driver.html',
+                    controller: 'DriverCtrl',
+                }
+            },
             authenticate: true
         })
         .state('update-driver', {
             url: '/update-driver/:driverID',
-            templateUrl: 'app/driver/manage-driver.html',
-            controller: 'DriverCtrl',
+             views: {
+                'content@': {
+                    templateUrl: 'app/driver/manage-driver.html',
+                    controller: 'DriverCtrl',
+                }
+            },
             authenticate: true
         });
     });
