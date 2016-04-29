@@ -21,7 +21,7 @@
     "json3": "~3.3.1",
     "lodash": "2.4.1",
     "ng-file-upload": "~9.0.9",
-    "ui-select": "angular-ui-select#~0.13.2",
+    "ui-select": "angular-ui-select#~0.14.9",
     "selectize": "~0.12.1",
     "ng-dialog": "~0.5.5",
     "angular-spinner": "~0.7.0",

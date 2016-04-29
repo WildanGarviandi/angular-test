@@ -133,5 +133,11 @@ angular.module('adminApp')
             templateUrl: 'app/driver/manage-driver.html',
             controller: 'DriverCtrl',
             authenticate: true
+        })
+        .state('ecommercePrice', {
+            url: '/ecommercePrice',
+            templateUrl: 'app/ecommercePrice/ecommercePrice.html',
+            controller: 'EcommercePriceCtrl',
+            authenticate: true
         });
     });
