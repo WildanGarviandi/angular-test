@@ -28,6 +28,7 @@ angular.module('adminApp', [
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
+      .when('/', '/hub')
       .otherwise('/hub');
 
     $locationProvider.html5Mode(true);

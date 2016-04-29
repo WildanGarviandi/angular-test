@@ -3,135 +3,242 @@
 angular.module('adminApp')
     .config(function ($stateProvider) {
         $stateProvider
+        .state('app', {
+            url: '/',
+            views: {
+                'sidebar': {
+                    templateUrl: 'components/sidebar/sidebar.html',
+                    
+                },
+                'content': {
+                    templateUrl: 'app/hub/hub.html',
+                }
+            },
+            authenticate: true
+        })
         .state('login', {
             url: '/login',
             templateUrl: 'app/account/login/login.html',
             controller: 'LoginCtrl'
         })
-        .state('hub', {
-            url: '/hub',
-            templateUrl: 'app/hub/hub.html',
-            controller: 'HubCtrl',
+        .state('app.hub', {
+            url: 'hub',
+            views: {
+                'content@': {
+                    templateUrl: 'app/hub/hub.html',
+                    controller: 'HubCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('add-hub', {
-            url: '/add-hub',
-            templateUrl: 'app/hub/manage-hub.html',
-            controller: 'HubCtrl',
+        .state('app.add-hub', {
+            url: 'add-hub',
+            views: {
+                'content@': {
+                    templateUrl: 'app/hub/manage-hub.html',
+                    controller: 'HubCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('update-hub', {
-            url: '/update-hub/:hubID',
-            templateUrl: 'app/hub/manage-hub.html',
-            controller: 'HubCtrl',
+        .state('app.update-hub', {
+            url: 'update-hub/:hubID',
+            views: {
+                'content@': {
+                    templateUrl: 'app/hub/manage-hub.html',
+                    controller: 'HubCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('manage-zipcodes', {
-            url: '/manage-zipcodes/:hubID',
-            templateUrl: 'app/hub/manage-zipcodes.html',
-            controller: 'HubCtrl',
+        .state('app.manage-zipcodes', {
+            url: 'manage-zipcodes/:hubID',
+            views: {
+                'content@': {
+                    templateUrl: 'app/hub/manage-zipcodes.html',
+                    controller: 'HubCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('logistic-pricing', {
-            url: '/pricing/logistic',
-            templateUrl: 'app/logistic/logistic.html',
-            controller: 'LogisticFeeCtrl',
+        .state('app.pricing', {
+            url: 'pricing',
+            views: {
+                'content@': {
+                    templateUrl: 'app/pricing/pricing.html',
+                    controller: 'PricingCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('ecommerce-pricing', {
-            url: '/pricing/ecommerce',
-            templateUrl: 'app/ecommerce/ecommerce.html',
-            controller: 'EcommercePricingCtrl',
+        .state('app.custpricing', {
+            url: 'custpricing',
+            views: {
+                'content@': {
+                    templateUrl: 'app/custpricing/custpricing.html',
+                    controller: 'CustPricingCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('district', {
-            url: '/district',
-            templateUrl: 'app/district/district.html',
-            controller: 'DistrictCtrl',
+        .state('app.district', {
+            url: 'district',
+            views: {
+                'content@': {
+                    templateUrl: 'app/district/district.html',
+                    controller: 'DistrictCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('update-district', {
-            url: '/update-district/:districtID',
-            templateUrl: 'app/district/manage-district.html',
-            controller: 'DistrictCtrl',
+        .state('app.update-district', {
+            url: 'update-district/:districtID',
+            views: {
+                'content@': {
+                    templateUrl: 'app/district/manage-district.html',
+                    controller: 'DistrictCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('add-district', {
-            url: '/add-district',
-            templateUrl: 'app/district/manage-district.html',
-            controller: 'DistrictCtrl',
+        .state('app.add-district', {
+            url: 'add-district',
+            views: {
+                'content@': {
+                    templateUrl: 'app/district/manage-district.html',
+                    controller: 'DistrictCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('manage-district-zipcodes', {
-            url: '/district/:districtID/zipcodes',
-            templateUrl: 'app/district/manage-zipcodes.html',
-            controller: 'DistrictCtrl',
+        .state('app.manage-district-zipcodes', {
+            url: 'district/:districtID/zipcodes',
+            views: {
+                'content@': {
+                    templateUrl: 'app/district/manage-zipcodes.html',
+                    controller: 'DistrictCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('webstore', {
-            url: '/webstore',
-            templateUrl: 'app/webstore/webstore.html',
-            controller: 'WebstoreCtrl',
+        .state('app.webstore', {
+            url: 'webstore',
+            views: {
+                'content@': {
+                    templateUrl: 'app/webstore/webstore.html',
+                    controller: 'WebstoreCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('add-webstore', {
-            url: '/add-webstore',
-            templateUrl: 'app/webstore/manage-webstore.html',
-            controller: 'WebstoreCtrl',
+        .state('app.add-webstore', {
+            url: 'add-webstore',
+            views: {
+                'content@': {
+                    templateUrl: 'app/webstore/manage-webstore.html',
+                    controller: 'WebstoreCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('update-webstore', {
-            url: '/update-webstore/:webstoreID',
-            templateUrl: 'app/webstore/manage-webstore.html',
-            controller: 'WebstoreCtrl',
+        .state('app.update-webstore', {
+            url: 'update-webstore/:webstoreID',
+            views: {
+                'content@': {
+                    templateUrl: 'app/webstore/manage-webstore.html',
+                    controller: 'WebstoreCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('map', {
-            url: '/map',
-            templateUrl: 'app/map/map.html',
-            controller: 'MapCtrl',
+        .state('app.map', {
+            url: 'map',
+            views: {
+                'content@': {
+                    templateUrl: 'app/map/map.html',
+                    controller: 'MapCtrl',
+                }
+            },
             authenticate: true
         })
         .state('city', {
             url: '/cities',
-            templateUrl: 'app/city/city.html',
-            controller: 'CityCtrl',
+            views: {
+                'content@': {
+                    templateUrl: 'app/city/city.html',
+                    controller: 'CityCtrl',
+                }
+            },
             authenticate: true
         })
         .state('add-city', {
             url: '/add-city',
-            templateUrl: 'app/city/manage-city.html',
-            controller: 'CityCtrl',
+            views: {
+                'content@': {
+                    templateUrl: 'app/city/manage-city.html',
+                    controller: 'CityCtrl',
+                }
+            },
             authenticate: true
         })
         .state('update-city', {
             url: '/update-city/:cityID',
-            templateUrl: 'app/city/manage-city.html',
-            controller: 'CityCtrl',
+            views: {
+                'content@': {
+                    templateUrl: 'app/city/manage-city.html',
+                    controller: 'CityCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('trip', {
-            url: '/trips',
-            templateUrl: 'app/trip/trip.html',
-            controller: 'TripCtrl',
+        .state('app.trip', {
+            url: 'trips',
+             views: {
+                'content@': {
+                    templateUrl: 'app/trip/trip.html',
+                    controller: 'TripCtrl',
+                }
+            },
             authenticate: true
         })
-        .state('trip-details', {
-            url: '/trip/details/:tripID',
-            templateUrl: 'app/trip/trip_details.html',
-            controller: 'TripCtrl',
+        .state('app.trip-details', {
+            url: 'trip/details/:tripID',
+             views: {
+                'content@': {
+                    templateUrl: 'app/trip/trip_details.html',
+                    controller: 'TripCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('ecommerce-pricing', {
+            url: '/pricing/ecommerce',
+             views: {
+                'content@': {
+                    templateUrl: 'app/ecommerce/ecommerce.html',
+                    controller: 'EcommercePricingCtrl',
+                }
+            },
             authenticate: true
         })
         .state('driver', {
             url: '/drivers',
-            templateUrl: 'app/driver/driver.html',
-            controller: 'DriverCtrl',
+             views: {
+                'content@': {
+                    templateUrl: 'app/driver/driver.html',
+                    controller: 'DriverCtrl',
+                }
+            },
             authenticate: true
         })
         .state('update-driver', {
             url: '/update-driver/:driverID',
-            templateUrl: 'app/driver/manage-driver.html',
-            controller: 'DriverCtrl',
+             views: {
+                'content@': {
+                    templateUrl: 'app/driver/manage-driver.html',
+                    controller: 'DriverCtrl',
+                }
+            },
             authenticate: true
         });
     });

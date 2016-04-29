@@ -37,7 +37,6 @@
     <!-- injector:css -->
     <link rel="stylesheet" href="app/account/login/login.css">
     <link rel="stylesheet" href="app/admin/admin.css">
-    <link rel="stylesheet" href="app/app.css">
     <link rel="stylesheet" href="app/hub/hub.css">
     <link rel="stylesheet" href="app/district/district.css">
     <link rel="stylesheet" href="app/ecommerce/ecommerce.css">
@@ -51,8 +50,8 @@
     <link rel="stylesheet" href="app/pricing/pricing.css">
     <link rel="stylesheet" href="app/city/city.css">
     <link rel="stylesheet" href="app/driver/driver.css">
-    <link rel="stylesheet" href="app/logistic/logistic.css">
     <link rel="stylesheet" href="app/webstore/webstore.css">
+    <link rel="stylesheet" href="app/logistic/logistic.css">
     <link rel="stylesheet" href="components/modal/modal.css">
     <link rel="stylesheet" href="components/sidebar/sidebar.css">
     <link rel="stylesheet" href="components/user/user.css">
@@ -182,6 +181,14 @@
     <script src="components/user/user.controller.js"></script>
     <!-- endinjector -->
     <!-- endbuild -->
+    
+    <div class="sidebar">
+        <div ui-view="sidebar"></div>
+    </div>
+    <div class="content">
+        <div ui-view="content"></div>
+    </div>
+    
 </body>
 
 </html>

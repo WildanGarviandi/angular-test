@@ -4,60 +4,85 @@
     </div>
     <ul>
        <li class="row">
-            <a ui-sref="hub" >
-                <div class="side-image side-hub-image" ng-class="{active: isActive('/hub')}"></div>
-                <div class="side-text" ng-class="{active: isActive('/hub')}">Hub Management</div>
+            <a ui-sref="app.hub" >
+                <div class="side-image side-hub-image" ng-class="{active: isActive(['/hub'])}"></div>
+                <div class="side-text" ng-class="{active: isActive(['/hub'])}">Hub Management</div>
             </a>
         </li>
 
         <li class="row">
-            <a ui-sref="webstore" >
-                <div class="side-image side-webstore-image" ng-class="{active: isActive('/webstore')}"></div>
-                <div class="side-text" ng-class="{active: isActive('/webstore')}">Webstore Management</div>
+            <a ui-sref="app.webstore" >
+                <div class="side-image side-webstore-image" ng-class="{active: isActive(['/webstore'])}"></div>
+                <div class="side-text" ng-class="{active: isActive(['/webstore'])}">Webstore Management</div>
             </a>
         </li>
 
         <li class="row">
-            <a ui-sref="district" >
-                <div class="side-image side-district-image" ng-class="{active: isActive('/district')}"></div>
-                <div class="side-text" ng-class="{active: isActive('/district')}">District Management</div>
+            <a ui-sref="app.district" >
+                <div class="side-image side-district-image" ng-class="{active: isActive(['/district'])}"></div>
+                <div class="side-text" ng-class="{active: isActive(['/district'])}">District Management</div>
             </a>
         </li>
 
         <li class="row">
-            <a ui-sref="logistic-pricing" >
-                <div class="side-image side-logistic-image"  
-                        ng-class="{active: isActive('/pricing/logistic')}"></div>
+            <div class="have-sub" data-dropdown="pricing">
+                <div class="side-image side-price-image"  
+                    ng-class="{active: isActive(['/pricing', '/pricing/ecommerce'])}">
+                    <span class="fa fa-caret-down fa-lg pull-right caret-icon image-caret"
+                        ng-class="{'fa-caret-up': isActive(['/pricing', '/pricing/ecommerce'])}"
+                        caret-dropdown="pricing"></span>
+                </div>
                 <div class="side-text"  
-                        ng-class="{active: isActive('/pricing/logistic')}">Logistic Pricing</div>
-            </a>
+                    ng-class="{active: isActive(['/pricing', '/pricing/ecommerce'])}"
+                    >Pricing
+                </div>
+                <div class="side-caret">
+                    <span class="fa fa-caret-down fa-lg caret-icon"
+                        ng-class="{'fa-caret-up': isActive(['/pricing', '/pricing/ecommerce'])}"
+                        caret-dropdown="pricing"></span>
+                </div>
+            </div>
+            <ul class="sub-panel"
+                ng-class="{hidden: ! isActive(['/pricing', '/pricing/ecommerce'])}"
+                id-dropdown="pricing">
+                <li class="row">
+                    <a ui-sref="app.pricing" >
+                        <div class="side-image side-logistic-image"  
+                            ng-class="{active: isActive(['/pricing'])}"></div>
+                        <div class="side-text"  
+                            ng-class="{active: isActive(['/pricing'])}">Logistic Fees</div>
+                    </a>
+                </li>
+
+                <li class="row side-order">
+                    <a ui-sref="app.ecommerce-pricing" >
+                        <div class="side-image side-order-image"
+                            ng-class="{active: isActive('/pricing/ecommerce')}"></div>
+                        <div class="side-text"
+                            ng-class="{active: isActive('/pricing/ecommerce')}">Ecommerce Pricing</div>
+                    </a>
+                </li>
+            </ul>
         </li>
 
-        <li class="row side-order">
-            <a ui-sref="ecommerce-pricing" >
-                <div class="side-image side-order-image"  ng-class="{active: isActive('/pricing/ecommerce')}"></div>
-                <div class="side-text"  ng-class="{active: isActive('/pricing/ecommerce')}">Ecommerce Pricing</div>
+        <li class="row">
+            <a ui-sref="app.map" >
+                <div class="side-image side-map-image" ng-class="{active: isActive(['/map'])}"></div>
+                <div class="side-text" ng-class="{active: isActive(['/map'])}">Map</div>
             </a>
         </li>
 
         <li class="row">
-            <a ui-sref="map" >
-                <div class="side-image side-map-image" ng-class="{active: isActive('/map')}"></div>
-                <div class="side-text" ng-class="{active: isActive('/map')}">Map</div>
-            </a>
-        </li>
-
-        <li class="row">
-            <a ui-sref="city" >
+            <a ui-sref="app.city" >
                 <div class="side-image side-city-image" ng-class="{active: isActive('/cities')}"></div>
                 <div class="side-text" ng-class="{active: isActive('/cities')}">City Management</div>
             </a>
         </li>
             
         <li class="row">
-            <a ui-sref="trip" >
-                <div class="side-image side-trip-image" ng-class="{active: isActive('/trips')}"></div>
-                <div class="side-text" ng-class="{active: isActive('/trips')}">Trip Management</div>
+            <a ui-sref="app.trip" >
+                <div class="side-image side-trip-image" ng-class="{active: isActive(['/trips'])}"></div>
+                <div class="side-text" ng-class="{active: isActive(['/trips'])}">Trip Management</div>
             </a>
         </li>
 
@@ -68,6 +93,9 @@
             </a>
         </li>
     </ul>
+    <div class="expand-button">
+        <span id="expand" class="fa fa-angle-double-right fa-angle-double-left fa-3x"></span>
+    </div>
 </div>
 <div id='spinner-container'>
     <span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-1" ></span>
