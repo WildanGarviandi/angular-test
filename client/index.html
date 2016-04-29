@@ -36,7 +36,6 @@
     <!-- injector:css -->
     <link rel="stylesheet" href="app/account/login/login.css">
     <link rel="stylesheet" href="app/admin/admin.css">
-    <link rel="stylesheet" href="app/app.css">
     <link rel="stylesheet" href="app/hub/hub.css">
     <link rel="stylesheet" href="app/district/district.css">
     <link rel="stylesheet" href="app/details/details.css">
@@ -171,6 +170,14 @@
     <script src="components/user/user.controller.js"></script>
     <!-- endinjector -->
     <!-- endbuild -->
+    
+    <div class="sidebar">
+        <div ui-view="sidebar"></div>
+    </div>
+    <div class="content">
+        <div ui-view="content"></div>
+    </div>
+    
 </body>
 
 </html>
