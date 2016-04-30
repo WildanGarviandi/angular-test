@@ -1,5 +1,5 @@
 .sidebar {
-    width: 80px;
+    width: 120px;
     position: fixed;
     float: left;
     height: 100%;
@@ -47,7 +47,7 @@
 
 /* Sub menu */
 .side-panel > ul > li > ul {
-    margin-left: -20px;
+    margin-left: 0px;
     display: table;
     transition: all 300ms ease;
 }
@@ -70,7 +70,7 @@
     display: table-cell;
     background-repeat: no-repeat;
     height: 40px;
-    width: 80px;
+    width: 100px;
     margin: 0 auto;
     text-align: center;
     background-position: center;
@@ -156,7 +156,8 @@
 
 .content.isOpen {
     transform: translate3d(120px, 0, 0);
-    width: calc(100% - 200px);
+    width: calc(100% - 240px);
+    margin-left: 80px;
 }
 
 .sidebar.isOpen {
