@@ -5,106 +5,117 @@
     <ul>
        <li class="row">
             <a ui-sref="app.hub" >
-                <div class="side-image side-hub-image" ng-class="{active: isActive(['/hub'])}"></div>
-                <div class="side-text" ng-class="{active: isActive(['/hub'])}">Hubs</div>
+                <div class="side-image side-hub-image"
+                    ng-class="{ expanded: expanded, active: menus.hubs.active }"></div>
+                <div class="side-text" 
+                    ng-class="{ expanded: expanded, active: menus.hubs.active }">Hubs</div>
             </a>
         </li>
             
         <li class="row">
             <a ui-sref="app.trip" >
-                <div class="side-image side-trip-image" ng-class="{active: isActive(['/trips'])}"></div>
-                <div class="side-text" ng-class="{active: isActive(['/trips'])}">Trips</div>
+                <div class="side-image side-trip-image"
+                    ng-class="{ expanded: expanded, active: menus.trips.active }"></div>
+                <div class="side-text"
+                    ng-class="{ expanded: expanded, active: menus.trips.active }">Trips</div>
             </a>
         </li>
 
         <li class="row">
             <a ui-sref="app.driver" >
-                <div class="side-image side-driver-image" ng-class="{active: isActive(['/drivers'])}"></div>
-                <div class="side-text" ng-class="{active: isActive(['/drivers'])}">Drivers</div>
+                <div class="side-image side-driver-image"
+                    ng-class="{ expanded: expanded, active: menus.drivers.active }"></div>
+                <div class="side-text"
+                    ng-class="{ expanded: expanded, active: menus.drivers.active }">Drivers</div>
             </a>
         </li>
 
         <li class="row">
             <a ui-sref="app.webstore" >
-                <div class="side-image side-webstore-image" ng-class="{active: isActive(['/webstore'])}"></div>
-                <div class="side-text" ng-class="{active: isActive(['/webstore'])}">Webstores</div>
+                <div class="side-image side-webstore-image"
+                    ng-class="{ expanded: expanded, active: menus.webstore.active }"></div>
+                <div class="side-text"
+                    ng-class="{ expanded: expanded, active: menus.webstore.active }">Webstores</div>
             </a>
         </li>
 
         <li class="row">
-            <div class="have-sub" data-dropdown="pricing">
+            <div ng-click="toggleExpandMenu('pricing')">
                 <div class="side-image side-price-image"  
-                    ng-class="{active: isActive(['/pricing/logistic', '/pricing/ecommerce'])}">
-                    <span class="fa fa-caret-down fa-lg pull-right caret-icon image-caret"
-                        ng-class="{'fa-caret-up': isActive(['/pricing/logistic', '/pricing/ecommerce'])}"
-                        caret-dropdown="pricing"></span>
+                    ng-class="{ expanded: expanded, active: menus.pricing.active }">
                 </div>
                 <div class="side-text"  
-                    ng-class="{active: isActive(['/pricing/logistic', '/pricing/ecommerce'])}"
-                    >Pricing
+                    ng-class="{ expanded: expanded, active: menus.pricing.active }">
+                    <span>Pricing</span>
                 </div>
                 <div class="side-caret">
-                    <span class="fa fa-caret-down fa-lg caret-icon"
-                        ng-class="{'fa-caret-up': isActive(['/pricing/logistic', '/pricing/ecommerce'])}"
+                    <span class="fa fa-caret-down fa-lg pull-right caret-icon"
+                        ng-class="{ 'image-caret': expanded, expanded: expanded, 'fa-caret-up': menus.hubs.active }"
                         caret-dropdown="pricing"></span>
                 </div>
             </div>
             <ul class="sub-panel"
-                ng-class="{hidden: ! isActive(['/pricing/logistic', '/pricing/ecommerce'])}"
-                id-dropdown="pricing">
+                ng-class="{ hidden: menus.pricing.active }">
                 <li class="row">
                     <a ui-sref="app.logistic-fees" >
                         <div class="side-image side-logistic-image"  
-                            ng-class="{active: isActive(['/pricing/logistic'])}"></div>
+                            ng-class="{ expanded: expanded, active: menus.pricing.submenus.logistic.active }"></div>
                         <div class="side-text"  
-                            ng-class="{active: isActive(['/pricing/logistic'])}">Logistic Fees</div>
+                            ng-class="{ expanded: expanded, active: menus.pricing.submenus.logistic.active }">
+                            Logistic Fees
+                        </div>
                     </a>
                 </li>
 
                 <li class="row">
                     <a ui-sref="app.ecommerce-pricing" >
                         <div class="side-image side-order-image"
-                            ng-class="{active: isActive(['/pricing/ecommerce'])}"></div>
+                            ng-class="{ expanded: expanded, active: menus.pricing.submenus.ecommerce.active }"></div>
                         <div class="side-text"
-                            ng-class="{active: isActive(['/pricing/ecommerce'])}">Ecommerce Pricing</div>
+                            ng-class="{ expanded: expanded, active: menus.pricing.submenus.ecommerce.active }">
+                            Ecommerce Prices
+                        </div>
                     </a>
                 </li>
             </ul>
         </li>
 
         <li class="row">
-            <div class="have-sub" data-dropdown="location">
+            <div ng-click="toggleExpandMenu('location')">
                 <div class="side-image side-district-image"  
-                    ng-class="{active: isActive(['/district', '/cities'])}">
-                    <span class="fa fa-caret-down fa-lg pull-right caret-icon image-caret"
-                        ng-class="{'fa-caret-up': isActive(['/district', '/cities'])}"
-                        caret-dropdown="location"></span>
+                    ng-class="{ expanded: expanded, active: menus.location.active }">
                 </div>
                 <div class="side-text"  
-                    ng-class="{active: isActive(['/district', '/cities'])}"
-                    >Location
+                    ng-class="{ expanded: expanded, active: menus.location.active }">
+                    <span>Location</span>
                 </div>
                 <div class="side-caret">
-                    <span class="fa fa-caret-down fa-lg caret-icon"
-                        ng-class="{'fa-caret-up': isActive(['/district', '/cities'])}"
+                    <span class="fa fa-caret-down fa-lg pull-right caret-icon"
+                        ng-class="{ expanded: expanded, 'image-caret': expanded, 'fa-caret-up': menus.location.active }"
                         caret-dropdown="location"></span>
                 </div>
             </div>
             <ul class="sub-panel"
-                ng-class="{hidden: ! isActive(['/district', '/cities'])}"
-                id-dropdown="location">
-
+                ng-class="{ hidden: !menus.location.active }">
                 <li class="row">
                     <a ui-sref="app.district" >
-                        <div class="side-image side-district-image" ng-class="{active: isActive(['/district'])}"></div>
-                        <div class="side-text" ng-class="{active: isActive(['/district'])}">Districts</div>
+                        <div class="side-image side-district-image"
+                            ng-class="{ expanded: expanded, active: menus.location.submenus.district.active }"></div>
+                        <div class="side-text"
+                            ng-class="{ expanded: expanded, active: menus.location.submenus.district.active }">
+                            Districts
+                        </div>
                     </a>
                 </li>
 
                 <li class="row">
                     <a ui-sref="app.city" >
-                        <div class="side-image side-city-image" ng-class="{active: isActive(['/cities'])}"></div>
-                        <div class="side-text" ng-class="{active: isActive(['/cities'])}">Cities</div>
+                        <div class="side-image side-city-image"
+                            ng-class="{ expanded: expanded, active: menus.location.submenus.cities.active }"></div>
+                        <div class="side-text"
+                            ng-class="{ expanded: expanded, active: menus.location.submenus.cities.active }">
+                            Cities
+                        </div>
                     </a>
                 </li>
             </ul>
@@ -113,15 +124,15 @@
 
         <li class="row">
             <a ui-sref="app.map" >
-                <div class="side-image side-map-image" ng-class="{active: isActive(['/map'])}"></div>
-                <div class="side-text" ng-class="{active: isActive(['/map'])}">Map</div>
+                <div class="side-image side-map-image"
+                    ng-class="{ expanded: expanded, active: menus.map.active }"></div>
+                <div class="side-text"
+                    ng-class="{ expanded: expanded, active: menus.map.active }">Map</div>
             </a>
         </li>
     </ul>
-    <div class="expand-button">
-        <span id="expand" class="fa fa-angle-double-right fa-angle-double-left fa-3x"></span>
-    </div>
-</div>
-<div id='spinner-container'>
-    <span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-1" ></span>
+    <div class="expand-button" ng-click="toggleExpand()">
+        <span id="expand"
+            ng-class="{ 'fa': true, 'fa-angle-double-left': expanded, 'fa-2x': true, 'fa-angle-double-right': !expanded }"></span>
+    </div>    
 </div>

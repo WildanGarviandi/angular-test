@@ -3,17 +3,37 @@
 angular.module('adminApp')
     .controller('SidebarCtrl', function($scope, $location, $rootScope, usSpinnerService, localStorageService) {
 
-        $rootScope.$on('startSpin', function() {
-            usSpinnerService.spin('spinner-1');
-            document.getElementById("spinner-container").setAttribute('class', 'overlay');
-        });
+        $scope.menus = {
+            pricing: {
+                submenus: {
+                    logistic: { routes: ['/pricing/logistic']},
+                    ecommerce: { route: ['/pricing/ecommerce']},
+                }
+            },
+            location: {
+                submenus: {
+                    district: { routes: ['/district']},
+                    cities: { routes: ['/cities'] }
+                }
+            },
+            trip: {
+                routes: ['/trips']
+            },
+            hubs: {
+                routes: ['/hubs']
+            },
+            drivers: {
+                routes: ['/drivers']
+            },
+            webstore: {
+                routes: ['/webstore']
+            },
+            map: {
+                routes: ['/map']
+            }
+        };
 
-        $rootScope.$on('stopSpin', function() {
-            usSpinnerService.stop('spinner-1');
-            document.getElementById("spinner-container").removeAttribute('class', 'overlay');
-        });
-
-        $scope.isActive = function(routes) {
+        function routeActive(routes) {
             var active = false;
             routes.forEach(function (route) {
                 if (route === $location.path()) { 
@@ -23,32 +43,43 @@ angular.module('adminApp')
             return active;
         };
 
-        var toggleExpand = function () {
-            $('.content').toggleClass('isOpen');
-            $('.sidebar').toggleClass('isOpen');
-            $('.side-image').toggleClass('isOpen');
-            $('.side-text').toggleClass('isOpen');
-            $('.side-caret').toggleClass('isOpen');
-            $('#expand').toggleClass('fa-angle-double-right');
-            $('.image-caret').toggleClass('hidden');
-        };
+        Object.keys($scope.menus).forEach(function(menu) {
+            if (menu.submenus) {
+                Object.keys(menu.submenus).forEach(function(submenu) {
+                    if (submenu.routes && routeActive(submenu.routes)) {
+                        submenu.active = true;
+                        menu.active = true;
+                    }
+                });
+            } else {
+                if (menu.routes && routeActive(menu.routes)) {
+                    menu.active = true;
+                }
+            }
+        });
+
+        $scope.expanded = localStorageService.get('expanded');
+        $scope.toggleExpand = function() {
+            if (localStorageService.get('expanded')) {
+                localStorageService.set('expanded', false);
+                $rootScope.$emit('collapse');
+                $scope.expanded = false;
+            } else {
+                localStorageService.set('expanded', true);
+                $rootScope.$emit('expand');
+                $scope.expanded = true;
+            }
+        }
+
+        $scope.toggleExpandMenu = function(menu) {
+            $scope.menus[menu].active = !$scope.menus[menu].active;
+        }
 
         $(document).ready(function() {
-            if (localStorageService.get('isExpanded') === true) {
-                toggleExpand();
-            }
-            $('.expand-button').click(function() {
-                toggleExpand();
-                if (localStorageService.get('isExpanded') === true) {
-                    localStorageService.set('isExpanded', false);
-                } else {
-                    localStorageService.set('isExpanded', true);
-                }
-            });
-            $('.have-sub').click(function () {
-                var data = $(this).data('dropdown');
-                $("[id-dropdown='" + data + "']").toggleClass('hidden');
-                $("[caret-dropdown='" + data + "']").toggleClass('fa-caret-up');
-            });
+            // $('.have-sub').click(function () {
+            //     var data = $(this).data('dropdown');
+            //     $("[id-dropdown='" + data + "']").toggleClass('hidden');
+            //     $("[caret-dropdown='" + data + "']").toggleClass('fa-caret-up');
+            // });
         });
     });

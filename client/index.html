@@ -180,13 +180,16 @@
     <!-- endinjector -->
     <!-- endbuild -->
     
-    <div class="sidebar">
+    <div ng-class="{ sidebar:true, expanded: expanded }">
         <div ui-view="sidebar"></div>
     </div>
-    <div class="content">
+    <div ng-class="{ content: true, expanded: expanded }">
         <div ui-view="content"></div>
     </div>
-    
+    <div id='spinner-container' ng-class="{ overlay: spinnerShown }" ng-if="spinnerShown">
+        <span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-1" ></span>
+    </div>
+
 </body>
 
 </html>
