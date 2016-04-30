@@ -15,78 +15,78 @@
         </div>
     </div>
    
-    <div class="booking-process">
-        <div class="container-fluid cust-container">
-            <div class="row">
-                <div class="col-md-3">
-                    Select Webstore :
-                    <ui-select ng-model="ctrl.webstore"
-                        theme="bootstrap"
-                        on-select="chooseWebstore($item)">
-                        <ui-select-match placeholder="Search or choose webstore">
-                            {{ $select.selected.key }}
-                        </ui-select-match>
-                        <ui-select-choices repeat="m in webstores | filter: $select.search" selected>
-                            <span ng-bind-html="m.key | highlight: $select.search"></span>
-                        </ui-select-choices>
-                    </ui-select>
-                </div>
-                <div class="col-md-3">
-                    Select Pickup Type :
-                    <ui-select ng-model="ctrl.pickup"
-                        theme="bootstrap"
-                        on-select="choosePickup()">
-                        <ui-select-match placeholder="Choose pickup type">
-                            {{ $select.selected.key }}
-                        </ui-select-match>
-                        <ui-select-choices repeat="m in pickupTypes" selected>
-                            <span ng-bind-html="m.key"></span>
-                        </ui-select-choices>
-                    </ui-select>
-                </div>
-                <div class="col-md-2">
-                    Select Vehicle Type :
-                    <ui-select ng-model="ctrl.vehicle"
-                        theme="bootstrap"
-                        on-select="chooseVehicle()">
-                        <ui-select-match placeholder="Choose vehicle type">
-                            {{ $select.selected.Name }}
-                        </ui-select-match>
-                        <ui-select-choices repeat="m in vehicleTypes" selected>
-                            <span ng-bind-html="m.Name"></span>
-                        </ui-select-choices>
-                    </ui-select>
-                </div>
-                <div class="col-md-2">
-                    Select Weight :
-                    <ui-select ng-model="ctrl.weight"
-                        theme="bootstrap"
-                        on-select="chooseWeight()">
-                        <ui-select-match placeholder="Choose weight">
-                            {{ $select.selected.description }}
-                        </ui-select-match>
-                        <ui-select-choices repeat="m in weight" selected>
-                            <span ng-bind-html="m.description"></span>
-                        </ui-select-choices>
-                    </ui-select>
-                </div>
-                <div class="col-md-2">
-                    Select Discount :
-                    <ui-select ng-model="ctrl.discount"
-                        theme="bootstrap"
-                        on-select="chooseDiscount()">
-                        <ui-select-match placeholder="Select discount">
-                            {{ $select.selected.description }}
-                        </ui-select-match>
-                        <ui-select-choices repeat="m in discount" selected>
-                            <span ng-bind-html="m.description"></span>
-                        </ui-select-choices>
-                    </ui-select>
-                </div>
+    <div class="container-content">
+        <div class="row">
+            <div class="col-md-3">
+                Select Webstore :
+                <ui-select ng-model="ctrl.webstore"
+                    theme="bootstrap"
+                    on-select="chooseWebstore($item)">
+                    <ui-select-match placeholder="Search or choose webstore">
+                        {{ $select.selected.key }}
+                    </ui-select-match>
+                    <ui-select-choices repeat="m in webstores | filter: $select.search" selected>
+                        <span ng-bind-html="m.key | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
             </div>
-            <div class="clearfix"></div>
-            <br>
+            <div class="col-md-3">
+                Select Pickup Type :
+                <ui-select ng-model="ctrl.pickup"
+                    theme="bootstrap"
+                    on-select="choosePickup()">
+                    <ui-select-match placeholder="Choose pickup type">
+                        {{ $select.selected.key }}
+                    </ui-select-match>
+                    <ui-select-choices repeat="m in pickupTypes" selected>
+                        <span ng-bind-html="m.key"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="col-md-2">
+                Select Vehicle Type :
+                <ui-select ng-model="ctrl.vehicle"
+                    theme="bootstrap"
+                    on-select="chooseVehicle()">
+                    <ui-select-match placeholder="Choose vehicle type">
+                        {{ $select.selected.Name }}
+                    </ui-select-match>
+                    <ui-select-choices repeat="m in vehicleTypes" selected>
+                        <span ng-bind-html="m.Name"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="col-md-2">
+                Select Weight :
+                <ui-select ng-model="ctrl.weight"
+                    theme="bootstrap"
+                    on-select="chooseWeight()">
+                    <ui-select-match placeholder="Choose weight">
+                        {{ $select.selected.description }}
+                    </ui-select-match>
+                    <ui-select-choices repeat="m in weight" selected>
+                        <span ng-bind-html="m.description"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="col-md-2">
+                Select Discount :
+                <ui-select ng-model="ctrl.discount"
+                    theme="bootstrap"
+                    on-select="chooseDiscount()">
+                    <ui-select-match placeholder="Select discount">
+                        {{ $select.selected.description }}
+                    </ui-select-match>
+                    <ui-select-choices repeat="m in discount" selected>
+                        <span ng-bind-html="m.description"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
         </div>
+        <div class="clearfix"></div>
+        <br>
+    </div>
+    <div class="row">
         <uib-tabset active="active" class="col-md-12">
             <uib-tab index="$index + 1" ng-repeat="tab in tabs" select="filterTab(tab.value)" 
                     heading="{{tab.heading}}" active="tab.active"></uib-tab>

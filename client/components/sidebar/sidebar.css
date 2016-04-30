@@ -145,18 +145,11 @@
   background-color: transparent;
 }
 
-/*  BOOTSTRAP FIX  */
-
-.row {
-    margin-left: 0px;
-    margin-right: 0px;
-}
-
 /* Translate content */
 
 .content.expanded {
     transform: translate3d(120px, 0, 0);
-    width: calc(100% - 240px);
+    width: calc(100% - 200px);
     margin-left: 80px;
 }
 

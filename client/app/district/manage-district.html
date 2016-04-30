@@ -17,7 +17,7 @@
         </div>
     </div>
     
-    <div class="booking-process container-fluid manage-district-form-container">
+    <div class="container-content manage-district-form-container">
         <form class="form" name="districtForm" novalidate>
             <div class="row">
                 <div class="col-md-4">
@@ -109,9 +109,6 @@
                                 required
                                 class="first form-control">
                         </div>
-                        <button class="btn btn-primary pull-right"
-                            ng-click="manageZipcodes(district.DistrictID)">Manage Zipcodes
-                        </button>
                         <!-- Error block -->
                         <div class="form-group has-error">
                             <p class="help-block" ng-show="districtForm.name.$error.required && submitted">
@@ -125,7 +122,11 @@
                         <a class="hub-buttons" ng-click="createDistrict()">Create District</a>
                     </div>
                     <div ng-if="updatePage" class="row-fluid">
-                        <a class="hub-buttons" ng-click="updateDistrict()">Update District</a>
+                        <button class="btn btn-primary pull-left"
+                            ng-click="updateDistrict()">Update District</button>
+                        <button class="btn pull-right"
+                            ng-click="manageZipcodes(district.DistrictID)">Manage Zipcodes
+                        </button>
                     </div>
                 </div>
                 <div id="maps" class="maps-district"></div> 

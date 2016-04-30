@@ -214,32 +214,6 @@ a:hover {
     color: white;
 }
 
-.hubs-table {
-    margin-top: 20px;
-    padding-right: 36px;
-    padding-left: 20px;
-    bhub-radius: 2px;
-    overflow-x: scroll;
-}
-
-.hubs-table table {
-    background: white;
-    bhub: 1px solid #ccc;
-}
-
-.hubs-table table > tbody > tr > td.pickuptime-col {
-    min-width: 100px;
-}
-
-.hubs-table table > tbody > tr > td.more {
-    min-width: 80px;
-}
-
-.table > thead > tr > th {
-    color: #ccc;
-    text-transform: uppercase;
-}
-
 .uploadXls {
     margin-top: 10px;
 }
@@ -437,32 +411,6 @@ td {
 a:hover {
     text-decoration: none;
     color: white;
-}
-
-.hubs-table {
-    margin-top: 20px;
-    padding-right: 36px;
-    padding-left: 20px;
-    bhub-radius: 2px;
-    overflow-x: scroll;
-}
-
-.hubs-table table {
-    background: white;
-    bhub: 1px solid #ccc;
-}
-
-.hubs-table table > tbody > tr > td.pickuptime-col {
-    min-width: 100px;
-}
-
-.hubs-table table > tbody > tr > td.more {
-    min-width: 80px;
-}
-
-.table > thead > tr > th {
-    color: #ccc;
-    text-transform: uppercase;
 }
 
 .uploadXls {

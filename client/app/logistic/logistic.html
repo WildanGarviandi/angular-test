@@ -14,10 +14,9 @@
             </div>
         </div>
     </div>
-    <br>
-    <div class="booking-process">
+    <div class="container-content">
         <form class="form" name="hubForm" novalidate>
-            <div class="container-fluid">
+            <div class="">
                 <div class="row">      
                     <div class="col-md-4">
                         Select Company : 
@@ -34,7 +33,7 @@
                     </div>
                 </div>
                 <div class="clearfix"></div>
-                <div class="hubs-table">
+                <div class="row">
                     <h4>All <strong>{{ctrl.company.CompanyName}}</strong> Fees</h4>
                     <table st-table="displayed" st-pipe="callServer" class="table table-hover">
                         <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
@@ -68,8 +67,9 @@
                                     </input></td>
                                 <td><input value="{{fee.PerItemFee | number}}" ng-model="fee.PerItemFee">
                                     </input></td>
-                                <td><button ng-click="saveLogisticFee(fee)"
-                                            ng-if="ctrl.company.FleetManagerID !== 0">Save</button></td>
+                                <td><button class="btn"
+                                    ng-click="saveLogisticFee(fee)"
+                                    ng-if="ctrl.company.FleetManagerID !== 0">Save</button></td>
                             </tr>
                         </tbody>
                     </table>
