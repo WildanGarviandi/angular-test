@@ -1,9 +1,10 @@
 .sidebar {
-    width: 120px;
+    width: 80px;
     position: fixed;
     float: left;
     height: 100%;
     padding-bottom: 30px;
+    font-size: 12px;
 }
 
 .sidebar .ng-scope {
@@ -37,6 +38,18 @@
     color: white;
 }
 
+.side-panel > ul > li:hover > ul {
+    background: #371e38;
+}
+
+.side-panel > ul > li:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.side-panel > ul > li > div{
+    height: 50px;
+}
+
 .side-panel > ul > li > a {
     color: #8E7A8D;
 }
@@ -47,13 +60,17 @@
 
 /* Sub menu */
 .side-panel > ul > li > ul {
-    margin-left: 0px;
-    display: table;
     transition: all 300ms ease;
+    padding: 0px;
 }
 
 .side-panel > ul > li > ul > li {
-    display: table-row;
+    height: 50px;
+    display: block;
+}
+
+.side-panel > ul > li > ul > li:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .side-panel > ul > li > ul > li > a {
@@ -67,36 +84,34 @@
 /* Menu Elements */
 
 .side-image {
-    display: table-cell;
     background-repeat: no-repeat;
     height: 40px;
-    width: 80px;
+    width: 40px;
     margin: 0 auto;
+    margin-left: 10px;
     text-align: center;
     background-position: center;
     background-size: 25px;
-    padding-right: 12px;
-    vertical-align: middle;
+    float: left;
 }
 
 .side-text {
     display: none;
     text-decoration: none;
     text-align: left;
-    vertical-align: middle;
-    font-size: 12px;
     width: 110px;
     color: #8E7A8D;
+    float: left;
+    margin-top: 13px;
 }
 
 .side-caret {
-    display: table-cell;
     text-decoration: none;
     text-align: center;
-    vertical-align: middle;
-    font-size: 12px;
     width: 10px;
     padding: 2px;
+    float: left;
+    margin-top: 13px;
 }
 
 .side-text.active {
@@ -118,7 +133,8 @@
     height: 40px;
     cursor: pointer;
     text-align: center;
-    color: grey;
+    color: #F0F0F0;
+    padding-top: 5px;
 }
 
 .side-panel::-webkit-scrollbar {
@@ -162,7 +178,7 @@
 }
 
 .side-text.expanded {
-    display: table-cell;
+    display: block;
     width: 120px;
 }
 

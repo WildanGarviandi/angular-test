@@ -6,9 +6,9 @@
        <li class="row">
             <a ui-sref="app.hub" >
                 <div class="side-image side-hub-image"
-                    ng-class="{ expanded: expanded, active: menus.hubs.active }"></div>
+                    ng-class="{ expanded: expanded, active: menus.hub.active }"></div>
                 <div class="side-text" 
-                    ng-class="{ expanded: expanded, active: menus.hubs.active }">Hubs</div>
+                    ng-class="{ expanded: expanded, active: menus.hub.active }">Hubs</div>
             </a>
         </li>
             
@@ -39,8 +39,8 @@
             </a>
         </li>
 
-        <li class="row">
-            <div ng-click="toggleExpandMenu('pricing')">
+        <li class="row" ng-click="toggleExpandMenu('pricing')">
+            <div>
                 <div class="side-image side-price-image"  
                     ng-class="{ expanded: expanded, active: menus.pricing.active }">
                 </div>
@@ -50,38 +50,43 @@
                 </div>
                 <div class="side-caret">
                     <span class="fa fa-caret-down fa-lg pull-right caret-icon"
-                        ng-class="{ 'image-caret': expanded, expanded: expanded, 'fa-caret-up': menus.hubs.active }"
+                        ng-class="{ 'image-caret': expanded, expanded: expanded, 'fa-caret-up': menus.pricing.expanded }"
                         caret-dropdown="pricing"></span>
                 </div>
+                <div class="clearfix"></div>
             </div>
             <ul class="sub-panel"
-                ng-class="{ hidden: menus.pricing.active }">
-                <li class="row">
+                ng-class="{ hidden: !menus.pricing.expanded }">
+                <li class="">
                     <a ui-sref="app.logistic-fees" >
                         <div class="side-image side-logistic-image"  
-                            ng-class="{ expanded: expanded, active: menus.pricing.submenus.logistic.active }"></div>
+                            ng-class="{ expanded: expanded, active: menus.pricing.submenus.logistic.active }"
+                            style="background-size: 30px"></div>
                         <div class="side-text"  
                             ng-class="{ expanded: expanded, active: menus.pricing.submenus.logistic.active }">
                             Logistic Fees
                         </div>
                     </a>
+                    <div class="clearfix"></div>
                 </li>
 
-                <li class="row">
+                <li class="">
                     <a ui-sref="app.ecommerce-pricing" >
                         <div class="side-image side-order-image"
-                            ng-class="{ expanded: expanded, active: menus.pricing.submenus.ecommerce.active }"></div>
+                            ng-class="{ expanded: expanded, active: menus.pricing.submenus.ecommerce.active }"
+                            style="background-size: 22px"></div>
                         <div class="side-text"
                             ng-class="{ expanded: expanded, active: menus.pricing.submenus.ecommerce.active }">
                             Ecommerce Prices
                         </div>
                     </a>
+                    <div class="clearfix"></div>
                 </li>
             </ul>
         </li>
 
-        <li class="row">
-            <div ng-click="toggleExpandMenu('location')">
+        <li class="row" ng-click="toggleExpandMenu('location')">
+            <div>
                 <div class="side-image side-district-image"  
                     ng-class="{ expanded: expanded, active: menus.location.active }">
                 </div>
@@ -91,13 +96,14 @@
                 </div>
                 <div class="side-caret">
                     <span class="fa fa-caret-down fa-lg pull-right caret-icon"
-                        ng-class="{ expanded: expanded, 'image-caret': expanded, 'fa-caret-up': menus.location.active }"
+                        ng-class="{ expanded: expanded, 'image-caret': expanded, 'fa-caret-up': menus.location.expanded }"
                         caret-dropdown="location"></span>
                 </div>
+                <div class="clearfix"></div>
             </div>
             <ul class="sub-panel"
-                ng-class="{ hidden: !menus.location.active }">
-                <li class="row">
+                ng-class="{ hidden: !menus.location.expanded }">
+                <li class="">
                     <a ui-sref="app.district" >
                         <div class="side-image side-district-image"
                             ng-class="{ expanded: expanded, active: menus.location.submenus.district.active }"></div>
@@ -106,9 +112,10 @@
                             Districts
                         </div>
                     </a>
+                    <div class="clearfix"></div>
                 </li>
 
-                <li class="row">
+                <li class="">
                     <a ui-sref="app.city" >
                         <div class="side-image side-city-image"
                             ng-class="{ expanded: expanded, active: menus.location.submenus.cities.active }"></div>
@@ -117,6 +124,7 @@
                             Cities
                         </div>
                     </a>
+                    <div class="clearfix"></div>
                 </li>
             </ul>
         </li>
