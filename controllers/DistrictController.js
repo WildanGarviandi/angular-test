@@ -74,11 +74,105 @@ var createDistrict = function (req, res, arZipCodes, error, done) {
                 error: errorHandling(e, error)
             }, 200);
         } else {
-            res.json({
+            return res.json({
                 status: false,
                 description: 'Error in creating district'
-            }, 403);
+            }, 500);
         }
+    });
+};
+
+// Check is zipcode already exists
+var checkZipCodes = function (res, zipcodes, done) {
+    var arZipCodes = [];
+    var checkedZipCodes = [];
+    var filteredZipCodes = [];
+    var index = 0;
+    if (zipcodes){   
+        arZipCodes = zipcodes.split(',');
+
+        // Filter empty element or double comma mistake
+        // Filter duplicates
+        arZipCodes.forEach(function (val) {
+            if (val !== '' && checkedZipCodes.indexOf(val) === -1) {
+                filteredZipCodes[index] = { 
+                    ZipCode: val
+                };
+                checkedZipCodes.push(val);
+                index++;
+            }
+        });
+    }
+
+    var error = {
+        messages: '',
+        model: ''
+    };
+
+    models.DistrictZipCode.findAll({
+        where: {
+            ZipCode: {$in: checkedZipCodes}
+        }
+    })
+    .then(function (zipcodes) {
+        // ZipCode found in other district
+        if (zipcodes.length !== 0) {
+            var districts = [];
+            _.each(zipcodes, function (zipcode) {
+                districts.push(zipcode.DistrictID);
+            });
+            // Get all district name for that zipcode
+            models.District.findAll({
+                attributes: ['DistrictID','Name'],
+                where: {
+                    DistrictID: {$in: districts}
+                }
+            })
+            .then(function (districts) {
+                // Assign it to zipcodes array / data
+                _.each(zipcodes, function (zipcode, index, array) {
+                    var district = _.find(districts, {DistrictID: zipcode.DistrictID});
+                    array[index].DistrictName = district.Name;
+                });
+
+                // Build the error message
+                error = {
+                    messages: 'WARNING. Failed in assigning some zipcodes\n',
+                    model: 'zipcode'
+                };
+
+                _.each(zipcodes, function (zipcode) {
+                    error.messages = error.messages + '- ' + zipcode.ZipCode + 
+                                    ' is already assigned in disctrict ' + 
+                                    zipcode.DistrictName + '\n';
+                });
+
+                // Filter out all assigned zipcode
+                var tempAr = filteredZipCodes;
+                filteredZipCodes = tempAr.filter(function (zipcode) {
+                    if (_.find(zipcodes, ['ZipCode',zipcode.ZipCode])) return false;
+                    else return true;
+                });
+
+                done(filteredZipCodes, error);
+            })
+            .catch(function (e) {
+                console.log('Error in finding zipcode', e);
+                return res.json({
+                    status: false,
+                    description: 'Error in finding zipcode'
+                }, 500);
+            });
+        } else {
+            done(filteredZipCodes, null);
+        }
+    })
+    .catch(function (e) {
+        console.log('Error in finding zipcode: ', e);
+        return res.json({
+            status: false,
+            description: 'Error in finding zipcode'
+        }, 500);
     });
 };
 
@@ -95,99 +189,14 @@ module.exports = function(di) {
      *  }
      */
     router.post('/create',  function (req, res, next){
-        var arZipCodes = [];
-        var checkZipCodes = [];
-        if (req.body.zipcodes){   
-            arZipCodes = req.body.zipcodes.split(',');
-            arZipCodes.forEach(function (val, index, array) {
-                if (val !== '') {
-                    array[index] = { 
-                        ZipCode: val
-                    };
-                    checkZipCodes.push(val);
-                }
+        checkZipCodes(res, req.body.zipcodes, function (arZipCodes, error) {
+            createDistrict(req, res, arZipCodes, error, function (district) {
+                return res.json({
+                    status: (error) ? false: true,
+                    data: district,
+                    error: (error) ? error : null
+                }, 200);
             });
-        }
-
-        var error = {
-            messages: '',
-            model: ''
-        };
-
-        // Check is zipcode already exists
-        models.DistrictZipCode.findAll({
-            where: {
-                ZipCode: {$in: checkZipCodes}
-            }
-        })
-        .then(function (zipcodes) {
-            console.log('zipcode found', zipcodes);
-            // ZipCode found in other district
-            if (zipcodes.length !== 0) {
-                var districts = [];
-                _.each(zipcodes, function (zipcode) {
-                    districts.push(zipcode.DistrictID);
-                });
-                // Get all district name for that zipcode
-                models.District.findAll({
-                    attributes: ['DistrictID','Name'],
-                    where: {
-                        DistrictID: {$in: districts}
-                    }
-                })
-                .then(function (districts) {
-                    // Assign it to zipcodes array / data
-                    _.each(zipcodes, function (zipcode, index, array) {
-                        var district = _.find(districts, {DistrictID: zipcode.DistrictID});
-                        array[index].DistrictName = district.Name;
-                    });
-                    console.log('zipcodes', zipcodes);
-
-                    // Build the error message
-                    error = {
-                        messages: 'WARNING. Failed in assigning some zipcodes\n',
-                        model: 'zipcode'
-                    };
-
-                    _.each(zipcodes, function (zipcode) {
-                        error.messages = error.messages + '- ' + zipcode.ZipCode + 
-                                        ' is already assigned in disctrict ' + 
-                                        zipcode.DistrictName + '\n';
-                    });
-
-                    // Filter out all assigned zipcode
-                    var tempAr = arZipCodes;
-                    arZipCodes = tempAr.filter(function (zipcode) {
-                        if (_.find(zipcodes, ['ZipCode',zipcode.ZipCode])) return false;
-                        else return true;
-                    });
-
-                    console.log('array zipcode', arZipCodes);
-
-                    createDistrict(req, res, arZipCodes, error, function (district) {
-                        return res.json({
-                            status: false,
-                            data: district,
-                            error: error
-                        }, 200);
-                    });
-                })
-                .catch(function (e) {
-                    console.log('error on finding district', e);
-                    return res.end();
-                });
-            } else {
-                createDistrict(req, res, arZipCodes, error, function (district) {
-                    return res.json({
-                        status: true,
-                        data: district
-                    }, 200);
-                });
-            }
-        })
-        .catch(function (e) {
-            console.log('error on finding zipcode', e);
-            return res.end();
         });
     });
 
@@ -225,7 +234,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in finding district'
-            }, 403);
+            }, 500);
         });
     });
 
@@ -260,7 +269,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in finding district'
-            }, 403);
+            }, 500);
         });
     });
 
@@ -294,7 +303,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in finding district'
-            }, 403);
+            }, 500);
         });
     });
 
@@ -330,7 +339,7 @@ module.exports = function(di) {
                     res.json({
                         status: false,
                         description: 'Error in updating district'
-                    }, 403);
+                    }, 500);
                 }
             });
         });
@@ -363,7 +372,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in deleting district'
-            }, 403);
+            }, 500);
         });
     }); 
 
@@ -381,22 +390,19 @@ module.exports = function(di) {
             }
         }).then(function() {
             if (req.body.zipcodes) {
-                var arZipCodes = req.body.zipcodes.split(',');
-                arZipCodes.forEach(function (val, index, array) {
-                    if (val !== '') {
-                        array[index] = { 
-                            DistrictID: req.body.districtid,
-                            ZipCode: val
-                        };
-                    }
-                });
-                models.DistrictZipCode.bulkCreate(arZipCodes)
-                .then(function(zipCodes) {
-                    // note that due to limitation of bulkCreate method,
-                    // not all value is returned, in this case all zipCodes
-                    // wont return with DisctrictZipCodeID value (null)
-                    return res.status(200).json({
-                        status: true
+                checkZipCodes(res, req.body.zipcodes, function (arZipCodes, error) {
+                    arZipCodes.forEach(function (val, index, array) {
+                        array[index].DistrictID = req.body.districtid;
+                    });
+                    models.DistrictZipCode.bulkCreate(arZipCodes)
+                    .then(function(zipCodes) {
+                        // note that due to limitation of bulkCreate method,
+                        // not all value is returned, in this case all zipCodes
+                        // wont return with DisctrictZipCodeID value (null)
+                        return res.status(200).json({
+                            status: (error) ? false : true,
+                            error: (error) ? error : null
+                        });
                     });
                 });
             } else {
@@ -415,7 +421,7 @@ module.exports = function(di) {
                 res.json({
                     status: false,
                     description: 'Error in updating zipcodes'
-                }, 403);
+                }, 500);
             }
         });
     });
@@ -442,7 +448,7 @@ module.exports = function(di) {
             return res.json({
                 status: false,
                 description: 'Error in finding zipcode'
-            }, 403);
+            }, 500);
         });
     });
 

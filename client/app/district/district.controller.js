@@ -181,15 +181,17 @@ angular.module('adminApp')
                 }        
             };
 
-            var updateZipCodes = function (status) {
+            var updateZipCodes = function (result) {
                 $rootScope.$emit('stopSpin');
-				if (status) {
-					if (status !== false) {
-	                    resolve();
+				if (result) {
+					if (result.status !== false) {
+	                    resolve('No Warning');
 	                } else {
-	                    reject();
+	                    resolve(result.error.messages);
 	                }
-				}
+				} else {
+                    reject();
+                }
             };
 
             update(district)
@@ -302,8 +304,8 @@ angular.module('adminApp')
      */
     $scope.updateDistrict = function() {
         updateDistrict()
-	        .then(function () {        
-	        	alert('District successfully updated');
+	        .then(function (message) {        
+	        	alert('District successfully updated.\n' + message);
 	            $location.path('/district');
 	        })
 	        .catch(function () {
