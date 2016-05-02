@@ -51,9 +51,9 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         Services2.getWebstores().$promise
         .then(function(data) {
-            var result = data.data.Webstores.rows;
+            var result = data.data.webstores;
             result.forEach(function(webstore) {
-                $scope.webstores.push({key: webstore.User.FirstName.concat(' ', webstore.User.LastName), value: webstore.User.UserID});
+                $scope.webstores.push({key: webstore.webstore.FirstName.concat(' ', webstore.webstore.LastName), value: webstore.webstore.UserID});
             }) 
             $rootScope.$emit('stopSpin');
         });
@@ -94,12 +94,18 @@ angular.module('adminApp')
         Services2.getEcommercePrices(params).$promise
         .then(function(data) {
             var result = data.data.Prices;
-            result.forEach(function(object) {
-                var price = $scope.prices.filter(function(obj) {
-                    return obj.VehicleID === object.Vehicle.VehicleID;
-                }); 
-                price[0].PricePerKM = object.PricePerKM
-            });
+            if (result.length > 0) {
+                result.forEach(function(object) {
+                    var price = $scope.prices.filter(function(obj) {
+                        return obj.VehicleID === object.Vehicle.VehicleID;
+                    }); 
+                    price[0].PricePerKM = object.PricePerKM
+                });
+            } else {
+                $scope.prices.forEach(function(price){
+                    price.PricePerKM = 0;
+                });
+            }
             $rootScope.$emit('stopSpin');
         });
     }
@@ -110,17 +116,20 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.savePrices = function() {
+        $rootScope.$emit('startSpin');
         var params = {
             WebstoreUserID: $scope.webstore.value,
             prices: $scope.prices
         };
         Services2.saveEcommercePrice(params).$promise
         .then(function(data) {
+            $rootScope.$emit('stopSpin');
             alert('Save success'); 
             $scope.getPrices();           
             window.location = '/ecommercePrice';
         })
         .catch(function(err){
+            $rootScope.$emit('stopSpin');
             alert('Save failed');
         });
     }
