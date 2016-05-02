@@ -1,0 +1,65 @@
+<div class="container-fluid container-hubs">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    Ecommerce Pricing
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+            </div>
+        </div>
+    </div>
+   
+    <div class="booking-process">
+        <form class="form" name="hubForm" novalidate>
+            <div class="container-fluid hub-container">
+                <div class="row-fluid">
+                    Select Webstore :
+                    <ui-select ng-model="webstore"
+                        theme="selectize"
+                        ng-disabled="disabled"
+                        on-select="chooseWebstore($item)">
+                        <ui-select-match placeholder="Choose webstore">
+                            {{ $select.selected.key }}
+                        </ui-select-match>
+                        <ui-select-choices repeat="m in webstores" selected>
+                            <span ng-bind-html="m.key"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="row-flued priceform">
+                <div class="vehicle-type">
+                    <table class="table-price">
+                        <tr>
+                            <th>Vehicle</th>
+                            <th>Price</th>
+                        </tr>
+                        <tr ng-repeat="price in prices">  
+                            <td>
+                                {{price.Name}}
+                            </td>                          
+                            <td>
+                                <div>
+                                    <input ng-model="price.PricePerKM"
+                                        type="text"
+                                        class="form-control"
+                                        value="" placeholder="">
+                                </div>
+                            </td>                             
+                        </tr>
+                    </table>
+                    <button class="btn btn-primary" ng-click="savePrices();">SAVE</button>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </form>
+    </div>
+</div>

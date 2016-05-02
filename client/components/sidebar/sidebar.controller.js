@@ -9,6 +9,7 @@ angular.module('adminApp')
                 submenus: {
                     logistic: { routes: ['/pricing/logistic']},
                     ecommerce: { routes: ['/pricing/ecommerce']},
+                    ondemand: { routes: ['/ecommercePrice']},
                 }
             },
             location: {
