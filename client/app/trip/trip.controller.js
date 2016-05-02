@@ -121,6 +121,8 @@ angular.module('adminApp')
             endPickup: $scope.pickupDatePicker.endDate,
             startDropoff: $scope.dropoffDatePicker.startDate,
             endDropoff: $scope.dropoffDatePicker.endDate,
+            sortBy: $scope.sortBy,
+            sortCriteria: $scope.sortCriteria,
         }
         Services2.getTrip(params).$promise.then(function(data) {
             $scope.displayed = data.data.rows;
@@ -207,6 +209,18 @@ angular.module('adminApp')
             $scope.reqSearchDropoff = $scope.queryDropoff;
             $scope.getTrip();
         };
+    }
+
+    /**
+     * Sort by column
+     * 
+     * @return {void}
+     */
+    $scope.sortColumn = function(sortBy, sortCriteria) {
+        console.log(sortBy, sortCriteria);
+        $scope.sortBy = sortBy;
+        $scope.sortCriteria = sortCriteria;
+        $scope.getTrip();
     }
     
     /**
