@@ -73,7 +73,8 @@ angular.module('adminApp')
                 $scope.prices.push({
                     Name: object.Name,
                     VehicleID: object.VehicleID,
-                    PricePerKM: 0
+                    PricePerKM: 0,
+                    PickupType: 3
                 });
             })
             $rootScope.$emit('stopSpin');
@@ -108,15 +109,10 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.savePrices = function(vehicleID) {
-        var price = $scope.prices.filter(function(obj) {
-            return obj.VehicleID === vehicleID;
-        });  
+    $scope.savePrices = function() {
         var params = {
             WebstoreUserID: $scope.webstore.value,
-            VehicleID: price[0].VehicleID,
-            PickupType: 3,
-            PricePerKM: price[0].PricePerKM
+            prices: $scope.prices
         };
         Services2.saveEcommercePrice(params).$promise
         .then(function(data) {

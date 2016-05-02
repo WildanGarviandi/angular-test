@@ -41,7 +41,6 @@
                         <tr>
                             <th>Vehicle</th>
                             <th>Price</th>
-                            <th></th>
                         </tr>
                         <tr ng-repeat="price in prices">  
                             <td>
@@ -54,12 +53,10 @@
                                         class="form-control"
                                         value="" placeholder="">
                                 </div>
-                            </td>                     
-                            <td>                                
-                                <button class="btn btn-primary" ng-click="savePrices(price.VehicleID);">SAVE</button>
-                            </td>                            
+                            </td>                             
                         </tr>
                     </table>
+                    <button class="btn btn-primary" ng-click="savePrices();">SAVE</button>
                 </div>
             </div>
             <div class="clearfix"></div>
