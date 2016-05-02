@@ -92,7 +92,7 @@ module.exports = function(di) {
 
         var functions = [];
         req.body.fees.forEach(function (fee) {
-            var updateFunction = new Promise(function (resolve) {
+            var updateFunction = new Promise(function (resolve, reject) {
                 models.LogisticFee.findOrCreate({
                     where: {
                         FleetManagerID: fee.FleetManagerID,
@@ -117,6 +117,9 @@ module.exports = function(di) {
                     .then(function (result) {
                         resolve(result);
                     });
+                })
+                .catch(function (error) {
+                    reject(error);
                 });
             });
             functions.push(updateFunction);
@@ -126,9 +129,11 @@ module.exports = function(di) {
             return res.status(200).json({
                 result: result
             });
-        });
-
-        
+        }, function (error) {
+            return res.status(500).json({
+                error: error
+            });
+        });        
     });
 
     router.get('/vehicles', function (req, res, next) {
