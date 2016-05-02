@@ -26,7 +26,9 @@ angular.module('adminApp')
         Name: '',
         City: '',
         Province: '',
-        ZipCodes: ''
+        ZipCodes: '',
+        Latitude: -6.2115,
+        Longitude: 106.8452
     };
 
     $scope.zipcodes = [{
@@ -379,12 +381,17 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.loadManagePage = function() {
-        if ($stateParams.districtID !== undefined) {
+        if ($state.includes('app.update-district')) {
             $scope.getDistrictDetails();
             $scope.updatePage = true;
             $scope.addPage = false;
+        } else if ($state.includes('app.add-district')) {
+            $scope.locationPicker();
+            $scope.addPage = true;
+            $scope.updatePage = false;
         } else {
-             $scope.addPage = true;
+            $scope.addPage = false;
+            $scope.updatePage = false;
         }
     };
 
