@@ -20,14 +20,12 @@ angular.module('adminApp')
         $scope.user = data.profile;
     });
 
-    $scope.ctrl = {
-        company:  {
-            CompanyName: 'Master',
-            FleetManagerID: 0
-        }
+    $scope.company =  {
+        CompanyName: 'Master',
+        FleetManagerID: 0
     };
 
-    $scope.companies = [$scope.ctrl.company];
+    $scope.companies = [$scope.company];
 
     $scope.pickup = {
         key: 'Same Day',
@@ -48,8 +46,6 @@ angular.module('adminApp')
             $http.get('config/defaultValues.json').success(function(data) {
                 $scope.pickupTypes = data.pickupTypes;
                 $scope.percentage = data.percentage;
-                $scope.masterLogistic = data.masterLogistic;
-                $scope.displayed = $scope.masterLogistic;
                 resolve();
             });
         });
@@ -90,22 +86,30 @@ angular.module('adminApp')
     var getFees = function() {
         $rootScope.$emit('startSpin');
         var params = {
-            FleetManagerID: $scope.ctrl.company.FleetManagerID
+            FleetManagerID: $scope.company.FleetManagerID
         };
-        Services.showLogisticPrices(params).$promise.then(function(data) {
-            $scope.displayed = data.fees;
-            $scope.vehicleTypes.forEach(function (vehicle) {
-                var index = $scope.displayed.findIndex(function (fee) {
-                    return fee.VehicleID === vehicle.VehicleID;
+        var paramsMaster = {
+            FleetManagerID: 0
+        };
+        Services.showLogisticPrices(paramsMaster).$promise.then(function(masterData) {
+            Services.showLogisticPrices(params).$promise.then(function(data) {
+                $scope.displayed = data.fees;
+                $scope.vehicleTypes.forEach(function (vehicle) {
+                    var index = $scope.displayed.findIndex(function (fee) {
+                        return fee.VehicleID === vehicle.VehicleID;
+                    });
+                    if (index !== -1) {
+                        $scope.displayed[index].VehicleType = vehicle.Name;
+                    } else {
+                        var fromMaster = lodash.find(masterData.fees, {'VehicleID': vehicle.VehicleID});
+                        fromMaster.FleetManagerID = $scope.company.FleetManagerID;
+                        fromMaster.VehicleType = vehicle.Name;
+                        $scope.displayed.push(fromMaster);
+                    }
                 });
-                if (index !== -1) {
-                    $scope.displayed[index].VehicleType = vehicle.Name;
-                } else {
-                    $scope.displayed.push(lodash.find($scope.masterLogistic, {'VehicleID': vehicle.VehicleID}));
-                }
+                $scope.displayed = lodash.sortBy($scope.displayed, 'VehicleID');
+                $rootScope.$emit('stopSpin');
             });
-            $scope.displayed = lodash.sortBy($scope.displayed, 'VehicleID');
-            $rootScope.$emit('stopSpin');
         });
     };
 
@@ -132,14 +136,10 @@ angular.module('adminApp')
      * @param  {Object} fee - from the form on the table
      * @return 
      */
-    $scope.saveLogisticFee = function (fee) {
+    $scope.saveLogisticFee = function () {
         $rootScope.$emit('startSpin');
         var params = {
-            FleetManagerID: $scope.ctrl.company.FleetManagerID,
-            VehicleID: fee.VehicleID,
-            PricePerKM: (fee.PricePerKM) ? fee.PricePerKM : 0,
-            MinimumFee: (fee.MinimumFee) ? fee.MinimumFee : 0,
-            PerItemFee: (fee.PerItemFee) ? fee.PerItemFee : 0
+            fees: $scope.displayed
         };
         Services.saveLogisticFee(params).$promise.then(function (data) {
             $rootScope.$emit('stopSpin');
@@ -149,7 +149,9 @@ angular.module('adminApp')
 
     getDefaultValues().then(function (){
         getCompanies().then(function () {
-            getVehicles().then(getFees());
+            getVehicles().then(function () {
+                getFees();
+            });
         });
     });   
 });

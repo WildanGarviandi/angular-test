@@ -1,5 +1,6 @@
 var express   = require('express');
 var models    = require('../models');
+var _ = require('lodash');
 
 var router = express.Router();
 
@@ -88,33 +89,60 @@ module.exports = function(di) {
     });
 
     router.post('/logistic/update',  function(req, res, next){
-        models.LogisticFee.findOrCreate({
-            where: {
-                FleetManagerID: req.body.FleetManagerID,
-                VehicleID: req.body.VehicleID
-            },
-            defaults: {
-                PricePerKM: req.body.PricePerKM,
-                MinimumFee: req.body.MinimumFee,
-                PerItemFee: req.body.PerItemFee
-            }
-        })
-        .then(function (data) {
-            models.LogisticFee.update({
-                PricePerKM: req.body.PricePerKM,
-                MinimumFee: req.body.MinimumFee,
-                PerItemFee: req.body.PerItemFee
-            }, {
-                where: {
-                    LogisticFeeID: data[0].LogisticFeeID
-                }
-            })
-            .then(function (result) {
-                return res.status(200).json({
-                    result: result
-                }); 
+
+        var functions = [];
+        req.body.fees.forEach(function (fee) {
+            var updateFunction = new Promise(function (resolve, reject) {
+                models.LogisticFee.findOrCreate({
+                    where: {
+                        FleetManagerID: fee.FleetManagerID,
+                        VehicleID: fee.VehicleID
+                    },
+                    defaults: {
+                        PricePerKM: fee.PricePerKM,
+                        MinimumFee: fee.MinimumFee,
+                        PerItemFee: fee.PerItemFee
+                    }
+                })
+                .then(function (feeFoundorCreated) {
+                    return models.LogisticFee.update({
+                        PricePerKM: fee.PricePerKM,
+                        MinimumFee: fee.MinimumFee,
+                        PerItemFee: fee.PerItemFee
+                    }, {
+                        where: {
+                            LogisticFeeID: feeFoundorCreated[0].LogisticFeeID
+                        }
+                    });
+                })
+                .then(function (affectedRows) {
+                    resolve(affectedRows[0]);
+                });
             });
+            functions.push(updateFunction);
         });
+    
+        Promise.all(functions).then(function (result) {
+            var totalRowsAffected = 0;
+            result.forEach(function (affectedRows) {
+                totalRowsAffected += affectedRows;
+            });
+
+            if (totalRowsAffected == req.body.fees.length) {
+                return res.status(200).json({
+                    result: totalRowsAffected
+                });
+            } else {
+                return res.status(500).json({
+                    result: totalRowsAffected,
+                    error: 'Some fees are not updated, please check again'
+                });
+            }
+        }, function (error) {
+            return res.status(500).json({
+                error: error
+            });
+        });        
     });
 
     router.get('/vehicles', function (req, res, next) {
