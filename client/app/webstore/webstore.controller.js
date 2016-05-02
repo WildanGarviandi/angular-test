@@ -105,13 +105,12 @@ angular.module('adminApp')
             StatusID: 2,
             UserTypeID: 5
         };
-        console.log('create webstore', webstore);
         $rootScope.$emit('startSpin');
         Webstores.createWebstore(webstore).$promise.then(function(response) {
             $rootScope.$emit('stopSpin');
-            console.log('create webstore response', response);
+
             if (response) {
-                return callback(null, response)
+                return callback(null, response.data)
             } else {
                 return callback('failed')
             }
@@ -148,9 +147,8 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         Webstores.updateWebstore({_id: $stateParams.webstoreID, webstore: webstore}).$promise.then(function(response) {
             $rootScope.$emit('stopSpin');
-            console.log('update webstore response', response);
             if (response) {
-                return callback(null, response.data.webstore)
+                return callback(null, response.data)
             } else {
                 return callback('failed', {});
             }
@@ -215,7 +213,6 @@ angular.module('adminApp')
             },
             enableAutocomplete: true,
             onchanged: function (currentLocation, radius, isMarkerDropped) {
-                console.log($(this).locationpicker('map').location)
                 var addressComponents = $(this).locationpicker('map').location.addressComponents;
                 $scope.updateLocation(addressComponents);
             },
@@ -298,7 +295,6 @@ angular.module('adminApp')
             limit: $scope.itemsByPage
         };
         Webstores.getWebstore(params).$promise.then(function(data) {
-            console.log('d', data);
             $scope.displayed = _.map(data.data.webstores, function(webstore) {
                 return _.assign({}, webstore.webstore, {
                     RegistrationStatus: webstore.status
@@ -320,6 +316,7 @@ angular.module('adminApp')
     $scope.search = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchString = $scope.searchQuery;
+            $scope.searchFilter.name = $scope.searchQuery;
             $scope.getWebstores();
         };
     }
@@ -331,11 +328,11 @@ angular.module('adminApp')
      */
     $scope.createWebstore = function(form) {
         if(form.$valid) {
-            createWebstore(function(err, webstore) {        
-                if (webstore.status === false) {
+            createWebstore(function(err, result) {        
+                if (result.status === false) {
                     alert('error');
                 };
-                alert('Your webstore ID:' + webstore.data.UserID + ' has been successfully created.')
+                alert('Your webstore ID:' + result.webstore.UserID + ' has been successfully created.')
                 $location.path('/webstore');
             })        
         } else {
@@ -350,11 +347,11 @@ angular.module('adminApp')
      */
     $scope.updateWebstore = function(form) {
         if(form.$valid) {
-            updateWebstore(function(err, webstore) {
-                if (!webstore.status) {
+            updateWebstore(function(err, result) {
+                if (!result.status) {
                     alert(err);
                 } else {
-                    alert('Your webstore ID:' + webstore.data.UserID + ' has been successfully updated.')
+                    alert('Your webstore ID:' + result.webstore.UserID + ' has been successfully updated.')
                     $location.path('/webstore');
                 }
             })
@@ -399,7 +396,7 @@ angular.module('adminApp')
     $scope.loadManagePage = function() {
         $scope.getCountries();
         $scope.getHubs();
-        if ($state.current.name === 'update-webstore') {
+        if ($state.current.name === 'app.update-webstore') {
             $scope.getWebstoreDetails();
             setTimeout(function() {
                 if ($scope.webstore.UserID === undefined) {
@@ -408,7 +405,7 @@ angular.module('adminApp')
             }, 4000);
             $scope.updatePage = true;
             $scope.addPage = false;
-        } else if ($state.current.name === 'add-webstore') {
+        } else if ($state.current.name === 'app.add-webstore') {
             $scope.addPage = true;
             $scope.locationPicker();
         }
@@ -447,7 +444,6 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         Webstores.verifyWebstore({_id: $stateParams.webstoreID, HubID: $scope.webstore.HubID}).$promise.then(function(response) {
             $rootScope.$emit('stopSpin');
-            console.log('Verify webstore response', response);
             if (response) {
                 alert('Your webstore ID:' + $stateParams.webstoreID + ' has been successfully verified.');
                 $location.path('/webstore');

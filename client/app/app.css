@@ -69,3 +69,118 @@ body {
     background-color: #333;
     position: fixed;
 }
+
+/* Main page styles */
+
+/* border between bootstrap column */
+.border-between > [class*='col-']:before {
+    background: #e3e3e3;
+    bottom: 0;
+    content: " ";
+    left: 0;
+    position: absolute;
+    width: 1px;
+    top: 0;
+}
+.border-between > [class*='col-']:first-child:before {
+    display: none;
+}
+/* end of border between bootstrap column */
+
+.box-header {
+    height: 90px;
+    background: white;
+}
+
+.legend .item .legend-icon {
+    display: inline-block;
+    vertical-align: top;
+    padding: 10px 5px;
+}
+
+.legend .item .legend-icon .icon {
+    display: block;
+    width: 15px;
+    height: 15px;
+    background: #ccc;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+}
+
+.legend .item .legend-icon .icon.green {
+    background: #37b392;
+}
+
+.legend .item .legend-icon .icon.red {
+    background: #FF5A60;
+}
+
+.legend .item .details {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.legend .item .details .value {
+    display: block;
+    font-family: sans-serif;
+    font-size: 27px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.legend .item .details .description {
+    display: block;
+    font-size: 12px;
+    font-weight: lighter;
+    text-align: left;
+    text-transform: capitalize;
+    margin-bottom: 0px;
+    color: #666;
+}
+
+/* Small Devices, Tablets */
+@media only screen and (max-width : 830px) {
+
+    .container .content .legend .item {
+        display: block;
+        width: 100%;
+        text-align: left;
+        margin-bottom: 0px;
+    }
+
+}
+
+.content {
+    margin-left: 80px;
+}
+
+.container-content {
+    margin-top: 20px;
+}
+
+.row {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+table {
+    background: #FFFFFF;
+    margin-top: 20px;
+    bhub: 1px solid #ccc;
+    bhub-radius: 2px;
+    overflow-x: scroll;
+}
+
+table > tbody > tr > td.pickuptime-col {
+    min-width: 100px;
+}
+
+table > thead > tr > th {
+    color: #ccc;
+    text-transform: uppercase;
+}
+
+table > tbody > tr > td.more {
+    min-width: 80px;
+}

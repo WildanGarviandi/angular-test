@@ -120,6 +120,13 @@ angular.module('adminApp')
                 controller: 'city'
             },
         },
+        getCountryStates: {
+            method: 'POST',
+            params: {
+                module: 'location',
+                controller: 'states'
+            }
+        },
         getOneDistrictData: {
             method: 'GET',
             params: {
@@ -256,6 +263,21 @@ angular.module('adminApp')
             params: {
                 module: 'price',
                 controller: 'vehicles'
+            }
+        },
+        getEcommercePrice: {
+            method: 'POST',
+            params: {
+                module: 'price',
+                controller: 'ecommerce'
+            }
+        },
+        addEcommercePrice: {
+            method: 'POST',
+            params: {
+                module: 'price',
+                controller: 'ecommerce',
+                action: 'save'
             }
         }
     });
