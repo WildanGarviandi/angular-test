@@ -316,6 +316,7 @@ angular.module('adminApp')
     $scope.search = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchString = $scope.searchQuery;
+            $scope.searchFilter.name = $scope.searchQuery;
             $scope.getWebstores();
         };
     }
