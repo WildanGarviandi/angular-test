@@ -27,9 +27,9 @@ angular.module('adminApp')
         City: '',
         Province: '',
         ZipCodes: '',
-        Latitude: -6.2115,
-        Longitude: 106.8452
     };
+
+    $scope.config = {};
 
     $scope.zipcodes = [{
         key: 0,
@@ -40,6 +40,17 @@ angular.module('adminApp')
 
     $scope.itemsByPage = 10;
     $scope.offset = 0;
+
+    var getDefaultValues = function() {
+        return $q(function (resolve) {
+            $http.get('config/defaultValues.json').success(function(data) {
+                console.log(data.defaultLocation.Latitude);
+                $scope.config.Latitude = data.defaultLocation.Latitude;
+                $scope.config.Longitude = data.defaultLocation.Longitude;
+                resolve();
+            });
+        });
+    };
 
 
     // APP FLOW PART
@@ -106,8 +117,8 @@ angular.module('adminApp')
      */
     $scope.locationPicker = function() {
         if (!$scope.district.Latitude || !$scope.district.Longitude) {
-            $scope.district.Latitude = -6.2115;
-            $scope.district.Longitude = 106.8452;
+            $scope.district.Latitude = $scope.config.Latitude;
+            $scope.district.Longitude = $scope.config.Longitude;
         }
         $('#maps').locationpicker({
             location: {latitude: $scope.district.Latitude, longitude: $scope.district.Longitude},   
@@ -395,6 +406,8 @@ angular.module('adminApp')
         }
     };
 
-    $scope.loadManagePage();
-
+    getDefaultValues()
+    .then(function () {
+        $scope.loadManagePage();
+    });
   });
