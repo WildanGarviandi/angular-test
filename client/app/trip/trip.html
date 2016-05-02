@@ -25,11 +25,27 @@
                         <th>Trip Number</th>
                         <th>Pickup Address</th>
                         <th>Dropoff Address</th>
-                        <th>Pickup Time</th>
+                        <th>
+                            <span class="caret caret-reversed" ng-click="sortColumn('PickupTime', 'ASC')"></span>
+                            <span class="caret" ng-click="sortColumn('PickupTime', 'DESC')"></span>
+                            Pickup Time
+                        </th>
                         <th>Dropoff Time</th>
-                        <th>Driver</th>
-                        <th>Container Number</th>
-                        <th>District</th>
+                        <th>
+                            <span class="caret caret-reversed" ng-click="sortColumn('Driver.FirstName', 'ASC')"></span>
+                            <span class="caret" ng-click="sortColumn('Driver.FirstName', 'DESC')"></span>
+                            Driver
+                        </th>
+                        <th>
+                            <span class="caret caret-reversed" ng-click="sortColumn('ContainerNumber', 'ASC')"></span>
+                            <span class="caret" ng-click="sortColumn('ContainerNumber', 'DESC')"></span>
+                            Container
+                        </th>
+                        <th>
+                            <span class="caret caret-reversed" ng-click="sortColumn('District.Name', 'ASC')"></span>
+                            <span class="caret" ng-click="sortColumn('District.Name', 'DESC')"></span>
+                            District
+                        </th>
                         <th>Status</th>
                     </tr>
                 </thead>
