@@ -7,10 +7,19 @@ module.exports = function(sequelize, DataTypes) {
 			primaryKey: true,
 			autoIncrement: true
 		},
+		StateID: DataTypes.INTEGER,
+		ShortCode: DataTypes.STRING,
+		StateCode: DataTypes.STRING,
 		Name: DataTypes.STRING
 	}, {
 		tableName: 'Cities',
-		timestamps: false
+		timestamps: false,
+		classMethods: {
+            associate: function (models) {
+                City.belongsTo(models.State, {
+                	foreignKey: 'StateID'});
+            }
+        }
 	});
 
 	return City;
