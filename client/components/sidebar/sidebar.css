@@ -297,6 +297,18 @@
     background-repeat: no-repeat;
 }
 
+.side-ondemand-image {
+    background-image: url('../../assets/images/nav-ondemand.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
+.side-ondemand-image.active {
+    background-image: url('../../assets/images/nav-ondemand-active.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
 /* Booking */
 
 .side-booking-image {
