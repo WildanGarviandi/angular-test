@@ -53,7 +53,10 @@ angular.module('adminApp')
         .then(function(data) {
             var result = data.data.webstores;
             result.forEach(function(webstore) {
-                $scope.webstores.push({key: webstore.webstore.FirstName.concat(' ', webstore.webstore.LastName), value: webstore.webstore.UserID});
+                $scope.webstores.push({
+                    key: webstore.webstore.FirstName.concat(' ', webstore.webstore.LastName), 
+                    value: webstore.webstore.UserID
+                });
             }) 
             $rootScope.$emit('stopSpin');
         });
