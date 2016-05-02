@@ -104,31 +104,40 @@ module.exports = function(di) {
                         PerItemFee: fee.PerItemFee
                     }
                 })
-                .then(function (data) {
-                    models.LogisticFee.update({
+                .then(function (feeFoundorCreated) {
+                    return models.LogisticFee.update({
                         PricePerKM: fee.PricePerKM,
                         MinimumFee: fee.MinimumFee,
                         PerItemFee: fee.PerItemFee
                     }, {
                         where: {
-                            LogisticFeeID: data[0].LogisticFeeID
+                            LogisticFeeID: feeFoundorCreated[0].LogisticFeeID
                         }
-                    })
-                    .then(function (result) {
-                        resolve(result);
                     });
                 })
-                .catch(function (error) {
-                    reject(error);
+                .then(function (affectedRows) {
+                    resolve(affectedRows[0]);
                 });
             });
             functions.push(updateFunction);
         });
-        
+    
         Promise.all(functions).then(function (result) {
-            return res.status(200).json({
-                result: result
+            var totalRowsAffected = 0;
+            result.forEach(function (affectedRows) {
+                totalRowsAffected += affectedRows;
             });
+
+            if (totalRowsAffected == req.body.fees.length) {
+                return res.status(200).json({
+                    result: totalRowsAffected
+                });
+            } else {
+                return res.status(500).json({
+                    result: totalRowsAffected,
+                    error: 'Some fees are not updated, please check again'
+                });
+            }
         }, function (error) {
             return res.status(500).json({
                 error: error
