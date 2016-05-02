@@ -25,7 +25,9 @@ module.exports = function(sequelize, DataTypes) {
             validate: { 
                 len: [0, 100]
             }
-        }
+        },
+        Latitude: DataTypes.FLOAT,
+        Longitude: DataTypes.FLOAT
     }, {
         tableName: 'Districts',
         timestamps: true,

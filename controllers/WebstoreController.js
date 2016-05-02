@@ -15,7 +15,14 @@ module.exports = function(di) {
     router.get('/all',  function(req, res, next){
         models.User.findAll({
             where: {UserTypeID: 5},
-            order: [['FirstName', 'ASC'], ['LastName', 'ASC']]
+            order: [['FirstName', 'ASC'], ['LastName', 'ASC']],
+            include: [{
+                    model: models.WebstoreCompany,
+                    include: [
+                        {model: models.UserAddress}
+                        ]
+                    }
+                ]
         })
         .then(function(webstores) {
             return res.status(200).json({
@@ -132,7 +139,8 @@ module.exports = function(di) {
 
 
     //Update single webstore
-    router.post('/update',  function(req, res, next){        
+    router.post('/update',  function(req, res, next){      
+        console.log('body', req.body);  
         try {
             if (req.body.Password) {
                 req.body.Password = crypto.createHash('md5').update(req.body.Password).digest("hex");
@@ -165,7 +173,8 @@ module.exports = function(di) {
                                 //Update webstore if found
                                 webstore.update({
                                     HubID: req.body.HubID,
-                                    UserAddressID: address.UserAddressID
+                                    UserAddressID: address.UserAddressID,
+                                    AllowCOD: req.body.AllowCOD
                                 }).then(function(webstore) {
                                     return res.status(200).json({
                                         data:user,

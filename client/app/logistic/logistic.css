@@ -25,7 +25,11 @@
     font-size: 12px;
 }
 
-.save-button {
-    margin-top: 20px;
-    margin-bottom: 20px;
+input:focus{
+    outline: none;
+}
+
+input {
+    border-width:0px;
+    border:none;
 }

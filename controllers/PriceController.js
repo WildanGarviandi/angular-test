@@ -4,102 +4,132 @@ var models    = require('../models');
 var router = express.Router();
 
 module.exports = function(di) {
+    
+    router.post('/ecommerce', function (req, res) {
+        var params = {
+            WebstoreUserID: req.body.WebstoreUserID, 
+            PickupType: req.body.PickupType,
+            VehicleID: req.body.VehicleID,
+            MaxWeight: req.body.MaxWeight,
+            DiscountID: req.body.DiscountID
+        };
+        models.EcommercePrice.findAll({
+            where: params,
+            order: [['OriginID', 'ASC'], ['DestinationID', 'ASC']]
+        })
+        .then(function (prices) {
+            return res.status(200).json({
+                prices: prices
+            });
+        })
+        .catch(function (error) {
+            console.log('ecommerce error', error);
+            return res.status(500).json({
+                error: error
+            });
+        });
+    });
+
+    router.post('/ecommerce/save', function (req, res) {
+        models.EcommercePrice.findOrCreate({
+            where: {
+                WebstoreUserID: req.body.WebstoreUserID,
+                PickupType: req.body.PickupType,
+                VehicleID: req.body.VehicleID,
+                OriginID: req.body.OriginID,
+                DestinationID: req.body.DestinationID
+            },
+            defaults: {
+                MaxWeight: 0,
+                Price: 0
+            }
+        })
+        .then(function (data) {
+            models.EcommercePrice.update(req.body, {
+                where : {
+                    EcommercePriceID: data[0].EcommercePriceID
+                }
+            }).then(function (result) {
+                res.status(200).json({
+                    result: result
+                });
+            })
+            .catch(function (error) {
+                console.log('ecommerce error', error);
+                return res.status(500).json({
+                    error: error
+                });
+            });
+        })
+        .catch(function (error) {
+            console.log('ecommerce error', error);
+            return res.status(500).json({
+                error: error
+            });
+        });
+    });
+    
     router.post('/logistic',  function(req, res, next){
-        models.LogisticFlatPrices.findAll({
-            where: {PickupType: req.body.PickupType, CompanyDetailID: req.body.CompanyDetailID},
-            order: [['MaxWeight', 'ASC'], ['MaxCBM', 'ASC']]
+        var params = {
+            FleetManagerID: req.body.FleetManagerID
+        };
+        if (req.body.VehicleID) {
+            params.VehicleID = req.body.VehicleID;
+        }
+        models.LogisticFee.findAll({
+            where: params,
+            order: [['VehicleID', 'ASC']]
         })
-        .then(function(prices) {
+        .then(function(fees) {
             return res.status(200).json({
-                prices: prices
+                fees: fees
             });
         });
     });
 
-    router.post('/saveLogistic',  function(req, res, next){
-        saveLogisticPrices(req, req.body.Prices.bike)
-        saveLogisticPrices(req, req.body.Prices.van)
-        saveLogisticPrices(req, req.body.Prices.smalltruck)
-        saveLogisticPrices(req, req.body.Prices.mediumtruck)
-        return res.status(200).json({
-            status: true
-        });     
-    });
-
-    router.post('/customer',  function(req, res, next){
-        models.CustomerFlatPrices.findAll({
-            where: {PickupType: req.body.PickupType, WebstoreUserID: req.body.WebstoreUserID},
-            order: [['MaxWeight', 'ASC'], ['MaxCBM', 'ASC']]
+    router.post('/logistic/update',  function(req, res, next){
+        models.LogisticFee.findOrCreate({
+            where: {
+                FleetManagerID: req.body.FleetManagerID,
+                VehicleID: req.body.VehicleID
+            },
+            defaults: {
+                PricePerKM: req.body.PricePerKM,
+                MinimumFee: req.body.MinimumFee,
+                PerItemFee: req.body.PerItemFee
+            }
         })
-        .then(function(prices) {
-            return res.status(200).json({
-                prices: prices
+        .then(function (data) {
+            models.LogisticFee.update({
+                PricePerKM: req.body.PricePerKM,
+                MinimumFee: req.body.MinimumFee,
+                PerItemFee: req.body.PerItemFee
+            }, {
+                where: {
+                    LogisticFeeID: data[0].LogisticFeeID
+                }
+            })
+            .then(function (result) {
+                return res.status(200).json({
+                    result: result
+                }); 
             });
         });
     });
 
-    router.post('/saveCustomer',  function(req, res, next){        
-        saveCustomerPrices(req, req.body.Prices.bike)
-        saveCustomerPrices(req, req.body.Prices.van)
-        saveCustomerPrices(req, req.body.Prices.smalltruck)
-        saveCustomerPrices(req, req.body.Prices.mediumtruck)
-        return res.status(200).json({
-            status: true
-        });     
+    router.get('/vehicles', function (req, res, next) {
+        models.Vehicle.findAll().then(function (result) {
+            return res.status(200).json({
+                vehicles: result
+            });
+        })
+        .catch(function (error) {
+            return res.status(500).json({
+                error: error
+            });
+        });
     });
 
-
-    /**
-     * Save customer flat prices
-     * 
-     * @return {void}
-     */
-    function saveCustomerPrices(req, vehiclePrices) {
-        vehiclePrices.forEach(function(y) {
-            if (y.Price) {
-                models.CustomerFlatPrices.findOrCreate({
-                    where: {
-                        WebstoreUserID: req.body.WebstoreUserID, 
-                        PickupType: req.body.PickupType, 
-                        MaxWeight: y.MaxWeight, 
-                        MaxCBM: y.MaxCBM, 
-                        VehicleID: y.VehicleID
-                    }
-                })
-                .spread(function(price, created) {
-                    price.update(y).then(function(data) {
-                        
-                    })
-                })
-            }
-        });
-    }
-
-    /**
-     * Save logistic flat prices
-     * 
-     * @return {void}
-     */
-    function saveLogisticPrices(req, vehiclePrices) {
-        vehiclePrices.forEach(function(y) {
-            if (y.Price) {
-                models.LogisticFlatPrices.findOrCreate({
-                    where: {
-                        CompanyDetailID: req.body.CompanyDetailID, 
-                        PickupType: req.body.PickupType, 
-                        MaxWeight: y.MaxWeight,
-                        MaxCBM: y.MaxCBM, 
-                        VehicleID: y.VehicleID
-                    }
-                })
-                .spread(function(price, created) {
-                    price.update(y).then(function(data) {
-                        
-                    })
-                })
-            }
-        });
-    }
 
     return router;
 };

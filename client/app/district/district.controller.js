@@ -67,7 +67,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.addDistrict = function() {
-        window.location = '/add-district';
+        $location.path('/add-district');
     };
 
     /**
@@ -76,7 +76,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.editDistrict = function(id) {
-        window.location = '/update-district/' + id;
+        $location.path('/update-district/' + id);
     };
 
     /**
@@ -85,7 +85,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.manageZipcodes = function(id) {
-        window.location = '/district/' + id + '/zipcodes';
+        $location.path('/district/' + id + '/zipcodes');
     };
 
     /**
@@ -97,6 +97,25 @@ angular.module('adminApp')
         $window.history.back();
     };
 
+    /**
+     * Pick location from maps
+     * 
+     * @return {void}
+     */
+    $scope.locationPicker = function() {
+        if (!$scope.district.Latitude || !$scope.district.Longitude) {
+            $scope.district.Latitude = -6.2115;
+            $scope.district.Longitude = 106.8452;
+        }
+        $('#maps').locationpicker({
+            location: {latitude: $scope.district.Latitude, longitude: $scope.district.Longitude},   
+            radius: null,
+            inputBinding: {
+                latitudeInput: $('#us2-lat'),
+                longitudeInput: $('#us2-lon')
+            }
+        });
+    };
 
     // REQUEST PART
 
@@ -111,7 +130,9 @@ angular.module('adminApp')
                 name: $scope.district.Name,
                 city: $scope.district.City,
                 province: $scope.district.Province,
-                zipcodes: $scope.district.ZipCodes
+                zipcodes: $scope.district.ZipCodes,
+                lat: $scope.district.Latitude,
+                lng: $scope.district.Longitude
             };
 
             $rootScope.$emit('startSpin');
@@ -155,7 +176,9 @@ angular.module('adminApp')
                 _id: $stateParams.districtID,
                 name: $scope.district.Name,
                 city: $scope.district.City,
-                province: $scope.district.Province
+                province: $scope.district.Province,
+                lat: $scope.district.Latitude,
+                lng: $scope.district.Longitude
             };
             var ZipCodes = {
                 districtid: $stateParams.districtID,
@@ -216,11 +239,9 @@ angular.module('adminApp')
         Services.getOneDistrictData({
             id: $scope.id,
         }).$promise.then(function(data) {
+            console.log('district', data.district);
             $scope.district = data.district;
             $scope.type = {key: data.district.Type, value: data.district.Type};
-            if (data.parent) {
-                $scope.parent = {key: data.parent.Name, value: data.parent.DistrictID};
-            }
             // If has zipcodes
             if ((typeof data.district.DistrictZipCodes.length) !== 'undefined') {
                 $scope.zipcodes = [];
@@ -234,6 +255,7 @@ angular.module('adminApp')
                     }
                 });
             }
+            $scope.locationPicker();
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
@@ -311,32 +333,6 @@ angular.module('adminApp')
 	        .catch(function () {
 	            alert('UPDATING DISTRICT FAILED');
 	        });
-    };
-
-    /**
-     * Delete single district
-     * 
-     * @return {void}
-     */
-    $scope.deleteDistrict = function(id) {
-        if ($window.confirm('Are you sure you want to delete this district?')) {
-        	$rootScope.$emit('startSpin');
-	        Services.deleteDistrict({
-	            id: id,
-	        }).$promise.then(function(result) {
-	        	$rootScope.$emit('stopSpin');
-	        	if (result.status === true) {
-	        		alert('District successfully deleted');
-	            	$scope.getDistricts();
-	        	} else {
-	        		alert('DELETING DISTRICT FAILED');
-	        	}
-	            
-	        }).catch(function() {
-	        	$rootScope.$emit('stopSpin');
-	            alert('DELETING DISTRICT FAILED');
-	        });
-      }
     };
     
     /**
