@@ -316,6 +316,7 @@ angular.module('adminApp')
     $scope.search = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchString = $scope.searchQuery;
+            $scope.searchFilter.name = $scope.searchQuery;
             $scope.getWebstores();
         };
     }
@@ -395,7 +396,7 @@ angular.module('adminApp')
     $scope.loadManagePage = function() {
         $scope.getCountries();
         $scope.getHubs();
-        if ($state.current.name === 'update-webstore') {
+        if ($state.current.name === 'app.update-webstore') {
             $scope.getWebstoreDetails();
             setTimeout(function() {
                 if ($scope.webstore.UserID === undefined) {
@@ -404,7 +405,7 @@ angular.module('adminApp')
             }, 4000);
             $scope.updatePage = true;
             $scope.addPage = false;
-        } else if ($state.current.name === 'add-webstore') {
+        } else if ($state.current.name === 'app.add-webstore') {
             $scope.addPage = true;
             $scope.locationPicker();
         }
