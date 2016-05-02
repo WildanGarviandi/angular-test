@@ -14,7 +14,8 @@ angular.module('adminApp')
             $stateParams,
             $location, 
             $http, 
-            $window
+            $window,
+            config
         ) {
 
     Auth.getCurrentUser().$promise.then(function(data) {
@@ -49,6 +50,8 @@ angular.module('adminApp')
             }
         }
     };
+
+    $scope.currency = config.currency + " ";
 
     /**
      * Get status
@@ -217,7 +220,6 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.sortColumn = function(sortBy, sortCriteria) {
-        console.log(sortBy, sortCriteria);
         $scope.sortBy = sortBy;
         $scope.sortCriteria = sortCriteria;
         $scope.getTrip();

@@ -8,20 +8,26 @@ function env() {
     switch (app + '|' + country) {
         case 'staging|com':
             var url = 'http://staging.api2.etobee.com';
+            var currency = 'Rp';
             break;        
         case 'admin2|com':
             var url = 'http://api2.etobee.com';
+            var currency = 'Rp';
             break;    
         case 'staging|ph':
             var url = 'http://staging.api2.etobee.com';
+            var currency = 'PHP';
             break;    
         case 'admin2|ph':
             var url = 'http://api2.etobee.com.ph';
+            var currency = 'PHP';
             break;
         default:
             var url = 'http://localhost:3001';
+            var currency = 'Rp';
     } 
     return  {
+        'currency': currency,
         'url': url + '/v2/admin/',
         'endpoints': {
             'signIn': 'sign-in'
