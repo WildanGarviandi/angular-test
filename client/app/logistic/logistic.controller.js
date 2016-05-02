@@ -20,14 +20,12 @@ angular.module('adminApp')
         $scope.user = data.profile;
     });
 
-    $scope.ctrl = {
-        company:  {
-            CompanyName: 'Master',
-            FleetManagerID: 0
-        }
+    $scope.company =  {
+        CompanyName: 'Master',
+        FleetManagerID: 0
     };
 
-    $scope.companies = [$scope.ctrl.company];
+    $scope.companies = [$scope.company];
 
     $scope.pickup = {
         key: 'Same Day',
@@ -88,7 +86,7 @@ angular.module('adminApp')
     var getFees = function() {
         $rootScope.$emit('startSpin');
         var params = {
-            FleetManagerID: $scope.ctrl.company.FleetManagerID
+            FleetManagerID: $scope.company.FleetManagerID
         };
         var paramsMaster = {
             FleetManagerID: 0
@@ -104,7 +102,7 @@ angular.module('adminApp')
                         $scope.displayed[index].VehicleType = vehicle.Name;
                     } else {
                         var fromMaster = lodash.find(masterData.fees, {'VehicleID': vehicle.VehicleID});
-                        fromMaster.FleetManagerID = $scope.ctrl.company.FleetManagerID;
+                        fromMaster.FleetManagerID = $scope.company.FleetManagerID;
                         fromMaster.VehicleType = vehicle.Name;
                         $scope.displayed.push(fromMaster);
                     }
