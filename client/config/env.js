@@ -16,11 +16,11 @@ function env() {
             break;    
         case 'staging|ph':
             var url = 'http://staging.api2.etobee.com';
-            var currency = 'PHP';
+            var currency = '₱';
             break;    
         case 'admin2|ph':
             var url = 'http://api2.etobee.com.ph';
-            var currency = 'PHP';
+            var currency = '₱';
             break;
         default:
             var url = 'http://localhost:3001';
