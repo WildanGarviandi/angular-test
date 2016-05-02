@@ -1,0 +1,39 @@
+.check-true {
+    background-image: url('../../assets/images/checkbox.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    height: 30px;
+    width: 30px;
+    cursor:pointer;
+}
+
+.check-false {
+    background-image: url('../../assets/images/checkbox.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    height: 30px;
+    width: 30px;
+    opacity: 0.4;
+    cursor:pointer;
+}
+
+.row-fluid-city {
+    width: 400px;
+}
+
+.label-input-city {
+    width: 50%;
+    float: left;
+    margin-top: 10px;
+}
+
+.city-field {
+    width: 50%;
+    float: left;
+    margin-top: 10px;
+}
+
+.checkbox-city {
+    margin-left: -90px;
+    margin-top: -2px;
+}

@@ -69,11 +69,12 @@ angular.module('adminApp')
                 controller: 'logistic'
             },
         },
-        savePrices: {
+        saveLogisticFee: {
             method: 'POST',
             params: {
                 module: 'price',
-                controller: 'saveLogistic'
+                controller: 'logistic',
+                action: 'update'
             },
         },
         addZipCodes: {
@@ -118,6 +119,13 @@ angular.module('adminApp')
                 module: 'location',
                 controller: 'city'
             },
+        },
+        getCountryStates: {
+            method: 'POST',
+            params: {
+                module: 'location',
+                controller: 'states'
+            }
         },
         getOneDistrictData: {
             method: 'GET',
@@ -203,6 +211,34 @@ angular.module('adminApp')
                 controller: 'update'
             },
         },
+        getAllCities: {
+            method: 'GET',
+            params: {
+                module: 'city',
+                id: null
+            },
+        },
+        createCity: {
+            method: 'POST',
+            params: {
+                module: 'city',
+                controller: 'create'
+            },
+        },
+        updateCity: {
+            method: 'POST',
+            params: {
+                module: 'city',
+                controller: 'update'
+            },
+        },
+        deleteCity: {
+            method: 'POST',
+            params: {
+                module: 'city',
+                controller: 'delete'
+            },
+        },
         getTrip: {
             method: 'GET',
             params: {
@@ -222,5 +258,27 @@ angular.module('adminApp')
                 module: 'status'
             },
         },
+        getVehicles: {
+            method: 'GET',
+            params: {
+                module: 'price',
+                controller: 'vehicles'
+            }
+        },
+        getEcommercePrice: {
+            method: 'POST',
+            params: {
+                module: 'price',
+                controller: 'ecommerce'
+            }
+        },
+        addEcommercePrice: {
+            method: 'POST',
+            params: {
+                module: 'price',
+                controller: 'ecommerce',
+                action: 'save'
+            }
+        }
     });
 });

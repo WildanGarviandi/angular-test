@@ -1,0 +1,41 @@
+
+* {
+    font-family: Helvetica,serif;
+}
+
+.grid {
+  height: 400px;
+}
+
+.ui-grid-header-cell {
+    height: 40px;
+    word-wrap: break-word;
+}
+
+.ui-grid-header-cell .ui-grid-cell-contents {
+    text-align: center;
+}
+
+.ui-grid-header-cell .ui-grid-header-cell-label {
+    font-size: 12px;
+}
+
+.ui-grid-invisible {
+    display: none;
+}
+
+.ui-grid-cell-contents {
+    white-space: normal;
+}
+
+.red {
+    color: red;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.blank {
+    background-color: yellow !important;
+}
