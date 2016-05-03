@@ -121,10 +121,11 @@ angular.module('adminApp')
     $scope.savePrices = function() {
         $rootScope.$emit('startSpin');
         var params = {
-            WebstoreUserID: $scope.webstore.value,
             prices: $scope.prices
         };
-        Services2.saveEcommercePrice(params).$promise
+        Services2.saveEcommercePrice({
+            id: $scope.webstore.value
+        }, params).$promise
         .then(function(data) {
             $rootScope.$emit('stopSpin');
             alert('Save success'); 
