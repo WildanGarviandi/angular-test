@@ -23,7 +23,8 @@ angular.module('adminApp')
 
     $scope.city = {
         Name: '',
-        EcommercePriceReferenced: false
+        EcommercePriceReferenced: false,
+        StateID: 0 
     };
 
     $scope.cityStatus = {
@@ -45,7 +46,8 @@ angular.module('adminApp')
     var createCity = function(callback) {
         var city = {
             Name: $scope.city.Name,
-            EcommercePriceReferenced: $scope.city.EcommercePriceReferenced
+            EcommercePriceReferenced: $scope.city.EcommercePriceReferenced,
+            StateID: $scope.city.StateID
         };
         $rootScope.$emit('startSpin');
         Services2.createCity(city).$promise.then(function(response, error) {
@@ -68,7 +70,8 @@ angular.module('adminApp')
         }
         var city = {
             Name: $scope.city.Name,
-            EcommercePriceReferenced: $scope.city.EcommercePriceReferenced
+            EcommercePriceReferenced: $scope.city.EcommercePriceReferenced,
+            StateID: $scope.city.StateID
         };
         $rootScope.$emit('startSpin');
         Services2.updateCity({
@@ -172,6 +175,7 @@ angular.module('adminApp')
             id: $scope.id,
         }).$promise.then(function(data) {
             $scope.city = data.data.City;
+            $scope.state = {key: $scope.city.StateMaster.Name, value: $scope.city.StateMaster.StateID};
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
@@ -223,6 +227,7 @@ angular.module('adminApp')
      */
     $scope.deleteCity = function(id) {
         if ($window.confirm('Are you sure you want to delete this city?')) {
+        $rootScope.$emit('startSpin');
         Services2.deleteCity({
             id: id,
         }, {}).$promise.then(function(result) {
@@ -232,9 +237,11 @@ angular.module('adminApp')
                 alert('Failed');                
             }  
             $scope.getCities();
+            $rootScope.$emit('stopSpin');
         }).catch(function() {
             alert('Delete failed');
             $scope.getCities();
+            $rootScope.$emit('stopSpin');
         });
       }
     }
@@ -249,14 +256,17 @@ angular.module('adminApp')
             EcommercePriceReferenced: true
         }
         if ($window.confirm('Are you sure you want check this city?')) {
+        $rootScope.$emit('startSpin');
         Services2.updateCity({
             id: id
         }, city).$promise.then(function(result) {  
             alert('Check success');
             $scope.getCities();
+            $rootScope.$emit('stopSpin');
         }).catch(function() {
             alert('Check failed');
             $scope.getCities();
+            $rootScope.$emit('stopSpin');
         });
       }
     }
@@ -271,14 +281,17 @@ angular.module('adminApp')
             EcommercePriceReferenced: false
         }
         if ($window.confirm('Are you sure you want uncheck this city?')) {
+        $rootScope.$emit('startSpin');
         Services2.updateCity({
             id: id
         }, city).$promise.then(function(result) {  
             alert('Uncheck success');
             $scope.getCities();
+            $rootScope.$emit('stopSpin');
         }).catch(function() {
             alert('Uncheck failed');
             $scope.getCities();
+            $rootScope.$emit('stopSpin');
         });
       }
     }
@@ -301,6 +314,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.loadManagePage = function() {
+        $scope.getStates();
         if ($stateParams.cityID !== undefined) {
             $scope.getCityDetails();
             $scope.updatePage = true;
@@ -308,6 +322,32 @@ angular.module('adminApp')
         } else {
             $scope.addPage = true;
         }
+    }
+
+    /**
+     * Assign state to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.chooseState = function(item) {
+        $scope.city.StateID = item.value;
+        $scope.state = item;
+    }
+
+    /**
+     * Get all states
+     * 
+     * @return {void}
+     */
+    $scope.getStates = function() {
+        Services2.getStates().$promise
+        .then(function(data) {
+            $scope.states = []; 
+            data.data.States.rows.forEach(function(state) {
+                $scope.states.push({key: state.Name, value: state.StateID});
+            }); 
+            $rootScope.$emit('stopSpin');
+        });
     }
 
     $scope.loadManagePage();
