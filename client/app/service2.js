@@ -149,7 +149,7 @@ angular.module('adminApp')
             params: {
                 module: 'price',
                 controller: 'ecommerce',
-                action: 'update'
+                id: null
             },
         },
     });
