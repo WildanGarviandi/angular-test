@@ -6,6 +6,7 @@ angular.module('adminApp')
         $scope,
         $location,
         $window,
+        Services2,
         Services,
         $rootScope
     ) {
@@ -81,8 +82,8 @@ angular.module('adminApp')
             '<svg baseProfile="basic" width="48" height="20" xmlns="http://www.w3.org/2000/svg">' +
                 '<defs><marker id="markerArrow" markerWidth="13" markerHeight="13" refX="2" refY="6"orient="auto">' +
                     '<path d="M2,4 L2,8 L6,6 L2,4" style="fill:#000000;" /></marker></defs>' +
-                '<path d="M 5 10 45 10 0" stroke="'+ type.strokeColor + '" stroke-width="4px" fill="none" ' +
-                    'marker-end="url(#markerArrow)"/></svg>' +
+                '<path d="M5,10,45,10" stroke="' + type.strokeColor + '" stroke-width="4px" fill="none" ' +
+                    'marker-end="url(#markerArrow)" /></svg>' +
             '<h5>' + type.label + '</h5>';
         legend.appendChild(div);
     }
@@ -145,9 +146,9 @@ angular.module('adminApp')
         return new Promise(function (resolve, reject) {
             $rootScope.$emit('startSpin');
             $scope.isLoading = true;
-            Services.getAll().$promise.then(function(data) {
+            Services2.getAllHubs().$promise.then(function(data) {
                 console.log('hubs', data);
-                $scope.hubs = data.hubs;
+                $scope.hubs = data.data.hubs;
                 $scope.isLoading = false;
                 $rootScope.$emit('stopSpin');
 
@@ -174,12 +175,13 @@ angular.module('adminApp')
         return new Promise(function (resolve, reject) {
             $rootScope.$emit('startSpin');
             $scope.isLoading = true;
-            Services.getAllWebstores().$promise.then(function(data) {
+            Services2.getWebstores().$promise.then(function(data) {
                 console.log('webstores', data);
-                $scope.webstores = data.webstores;
+                $scope.webstores = data.data.webstores;
                 $scope.isLoading = false;
                 $rootScope.$emit('stopSpin');
-                $scope.webstores.forEach(function (webstore, i) {
+                $scope.webstores.forEach(function (v, i) {
+                    var webstore = v.webstore;
                     var data = {};
                     if (webstore.WebstoreCompany && webstore.WebstoreCompany.UserAddress) {
                         data = {
