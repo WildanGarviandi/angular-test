@@ -230,5 +230,15 @@ angular.module('adminApp')
                 }
             },
             authenticate: true
+        })
+        .state('app.ecommercePrice', {
+            url: 'ecommercePrice',
+            views: {
+                'content@': {
+                    templateUrl: 'app/ecommercePrice/ecommercePrice.html',
+                    controller: 'EcommercePriceCtrl',
+                }
+            },
+            authenticate: true
         });
     });
