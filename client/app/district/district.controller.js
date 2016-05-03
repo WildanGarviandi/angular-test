@@ -275,6 +275,35 @@ angular.module('adminApp')
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
+            zipcode: false
+        };
+        Services.getAllDistrictsData(params).$promise.then(function(data) {
+            $scope.districts = []; 
+            data.districts.forEach(function(district) {
+                $scope.districts.push({key: district.Name, value: district.DistrictID});
+            });
+            $scope.displayed = data.districts;
+            $scope.isLoading = false;
+            $scope.tableState.pagination.numberOfPages = Math.ceil(
+                data.count / $scope.tableState.pagination.number);
+            $rootScope.$emit('stopSpin');
+        });
+    };
+
+    /**
+     * Search districts
+     * 
+     * @return {void}
+     */
+    $scope.searchDistricts = function() {
+        $rootScope.$emit('startSpin');
+        if ($stateParams.query) {
+            $scope.reqSearchString = $stateParams.query;
+        }
+        $scope.isLoading = true;
+        var params = {
+            offset: $scope.offset,
+            limit: $scope.itemsByPage,
             q: $scope.reqSearchString
         };
         Services.searchDistricts(params).$promise.then(function(data) {
@@ -299,7 +328,7 @@ angular.module('adminApp')
     $scope.search = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchString = $scope.searchQuery;
-            $scope.getDistricts();
+            $scope.searchDistricts();
         }
     };
 
