@@ -8,28 +8,30 @@ function env() {
     switch (app + '|' + country) {
         case 'staging|com':
             var url = 'http://staging.api2.etobee.com';
+            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 }; // ID
             break;        
         case 'admin2|com':
             var url = 'http://api2.etobee.com';
+            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 }; // ID
             break;    
         case 'staging|ph':
             var url = 'http://staging.api2.etobee.com';
+            var defaultLocation = { Latitude: 14.5974875, Longitude: 120.9542445 }; // PH
             break;    
         case 'admin2|ph':
             var url = 'http://api2.etobee.com.ph';
+            var defaultLocation = { Latitude: 14.5974875, Longitude: 120.9542445 }; // PH
             break;
         default:
             var url = 'http://localhost:3001';
+            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 }; // Default to ID
     } 
     return  {
         'url': url + '/v2/admin/',
         'endpoints': {
             'signIn': 'sign-in',
         },
-        'defaultLocation': {
-            'Latitude': -6.2115,
-            'Longitude': 106.8452
-        }
+        'defaultLocation': defaultLocation
     };
 }
 
