@@ -260,6 +260,7 @@ angular.module('adminApp')
             $scope.webstore.AllowCOD = data.User.WebstoreCompany.AllowCOD;
             if (data.hasHub) {
                 $scope.hub = {key: data.User.WebstoreCompany.Hub.Name, value: data.User.WebstoreCompany.Hub.HubID};
+                $scope.webstore.HubID = data.User.WebstoreCompany.Hub.HubID;
             }
             if (data.hasAddress) {
                 $scope.webstore.UserAddress = data.User.WebstoreCompany.UserAddress;
