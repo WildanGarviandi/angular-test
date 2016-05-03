@@ -24,9 +24,13 @@ function env() {
     return  {
         'url': url + '/v2/admin/',
         'endpoints': {
-            'signIn': 'sign-in'
-        } 
-    }
+            'signIn': 'sign-in',
+        },
+        'defaultLocation': {
+            'Latitude': -6.2115,
+            'Longitude': 106.8452
+        }
+    };
 }
 
 var app = angular.module('config', ['ui.router']);

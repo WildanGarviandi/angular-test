@@ -241,9 +241,5 @@
             "PerItemFee": 2000,
             "VehicleType": "Bicycle"
         }
-    ],
-    "defaultLocation": {
-        "Latitude": -6.2115,
-        "Longitude": 106.8452
-    }
+    ]
 }

@@ -14,7 +14,8 @@ angular.module('adminApp')
             $location,
             $http, 
             $window,
-            $q
+            $q,
+            config
         ) {
 
     Auth.getCurrentUser().$promise.then(function(data) {
@@ -29,8 +30,6 @@ angular.module('adminApp')
         ZipCodes: '',
     };
 
-    $scope.config = {};
-
     $scope.zipcodes = [{
         key: 0,
         value: ''
@@ -40,18 +39,6 @@ angular.module('adminApp')
 
     $scope.itemsByPage = 10;
     $scope.offset = 0;
-
-    var getDefaultValues = function() {
-        return $q(function (resolve) {
-            $http.get('config/defaultValues.json').success(function(data) {
-                console.log(data.defaultLocation.Latitude);
-                $scope.config.Latitude = data.defaultLocation.Latitude;
-                $scope.config.Longitude = data.defaultLocation.Longitude;
-                resolve();
-            });
-        });
-    };
-
 
     // APP FLOW PART
 
@@ -117,8 +104,8 @@ angular.module('adminApp')
      */
     $scope.locationPicker = function() {
         if (!$scope.district.Latitude || !$scope.district.Longitude) {
-            $scope.district.Latitude = $scope.config.Latitude;
-            $scope.district.Longitude = $scope.config.Longitude;
+            $scope.district.Latitude = config.defaultLocation.Latitude;
+            $scope.district.Longitude = config.defaultLocation.Longitude;
         }
         $('#maps').locationpicker({
             location: {latitude: $scope.district.Latitude, longitude: $scope.district.Longitude},   
@@ -406,8 +393,5 @@ angular.module('adminApp')
         }
     };
 
-    getDefaultValues()
-    .then(function () {
-        $scope.loadManagePage();
-    });
+    $scope.loadManagePage();
   });
