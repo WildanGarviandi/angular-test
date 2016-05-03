@@ -417,6 +417,7 @@ angular.module('adminApp')
         $scope.offset = 0;
         $scope.itemsByPage = 10;
         $scope.tableState.pagination.start = 0;
+        $scope.searchFilter = {};
         $scope.getWebstores();
     }
 
