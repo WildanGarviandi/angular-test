@@ -52,6 +52,7 @@
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
                         <th>Name</th>
+                        <th>State</th>
                         <th>E-Commerce Price</th>
                         <th></th>
                     </tr>
@@ -72,6 +73,7 @@
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="city in displayed">
                         <td>{{city.Name}}</td>
+                        <td>{{city.StateMaster.Name}}</td>
                         <td >
                             <div ng-if="city.EcommercePriceReferenced" ng-click="toggleFalse(city.CityID)" class="check-true">
                             </div>

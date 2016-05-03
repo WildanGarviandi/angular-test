@@ -37,6 +37,24 @@
                 <div class="clearfix"></div>                
                 <div class="row-fluid-city">                    
                     <div class="label-input-city">
+                        State :
+                    </div>  
+                    <ui-select class="city-field select-field" 
+                        ng-model="state" 
+                        theme="selectize" 
+                        ng-disabled="disabled" 
+                        on-select="chooseState($item)">
+                        <ui-select-match placeholder="Choose state">
+                            {{ $select.selected.key }}
+                        </ui-select-match>
+                        <ui-select-choices repeat="m in states" selected>
+                            <span ng-bind-html="m.key"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="clearfix"></div>                
+                <div class="row-fluid-city">                    
+                    <div class="label-input-city">
                         E-Commerce Price :
                     </div>  
                     <div class="city-field checkbox-city">

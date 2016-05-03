@@ -152,5 +152,11 @@ angular.module('adminApp')
                 id: null
             },
         },
+        getStates: {
+            method: 'GET',
+            params: {
+                module: 'state'
+            },
+        },
     });
 });
