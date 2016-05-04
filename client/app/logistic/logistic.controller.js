@@ -21,12 +21,14 @@ angular.module('adminApp')
         $scope.user = data.profile;
     });
 
-    $scope.company =  {
+    $scope.input = {};
+
+    $scope.input.company =  {
         CompanyName: 'Master',
         FleetManagerID: 0
     };
 
-    $scope.companies = [$scope.company];
+    $scope.companies = [$scope.input.company];
 
     $scope.pickup = {
         key: 'Same Day',
@@ -71,8 +73,8 @@ angular.module('adminApp')
     var getCompanies = function() {
         return $q(function (resolve) {
             $rootScope.$emit('startSpin');
-            Services.showCompanies().$promise.then(function(data) {
-                $scope.companies = $scope.companies.concat(data.companies);
+            Services2.getAllCompanies().$promise.then(function(result) {
+                $scope.companies = $scope.companies.concat(result.data.Companies);
                 $rootScope.$emit('stopSpin');
                 resolve();
             });
@@ -87,13 +89,13 @@ angular.module('adminApp')
     var getFees = function() {
         $rootScope.$emit('startSpin');
         var params = {
-            id: $scope.company.FleetManagerID
+            id: $scope.input.company.FleetManagerID
         };
         var paramsMaster = {
             id: 0
         };
         Services2.getLogisticFees(paramsMaster).$promise.then(function(masterResult) {
-            var masterData = masterResult.data;
+            var masterData = masterResult.data.Fees;
             Services2.getLogisticFees(params).$promise.then(function(result) {
                 $scope.displayed = result.data.Fees;
                 $scope.vehicleTypes.forEach(function (vehicle) {
@@ -103,8 +105,8 @@ angular.module('adminApp')
                     if (index !== -1) {
                         $scope.displayed[index].VehicleType = vehicle.Name;
                     } else {
-                        var fromMaster = lodash.find(masterData.Fees, {'VehicleID': vehicle.VehicleID});
-                        fromMaster.FleetManagerID = $scope.company.FleetManagerID;
+                        var fromMaster = lodash.find(masterData, {'VehicleID': vehicle.VehicleID});
+                        fromMaster.FleetManagerID = $scope.input.company.FleetManagerID;
                         fromMaster.VehicleType = vehicle.Name;
                         $scope.displayed.push(fromMaster);
                     }

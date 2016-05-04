@@ -171,6 +171,12 @@ angular.module('adminApp')
                 module: 'price',
                 controller: 'logistic'
             }
+        },
+        getAllCompanies: {
+            method: 'GET',
+            params: {
+                module: 'company'
+            }
         }
     });
 });
