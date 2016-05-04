@@ -8,25 +8,39 @@ function env() {
     switch (app + '|' + country) {
         case 'staging|com':
             var url = 'http://staging.api2.etobee.com';
+            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
+            var currency = 'Rp';
             break;        
         case 'admin2|com':
             var url = 'http://api2.etobee.com';
+            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
+            var currency = 'Rp';
             break;    
         case 'staging|ph':
             var url = 'http://staging.api2.etobee.com';
+            var defaultLocation = { Latitude: 14.5974875, Longitude: 120.9542445 };
+            var currency = '₱';
             break;    
         case 'admin2|ph':
             var url = 'http://api2.etobee.com.ph';
+            var defaultLocation = { Latitude: 14.5974875, Longitude: 120.9542445 };
+            var currency = '₱';
             break;
         default:
             var url = 'http://localhost:3001';
+            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
+            var currency = 'Rp';
+            break;
     } 
+
     return  {
-        'url': url + '/v2/admin/',
-        'endpoints': {
-            'signIn': 'sign-in'
-        } 
-    }
+        currency: currency,
+        url: url + '/v2/admin/',
+        endpoints: {
+            signIn: 'sign-in',
+        },
+        defaultLocation: defaultLocation
+    };
 }
 
 var app = angular.module('config', ['ui.router']);

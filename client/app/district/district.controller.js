@@ -14,7 +14,8 @@ angular.module('adminApp')
             $location,
             $http, 
             $window,
-            $q
+            $q,
+            config
         ) {
 
     Auth.getCurrentUser().$promise.then(function(data) {
@@ -26,7 +27,7 @@ angular.module('adminApp')
         Name: '',
         City: '',
         Province: '',
-        ZipCodes: ''
+        ZipCodes: '',
     };
 
     $scope.zipcodes = [{
@@ -38,7 +39,6 @@ angular.module('adminApp')
 
     $scope.itemsByPage = 10;
     $scope.offset = 0;
-
 
     // APP FLOW PART
 
@@ -104,8 +104,8 @@ angular.module('adminApp')
      */
     $scope.locationPicker = function() {
         if (!$scope.district.Latitude || !$scope.district.Longitude) {
-            $scope.district.Latitude = -6.2115;
-            $scope.district.Longitude = 106.8452;
+            $scope.district.Latitude = config.defaultLocation.Latitude;
+            $scope.district.Longitude = config.defaultLocation.Longitude;
         }
         $('#maps').locationpicker({
             location: {latitude: $scope.district.Latitude, longitude: $scope.district.Longitude},   
@@ -204,15 +204,17 @@ angular.module('adminApp')
                 }        
             };
 
-            var updateZipCodes = function (status) {
+            var updateZipCodes = function (result) {
                 $rootScope.$emit('stopSpin');
-				if (status) {
-					if (status !== false) {
-	                    resolve();
+				if (result) {
+					if (result.status !== false) {
+	                    resolve('No Warning');
 	                } else {
-	                    reject();
+	                    resolve(result.error.messages);
 	                }
-				}
+				} else {
+                    reject();
+                }
             };
 
             update(district)
@@ -273,6 +275,35 @@ angular.module('adminApp')
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
+            zipcode: false
+        };
+        Services.getAllDistrictsData(params).$promise.then(function(data) {
+            $scope.districts = []; 
+            data.districts.forEach(function(district) {
+                $scope.districts.push({key: district.Name, value: district.DistrictID});
+            });
+            $scope.displayed = data.districts;
+            $scope.isLoading = false;
+            $scope.tableState.pagination.numberOfPages = Math.ceil(
+                data.count / $scope.tableState.pagination.number);
+            $rootScope.$emit('stopSpin');
+        });
+    };
+
+    /**
+     * Search districts
+     * 
+     * @return {void}
+     */
+    $scope.searchDistricts = function() {
+        $rootScope.$emit('startSpin');
+        if ($stateParams.query) {
+            $scope.reqSearchString = $stateParams.query;
+        }
+        $scope.isLoading = true;
+        var params = {
+            offset: $scope.offset,
+            limit: $scope.itemsByPage,
             q: $scope.reqSearchString
         };
         Services.searchDistricts(params).$promise.then(function(data) {
@@ -297,7 +328,7 @@ angular.module('adminApp')
     $scope.search = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchString = $scope.searchQuery;
-            $scope.getDistricts();
+            $scope.searchDistricts();
         }
     };
 
@@ -324,8 +355,8 @@ angular.module('adminApp')
      */
     $scope.updateDistrict = function() {
         updateDistrict()
-	        .then(function () {        
-	        	alert('District successfully updated');
+	        .then(function (message) {        
+	        	alert('District successfully updated.\n' + message);
 	            $location.path('/district');
 	        })
 	        .catch(function () {
@@ -379,15 +410,19 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.loadManagePage = function() {
-        if ($stateParams.districtID !== undefined) {
+        if ($state.includes('app.update-district')) {
             $scope.getDistrictDetails();
             $scope.updatePage = true;
             $scope.addPage = false;
+        } else if ($state.includes('app.add-district')) {
+            $scope.locationPicker();
+            $scope.addPage = true;
+            $scope.updatePage = false;
         } else {
-             $scope.addPage = true;
+            $scope.addPage = false;
+            $scope.updatePage = false;
         }
     };
 
     $scope.loadManagePage();
-
   });

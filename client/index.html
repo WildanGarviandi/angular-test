@@ -165,16 +165,15 @@
     <script src="app/account/login/login.controller.js"></script>
     <script src="app/hub/hub.controller.js"></script>
     <script src="app/district/district.controller.js"></script>
-    <script src="app/pricing/pricing.controller.js"></script>
     <script src="app/ecommerce/ecommerce.controller.js"></script>
     <script src="app/logistic/logistic.controller.js"></script>
-    <script src="app/custpricing/custpricing.controller.js"></script>
     <script src="app/webstore/webstore.service.js"></script>
     <script src="app/webstore/webstore.controller.js"></script>
     <script src="app/map/map.controller.js"></script>
     <script src="app/city/city.controller.js"></script>
     <script src="app/trip/trip.controller.js"></script>
     <script src="app/driver/driver.controller.js"></script>
+    <script src="app/ecommercePrice/ecommercePrice.controller.js"></script>
     <script src="components/auth/auth.service.js"></script>
     <script src="components/auth/user.service.js"></script>
     <script src="components/sidebar/sidebar.controller.js"></script>
@@ -182,13 +181,16 @@
     <!-- endinjector -->
     <!-- endbuild -->
     
-    <div class="sidebar">
+    <div ng-class="{ sidebar:true, expanded: expanded }">
         <div ui-view="sidebar"></div>
     </div>
-    <div class="content">
+    <div ng-class="{ content: true, expanded: expanded }">
         <div ui-view="content"></div>
     </div>
-    
+    <div id='spinner-container' ng-class="{ overlay: spinnerShown }" ng-if="spinnerShown">
+        <span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-1" ></span>
+    </div>
+
 </body>
 
 </html>

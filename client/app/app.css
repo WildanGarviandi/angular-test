@@ -154,3 +154,33 @@ body {
 .content {
     margin-left: 80px;
 }
+
+.container-content {
+    margin-top: 20px;
+}
+
+.row {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+table {
+    background: #FFFFFF;
+    margin-top: 20px;
+    bhub: 1px solid #ccc;
+    bhub-radius: 2px;
+    overflow-x: scroll;
+}
+
+table > tbody > tr > td.pickuptime-col {
+    min-width: 100px;
+}
+
+table > thead > tr > th {
+    color: #ccc;
+    text-transform: uppercase;
+}
+
+table > tbody > tr > td.more {
+    min-width: 80px;
+}

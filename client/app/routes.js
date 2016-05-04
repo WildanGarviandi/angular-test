@@ -61,26 +61,6 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('app.pricing', {
-            url: 'pricing',
-            views: {
-                'content@': {
-                    templateUrl: 'app/pricing/pricing.html',
-                    controller: 'PricingCtrl',
-                }
-            },
-            authenticate: true
-        })
-        .state('app.custpricing', {
-            url: 'custpricing',
-            views: {
-                'content@': {
-                    templateUrl: 'app/custpricing/custpricing.html',
-                    controller: 'CustPricingCtrl',
-                }
-            },
-            authenticate: true
-        })
         .state('app.district', {
             url: 'district',
             views: {
@@ -161,8 +141,8 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('city', {
-            url: '/cities',
+        .state('app.city', {
+            url: 'cities',
             views: {
                 'content@': {
                     templateUrl: 'app/city/city.html',
@@ -171,8 +151,8 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('add-city', {
-            url: '/add-city',
+        .state('app.add-city', {
+            url: 'add-city',
             views: {
                 'content@': {
                     templateUrl: 'app/city/manage-city.html',
@@ -181,8 +161,8 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('update-city', {
-            url: '/update-city/:cityID',
+        .state('app.update-city', {
+            url: 'update-city/:cityID',
             views: {
                 'content@': {
                     templateUrl: 'app/city/manage-city.html',
@@ -211,8 +191,8 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('ecommerce-pricing', {
-            url: '/pricing/ecommerce',
+        .state('app.ecommerce-pricing', {
+            url: 'pricing/ecommerce',
              views: {
                 'content@': {
                     templateUrl: 'app/ecommerce/ecommerce.html',
@@ -221,8 +201,18 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('driver', {
-            url: '/drivers',
+        .state('app.logistic-fees', {
+            url: 'pricing/logistic',
+             views: {
+                'content@': {
+                    templateUrl: 'app/logistic/logistic.html',
+                    controller: 'LogisticFeeCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.driver', {
+            url: 'drivers',
              views: {
                 'content@': {
                     templateUrl: 'app/driver/driver.html',
@@ -231,12 +221,22 @@ angular.module('adminApp')
             },
             authenticate: true
         })
-        .state('update-driver', {
-            url: '/update-driver/:driverID',
+        .state('app.update-driver', {
+            url: 'update-driver/:driverID',
              views: {
                 'content@': {
                     templateUrl: 'app/driver/manage-driver.html',
                     controller: 'DriverCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.ecommercePrice', {
+            url: 'ecommercePrice',
+            views: {
+                'content@': {
+                    templateUrl: 'app/ecommercePrice/ecommercePrice.html',
+                    controller: 'EcommercePriceCtrl',
                 }
             },
             authenticate: true

@@ -86,12 +86,19 @@
                 <div class="clearfix"></div>
                 <div ng-repeat="route in trip.UserOrderRoutes" class="row-fluid order-detail-from-address">
                     <uib-accordion>
-                    <uib-accordion-group heading="Route {{$index + 1}}">                    
+                    <uib-accordion-group 
+                        heading="Route {{$index + 1}}: {{route.UserOrder.UserOrderNumber}} / {{route.UserOrder.WebOrderID}}">
                         <div class="order-status-container-body">
-                            Pickup: {{route.PickupAddress.Address1}} at {{route.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                            Pickup Address: {{route.PickupAddress.Address1}}
                         </div>
                         <div class="order-status-container-body">
-                            Dropoff: {{route.DropoffAddress.Address1}} at {{route.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                            Pickup Time: {{route.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Dropoff Address: {{route.DropoffAddress.Address1}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Dropoff Time: {{route.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}
                         </div>
                         <div class="order-status-container-body">
                             Distance: {{route.Distance}}
@@ -100,7 +107,7 @@
                             ETA Delivery: {{route.ETADelivery}}
                         </div>
                         <div class="order-status-container-body">
-                            Delivery Fee: {{route.DeliveryFee}}
+                            Delivery Fee: {{route.DeliveryFee | currency: currency}}
                         </div>
                         <div class="order-status-container-body">
                             Net Margin: {{route.NetMargin}}
@@ -144,7 +151,13 @@
                                 Status: {{route.UserOrder.OrderStatus.OrderStatus}}
                             </div>
                             <div class="order-status-container-body">
-                                PaidByParent: {{route.UserOrder.PaidByParent}}
+                                PaidByParent: {{route.UserOrder.PaidByParent}} 
+                                <span ng-if="route.UserOrder.PaidByParent">
+                                    (by {{route.UserOrder.User.FirstName}} {{route.UserOrder.User.LastName}})
+                                </span>
+                                <span ng-if="!route.UserOrder.PaidByParent">
+                                    (by {{route.UserOrder.WebstoreUser.FirstName}} {{route.UserOrder.WebstoreUser.LastName}})
+                                </span>
                             </div>
                         </uib-accordion-group>   
                         </uib-accordion>

@@ -3,62 +3,97 @@
 angular.module('adminApp')
     .controller('SidebarCtrl', function($scope, $location, $rootScope, usSpinnerService, localStorageService) {
 
-        $rootScope.$on('startSpin', function() {
-            usSpinnerService.spin('spinner-1');
-            document.getElementById("spinner-container").setAttribute('class', 'overlay');
-        });
+        $scope.currentPath = $location.path();
+        $scope.menus = {
+            pricing: {
+                submenus: {
+                    logistic: { routes: ['/pricing/logistic']},
+                    ecommerce: { routes: ['/pricing/ecommerce']},
+                    ondemand: { routes: ['/ecommercePrice']},
+                }
+            },
+            location: {
+                submenus: {
+                    district: { routes: ['/district']},
+                    cities: { routes: ['/cities'] }
+                }
+            },
+            trips: {
+                routes: ['/trips']
+            },
+            hub: {
+                routes: ['/hub']
+            },
+            drivers: {
+                routes: ['/drivers']
+            },
+            webstore: {
+                routes: ['/webstore']
+            },
+            map: {
+                routes: ['/map']
+            }
+        };
 
-        $rootScope.$on('stopSpin', function() {
-            usSpinnerService.stop('spinner-1');
-            document.getElementById("spinner-container").removeAttribute('class', 'overlay');
-        });
-
-        $scope.isActive = function(routes) {
+        function routeActive(routes) {
             var active = false;
             routes.forEach(function (route) {
-                if (route === $location.path()) { 
+                if (new RegExp($scope.currentPath, 'i').test(route)) {
                     active = true; 
                 }
             });
             return active;
         };
 
-        $scope.isNotActive = function (routes) {
-            var hidden = true;
-            routes.forEach(function (route) {
-                if (route === $location.path()) { 
-                    hidden = false; 
-                }
-            });
-            return hidden;
-        };
-
-        var toggleExpand = function () {
-            $('.content').toggleClass('isOpen');
-            $('.sidebar').toggleClass('isOpen');
-            $('.side-image').toggleClass('isOpen');
-            $('.side-text').toggleClass('isOpen');
-            $('.side-caret').toggleClass('isOpen');
-            $('#expand').toggleClass('fa-angle-double-right');
-            $('.image-caret').toggleClass('hidden');
-        };
-
-        $(document).ready(function() {
-            if (localStorageService.get('isExpanded') === true) {
-                toggleExpand();
-            }
-            $('.expand-button').click(function() {
-                toggleExpand();
-                if (localStorageService.get('isExpanded') === true) {
-                    localStorageService.set('isExpanded', false);
+        $scope.refreshSidebar = function() {
+            Object.keys($scope.menus).forEach(function(menu) {
+                if ($scope.menus[menu].submenus) {
+                    $scope.menus[menu].active = false;
+                    $scope.menus[menu].expanded = false;
+                    
+                    Object.keys($scope.menus[menu].submenus).forEach(function(submenu) {
+                        
+                        $scope.menus[menu].submenus[submenu].active = false;
+                        if ($scope.menus[menu].submenus[submenu].routes 
+                            && routeActive($scope.menus[menu].submenus[submenu].routes)
+                        ) {
+                            $scope.menus[menu].submenus[submenu].active = true;
+                            $scope.menus[menu].active = true;
+                            $scope.menus[menu].expanded = true;
+                        }
+                    });
                 } else {
-                    localStorageService.set('isExpanded', true);
+                    $scope.menus[menu].active = false;
+                    if ($scope.menus[menu].routes && routeActive($scope.menus[menu].routes)) {
+                        $scope.menus[menu].active = true;
+                    }
                 }
             });
-            $('.have-sub').click(function () {
-                var data = $(this).data('dropdown');
-                $("[id-dropdown='" + data + "']").toggleClass('hidden');
-                $("[caret-dropdown='" + data + "']").toggleClass('fa-caret-up');
-            });
+        }
+
+        $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+            $scope.currentPath = '/' + toState.url;
+            console.log($scope.currentPath);
+            console.log('sidebar');
+            $scope.refreshSidebar();
         });
+
+        $scope.expanded = localStorageService.get('expanded');
+        $scope.toggleExpand = function() {
+            if (localStorageService.get('expanded')) {
+                localStorageService.set('expanded', false);
+                $rootScope.$emit('collapse');
+                $scope.expanded = false;
+            } else {
+                localStorageService.set('expanded', true);
+                $rootScope.$emit('expand');
+                $scope.expanded = true;
+            }
+        }
+
+        $scope.toggleExpandMenu = function(menu) {
+            $scope.menus[menu].expanded = !$scope.menus[menu].expanded;
+        }
+
+        $scope.refreshSidebar();
     });

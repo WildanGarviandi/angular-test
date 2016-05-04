@@ -125,5 +125,38 @@ angular.module('adminApp')
                 controller: 'user',
             },
         },
+        getWebstores: {
+            method: 'GET',
+            params: {
+                module: 'webstore',
+            },
+        },
+        getVehicles: {
+            method: 'GET',
+            params: {
+                module: 'vehicle',
+            },
+        },
+        getEcommercePrices: {
+            method: 'GET',
+            params: {
+                module: 'price',
+                controller: 'ecommerce',
+            },
+        },
+        saveEcommercePrice: {
+            method: 'POST',
+            params: {
+                module: 'price',
+                controller: 'ecommerce',
+                id: null
+            },
+        },
+        getStates: {
+            method: 'GET',
+            params: {
+                module: 'state'
+            },
+        },
     });
 });

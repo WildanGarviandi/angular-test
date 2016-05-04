@@ -260,6 +260,7 @@ angular.module('adminApp')
             $scope.webstore.AllowCOD = data.User.WebstoreCompany.AllowCOD;
             if (data.hasHub) {
                 $scope.hub = {key: data.User.WebstoreCompany.Hub.Name, value: data.User.WebstoreCompany.Hub.HubID};
+                $scope.webstore.HubID = data.User.WebstoreCompany.Hub.HubID;
             }
             if (data.hasAddress) {
                 $scope.webstore.UserAddress = data.User.WebstoreCompany.UserAddress;
@@ -316,6 +317,7 @@ angular.module('adminApp')
     $scope.search = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchString = $scope.searchQuery;
+            $scope.searchFilter.name = $scope.searchQuery;
             $scope.getWebstores();
         };
     }
@@ -395,7 +397,7 @@ angular.module('adminApp')
     $scope.loadManagePage = function() {
         $scope.getCountries();
         $scope.getHubs();
-        if ($state.current.name === 'update-webstore') {
+        if ($state.current.name === 'app.update-webstore') {
             $scope.getWebstoreDetails();
             setTimeout(function() {
                 if ($scope.webstore.UserID === undefined) {
@@ -404,7 +406,7 @@ angular.module('adminApp')
             }, 4000);
             $scope.updatePage = true;
             $scope.addPage = false;
-        } else if ($state.current.name === 'add-webstore') {
+        } else if ($state.current.name === 'app.add-webstore') {
             $scope.addPage = true;
             $scope.locationPicker();
         }
@@ -415,6 +417,7 @@ angular.module('adminApp')
         $scope.offset = 0;
         $scope.itemsByPage = 10;
         $scope.tableState.pagination.start = 0;
+        $scope.searchFilter = {};
         $scope.getWebstores();
     }
 
@@ -454,6 +457,11 @@ angular.module('adminApp')
             $rootScope.$emit('stopSpin');
             alert('Verify failed.');
         });
+    }
+
+    $scope.filterWebstores = function () {
+        $scope.offset = 0;
+        $scope.getWebstores();
     }
 
     $scope.loadManagePage();
