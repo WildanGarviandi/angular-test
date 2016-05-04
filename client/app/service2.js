@@ -11,13 +11,6 @@ angular.module('adminApp')
                 module: 'hub'
             },
         },
-        getAllHubs: {
-            method: 'GET',
-            params: {
-                module: 'hub',
-                action: 'all'
-            }
-        },
         getOneHub: {
             method: 'GET',
             params: {

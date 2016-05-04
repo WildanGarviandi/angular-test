@@ -146,9 +146,8 @@ angular.module('adminApp')
         return new Promise(function (resolve, reject) {
             $rootScope.$emit('startSpin');
             $scope.isLoading = true;
-            Services2.getAllHubs().$promise.then(function(data) {
-                console.log('hubs', data);
-                $scope.hubs = data.data.hubs;
+            Services2.getHubs().$promise.then(function(data) {
+                $scope.hubs = data.data.Hubs.rows;
                 $scope.isLoading = false;
                 $rootScope.$emit('stopSpin');
 
@@ -176,7 +175,6 @@ angular.module('adminApp')
             $rootScope.$emit('startSpin');
             $scope.isLoading = true;
             Services2.getWebstores().$promise.then(function(data) {
-                console.log('webstores', data);
                 $scope.webstores = data.data.webstores;
                 $scope.isLoading = false;
                 $rootScope.$emit('stopSpin');
