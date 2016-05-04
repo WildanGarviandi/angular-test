@@ -52,6 +52,7 @@ angular.module('adminApp')
     };
 
     $scope.currency = config.currency + " ";
+    $scope.isFirstSort = true;
 
     /**
      * Get status
@@ -222,6 +223,7 @@ angular.module('adminApp')
     $scope.sortColumn = function(sortBy, sortCriteria) {
         $scope.sortBy = sortBy;
         $scope.sortCriteria = sortCriteria;
+        $scope.isFirstSort = false;
         $scope.getTrip();
     }
     

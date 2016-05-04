@@ -25,26 +25,74 @@
                         <th>Trip Number</th>
                         <th>Pickup Address</th>
                         <th>Dropoff Address</th>
-                        <th>
-                            <span class="caret caret-reversed" ng-click="sortColumn('PickupTime', 'ASC')"></span>
-                            <span class="caret" ng-click="sortColumn('PickupTime', 'DESC')"></span>
+                        <th class="sortable-column"
+                            ng-if="sortBy !== 'PickupTime' || isFirstSort"
+                            ng-click="sortColumn('PickupTime', 'ASC')">
+                            Pickup Time
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'PickupTime' && sortCriteria == 'ASC'" 
+                            ng-click="sortColumn('PickupTime', 'DESC')">
+                            <span class="caret caret-reversed" ></span>
+                            Pickup Time
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'PickupTime' && sortCriteria == 'DESC'" 
+                            ng-click="sortColumn('PickupTime', 'ASC')">
+                            <span class="caret" ></span>
                             Pickup Time
                         </th>
                         <th>Dropoff Time</th>
-                        <th>
-                            <span class="caret caret-reversed" ng-click="sortColumn('Driver.FirstName', 'ASC')"></span>
-                            <span class="caret" ng-click="sortColumn('Driver.FirstName', 'DESC')"></span>
+                        <th class="sortable-column"
+                            ng-if="sortBy !== 'Driver.FirstName' || isFirstSort"
+                            ng-click="sortColumn('Driver.FirstName', 'ASC')">
                             Driver
                         </th>
-                        <th>
-                            <span class="caret caret-reversed" ng-click="sortColumn('ContainerNumber', 'ASC')"></span>
-                            <span class="caret" ng-click="sortColumn('ContainerNumber', 'DESC')"></span>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'Driver.FirstName' && sortCriteria == 'ASC'" 
+                            ng-click="sortColumn('Driver.FirstName', 'DESC')">
+                            <span class="caret caret-reversed" ></span>
+                            Driver
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'Driver.FirstName' && sortCriteria == 'DESC'" 
+                            ng-click="sortColumn('Driver.FirstName', 'ASC')">
+                            <span class="caret" ></span>
+                            Driver
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy !== 'ContainerNumber' || isFirstSort"
+                            ng-click="sortColumn('ContainerNumber', 'ASC')">
                             Container
                         </th>
-                        <th>
-                            <span class="caret caret-reversed" ng-click="sortColumn('District.Name', 'ASC')"></span>
-                            <span class="caret" ng-click="sortColumn('District.Name', 'DESC')"></span>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'ContainerNumber' && sortCriteria == 'ASC'" 
+                            ng-click="sortColumn('ContainerNumber', 'DESC')">
+                            <span class="caret caret-reversed" ></span>
+                            Container
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'ContainerNumber' && sortCriteria == 'DESC'" 
+                            ng-click="sortColumn('ContainerNumber', 'ASC')">
+                            <span class="caret" ></span>
+                            Container
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy !== 'District.Name' || isFirstSort"
+                            ng-click="sortColumn('District.Name', 'ASC')">
                             District
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'District.Name' && sortCriteria == 'ASC'" 
+                            ng-click="sortColumn('District.Name', 'DESC')">
+                            <span class="caret caret-reversed" ></span>
+                            District
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'District.Name' && sortCriteria == 'DESC'" 
+                            ng-click="sortColumn('District.Name', 'ASC')">
+                            <span class="caret" ></span>
+                            District
+                        </th>
                         </th>
                         <th>Status</th>
                     </tr>
