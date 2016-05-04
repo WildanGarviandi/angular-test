@@ -152,6 +152,20 @@ angular.module('adminApp')
                 id: null
             },
         },
+        getDistancePrices: {
+            method: 'GET',
+            params: {
+                module: 'price',
+                controller: 'distance'
+            }
+        },
+        saveDistancePrice: {
+            method: 'POST',
+            params: {
+                module: 'price',
+                controller: 'distance'
+            }
+        },
         getStates: {
             method: 'GET',
             params: {

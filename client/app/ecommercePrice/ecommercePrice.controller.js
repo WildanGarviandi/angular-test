@@ -14,7 +14,8 @@ angular.module('adminApp')
             $stateParams, 
             $location, 
             $http, 
-            $window
+            $window,
+            $q
     ) {
 
     Auth.getCurrentUser().$promise.then(function(data) {
@@ -48,19 +49,22 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getWebstores = function() {
-        $rootScope.$emit('startSpin');
-        Services2.getWebstores().$promise
-        .then(function(data) {
-            var result = data.data.webstores;
-            result.forEach(function(webstore) {
-                $scope.webstores.push({
-                    key: webstore.webstore.FirstName.concat(' ', webstore.webstore.LastName), 
-                    value: webstore.webstore.UserID
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            Services2.getWebstores().$promise
+            .then(function(data) {
+                var result = data.data.webstores;
+                result.forEach(function(webstore) {
+                    $scope.webstores.push({
+                        key: webstore.webstore.FirstName.concat(' ', webstore.webstore.LastName), 
+                        value: webstore.webstore.UserID
+                    });
                 });
-            }) 
-            $rootScope.$emit('stopSpin');
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
         });
-    }
+    };
 
     /**
      * Get all vehicles
@@ -68,21 +72,24 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getVehicles = function() {
-        $rootScope.$emit('startSpin');
-        Services2.getVehicles().$promise
-        .then(function(data) { 
-            var vehicles = data.data.Vehicles;
-            vehicles.forEach(function(object) {
-                $scope.prices.push({
-                    Name: object.Name,
-                    VehicleID: object.VehicleID,
-                    PricePerKM: 0,
-                    PickupType: 3
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            Services2.getVehicles().$promise
+            .then(function(data) { 
+                var vehicles = data.data.Vehicles;
+                vehicles.forEach(function(object) {
+                    $scope.prices.push({
+                        Name: object.Name,
+                        VehicleID: object.VehicleID,
+                        PricePerKM: 0,
+                        PickupType: 3
+                    });
                 });
-            })
-            $rootScope.$emit('stopSpin');
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
         });
-    }
+    };
 
     /**
      * Get all ecommerce prices
@@ -94,7 +101,7 @@ angular.module('adminApp')
         var params = {
             WebstoreUserID: $scope.webstore.value
         }
-        Services2.getEcommercePrices(params).$promise
+        Services2.getDistancePrices(params).$promise
         .then(function(data) {
             var result = data.data.Prices;
             if (result.length > 0) {
@@ -123,14 +130,13 @@ angular.module('adminApp')
         var params = {
             prices: $scope.prices
         };
-        Services2.saveEcommercePrice({
+        Services2.saveDistancePrice({
             id: $scope.webstore.value
         }, params).$promise
         .then(function(data) {
             $rootScope.$emit('stopSpin');
             alert('Save success'); 
-            $scope.getPrices();           
-            window.location = '/ecommercePrice';
+            $scope.getPrices();
         })
         .catch(function(err){
             $rootScope.$emit('stopSpin');
@@ -138,8 +144,8 @@ angular.module('adminApp')
         });
     }
 
-    $scope.getVehicles();
-    $scope.getWebstores();
-    $scope.getPrices();
+    $scope.getVehicles()
+    .then($scope.getWebstores)
+    .then($scope.getPrices);
 
   });

@@ -6,7 +6,8 @@ angular.module('adminApp')
             $scope, 
             Auth, 
             $rootScope, 
-            Services, 
+            Services,
+            Services2,
             moment, 
             lodash, 
             $state, 
@@ -21,19 +22,19 @@ angular.module('adminApp')
         $scope.user = data.profile;
     });
 
-    $scope.ctrl = {};
+    $scope.input = {};
 
-    $scope.ctrl.pickup = {
+    $scope.input.pickup = {
         'key': 'Same Day',
         'value': 1
     };
 
-    $scope.ctrl.webstore = {
+    $scope.input.webstore = {
         key: 'Master',
         value: 0
     };
 
-    $scope.webstores = [$scope.ctrl.webstore];
+    $scope.webstores = [$scope.input.webstore];
 
     $scope.percentage = {};
     $scope.defaultPrices = {};
@@ -49,8 +50,8 @@ angular.module('adminApp')
     };
 
     $scope.tabs = [
-        { heading: 'Price', value: 'price' },
-        { heading: 'Additional Price', value: 'additional' }
+        { heading: 'Price based on selected weight', value: 'price' },
+        { heading: 'Additional Price / kg', value: 'additional' }
     ];
 
     $scope.filter = 'price';
@@ -67,11 +68,11 @@ angular.module('adminApp')
             $http.get('config/defaultValues.json').success(function(data) {
                 $scope.defaultPrices = data.defaultPrices;
                 $scope.pickupTypes = data.pickupTypes;
-                $scope.ctrl.pickupTypes = $scope.pickupTypes[0];
+                $scope.input.pickupTypes = $scope.pickupTypes[0];
                 $scope.weight = data.weight;
-                $scope.ctrl.weight = $scope.weight[0];
+                $scope.input.weight = $scope.weight[0];
                 $scope.discount = data.discount;
-                $scope.ctrl.discount = $scope.discount[0];
+                $scope.input.discount = $scope.discount[0];
                 $scope.countryID = data.country.id;
                 resolve();
             });
@@ -136,9 +137,9 @@ angular.module('adminApp')
      */
     var getWebstores = function() {
         return $q(function (resolve) {
-            Services.showWebstores().$promise.then(function(data) {
-                data.webstores.forEach(function(webstores) {
-                    $scope.webstores.push({key: webstores.FirstName.concat(' ', webstores.LastName), value: webstores.UserID});
+            Services2.getWebstores().$promise.then(function(result) {
+                result.data.webstores.forEach(function(v) {
+                    $scope.webstores.push({key: v.webstore.FirstName.concat(' ', v.webstore.LastName), value: v.webstore.UserID});
                 });
                 resolve();
             });
@@ -151,9 +152,9 @@ angular.module('adminApp')
      */
     var getVehicles = function () {
         return $q(function (resolve) {
-            Services.getVehicles().$promise.then(function (data) {
-                $scope.vehicleTypes = $scope.vehicleTypes.concat(data.vehicles);
-                $scope.ctrl.vehicle = $scope.vehicleTypes[0];
+            Services2.getVehicles().$promise.then(function (result) {
+                $scope.vehicleTypes = $scope.vehicleTypes.concat(result.data.Vehicles);
+                $scope.input.vehicle = $scope.vehicleTypes[0];
                 resolve();
             });
         });
@@ -192,29 +193,29 @@ angular.module('adminApp')
     var getPrices = function() {
         $rootScope.$emit('startSpin');
         var params = {
-            WebstoreUserID: $scope.ctrl.webstore.value,
-            PickupType: $scope.ctrl.pickup.value,
-            VehicleID: $scope.ctrl.vehicle.VehicleID,
-            MaxWeight: $scope.ctrl.weight.value,
-            DiscountID: $scope.ctrl.discount.id
+            webstoreUserID: $scope.input.webstore.value,
+            pickupType: $scope.input.pickup.value,
+            vehicleID: $scope.input.vehicle.VehicleID,
+            maxWeight: $scope.input.weight.value,
+            discountID: $scope.input.discount.id
         };
         var paramsMaster = {
-            WebstoreUserID: 0,
-            PickupType: $scope.ctrl.pickup.value,
-            VehicleID: $scope.ctrl.vehicle.VehicleID,
-            MaxWeight: $scope.ctrl.weight.value,
-            DiscountID: $scope.ctrl.discount.id
+            webstoreUserID: 0,
+            pickupType: $scope.input.pickup.value,
+            vehicleID: $scope.input.vehicle.VehicleID,
+            maxWeight: $scope.input.weight.value,
+            discountID: $scope.input.discount.id
         };
         // Get Master price
-        Services.getEcommercePrice(paramsMaster).$promise.then(function (data) {
-            $scope.masterPrices = data.prices;
-            if ($scope.ctrl.webstore.value === 0) {
+        Services2.getEcommercePrices(paramsMaster).$promise.then(function (result) {
+            $scope.masterPrices = result.data.Prices;
+            if ($scope.input.webstore.value === 0) {
                 buildDefault();
                 $rootScope.$emit('stopSpin');
             } else {
                 // Get webstore price
-                Services.getEcommercePrice(params).$promise.then(function (data) {
-                    $scope.prices = data.prices;
+                Services2.getEcommercePrices(params).$promise.then(function (result) {
+                    $scope.prices = result.data.Prices;
                     buildDefault();
                     buildMatrix();
                     $rootScope.$emit('stopSpin');
@@ -234,17 +235,17 @@ angular.module('adminApp')
     var savePrice = function(originID, destID, price, additional) {
         $rootScope.$emit('startSpin');
         var params = {
-            WebstoreUserID: $scope.ctrl.webstore.value,
-            PickupType: $scope.ctrl.pickup.value,
-            VehicleID: $scope.ctrl.vehicle.VehicleID,
-            MaxWeight: $scope.ctrl.weight.value,
-            DiscountID: $scope.ctrl.discount.id,
-            OriginID: originID,
-            DestinationID: destID,
+            webstoreUserID: $scope.input.webstore.value,
+            pickupType: $scope.input.pickup.value,
+            vehicleID: $scope.input.vehicle.VehicleID,
+            maxWeight: $scope.input.weight.value,
+            discountID: $scope.input.discount.id,
+            originID: originID,
+            destinationID: destID,
         };
-        if (price) { params.Price = price; }
-        if (additional) { params.AdditionalPrice = additional; }
-        Services.addEcommercePrice(params).$promise.then(function (result) {
+        if (price) { params.price = price; }
+        if (additional) { params.additionalPrice = additional; }
+        Services2.saveEcommercePrice(params).$promise.then(function (result) {
             $rootScope.$emit('stopSpin');
             getPrices();
         })
