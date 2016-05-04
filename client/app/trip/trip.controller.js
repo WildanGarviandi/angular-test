@@ -76,6 +76,8 @@ angular.module('adminApp')
      */
     $scope.chooseStatus = function(item) {
         $scope.status = item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
         $scope.getTrip(); 
     }
 
@@ -146,6 +148,8 @@ angular.module('adminApp')
     $scope.searchTrip = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchTripNumber = $scope.queryTripNumber;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getTrip();
         };
     }
@@ -159,6 +163,8 @@ angular.module('adminApp')
     $scope.searchContainer = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchContainerNumber = $scope.queryContainerNumber;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getTrip();
         };
     }
@@ -172,6 +178,8 @@ angular.module('adminApp')
     $scope.searchDistrict = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchDistrict = $scope.queryDistrict;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getTrip();
         };
     }
@@ -185,6 +193,8 @@ angular.module('adminApp')
     $scope.searchDriver = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchDriver = $scope.queryDriver;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getTrip();
         };
     }
@@ -198,6 +208,8 @@ angular.module('adminApp')
     $scope.searchPickup = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchPickup = $scope.queryPickup;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getTrip();
         };
     }
@@ -211,6 +223,8 @@ angular.module('adminApp')
     $scope.searchDropoff = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchDropoff = $scope.queryDropoff;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getTrip();
         };
     }
