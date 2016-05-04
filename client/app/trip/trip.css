@@ -220,3 +220,8 @@
   -webkit-transform: rotate(180deg);
   transform: rotate(180deg);
 }
+
+.sortable-column {
+    color: #0000EE;;
+    cursor: pointer;
+}
