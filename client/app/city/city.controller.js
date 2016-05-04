@@ -203,7 +203,6 @@ angular.module('adminApp')
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.data.Cities.count / $scope.tableState.pagination.number);
-            $scope.tableState.pagination.start = 0;
             $rootScope.$emit('stopSpin');
         });
     }
@@ -217,8 +216,8 @@ angular.module('adminApp')
     $scope.search = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchString = $scope.searchQuery;
-            $scope.itemsByPage = 10;
             $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getCities();
         };
     } 
