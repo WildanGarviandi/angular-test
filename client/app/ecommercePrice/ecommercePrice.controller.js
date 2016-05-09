@@ -139,24 +139,28 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.savePrices = function() {
-        $rootScope.$emit('startSpin');
-        var params = {
-            prices: $scope.prices
-        };
-        Services2.saveEcommercePrice({
-            id: $scope.webstore.value
-        }, params).$promise
-        .then(function(data) {
-            $rootScope.$emit('stopSpin');
-            alert('Save success'); 
-            $scope.getPrices();           
-            window.location = '/ecommercePrice';
-        })
-        .catch(function(err){
-            $rootScope.$emit('stopSpin');
-            alert('Save failed');
-        });
+    $scope.savePrices = function(form) {
+        if (form.$valid) {
+            $rootScope.$emit('startSpin');
+            var params = {
+                prices: $scope.prices
+            };
+            Services2.saveEcommercePrice({
+                id: $scope.webstore.value
+            }, params).$promise
+            .then(function(data) {
+                $rootScope.$emit('stopSpin');
+                alert('Save success'); 
+                $scope.getPrices();           
+                window.location = '/ecommercePrice';
+            })
+            .catch(function(err){
+                $rootScope.$emit('stopSpin');
+                alert('Save failed');
+            });
+        } else {
+            alert('Save failed. Value must be a positive number');
+        }
     }
 
     $scope.getVehicles();
