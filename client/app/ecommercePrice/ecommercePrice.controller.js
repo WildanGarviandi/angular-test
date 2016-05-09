@@ -48,7 +48,6 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getWebstores = function() {
-        $rootScope.$emit('startSpin');
         Services2.getWebstores().$promise
         .then(function(data) {
             var result = data.data.webstores;
@@ -58,7 +57,6 @@ angular.module('adminApp')
                     value: webstore.webstore.UserID
                 });
             }) 
-            $rootScope.$emit('stopSpin');
         });
     }
 
@@ -68,7 +66,6 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getVehicles = function() {
-        $rootScope.$emit('startSpin');
         Services2.getVehicles().$promise
         .then(function(data) { 
             var vehicles = data.data.Vehicles;
@@ -80,7 +77,6 @@ angular.module('adminApp')
                     PickupType: 3
                 });
             })
-            $rootScope.$emit('stopSpin');
         });
     }
 
