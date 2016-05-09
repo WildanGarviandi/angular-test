@@ -100,10 +100,11 @@ angular.module('adminApp')
                 $scope.displayed = result.data.Fees;
                 $scope.vehicleTypes.forEach(function (vehicle) {
                     var index = $scope.displayed.findIndex(function (fee) {
-                        return fee.VehicleID === vehicle.VehicleID;
+                        return fee.Vehicle.VehicleID === vehicle.VehicleID;
                     });
                     if (index !== -1) {
                         $scope.displayed[index].VehicleType = vehicle.Name;
+                        $scope.displayed[index].VehicleID = vehicle.VehicleID;
                     } else {
                         var fromMaster = lodash.find(masterData, {'VehicleID': vehicle.VehicleID});
                         fromMaster.FleetManagerID = $scope.input.company.FleetManagerID;
@@ -145,7 +146,15 @@ angular.module('adminApp')
         var params = {
             fees: $scope.displayed
         };
-        Services2.updateLogisticFees(params).$promise.then(function (data) {
+        Services2.updateLogisticFees(params).$promise.then(function (result) {
+            if (result.data === undefined || result.data.RowsAffected !== $scope.vehicleTypes.length) {
+                alert('Save Fees failed. Please try again or contact tech support.');
+            }
+            $rootScope.$emit('stopSpin');
+            getFees();
+        })
+        .catch(function () {
+            alert('Save Fees failed. Please try again or contact tech support.');
             $rootScope.$emit('stopSpin');
             getFees();
         });
