@@ -7,6 +7,7 @@ angular.module('adminApp')
         Auth, 
         $rootScope, 
         Services, 
+        Services2,
         moment, 
         lodash, 
         $state, 
@@ -20,12 +21,14 @@ angular.module('adminApp')
         $scope.user = data.profile;
     });
 
-    $scope.company =  {
+    $scope.input = {};
+
+    $scope.input.company =  {
         CompanyName: 'Master',
         FleetManagerID: 0
     };
 
-    $scope.companies = [$scope.company];
+    $scope.companies = [$scope.input.company];
 
     $scope.pickup = {
         key: 'Same Day',
@@ -70,8 +73,8 @@ angular.module('adminApp')
     var getCompanies = function() {
         return $q(function (resolve) {
             $rootScope.$emit('startSpin');
-            Services.showCompanies().$promise.then(function(data) {
-                $scope.companies = $scope.companies.concat(data.companies);
+            Services2.getAllCompanies().$promise.then(function(result) {
+                $scope.companies = $scope.companies.concat(result.data.Companies);
                 $rootScope.$emit('stopSpin');
                 resolve();
             });
@@ -86,14 +89,15 @@ angular.module('adminApp')
     var getFees = function() {
         $rootScope.$emit('startSpin');
         var params = {
-            FleetManagerID: $scope.company.FleetManagerID
+            id: $scope.input.company.FleetManagerID
         };
         var paramsMaster = {
-            FleetManagerID: 0
+            id: 0
         };
-        Services.showLogisticPrices(paramsMaster).$promise.then(function(masterData) {
-            Services.showLogisticPrices(params).$promise.then(function(data) {
-                $scope.displayed = data.fees;
+        Services2.getLogisticFees(paramsMaster).$promise.then(function(masterResult) {
+            var masterData = masterResult.data.Fees;
+            Services2.getLogisticFees(params).$promise.then(function(result) {
+                $scope.displayed = result.data.Fees;
                 $scope.vehicleTypes.forEach(function (vehicle) {
                     var index = $scope.displayed.findIndex(function (fee) {
                         return fee.VehicleID === vehicle.VehicleID;
@@ -101,8 +105,8 @@ angular.module('adminApp')
                     if (index !== -1) {
                         $scope.displayed[index].VehicleType = vehicle.Name;
                     } else {
-                        var fromMaster = lodash.find(masterData.fees, {'VehicleID': vehicle.VehicleID});
-                        fromMaster.FleetManagerID = $scope.company.FleetManagerID;
+                        var fromMaster = lodash.find(masterData, {'VehicleID': vehicle.VehicleID});
+                        fromMaster.FleetManagerID = $scope.input.company.FleetManagerID;
                         fromMaster.VehicleType = vehicle.Name;
                         $scope.displayed.push(fromMaster);
                     }
@@ -121,9 +125,9 @@ angular.module('adminApp')
     var getVehicles = function () {
         return $q(function (resolve) {
             $scope.vehicleTypes = [];
-            Services.getVehicles().$promise.then(function (data) {
-                $scope.vehicleTypes = data.vehicles;
-                data.vehicles.forEach(function (vehicle, i) {
+            Services2.getVehicles().$promise.then(function (result) {
+                $scope.vehicleTypes = result.data.Vehicles;
+                result.data.Vehicles.forEach(function (vehicle, i) {
                     $scope.vehicleTypes[i].value = vehicle.Name + ' (' + vehicle.Description + ')';
                 });
                 resolve();
@@ -141,17 +145,15 @@ angular.module('adminApp')
         var params = {
             fees: $scope.displayed
         };
-        Services.saveLogisticFee(params).$promise.then(function (data) {
+        Services2.updateLogisticFees(params).$promise.then(function (data) {
             $rootScope.$emit('stopSpin');
             getFees();
         });
     };
 
-    getDefaultValues().then(function (){
-        getCompanies().then(function () {
-            getVehicles().then(function () {
-                getFees();
-            });
-        });
-    });   
+    getDefaultValues()
+        .then(getCompanies)
+        .then(getVehicles)
+        .then(getFees);
+
 });
