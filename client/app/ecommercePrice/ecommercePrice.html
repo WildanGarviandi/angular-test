@@ -21,14 +21,14 @@
                 <div class="row-fluid">
                     Select Webstore :
                     <ui-select ng-model="webstore"
-                        theme="selectize"
+                        theme="bootstrap"
                         ng-disabled="disabled"
                         on-select="chooseWebstore($item)">
                         <ui-select-match placeholder="Choose webstore">
                             {{ $select.selected.key }}
                         </ui-select-match>
-                        <ui-select-choices repeat="m in webstores" selected>
-                            <span ng-bind-html="m.key"></span>
+                        <ui-select-choices repeat="m in webstores | filter: $select.search" selected>
+                            <span ng-bind-html="m.key | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
                 </div>
