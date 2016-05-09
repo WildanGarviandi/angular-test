@@ -101,10 +101,10 @@
                             Dropoff Time: {{route.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}
                         </div>
                         <div class="order-status-container-body">
-                            Distance: {{route.Distance}}
+                            Distance: {{route.Distance / 1000 | number : 3 }} km
                         </div>
                         <div class="order-status-container-body">
-                            ETA Delivery: {{route.ETADelivery}}
+                            ETA Delivery: {{route.ETADelivery | secondsToDateTime | date:'HH:mm:ss'}}
                         </div>
                         <div class="order-status-container-body">
                             Delivery Fee: {{route.DeliveryFee | currency: currency}}
