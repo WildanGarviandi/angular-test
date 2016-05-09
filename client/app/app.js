@@ -124,4 +124,12 @@ angular.module('adminApp', [
             usSpinnerService.stop('spinner-1');
             $rootScope.spinnerShown = false;
         });
+    })
+
+    .filter('secondsToDateTime', function() {
+        return function(seconds) {
+            var d = new Date(0,0,0,0,0,0,0);
+            d.setSeconds(seconds);
+            return d;
+        };
     });
