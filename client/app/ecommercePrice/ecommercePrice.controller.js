@@ -97,6 +97,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getPrices = function() {
+        $scope.isMaster = false;
         $rootScope.$emit('startSpin');
         var params = {
             WebstoreUserID: $scope.webstore.value
@@ -112,11 +113,31 @@ angular.module('adminApp')
                     price[0].PricePerKM = object.PricePerKM
                 });
             } else {
-                $scope.prices.forEach(function(price){
-                    price.PricePerKM = 0;
-                });
+                $scope.getMasterPrices();
+                $scope.isMaster = true;
             }
             $rootScope.$emit('stopSpin');
+        });
+    }
+
+    /**
+     * Get master prices
+     * 
+     * @return {void}
+     */
+    $scope.getMasterPrices = function() {
+        var params = {
+            WebstoreUserID: 0
+        }
+        Services2.getEcommercePrices(params).$promise
+        .then(function(data) {
+            var result = data.data.Prices;
+            result.forEach(function(object) {
+                var price = $scope.prices.filter(function(obj) {
+                    return obj.VehicleID === object.Vehicle.VehicleID;
+                }); 
+                price[0].PricePerKM = object.PricePerKM
+            });
         });
     }
 
