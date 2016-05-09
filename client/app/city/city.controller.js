@@ -200,9 +200,10 @@ angular.module('adminApp')
         };
         Services2.getCities(params).$promise.then(function(data) {
             $scope.displayed = data.data.Cities.rows;
+            $scope.count = data.data.Cities.count;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
-                data.data.Cities.count / $scope.tableState.pagination.number);
+                $scope.count / $scope.tableState.pagination.number);
             $rootScope.$emit('stopSpin');
         });
     }
