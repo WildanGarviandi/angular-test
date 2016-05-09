@@ -114,12 +114,11 @@ angular.module('adminApp')
     }
 
     /**
-     * Get all ecommerce prices
+     * Get master prices
      * 
      * @return {void}
      */
     $scope.getMasterPrices = function() {
-        $rootScope.$emit('startSpin');
         var params = {
             WebstoreUserID: 0
         }
@@ -132,7 +131,6 @@ angular.module('adminApp')
                 }); 
                 price[0].PricePerKM = object.PricePerKM
             });
-            $rootScope.$emit('stopSpin');
         });
     }
 
