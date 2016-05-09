@@ -4,7 +4,7 @@
         <div>
             <div class="col-md-6 col-sm-7">
                 <div class="hub-title-box">
-                    Ecommerce Pricing
+                    On-Demand Pricing
                 </div>
             </div>
             <div class="col-md-3 col-sm-5 pull-right">
@@ -16,7 +16,7 @@
     </div>
    
     <div class="booking-process">
-        <form class="form" name="hubForm" novalidate>
+        <form class="form" name="priceForm" ng-submit="savePrices(priceForm);" novalidate>
             <div class="container-fluid hub-container">
                 <div class="row-fluid">
                     Select Webstore :
@@ -37,26 +37,28 @@
             </div>
             <div class="row-flued priceform">
                 <div class="vehicle-type">
-                    <table class="table-price">
-                        <tr>
-                            <th>Vehicle</th>
-                            <th>Price</th>
-                        </tr>
-                        <tr ng-repeat="price in prices">  
-                            <td>
-                                {{price.Name}}
-                            </td>                          
-                            <td>
-                                <div>
-                                    <input ng-model="price.PricePerKM"
-                                        type="text"
-                                        class="form-control"
-                                        value="" placeholder="">
-                                </div>
-                            </td>                             
-                        </tr>
-                    </table>
-                    <button class="btn btn-primary" ng-click="savePrices();">SAVE</button>
+                        <table class="table-price">
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Price</th>
+                            </tr>
+                            <tr ng-repeat="price in prices">  
+                                <td>
+                                    {{price.Name}}
+                                </td>                          
+                                <td>
+                                    <div>
+                                        <input ng-model="price.PricePerKM"
+                                            name="price.Name"
+                                            type="number" min="0"
+                                            class="form-control"
+                                            value="" placeholder="">
+                                    </div>
+                                </td>                             
+                            </tr>
+                        </table>
+                        <button class="btn btn-primary" type="submit">SAVE</button>
+                    </form>
                 </div>
             </div>
             <div class="clearfix"></div>
