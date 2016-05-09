@@ -158,5 +158,25 @@ angular.module('adminApp')
                 module: 'state'
             },
         },
+        getLogisticFees: {
+            method: 'GET',
+            params: {
+                module: 'price',
+                controller: 'logistic'
+            }
+        },
+        updateLogisticFees: {
+            method: 'POST',
+            params: {
+                module: 'price',
+                controller: 'logistic'
+            }
+        },
+        getAllCompanies: {
+            method: 'GET',
+            params: {
+                module: 'company'
+            }
+        }
     });
 });

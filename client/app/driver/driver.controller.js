@@ -109,6 +109,8 @@ angular.module('adminApp')
      */
     $scope.chooseStatus = function(item) {
         $scope.status = item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
         $scope.getDrivers(); 
     }
 
@@ -120,6 +122,7 @@ angular.module('adminApp')
     $scope.chooseCodStatus = function(item) {
         $scope.codStatus = item;
         $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
         if (!$stateParams.query) {
             $scope.getDrivers();
         }
@@ -229,6 +232,8 @@ angular.module('adminApp')
     $scope.searchName = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchName = $scope.queryName;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getDrivers();
         };
     }
@@ -242,6 +247,8 @@ angular.module('adminApp')
     $scope.searchPhone = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchPhone = $scope.queryPhone;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getDrivers();
         };
     }
@@ -255,6 +262,8 @@ angular.module('adminApp')
     $scope.searchEmail = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchEmail = $scope.queryEmail;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getDrivers();
         };
     }
