@@ -157,6 +157,6 @@ angular.module('adminApp')
             params: {
                 module: 'state'
             },
-        },
+        }
     });
 });
