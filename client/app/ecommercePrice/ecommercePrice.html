@@ -37,28 +37,27 @@
             </div>
             <div class="row-flued priceform">
                 <div class="vehicle-type">
-                        <table class="table-price">
-                            <tr>
-                                <th>Vehicle</th>
-                                <th>Price</th>
-                            </tr>
-                            <tr ng-repeat="price in prices">  
-                                <td>
-                                    {{price.Name}}
-                                </td>                          
-                                <td>
-                                    <div>
-                                        <input ng-model="price.PricePerKM"
-                                            name="price.Name"
-                                            type="number" min="0"
-                                            class="form-control"
-                                            value="" placeholder="">
-                                    </div>
-                                </td>                             
-                            </tr>
-                        </table>
-                        <button class="btn btn-primary" type="submit">SAVE</button>
-                    </form>
+                    <table class="table-price">
+                        <tr>
+                            <th>Vehicle</th>
+                            <th>Price</th>
+                        </tr>
+                        <tr ng-repeat="price in prices">  
+                            <td>
+                                {{price.Name}}
+                            </td>                          
+                            <td>
+                                <div>
+                                    <input ng-model="price.PricePerKM"
+                                        name="price.Name"
+                                        type="number" min="0"
+                                        class="form-control"
+                                        value="" placeholder="">
+                                </div>
+                            </td>                             
+                        </tr>
+                    </table>
+                    <button class="btn btn-primary" type="submit">SAVE</button>
                 </div>
             </div>
             <div class="clearfix"></div>
