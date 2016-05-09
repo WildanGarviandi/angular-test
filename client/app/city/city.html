@@ -51,6 +51,7 @@
             <div ng-if="reqSearchString">
                 Showing results for "{{reqSearchString}}" -
                 <ng-pluralize count="count" when="{ 
+                    '0': 'no records',
                     '1': '1 record', 
                     'other': '{{count}} records'}">
                 </ng-pluralize>
