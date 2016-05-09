@@ -309,7 +309,7 @@ angular.module('adminApp')
             rowContent.origin = origin.Name;
             $scope.cities.forEach(function (dest) {
                 var data = lodash.find($scope.masterPrices, {
-                    'OriginID': origin.CityID, 'DestinationID': dest.CityID});
+                    Origin: {CityID: origin.CityID}, Destination: {CityID: dest.CityID}});
                 var price = 0;
                 if (data) {
                     if ($scope.filter === 'price') {
@@ -343,7 +343,7 @@ angular.module('adminApp')
         $scope.cities.forEach(function (origin, i) {
             $scope.cities.forEach(function (dest) {
                 var data = lodash.find($scope.prices, {
-                    'OriginID': origin.CityID, 'DestinationID': dest.CityID});
+                    Origin: {CityID: origin.CityID}, Destination: {CityID: dest.CityID}});
                 var price = 0;
                 if (data) {
                     if ($scope.filter === 'price') {
