@@ -126,8 +126,10 @@ angular.module('adminApp', [
         });
     })
 
-    .filter('secondsToDateTime', [function() {
+    .filter('secondsToDateTime', function() {
         return function(seconds) {
-            return new Date(1970, 0, 1).setSeconds(seconds);
+            var d = new Date(0,0,0,0,0,0,0);
+            d.setSeconds(seconds);
+            return d;
         };
-    }]);
+    });
