@@ -173,58 +173,62 @@ angular.module('adminApp')
      */
     var updateDistrict = function() {
         return $q(function (resolve, reject) {
-            var district = {
-                _id: $stateParams.districtID,
-                name: $scope.district.Name,
-                city: $scope.district.City,
-                province: $scope.district.Province,
-                lat: $scope.district.Latitude,
-                lng: $scope.district.Longitude,
-                zipcodes: $scope.district.ZipCodes
-            };
-            var ZipCodes = {
-                _id: $stateParams.districtID,
-                zipcodes: $scope.district.ZipCodes
-            };
-            $rootScope.$emit('startSpin');
+            var checkResult = checkZipcodes($scope.district.ZipCodes);
+            if (!checkResult.error) {
+                var district = {
+                    _id: $stateParams.districtID,
+                    name: $scope.district.Name || '',
+                    city: $scope.district.City,
+                    province: $scope.district.Province,
+                    lat: $scope.district.Latitude,
+                    lng: $scope.district.Longitude
+                };
+                var ZipCodes = {
+                    _id: $stateParams.districtID,
+                    zipcodes: passedZipcodes
+                };
+                $rootScope.$emit('startSpin');
 
-            var update = function (district) {
-            	return Services2.updateDistrict(district).$promise;
-            };
+                var update = function (district) {
+                    return Services2.updateDistrict(district).$promise;
+                };
 
-            var checkResult = function (result) {
-                if (result.error) {
+                var checkResult = function (result) {
+                    if (result.error) {
+                        $rootScope.$emit('stopSpin');
+                        reject(result.error.join('\n'));
+                    } else if ($scope.district.ZipCodes !== '') {
+                        return Services2.addDistrictZipCodes(ZipCodes).$promise;
+                    } else {
+                        // no zipcode assigned
+                        $rootScope.$emit('stopSpin');
+                        resolve(); 
+                    }       
+                };
+
+                var updateZipCodes = function (result) {
                     $rootScope.$emit('stopSpin');
-                    alert(result.error.join('\n'));
-                } else if ($scope.district.ZipCodes !== '') {
-					return Services2.addDistrictZipCodes(ZipCodes).$promise;
-                } else {
-                    // no zipcode assigned
-                    $rootScope.$emit('stopSpin');
-                    resolve(); 
-                }       
-            };
+                    if (result) {
+                        if (result.data.status !== false) {
+                            resolve('No Warning');
+                        } else {
+                            resolve(result.data.error.messages);
+                        }
+                    } else {
+                        reject('Updating zipcode failed.');
+                    }
+                };
 
-            var updateZipCodes = function (result) {
-                $rootScope.$emit('stopSpin');
-				if (result) {
-					if (result.data.status !== false) {
-	                    resolve('No Warning');
-	                } else {
-	                    resolve(result.data.error.messages);
-	                }
-				} else {
-                    reject();
-                }
-            };
-
-            update(district)
-            	.then(checkResult)
-            	.then(updateZipCodes)
-            	.catch(function () {
-            		$rootScope.$emit('stopSpin');
-                	reject();
-            	});
+                update(district)
+                    .then(checkResult)
+                    .then(updateZipCodes)
+                    .catch(function (e) {
+                        $rootScope.$emit('stopSpin');
+                        reject(e);
+                    });
+            } else {
+                reject(checkResult.error);
+            }
         });
     };
 
@@ -343,8 +347,8 @@ angular.module('adminApp')
 	        	alert('District successfully created.\n' + message);
 	            $location.path('/district');
 	        })
-	        .catch(function () {
-	            alert('CREATING DISTRICT FAILED');
+	        .catch(function (e) {
+	            alert('CREATING DISTRICT FAILED.\n' + e);
 	        });
     };
 
@@ -355,12 +359,12 @@ angular.module('adminApp')
      */
     $scope.updateDistrict = function() {
         updateDistrict()
-	        .then(function (message) {        
+	        .then(function (message) {      
 	        	alert('District successfully updated.\n' + message);
 	            $location.path('/district');
 	        })
-	        .catch(function () {
-	            alert('UPDATING DISTRICT FAILED');
+	        .catch(function (e) {
+	            alert('UPDATING DISTRICT FAILED.\n' + e);
 	        });
     };
     
@@ -389,6 +393,29 @@ angular.module('adminApp')
         });
     };
 
+    var checkZipcodes = function (zipcodes) {
+        zipcodes = zipcodes.split(',');
+        var falseFormat = [];
+        var passedZipcodes = zipcodes.filter(function (val) {
+            if (val === '') { return false; }
+            else if (val.length !== 5) { 
+                falseFormat.push(val);
+                return false;
+            } else {
+                return true;
+            }
+        });
+        if (falseFormat) {
+            var message = 'Found false zipcode format.\n';
+            falseFormat.forEach(function (val) {
+                message += (val + ', ');
+            });
+            message += 'must be 5 character long.';
+            return { zipcode: null, error: message };
+        }
+
+        return { zipcode: passedZipcodes, error: null };
+    };
 
     // INITIALIZATION PART
 
