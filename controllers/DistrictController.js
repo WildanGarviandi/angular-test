@@ -352,12 +352,14 @@ module.exports = function(di) {
             }
         })
         .then(function(district) {         
-            district.updateAttributes({
+            models.District.update({
                 Name: req.body.name,
                 City: req.body.city,
                 Province: req.body.province,
                 Latitude: req.body.lat,
                 Longitude: req.body.lng
+            }, {
+                where : { DistrictID: district.DistrictID },
             })
             .then(function(district) {
                 return res.status(200).json({
