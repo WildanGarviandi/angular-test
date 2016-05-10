@@ -76,7 +76,9 @@ angular.module('adminApp')
             Services2.getAllCompanies().$promise.then(function(result) {
                 $scope.companies = $scope.companies.concat(result.data.Companies);
                 $scope.companies.forEach(function(company) {
-                    company.FleetManagerID = company.User.UserID;
+                    if (typeof company.FleetManagerID === 'undefined' && company.User) {
+                        company.FleetManagerID = company.User.UserID;
+                    }
                 });
                 $rootScope.$emit('stopSpin');
                 resolve();
@@ -90,6 +92,11 @@ angular.module('adminApp')
      * @return {void}
      */
     var getFees = function() {
+        if (typeof $scope.input.company.FleetManagerID === 'undefined') {
+            alert('Bad data found. Company does not have user record');
+            return;
+        }
+
         $rootScope.$emit('startSpin');
         var params = {
             id: $scope.input.company.FleetManagerID
