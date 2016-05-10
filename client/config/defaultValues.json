@@ -170,16 +170,20 @@
     },
     "weight": [
         {
+            "value": 1,
+            "description": "< 1 kg"
+        },
+        {
+            "value": 2,
+            "description": "1 < 2 kg"
+        },
+        {
             "value": 3,
-            "description": "< 3 kg"
+            "description": "2 < 3 kg"
         },
         {
-            "value": 6,
-            "description": "3 < 6 kg"
-        },
-        {
-            "value": 10,
-            "description": "6 < 10 kg"
+            "value": 4,
+            "description": "3 < 4 kg"
         }
     ],
     "discount": [

@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-md-3">
                 Select Webstore :
-                <ui-select ng-model="ctrl.webstore"
+                <ui-select ng-model="input.webstore"
                     theme="bootstrap"
                     on-select="chooseWebstore($item)">
                     <ui-select-match placeholder="Search or choose webstore">
@@ -32,7 +32,7 @@
             </div>
             <div class="col-md-3">
                 Select Pickup Type :
-                <ui-select ng-model="ctrl.pickup"
+                <ui-select ng-model="input.pickup"
                     theme="bootstrap"
                     on-select="choosePickup()">
                     <ui-select-match placeholder="Choose pickup type">
@@ -45,7 +45,7 @@
             </div>
             <div class="col-md-2">
                 Select Vehicle Type :
-                <ui-select ng-model="ctrl.vehicle"
+                <ui-select ng-model="input.vehicle"
                     theme="bootstrap"
                     on-select="chooseVehicle()">
                     <ui-select-match placeholder="Choose vehicle type">
@@ -58,7 +58,7 @@
             </div>
             <div class="col-md-2">
                 Select Weight :
-                <ui-select ng-model="ctrl.weight"
+                <ui-select ng-model="input.weight"
                     theme="bootstrap"
                     on-select="chooseWeight()">
                     <ui-select-match placeholder="Choose weight">
@@ -71,7 +71,7 @@
             </div>
             <div class="col-md-2">
                 Select Discount :
-                <ui-select ng-model="ctrl.discount"
+                <ui-select ng-model="input.discount"
                     theme="bootstrap"
                     on-select="chooseDiscount()">
                     <ui-select-match placeholder="Select discount">
