@@ -4,7 +4,7 @@
         <div>
             <div class="col-md-6 col-sm-7">
                 <div class="hub-title-box">
-                    Ecommerce Pricing
+                    Ecommerce On Demand Pricing
                 </div>
             </div>
             <div class="col-md-3 col-sm-5 pull-right">
@@ -16,19 +16,19 @@
     </div>
    
     <div class="booking-process">
-        <form class="form" name="hubForm" novalidate>
+        <form class="form" name="priceForm" novalidate>
             <div class="container-fluid hub-container">
                 <div class="row-fluid">
                     Select Webstore :
                     <ui-select ng-model="webstore"
-                        theme="selectize"
+                        theme="bootstrap"
                         ng-disabled="disabled"
                         on-select="chooseWebstore($item)">
                         <ui-select-match placeholder="Choose webstore">
                             {{ $select.selected.key }}
                         </ui-select-match>
-                        <ui-select-choices repeat="m in webstores" selected>
-                            <span ng-bind-html="m.key"></span>
+                        <ui-select-choices repeat="m in webstores | filter: $select.search" selected>
+                            <span ng-bind-html="m.key | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
                 </div>
@@ -47,17 +47,24 @@
                                 {{price.Name}}
                             </td>                          
                             <td>
-                                <div>
+                                <div ng-if="isMaster">
                                     <input ng-model="price.PricePerKM"
-                                        type="text"
+                                        type="number" min="0"
+                                        class="form-control red"
+                                        value="" placeholder="">
+                                </div>
+                                <div ng-if="!isMaster">
+                                    <input ng-model="price.PricePerKM"
+                                        type="number" min="0"
                                         class="form-control"
                                         value="" placeholder="">
                                 </div>
                             </td>                             
                         </tr>
                     </table>
-                    <button class="btn btn-primary" ng-click="savePrices();">SAVE</button>
+                    <button class="btn btn-primary" ng-click="savePrices(priceForm);">SAVE</button>
                 </div>
+                <h6><strong>Note:</strong> <span class="red">Red prices</span> is from master / default price</h6>
             </div>
             <div class="clearfix"></div>
         </form>
