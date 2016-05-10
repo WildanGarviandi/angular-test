@@ -46,6 +46,50 @@ angular.module('adminApp')
                 id: null
             },
         },
+        getDistrict: {
+            method: 'GET',
+            params: {
+                module: 'district'
+            }
+        },
+        getManyDistricts: {
+            method: 'GET',
+            params: {
+                module: 'district'
+            }
+        },
+        createDistrict: {
+            method: 'POST',
+            params: {
+                module: 'district'
+            }
+        },
+        updateDistrict: {
+            method: 'POST',
+            params: {
+                module: 'district'
+            }
+        },
+        deleteDistrict: {
+            method: 'DELETE',
+            params: {
+                module: 'district'
+            }
+        },
+        getDistrictZipCodes: {
+            method: 'GET',
+            params: {
+                module: 'district',
+                controller: 'zipcodes'
+            }
+        },
+        addDistrictZipCodes: {
+            method: 'POST',
+            params: {
+                module: 'district',
+                controller: 'zipcodes'
+            }
+        },
         getTrip: {
             method: 'GET',
             params: {
