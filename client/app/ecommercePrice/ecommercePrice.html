@@ -16,7 +16,7 @@
     </div>
    
     <div class="booking-process">
-        <form class="form" name="priceForm" ng-submit="savePrices(priceForm);" novalidate>
+        <form class="form" name="priceForm" novalidate>
             <div class="container-fluid hub-container">
                 <div class="row-fluid">
                     Select Webstore :
@@ -40,7 +40,7 @@
                     <table class="table-price">
                         <tr>
                             <th>Vehicle</th>
-                            <th>Price</th>
+                            <th>Price Per KM</th>
                         </tr>
                         <tr ng-repeat="price in prices">  
                             <td>
@@ -62,7 +62,7 @@
                             </td>                             
                         </tr>
                     </table>
-                    <button class="btn btn-primary" ng-click="savePrices(hubForm);">SAVE</button>
+                    <button class="btn btn-primary" ng-click="savePrices(priceForm);">SAVE</button>
                 </div>
                 <h6><strong>Note:</strong> <span class="red">Red prices</span> is from master / default price</h6>
             </div>

@@ -129,7 +129,7 @@ angular.module('adminApp')
         var params = {
             WebstoreUserID: 0
         }
-        Services2.getEcommercePrices(params).$promise
+        Services2.getDistancePrices(params).$promise
         .then(function(data) {
             var result = data.data.Prices;
             result.forEach(function(object) {
@@ -146,7 +146,7 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.savePrices = function() {
+    $scope.savePrices = function(form) {
         if (form.$valid) {
             $rootScope.$emit('startSpin');
             var params = {
@@ -158,8 +158,7 @@ angular.module('adminApp')
             .then(function(data) {
                 $rootScope.$emit('stopSpin');
                 alert('Save success'); 
-                $scope.getPrices();           
-                window.location = '/ondemandPrice';
+                $scope.getPrices();
             })
             .catch(function(err){
                 $rootScope.$emit('stopSpin');
