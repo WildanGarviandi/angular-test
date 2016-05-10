@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('adminApp')
-    .controller('EcommercePriceCtrl', 
+    .controller('OndemandPriceCtrl', 
         function(
             $scope, 
             Auth, 
@@ -97,6 +97,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getPrices = function() {
+        $scope.isMaster = false;
         $rootScope.$emit('startSpin');
         var params = {
             WebstoreUserID: $scope.webstore.value
@@ -112,11 +113,31 @@ angular.module('adminApp')
                     price[0].PricePerKM = object.PricePerKM
                 });
             } else {
-                $scope.prices.forEach(function(price){
-                    price.PricePerKM = 0;
-                });
+                $scope.getMasterPrices();
+                $scope.isMaster = true;
             }
             $rootScope.$emit('stopSpin');
+        });
+    }
+
+    /**
+     * Get master prices
+     * 
+     * @return {void}
+     */
+    $scope.getMasterPrices = function() {
+        var params = {
+            WebstoreUserID: 0
+        }
+        Services2.getDistancePrices(params).$promise
+        .then(function(data) {
+            var result = data.data.Prices;
+            result.forEach(function(object) {
+                var price = $scope.prices.filter(function(obj) {
+                    return obj.VehicleID === object.Vehicle.VehicleID;
+                }); 
+                price[0].PricePerKM = object.PricePerKM
+            });
         });
     }
 
@@ -125,23 +146,27 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.savePrices = function() {
-        $rootScope.$emit('startSpin');
-        var params = {
-            prices: $scope.prices
-        };
-        Services2.saveDistancePrice({
-            id: $scope.webstore.value
-        }, params).$promise
-        .then(function(data) {
-            $rootScope.$emit('stopSpin');
-            alert('Save success'); 
-            $scope.getPrices();
-        })
-        .catch(function(err){
-            $rootScope.$emit('stopSpin');
-            alert('Save failed');
-        });
+    $scope.savePrices = function(form) {
+        if (form.$valid) {
+            $rootScope.$emit('startSpin');
+            var params = {
+                prices: $scope.prices
+            };
+            Services2.saveDistancePrice({
+                id: $scope.webstore.value
+            }, params).$promise
+            .then(function(data) {
+                $rootScope.$emit('stopSpin');
+                alert('Save success'); 
+                $scope.getPrices();           
+            })
+            .catch(function(err){
+                $rootScope.$emit('stopSpin');
+                alert('Save failed');
+            });
+        } else {
+            alert('Save failed. Value must be a positive number');
+        }
     }
 
     $scope.getVehicles()

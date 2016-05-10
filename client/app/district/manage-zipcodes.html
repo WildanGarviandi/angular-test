@@ -14,20 +14,12 @@
     </div>
     <div class="container-content">
         <form class="form" name="districtForm" novalidate>
-            <div class="container-fluid hub-container">
-                <div>
-                    <button class="btn btn-primary" ng-click="addField()">
-                    <i class="glyphicon glyphicon-plus"></i>Add
-                    </button>
-                </div>
-                <div class="clearfix">
-                    <br/>
-                </div>
+            <div class="container-fluid manage-zipcodes-container">
                 <div class="row-fluid">
                     <div ng-repeat="item in zipcodes">
                         <div class="row">
-                            <label class="col-xs-4">Zip Code {{$index+1}}:</label>
-                            <div class="col-xs-6">
+                            <label class="col-xs-4 middle-vertical">Zip Code {{$index+1}}:</label>
+                            <div class="col-xs-6 middle-vertical">
                                 <input  ng-model="item.value" 
                                         name="zipcode" 
                                         type="text" 
@@ -55,11 +47,20 @@
                 </div>
                 <!-- Error block ends -->
                 <div class="row-fluid">
-                    <a class="btn btn-primary" ng-click="backButton()">Cancel</a>
-                    <a  class="btn btn-primary"
+                    <div class="col-md-3">
+                        <button class="btn btn-warning btn-block" ng-click="backButton()">Cancel</button>
+                    </div>
+                    <div class="col-md-5">
+                        <button  class="btn btn-success btn-block"
                         ng-click="addZipCode()" 
                         ng-disabled="districtForm.$invalid"
-                        >Save</a>
+                        >Save</button>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary btn-block" ng-click="addField()">
+                            <i class="glyphicon glyphicon-plus"></i>Add
+                        </button>
+                    </div>
                 </div>
             </div>
         </form>
