@@ -75,7 +75,6 @@ angular.module('adminApp')
             $rootScope.$emit('startSpin');
             Services2.getAllCompanies().$promise.then(function(result) {
                 $scope.companies = $scope.companies.concat(result.data.Companies);
-                $rootScope.$emit('stopSpin');
                 resolve();
             });
         });
