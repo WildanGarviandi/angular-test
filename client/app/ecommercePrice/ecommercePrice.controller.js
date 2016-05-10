@@ -43,7 +43,7 @@ angular.module('adminApp')
         }
     }
 
-        /**
+    /**
      * Get all webstores
      * 
      * @return {void}
