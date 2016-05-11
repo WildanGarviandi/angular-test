@@ -289,6 +289,14 @@
                             class="first form-control" />
                     </div>
                 </div>
+                <div class="row-fluid" ng-show="updatePage">                    
+                    <div class="label-input">
+                        Referral :
+                    </div> 
+                    <div class="label-input" style="text-indent:14px">
+                        {{webstore.WebstoreCompany.Source ? webstore.WebstoreCompany.Source : "No referral"}}
+                    </div>
+                </div>
                 <div ng-if="addPage" class="row-fluid">
                     <input type="submit" class="hub-buttons" value="Create Webstore" ng-click="createWebstore(hubForm)"></input>
                 </div>
