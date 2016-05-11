@@ -320,7 +320,7 @@ angular.module('adminApp')
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchString = $scope.searchQuery;
             $scope.searchFilter.name = $scope.searchQuery;
-            $scope.getWebstores();
+            $scope.filterWebstores();
         };
     }
 
