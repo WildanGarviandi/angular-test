@@ -1,0 +1,62 @@
+.map-title-box {
+    font-weight: bold;
+    padding-top: 32px;
+    font-weight: bold;
+    font-size: 21px;
+    padding-left: 20px;
+    text-transform: uppercase;
+}
+
+.map-content {
+    padding: 20px;
+}
+
+.map-search {
+    height: 90px;
+    width: 100%;
+    padding-top: 19px;
+}
+
+.map-search input {
+    height: 50px;
+}
+
+.map-search button {
+    height: 50px;
+}
+
+#map {
+    height: 530px;
+}
+
+#legend {
+    font-family: Arial, sans-serif;
+    background: #fff;
+    padding: 5px;
+    margin: 5px;
+    width: 200px;
+    border: 1px solid #000;
+}
+#legend div {
+    margin-bottom: 5px;
+    position: relative;
+}
+#legend h5 {
+    margin-top: 0;
+    display: inline;
+    vertical-align: middle;
+    font-size: 12px;
+}
+#legend .legend-icon {
+    font-size: 25px;
+    color: white;
+    position: absolute;
+    left: 11px;
+    top: 8px;
+}
+#legend svg {
+    vertical-align: middle;
+}
+#legend img {
+    vertical-align: middle;
+}

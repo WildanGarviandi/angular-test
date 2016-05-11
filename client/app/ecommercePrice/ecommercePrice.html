@@ -1,0 +1,72 @@
+<div class="container-fluid container-hubs">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    Ecommerce On Demand Pricing
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+            </div>
+        </div>
+    </div>
+   
+    <div class="booking-process">
+        <form class="form" name="priceForm" novalidate>
+            <div class="container-fluid hub-container">
+                <div class="row-fluid">
+                    Select Webstore :
+                    <ui-select ng-model="webstore"
+                        theme="bootstrap"
+                        ng-disabled="disabled"
+                        on-select="chooseWebstore($item)">
+                        <ui-select-match placeholder="Choose webstore">
+                            {{ $select.selected.key }}
+                        </ui-select-match>
+                        <ui-select-choices repeat="m in webstores | filter: $select.search" selected>
+                            <span ng-bind-html="m.key | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="row-flued priceform">
+                <div class="vehicle-type">
+                    <table class="table-price">
+                        <tr>
+                            <th>Vehicle</th>
+                            <th>Price Per KM</th>
+                        </tr>
+                        <tr ng-repeat="price in prices">  
+                            <td>
+                                {{price.Name}}
+                            </td>                          
+                            <td>
+                                <div ng-if="isMaster">
+                                    <input ng-model="price.PricePerKM"
+                                        type="number" min="0"
+                                        class="form-control red"
+                                        value="" placeholder="">
+                                </div>
+                                <div ng-if="!isMaster">
+                                    <input ng-model="price.PricePerKM"
+                                        type="number" min="0"
+                                        class="form-control"
+                                        value="" placeholder="">
+                                </div>
+                            </td>                             
+                        </tr>
+                    </table>
+                    <button class="btn btn-primary" ng-click="savePrices(priceForm);">SAVE</button>
+                </div>
+                <h6><strong>Note:</strong> <span class="red">Red prices</span> is from master / default price</h6>
+            </div>
+            <div class="clearfix"></div>
+        </form>
+    </div>
+</div>

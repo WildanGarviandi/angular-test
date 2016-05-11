@@ -1,105 +1,3 @@
-/* Main page styles */
-
-/* border between bootstrap column */
-.border-between > [class*='col-']:before {
-    background: #e3e3e3;
-    bottom: 0;
-    content: " ";
-    left: 0;
-    position: absolute;
-    width: 1px;
-    top: 0;
-}
-.border-between > [class*='col-']:first-child:before {
-    display: none;
-}
-/* end of border between bootstrap column */
-
-.container-dashboard {
-    margin-left: 100px;
-    background-color: #f1f1f1;
-    height: 100%;
-    position: relative;
-}
-
-.box-header {
-    height: 90px;
-    background: white;
-}
-
-.dashboard-title-box {
-    font-weight: bold;
-    padding-top: 32px;
-    font-weight: bold;
-    font-size: 21px;
-    padding-left: 20px;
-    text-transform: uppercase;
-}
-
-.dashboard-content {
-    padding: 20px;
-}
-
-
-.legend .item .legend-icon {
-    display: inline-block;
-    vertical-align: top;
-    padding: 10px 5px;
-}
-
-.legend .item .legend-icon .icon {
-    display: block;
-    width: 15px;
-    height: 15px;
-    background: #ccc;
-    border-radius: 50%;
-    -moz-border-radius: 50%;
-    -webkit-border-radius: 50%;
-}
-
-.legend .item .legend-icon .icon.green {
-    background: #37b392;
-}
-
-.legend .item .legend-icon .icon.red {
-    background: #FF5A60;
-}
-
-.legend .item .details {
-    display: inline-block;
-    vertical-align: top;
-}
-
-.legend .item .details .value {
-    display: block;
-    font-family: sans-serif;
-    font-size: 27px;
-    font-weight: bold;
-    text-align: left;
-}
-
-.legend .item .details .description {
-    display: block;
-    font-size: 12px;
-    font-weight: lighter;
-    text-align: left;
-    text-transform: capitalize;
-    margin-bottom: 0px;
-    color: #666;
-}
-
-/* Small Devices, Tablets */
-@media only screen and (max-width : 830px) {
-
-    .container .content .legend .item {
-        display: block;
-        width: 100%;
-        text-align: left;
-        margin-bottom: 0px;
-    }
-
-}
-
 .hub-container {
     margin-left: 20px;
     margin-right: 20px;
@@ -226,3 +124,399 @@
     font-weight: bold;
 }
 
+/*------------------------*/
+
+
+.container-hubs {
+    background-color: #f1f1f1;
+    height: 100%;
+    position: relative;
+}
+
+.box-header {
+    height: 90px;
+    background: white;
+}
+
+.hub-title-box {
+    padding-top: 32px;
+    font-weight: bold;
+    font-size: 21px;
+    padding-left: 20px;
+}
+
+.hub-search {
+    height: 90px;
+    width: 100%;
+    padding-top: 19px;
+}
+
+.hub-search input {
+    height: 50px;
+}
+
+.hub-search button {
+    height: 50px;
+}
+
+
+/* Filters */
+
+.box-hub {
+    padding-left: 20px;
+    padding-right: 36px;
+}
+
+.filter {
+    padding-top: 10px;
+    float: left;
+    width: 100%;
+    margin-right: 30px;
+}
+
+.filter > select {
+    height: 35px;
+}
+
+.button-fix {
+    padding-top: 40px;
+    padding-left: 0 !important;
+}
+
+.hub-buttons {
+    width: 85%;
+    text-decoration: none;
+    text-transform: uppercase;
+    text-align: center;
+    background: #ff5c61;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    padding-top: 10px;
+    font-size: 13px;
+    bhub-radius: 3px;
+    height: 35px;
+}
+
+.hub-buttons > img {
+    margin-right: 5px;
+    position: relative;
+    bottom: 3px;
+}
+
+.hub-buttons:hover, .hub-buttons:focus {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.uploadXls {
+    margin-top: 10px;
+}
+
+.import-label {
+    margin-top: 10px;
+}
+
+.dropoff-col {
+    width: 400px;
+}
+
+.hub-id {
+    color: #37b392;
+    font-family: 'Avenir-Heavy';
+    cursor: pointer;
+}
+
+.pickup-col {
+    width: 400px;
+}
+
+.more {
+    font-family: 'Avenir-Heavy';
+    color: #ff5c61;
+}
+
+.status-dot {
+    margin-left: 12px;
+}
+
+.success-dot {
+    width: 12px;
+    height: 12px;
+    bhub-radius: 50%;
+    background: #37b392;
+}
+
+td {
+    vertical-align: middle !important;
+}
+
+.warning-dot {
+    width: 12px;
+    height: 12px;
+    bhub-radius: 50%;
+    background: orange;
+}
+
+.danger-dot {
+    width: 12px;
+    height: 12px;
+    bhub-radius: 50%;
+    background: #ff5c61;
+}
+
+.more > .popover {
+    left: auto !important;
+    right: 40px !important;
+}
+
+.more > .popover > .arrow {
+    margin-left: 39px !important;
+}
+
+.hub-details-list {
+  font-family: 'Avenir';
+    color: black;
+    margin-top: 13px;
+    list-style-type: none;
+    margin-left: -15px;
+    font-size: 14px;
+}
+
+.hub-details-list > li {
+  margin-top: 10px;
+  margin-right: 7px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+
+.hub-import > a {
+    color: #428bca;
+    cursor: pointer;
+}
+
+.hub-import > a:hover {
+    color: #428bca;
+}
+/* Fix ui-select */
+.selectize-dropdown [data-selectable], .selectize-dropdown .optgroup-header {
+    text-align: left;
+}
+
+.ngdialog.hub-import-popup .ngdialog-content {
+    padding: 15px;
+}
+
+.ngdialog.hub-import-popup .ngdialog-close:before {
+    color: #bbb;
+    font-size: 26px;
+    font-weight: 400;
+    right: 3px;
+    top: 3px;
+    width: 30px;
+}
+
+/* From orders.css */
+
+.container-hubs {
+    background-color: #f1f1f1;
+    height: 100%;
+    position: relative;    
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.box-header {
+    height: 90px;
+    background: white;
+}
+
+.hub-title-box {
+    padding-top: 32px;
+    font-weight: bold;
+    font-size: 21px;
+    padding-left: 20px;
+}
+
+.hub-search {
+    height: 90px;
+    width: 100%;
+    padding-top: 19px;
+}
+
+.hub-search input {
+    height: 50px;
+}
+
+.hub-search button {
+    height: 50px;
+}
+
+
+/* Filters */
+
+.box-hub {
+    padding-left: 20px;
+    padding-right: 36px;
+}
+
+.filter {
+    padding-top: 10px;
+    float: left;
+    width: 100%;
+    margin-right: 30px;
+}
+
+.filter > select {
+    height: 35px;
+}
+
+.button-fix {
+    padding-top: 40px;
+    padding-left: 0 !important;
+}
+
+.hub-buttons {
+    width: 85%;
+    text-decoration: none;
+    text-transform: uppercase;
+    text-align: center;
+    background: #ff5c61;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    padding-top: 10px;
+    font-size: 13px;
+    bhub-radius: 3px;
+    height: 35px;
+}
+
+.hub-buttons > img {
+    margin-right: 5px;
+    position: relative;
+    bottom: 3px;
+}
+
+.hub-buttons:hover, .hub-buttons:focus {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.uploadXls {
+    margin-top: 10px;
+}
+
+.import-label {
+    margin-top: 10px;
+}
+
+.dropoff-col {
+    width: 400px;
+}
+
+.hub-id {
+    color: #37b392;
+    font-family: 'Avenir-Heavy';
+    cursor: pointer;
+}
+
+.pickup-col {
+    width: 400px;
+}
+
+.more {
+    font-family: 'Avenir-Heavy';
+    color: #ff5c61;
+}
+
+.status-dot {
+    margin-left: 12px;
+}
+
+.success-dot {
+    width: 12px;
+    height: 12px;
+    bhub-radius: 50%;
+    background: #37b392;
+}
+
+td {
+    vertical-align: middle !important;
+}
+
+.warning-dot {
+    width: 12px;
+    height: 12px;
+    bhub-radius: 50%;
+    background: orange;
+}
+
+.danger-dot {
+    width: 12px;
+    height: 12px;
+    bhub-radius: 50%;
+    background: #ff5c61;
+}
+
+.more > .popover {
+    left: auto !important;
+    right: 40px !important;
+}
+
+.more > .popover > .arrow {
+    margin-left: 39px !important;
+}
+
+.hub-details-list {
+  font-family: 'Avenir';
+    color: black;
+    margin-top: 13px;
+    list-style-type: none;
+    margin-left: -15px;
+    font-size: 14px;
+}
+
+.hub-details-list > li {
+  margin-top: 10px;
+  margin-right: 7px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+
+.hub-import > a {
+    color: #428bca;
+    cursor: pointer;
+}
+
+.hub-import > a:hover {
+    color: #428bca;
+}
+/* Fix ui-select */
+.selectize-dropdown [data-selectable], .selectize-dropdown .optgroup-header {
+    text-align: left;
+}
+
+.ngdialog.hub-import-popup .ngdialog-content {
+    padding: 15px;
+}
+
+.ngdialog.hub-import-popup .ngdialog-close:before {
+    color: #bbb;
+    font-size: 26px;
+    font-weight: 400;
+    right: 3px;
+    top: 3px;
+    width: 30px;
+}

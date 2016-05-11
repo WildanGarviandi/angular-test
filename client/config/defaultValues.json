@@ -144,9 +144,6 @@
         }, {
             "key": "Next Day",
             "value":2
-        }, {
-            "key": "Corporate on Demand",
-            "value":3
         }
     ],
     "percentage": {
@@ -170,5 +167,41 @@
             "OurShare": null,
             "DriverShare": null
         }
+    },
+    "weight": [
+        {
+            "value": 1,
+            "description": "< 1 kg"
+        },
+        {
+            "value": 2,
+            "description": "1 < 2 kg"
+        },
+        {
+            "value": 3,
+            "description": "2 < 3 kg"
+        },
+        {
+            "value": 4,
+            "description": "3 < 4 kg"
+        }
+    ],
+    "discount": [
+        {
+            "id": 1,
+            "description": "No discount"
+        },
+        {
+            "id": 2,
+            "description": "100 orders / day"
+        },
+        {
+            "id": 3,
+            "description": "500 orders / day"
+        }
+    ],
+    "country": {
+        "id": "95",
+        "name": "Indonesia"
     }
 }

@@ -1,67 +1,207 @@
-.side-panel {
+.sidebar {
+    width: 80px;
     position: fixed;
     float: left;
-    width: 100px;
     height: 100%;
-    background-color: #371e38;
-    color: white;
-    text-align: center;
+    padding-bottom: 30px;
+    font-size: 12px;
 }
 
+.sidebar .ng-scope {
+    width: inherit;
+    height: inherit;
+}
 
-/*  BOOTSTRAP FIX  */
+.side-panel {
+    background-color: #371e38;
+    overflow-x: hidden;
+    overflow-y: scroll
+    z-index:10;
+    top: 0;
+    left: 0;
+}
 
-.row {
-    margin-left: 0px;
-    margin-right: 0px;
+.side-panel > ul {
+    display: table;
+    width: 200px;
+    padding-left: 0px;
+}
+
+/* Sidebar Menu */
+
+.side-panel > ul > li {
+    display: table-row;
+    height: 50px;
+    padding-left: 5px;
+    padding-right: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+.side-panel > ul > li:hover > ul {
+    background: #371e38;
+}
+
+.side-panel > ul > li:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.side-panel > ul > li > div{
+    height: 50px;
+}
+
+.side-panel > ul > li > a {
+    color: #8E7A8D;
+}
+
+.side-panel > ul > li > a:hover {
+    color: white;
+}
+
+/* Sub menu */
+.side-panel > ul > li > ul {
+    transition: all 300ms ease;
+    padding: 0px;
+}
+
+.side-panel > ul > li > ul > li {
+    height: 50px;
+    display: block;
+}
+
+.side-panel > ul > li > ul > li:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.side-panel > ul > li > ul > li > a {
+    color: #8E7A8D;
+}
+
+.side-panel > ul > li > ul> li > a:hover {
+    color: white;
+}
+
+/* Menu Elements */
+
+.side-image {
+    background-repeat: no-repeat;
+    height: 40px;
+    width: 40px;
+    margin: 0 auto;
+    margin-left: 10px;
+    text-align: center;
+    background-position: center;
+    background-size: 25px;
+    float: left;
+}
+
+.side-text {
+    display: none;
+    text-decoration: none;
+    text-align: left;
+    width: 110px;
+    color: #8E7A8D;
+    float: left;
+    margin-top: 13px;
+}
+
+.side-caret {
+    text-decoration: none;
+    text-align: center;
+    width: 10px;
+    padding: 2px;
+    float: left;
+    margin-top: 13px;
+}
+
+.side-text.active {
+    color: white;
+}
+
+.caret-icon {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+/* Other elements */
+
+.expand-button {
+    width: inherit;
+    bottom: 0;
+    position: fixed;
+    background-color: #462445;
+    height: 40px;
+    cursor: pointer;
+    text-align: center;
+    color: #F0F0F0;
+    padding-top: 5px;
+}
+
+.side-panel::-webkit-scrollbar {
+  width: 6px;
+  height: 14px;
+  z-index: 20;
+}
+
+.side-panel::-webkit-scrollbar-thumb {
+  height: 6px;
+  background-clip: padding-box;
+  -webkit-border-radius: 4px;
+  background-color: #7a4078;
+  -webkit-box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+}
+
+.side-panel::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.side-panel::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+/* Translate content */
+
+.content.expanded {
+    transform: translate3d(120px, 0, 0);
+    width: calc(100% - 200px);
+    margin-left: 80px;
+}
+
+.sidebar.expanded {
+    width: 200px;
+}
+
+.side-image.expanded {
+    width: 50px;
+}
+
+.side-text.expanded {
+    display: block;
+    width: 120px;
 }
 
 /* LOGO */
+
 .side-logo {
     background-color: #462445;
-    width: 100px;
     height: 90px;
-    padding-left: 30px;
-    padding-top: 15px;
     margin-bottom: 10px;
+    width: inherit;
 }
 
 .side-logo-image {
     background-image: url('../../assets/images/logo.png');
     background-repeat: no-repeat;
-    width: 50px;
     height: 100%;
+    background-position: center;
 }
 
-/* Dashboard */
-
-.side-dashboard {
-    width: 100px;
-    height: 80px;
-    margin-top: 20px;
-    padding-left: 5px;
-    cursor: pointer;
-}
+/* All menu image */
 
 .side-dashboard-image {
     background-image: url('../../assets/images/nav-dashboard.png');
-    background-repeat: no-repeat;
-    height: 40px;
-    width: 50px;
-    margin: 0 auto;
-}
-
-.side-dashboard-text {
-    color: #8E7A8D;
-    text-decoration: none;
-    position: relative;
-    right: 5px;
-    text-align: center;
-}
-
-.side-dashboard> a:hover {
-    color: white;
-    text-decoration: none;
 }
 
 .side-dashboard-image.active {
@@ -69,83 +209,129 @@
     background-repeat: no-repeat;
 }
 
-.side-dashboard-text.active {
-    color: white;
+.side-hub-image {
+    background-image: url('../../assets/images/nav-hub.png');
+}
+
+.side-hub-image.active {
+    background-image: url('../../assets/images/nav-hub-active.png');
+}
+
+.side-webstore-image {
+    background-image: url('../../assets/images/nav-webstore.png');
+}
+
+.side-webstore-image.active {
+    background-image: url('../../assets/images/nav-webstore-active.png');
+}
+
+.side-logistic-image {
+    background-image: url('../../assets/images/nav-logistic.png');
+}
+
+.side-logistic-image.active {
+    background-image: url('../../assets/images/nav-logistic-active.png');
+}
+
+.side-pricing-image {
+    background-image: url('../../assets/images/nav-pricing.png');
+}
+
+.side-pricing-image.active {
+    background-image: url('../../assets/images/nav-pricing-active.png');
+}
+
+.side-price-image {
+    background-image: url('../../assets/images/nav-price.png');
+}
+
+.side-price-image.active {
+    background-image: url('../../assets/images/nav-price-active.png');
+}
+
+.side-district-image {
+    background-image: url('../../assets/images/nav-district.png');
+}
+
+.side-district-image.active {
+    background-image: url('../../assets/images/nav-district-active.png');
+}
+
+.side-map-image {
+    background-image: url('../../assets/images/nav-map.png');
+}
+
+.side-map-image.active {
+    background-image: url('../../assets/images/nav-map-active.png');
+}
+
+.side-city-image {
+    background-image: url('../../assets/images/nav-city.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
+.side-trip-image {
+    background-image: url('../../assets/images/nav-trip.png');
+}
+
+.side-city-image.active {
+    background-image: url('../../assets/images/nav-city-active.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
+.side-trip-image.active {
+    background-image: url('../../assets/images/nav-trip-active.png');
+}
+
+.side-driver-image {
+    background-image: url('../../assets/images/nav-driver.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
+.side-driver-image.active {
+    background-image: url('../../assets/images/nav-driver-active.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
+.side-ondemand-image {
+    background-image: url('../../assets/images/nav-ondemand.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
+.side-ondemand-image.active {
+    background-image: url('../../assets/images/nav-ondemand-active.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
 }
 
 /* Booking */
-.side-booking {
-    width: 100px;
-    height: 80px;
-    /*margin-top: 20px;*/
-    padding-left: 5px;
-    cursor: pointer;
-}
 
 .side-booking-image {
     background-image: url('../../assets/images/nav-book.png');
-    background-repeat: no-repeat;
-    height: 40px;
-    width: 50px;
-    margin: 0 20px auto auto;
-}
-
-.side-booking-text {
-    color: #8E7A8D;
-    text-decoration: none;
-    position: relative;
-    right: 5px;
-    text-align: center;
-}
-
-.side-booking> a:hover {
-    color: white;
-    text-decoration: none;
 }
 
 .side-booking-image.active {
-    background-image: url('../../assets/images/nav-book-selected.png') !important;
-    background-repeat: no-repeat;
-}
-
-.side-booking-text.active {
-    color: white;
-}
-
-/* Order */
-.side-order {
-    width: 100px;
-    height: 80px;
-    /*margin-top: 20px;*/
-    cursor: pointer;
+    background-image: url('../../assets/images/nav-book-selected.png');
 }
 
 .side-order-image {
     background-image: url('../../assets/images/nav-track.png');
-    background-repeat: no-repeat;
-    height: 40px;
-    width: 50px;
-    margin: 0 20px auto auto;
-}
-
-.side-order-text {
-    color: #8E7A8D;
-    text-decoration: none;
-    position: relative;
-    right: 5px;
-    text-align: center;
-}
-
-.side-order> a:hover {
-    color: white;
-    text-decoration: none;
 }
 
 .side-order-image.active {
-    background-image: url('../../assets/images/nav-track-selected.png') !important;
-    background-repeat: no-repeat;
+    background-image: url('../../assets/images/nav-track-selected.png');
 }
 
-.side-order-text.active {
-    color: white;
+
+#spinner-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
