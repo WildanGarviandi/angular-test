@@ -82,6 +82,7 @@ angular.module('adminApp')
                         Name: object.Name,
                         VehicleID: object.VehicleID,
                         PricePerKM: 0,
+                        MinimumFee: 0,
                         PickupType: 3
                     });
                 });
@@ -111,6 +112,7 @@ angular.module('adminApp')
                         return obj.VehicleID === object.Vehicle.VehicleID;
                     }); 
                     price[0].PricePerKM = object.PricePerKM
+                    price[0].MinimumFee = object.MinimumFee
                 });
             } else {
                 $scope.getMasterPrices();
@@ -137,6 +139,7 @@ angular.module('adminApp')
                     return obj.VehicleID === object.Vehicle.VehicleID;
                 }); 
                 price[0].PricePerKM = object.PricePerKM
+                price[0].MinimumFee = object.MinimumFee
             });
         });
     }
