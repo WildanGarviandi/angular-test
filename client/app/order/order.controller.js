@@ -76,6 +76,8 @@ angular.module('adminApp')
      */
     $scope.chooseStatus = function(item) {
         $scope.status = item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
         $scope.getOrder(); 
     }
 
@@ -141,9 +143,11 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.reqSearchUserOrderNumber = '';
-    $scope.searchTrip = function(event) {
+    $scope.searchOrder = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchUserOrderNumber = $scope.queryUserOrderNumber;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getOrder();
         };
     }
@@ -157,6 +161,8 @@ angular.module('adminApp')
     $scope.searchDriver = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchDriver = $scope.queryDriver;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getOrder();
         };
     }
@@ -170,6 +176,8 @@ angular.module('adminApp')
     $scope.searchPickup = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchPickup = $scope.queryPickup;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getOrder();
         };
     }
@@ -183,6 +191,8 @@ angular.module('adminApp')
     $scope.searchDropoff = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchDropoff = $scope.queryDropoff;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
             $scope.getOrder();
         };
     }
@@ -196,6 +206,8 @@ angular.module('adminApp')
         $scope.sortBy = sortBy;
         $scope.sortCriteria = sortCriteria;
         $scope.isFirstSort = false;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
         $scope.getOrder();
     }
     
