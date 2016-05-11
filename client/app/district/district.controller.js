@@ -128,7 +128,7 @@ angular.module('adminApp')
     var createDistrict = function() {
         return $q(function (resolve, reject) {
             var zipcodes = $scope.district.ZipCodes.split(',');
-            var check = checkZipcodes($scope.district.ZipCodes);
+            var check = checkZipcodes(zipcodes);
             if (!check.error) {
                 var district = {
                     name: $scope.district.Name,
