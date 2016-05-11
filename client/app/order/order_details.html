@@ -1,0 +1,175 @@
+<div class="container-fluid container-hubs">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    Order Details
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <div class="hub-search">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row box-order-details">
+        <div class="col-md-6 order-details">
+            <div class="row-fluid order-details-main-header">
+                Order Detail
+            </div>
+            <div class="row-fluid order-details-body">
+                <div class="clearfix"></div>
+                <div class="row-fluid order-detail-from-address">
+                    <div class="col-sm-3">
+                        Driver
+                    </div>
+                    <div class="col-sm-8 summary-from ">
+                        {{order.Driver.FirstName}} {{order.Driver.LastName}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-3">
+                        Container
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.ContainerNumber}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-3">
+                        Status
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.OrderStatus.OrderStatus}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-3">
+                        Pickup Time
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-3">
+                        Dropoff Time
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row box-order-details">
+        <div class="col-md-12 order-details">
+            <div class="row-fluid order-details-main-header">
+                History Routes
+            </div>
+            <div class="clearfix"></div>
+            <div class="row-fluid order-details-body">
+                <div class="clearfix"></div>
+                <div ng-repeat="route in trip.UserOrderRoutes" class="row-fluid order-detail-from-address">
+                    <uib-accordion>
+                    <uib-accordion-group 
+                        heading="Route {{$index + 1}}: {{route.UserOrder.UserOrderNumber}} / {{route.UserOrder.WebOrderID}}">
+                        <div class="order-status-container-body">
+                            Pickup Address: {{route.PickupAddress.Address1}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Pickup Time: {{route.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Dropoff Address: {{route.DropoffAddress.Address1}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Dropoff Time: {{route.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Distance: {{route.Distance / 1000 | number : 3 }} km
+                        </div>
+                        <div class="order-status-container-body">
+                            ETA Delivery: {{route.ETADelivery | secondsToDateTime | date:'HH:mm:ss'}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Delivery Fee: {{route.DeliveryFee | currency: currency}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Net Margin: {{route.NetMargin}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Status: {{route.OrderStatus.OrderStatus}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Fleet Manager: {{route.FleetManager.FirstName}} {{route.FleetManager.LastName}} / 
+                            {{route.FleetManager.Email}} / {{route.FleetManager.PhoneNumber}}
+                        </div>
+                        <uib-accordion>
+                        <uib-accordion-group heading="Order">
+                            <div class="order-status-container-body">
+                                UserOrderNumber: {{route.UserOrder.UserOrderNumber}}
+                            </div>
+                            <div class="order-status-container-body">
+                                WebOrderID: {{route.UserOrder.WebOrderID}}
+                            </div>
+                            <div class="order-status-container-body">
+                                User: {{route.UserOrder.User.FirstName}} {{route.UserOrder.User.LastName}} / 
+                                {{route.UserOrder.User.Email}} / {{route.UserOrder.User.PhoneNumber}}
+                            </div>
+                            <div class="order-status-container-body">
+                                Webstore: {{route.UserOrder.WebstoreUser.FirstName}} {{route.UserOrder.WebstoreUser.LastName}} / 
+                                {{route.UserOrder.WebstoreUser.Email}} / {{route.UserOrder.WebstoreUser.PhoneNumber}}
+                            </div>
+                            <div class="order-status-container-body">
+                                PickupType: {{route.UserOrder.PickupType}}
+                            </div>
+                            <div class="order-status-container-body">
+                                PaymentType: {{route.UserOrder.PaymentType}}
+                            </div>
+                            <div class="order-status-container-body">
+                                Pickup: {{route.UserOrder.PickupAddress.Address1}} 
+                            </div>
+                            <div class="order-status-container-body">
+                                Dropoff: {{route.UserOrder.DropoffAddress.Address1}} 
+                            </div>
+                            <div class="order-status-container-body">
+                                Status: {{route.UserOrder.OrderStatus.OrderStatus}}
+                            </div>
+                            <div class="order-status-container-body">
+                                PaidByParent: {{route.UserOrder.PaidByParent}} 
+                                <span ng-if="route.UserOrder.PaidByParent">
+                                    (by {{route.UserOrder.User.FirstName}} {{route.UserOrder.User.LastName}})
+                                </span>
+                                <span ng-if="!route.UserOrder.PaidByParent">
+                                    (by {{route.UserOrder.WebstoreUser.FirstName}} {{route.UserOrder.WebstoreUser.LastName}})
+                                </span>
+                            </div>
+                        </uib-accordion-group>   
+                        </uib-accordion>
+                    </uib-accordion-group>   
+                    </uib-accordion>                        
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>
+
