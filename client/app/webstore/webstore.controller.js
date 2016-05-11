@@ -305,6 +305,8 @@ angular.module('adminApp')
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.data.count / $scope.tableState.pagination.number);
             $rootScope.$emit('stopSpin');
+        }).catch(function (err) {
+            $rootScope.$emit('stopSpin');            
         });
     }
 
