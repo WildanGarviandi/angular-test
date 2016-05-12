@@ -24,7 +24,7 @@ angular.module('adminApp')
 
     $scope.webstore = {
         key: 'Master',
-        value: '0'
+        value: 0
     };
 
     $scope.webstores = [$scope.webstore];
@@ -143,7 +143,7 @@ angular.module('adminApp')
                 }); 
                 price[0].PricePerKM = object.PricePerKM;
                 price[0].MinimumFee = object.MinimumFee;
-                price[0].isMaster = true;
+                price[0].isMaster = ($scope.webstore.value !== 0) ? true : false;
             });
         });
     }
