@@ -83,7 +83,8 @@ angular.module('adminApp')
                         VehicleID: object.VehicleID,
                         PricePerKM: 0,
                         MinimumFee: 0,
-                        PickupType: 3
+                        PickupType: 3,
+                        isMaster: false
                     });
                 });
                 $rootScope.$emit('stopSpin');
@@ -98,28 +99,31 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getPrices = function() {
-        $scope.isMaster = false;
         $rootScope.$emit('startSpin');
         var params = {
             WebstoreUserID: $scope.webstore.value
         }
+        if ($scope.webstore.value !== 0) {
+            $scope.getMasterPrices();
+        }
         Services2.getDistancePrices(params).$promise
         .then(function(data) {
             var result = data.data.Prices;
-            if (result.length > 0) {
+            if (result.length > 0 && $scope.webstore.value !== 0) {
                 result.forEach(function(object) {
                     var price = $scope.prices.filter(function(obj) {
                         return obj.VehicleID === object.Vehicle.VehicleID;
                     }); 
-                    price[0].PricePerKM = object.PricePerKM
-                    price[0].MinimumFee = object.MinimumFee
+                    price[0].PricePerKM = object.PricePerKM;
+                    price[0].MinimumFee = object.MinimumFee;
+                    price[0].isMaster = ($scope.webstore.value !== 0) ? false : true;
                 });
             } else {
                 $scope.getMasterPrices();
-                $scope.isMaster = true;
             }
             $rootScope.$emit('stopSpin');
         });
+        console.log($scope.prices);
     }
 
     /**
@@ -138,8 +142,9 @@ angular.module('adminApp')
                 var price = $scope.prices.filter(function(obj) {
                     return obj.VehicleID === object.Vehicle.VehicleID;
                 }); 
-                price[0].PricePerKM = object.PricePerKM
-                price[0].MinimumFee = object.MinimumFee
+                price[0].PricePerKM = object.PricePerKM;
+                price[0].MinimumFee = object.MinimumFee;
+                price[0].isMaster = true;
             });
         });
     }
@@ -150,10 +155,23 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.savePrices = function(form) {
+        var changed = [];
+        $scope.prices.forEach(function(price){
+            if ((form[price.Name+'-pricePerKM'].$dirty) && (form[price.Name+'-minimumFee'].$dirty)) {
+                changed.push(price);
+            } else if ((form[price.Name+'-pricePerKM'].$dirty) && (!form[price.Name+'-minimumFee'].$dirty)) {
+                changed.push(price);
+                delete price.MinimumFee; 
+            } else if ((!form[price.Name+'-pricePerKM'].$dirty) && (form[price.Name+'-minimumFee'].$dirty)) {
+                changed.push(price);
+                delete price.PricePerKM; 
+            }
+        });
+        console.log(changed);
         if (form.$valid) {
             $rootScope.$emit('startSpin');
             var params = {
-                prices: $scope.prices
+                prices: changed
             };
             Services2.saveDistancePrice({
                 id: $scope.webstore.value

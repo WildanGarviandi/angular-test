@@ -48,30 +48,34 @@
                                 {{price.Name}}
                             </td>                          
                             <td>
-                                <div ng-if="isMaster">
+                                <div ng-if="price.isMaster">
                                     <input ng-model="price.PricePerKM"
                                         type="number" min="0"
                                         class="form-control red"
+                                        name = "{{price.Name}}-pricePerKM"
                                         value="" placeholder="">
                                 </div>
-                                <div ng-if="!isMaster">
+                                <div ng-if="!price.isMaster">
                                     <input ng-model="price.PricePerKM"
                                         type="number" min="0"
                                         class="form-control"
+                                        name = "{{price.Name}}-pricePerKM"
                                         value="" placeholder="">
                                 </div>
                             </td>                    
                             <td>
-                                <div ng-if="isMaster">
+                                <div ng-if="price.isMaster">
                                     <input ng-model="price.MinimumFee"
                                         type="number" min="0"
                                         class="form-control red"
+                                        name = "{{price.Name}}-minimumFee"
                                         value="" placeholder="">
                                 </div>
-                                <div ng-if="!isMaster">
+                                <div ng-if="!price.isMaster">
                                     <input ng-model="price.MinimumFee"
                                         type="number" min="0"
                                         class="form-control"
+                                        name = "{{price.Name}}-minimumFee"
                                         value="" placeholder="">
                                 </div>
                             </td>                             
