@@ -463,6 +463,7 @@ angular.module('adminApp')
 
     $scope.filterWebstores = function () {
         $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
         $scope.getWebstores();
     }
 
