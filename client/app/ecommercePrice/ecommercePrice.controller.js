@@ -123,7 +123,6 @@ angular.module('adminApp')
             }
             $rootScope.$emit('stopSpin');
         });
-        console.log($scope.prices);
     }
 
     /**
@@ -155,23 +154,36 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.savePrices = function(form) {
-        var changed = [];
-        $scope.prices.forEach(function(price){
-            if ((form[price.Name+'-pricePerKM'].$dirty) && (form[price.Name+'-minimumFee'].$dirty)) {
-                changed.push(price);
-            } else if ((form[price.Name+'-pricePerKM'].$dirty) && (!form[price.Name+'-minimumFee'].$dirty)) {
-                changed.push(price);
-                delete price.MinimumFee; 
-            } else if ((!form[price.Name+'-pricePerKM'].$dirty) && (form[price.Name+'-minimumFee'].$dirty)) {
-                changed.push(price);
-                delete price.PricePerKM; 
+        var changedPrices = [];
+        for (var i = 0; i < $scope.prices.length; i++) {
+            var isPriceChanged = form[$scope.prices[i].Name+'-pricePerKM'].$dirty;
+            var isMinimumFeeChanged = form[$scope.prices[i].Name+'-minimumFee'].$dirty;
+            var isMasterPrice = $scope.prices[i].isMaster;
+            if (isPriceChanged && isMinimumFeeChanged) {
+                changedPrices.push($scope.prices[i]);
+            } else if (isPriceChanged && !isMinimumFeeChanged) {
+                if (!isMasterPrice) {
+                    changedPrices.push($scope.prices[i]);
+                    delete $scope.prices[i].MinimumFee;
+                } else {
+                    alert('You\'ve changed PricePerKM for ' + $scope.prices[i].Name + '. Please change its MinimumFee also.');
+                    return false;
+                }
+            } else if (!isPriceChanged && isMinimumFeeChanged) {
+                if (!isMasterPrice) {
+                    changedPrices.push($scope.prices[i]);
+                    delete $scope.prices[i].PricePerKM;
+                } else {
+                    alert('You\'ve changed MinimumFee for ' + $scope.prices[i].Name + '. Please change its PricePerKM also.');
+                    return false;
+                }
             }
-        });
-        console.log(changed);
+        }
+
         if (form.$valid) {
             $rootScope.$emit('startSpin');
             var params = {
-                prices: changed
+                prices: changedPrices
             };
             Services2.saveDistancePrice({
                 id: $scope.webstore.value
