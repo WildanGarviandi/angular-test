@@ -65,6 +65,7 @@
                                 class="first form-control" />
                         </div>
                     </div>
+                    <div class="clearfix"></div>
                     <div class="row-fluid">                    
                         <div class="label-input">
                             Latitude :
@@ -80,6 +81,7 @@
                                 class="first form-control" />
                         </div>
                     </div>
+                    <div class="clearfix"></div>
                     <div class="row-fluid">                    
                         <div class="label-input">
                             Longitude :
@@ -119,10 +121,11 @@
                     </div>
                     <div class="clearfix"></div>
                     <div ng-if="addPage" class="row-fluid">
-                        <a class="hub-buttons" ng-click="createDistrict()">Create District</a>
+                        <button class="btn btn-primary btn-block" ng-click="createDistrict()" ng-disabled="!district.Name">Create District</button>
                     </div>
                     <div ng-if="updatePage" class="row-fluid">
-                        <button class="btn btn-primary pull-left"
+                        <button ng-disabled="!district.Name"
+                            class="btn btn-primary pull-left"
                             ng-click="updateDistrict()">Update District</button>
                         <button class="btn pull-right"
                             ng-click="manageZipcodes(district.DistrictID)">Manage Zipcodes

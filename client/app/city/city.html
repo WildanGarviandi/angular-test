@@ -48,6 +48,15 @@
             <div class="addButton">
                 <button class="btn btn-primary" type="button" ng-click="addCity()">Add City</button>
             </div>
+            <div ng-if="reqSearchString">
+                Showing results for "{{reqSearchString}}" -
+                <ng-pluralize count="count" when="{ 
+                    '0': 'no records',
+                    '1': '1 record', 
+                    'other': '{{count}} records'}">
+                </ng-pluralize>
+                found
+            </div>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>

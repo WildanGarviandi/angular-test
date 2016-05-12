@@ -80,6 +80,12 @@ angular.module('adminApp')
                     return i.CompanyName.toLowerCase(); 
                 });
                 $scope.companies = $scope.companies.concat(companies);
+                $scope.companies.forEach(function(company) {
+                    if (typeof company.FleetManagerID === 'undefined' && company.User) {
+                        company.FleetManagerID = company.User.UserID;
+                    }
+                });
+                $rootScope.$emit('stopSpin');
                 resolve();
             });
         });
