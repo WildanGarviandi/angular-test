@@ -116,7 +116,7 @@ angular.module('adminApp')
                     }); 
                     price[0].PricePerKM = object.PricePerKM;
                     price[0].MinimumFee = object.MinimumFee;
-                    price[0].isMaster = ($scope.webstore.value !== 0) ? false : true;
+                    price[0].isMaster = false;
                 });
             } else {
                 $scope.getMasterPrices();
