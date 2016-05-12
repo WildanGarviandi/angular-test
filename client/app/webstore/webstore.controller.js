@@ -305,6 +305,8 @@ angular.module('adminApp')
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.data.count / $scope.tableState.pagination.number);
             $rootScope.$emit('stopSpin');
+        }).catch(function (err) {
+            $rootScope.$emit('stopSpin');            
         });
     }
 
@@ -318,7 +320,7 @@ angular.module('adminApp')
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchString = $scope.searchQuery;
             $scope.searchFilter.name = $scope.searchQuery;
-            $scope.getWebstores();
+            $scope.filterWebstores();
         };
     }
 
@@ -461,6 +463,7 @@ angular.module('adminApp')
 
     $scope.filterWebstores = function () {
         $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
         $scope.getWebstores();
     }
 

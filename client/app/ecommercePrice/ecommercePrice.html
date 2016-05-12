@@ -41,6 +41,7 @@
                         <tr>
                             <th>Vehicle</th>
                             <th>Price Per KM</th>
+                            <th>Minimum Fee</th>
                         </tr>
                         <tr ng-repeat="price in prices">  
                             <td>
@@ -55,6 +56,20 @@
                                 </div>
                                 <div ng-if="!isMaster">
                                     <input ng-model="price.PricePerKM"
+                                        type="number" min="0"
+                                        class="form-control"
+                                        value="" placeholder="">
+                                </div>
+                            </td>                    
+                            <td>
+                                <div ng-if="isMaster">
+                                    <input ng-model="price.MinimumFee"
+                                        type="number" min="0"
+                                        class="form-control red"
+                                        value="" placeholder="">
+                                </div>
+                                <div ng-if="!isMaster">
+                                    <input ng-model="price.MinimumFee"
                                         type="number" min="0"
                                         class="form-control"
                                         value="" placeholder="">
