@@ -165,7 +165,7 @@ angular.module('adminApp')
                 controller: 'logistic'
             }
         },
-        updateLogisticFees: {
+        updateSomeLogisticFees: {
             method: 'POST',
             params: {
                 module: 'price',
