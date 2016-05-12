@@ -245,6 +245,20 @@ angular.module('adminApp')
             id: $scope.id,
         }).$promise.then(function(data) {
             $scope.order = data.data;
+            switch ($scope.order.PickupType) {
+                case 1:
+                    $scope.order.PickupType = 'Now';
+                    break;        
+                case 2:
+                    $scope.order.PickupType = 'Later';
+                    break;    
+                case 3:
+                    $scope.order.PickupType = 'On Demand';
+                    break;    
+                default:
+                    $scope.order.PickupType = '-';
+            }
+            $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
