@@ -232,11 +232,11 @@ angular.module('adminApp')
             authenticate: true
         })
         .state('app.ecommercePrice', {
-            url: 'ecommercePrice',
+            url: 'ondemandPrice',
             views: {
                 'content@': {
                     templateUrl: 'app/ecommercePrice/ecommercePrice.html',
-                    controller: 'EcommercePriceCtrl',
+                    controller: 'OndemandPriceCtrl',
                 }
             },
             authenticate: true
