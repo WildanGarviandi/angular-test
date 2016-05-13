@@ -88,8 +88,8 @@
     </div>
     <div class="row">
         <uib-tabset active="active" class="col-md-12">
-            <uib-tab index="$index + 1" ng-repeat="tab in tabs" select="filterTab(tab.value)" 
-                    heading="{{tab.heading}}" active="tab.active"></uib-tab>
+            <uib-tab index="{{$index + 1}}" ng-repeat="tab in tabs" select="filterTab(tab.value)" 
+                    heading="{{tab.heading}}" active="tab.active" ng-hide="tab.hide"></uib-tab>
         </uib-tabset>
         <div class="text-center" ng-if="blankCounter !== 0">
             <span class="red"><strong>WARNING!</strong> {{blankCounter}}</span> 
