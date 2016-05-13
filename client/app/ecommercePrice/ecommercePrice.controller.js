@@ -39,6 +39,7 @@ angular.module('adminApp')
     $scope.chooseWebstore = function(item) {
         $scope.webstore = item;
         if (!$stateParams.query) {
+            $rootScope.$emit('startSpin');
             $scope.getPrices();
         }
     }
@@ -99,17 +100,57 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getPrices = function() {
-        $rootScope.$emit('startSpin');
-        var params = {
-            WebstoreUserID: $scope.webstore.value
-        }
         if ($scope.webstore.value !== 0) {
-            $scope.getMasterPrices();
+            $scope.getMasterPrices()
+            .then($scope.getDistancePrices);
+        } else {
+            $scope.getMasterPrices();            
         }
-        Services2.getDistancePrices(params).$promise
-        .then(function(data) {
-            var result = data.data.Prices;
-            if (result.length > 0 && $scope.webstore.value !== 0) {
+        
+    }
+
+    /**
+     * Get master prices
+     * 
+     * @return {void}
+     */
+    $scope.getMasterPrices = function() {        
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            var params = {
+                WebstoreUserID: 0
+            }
+            Services2.getDistancePrices(params).$promise
+            .then(function(data) {
+                var result = data.data.Prices;
+                result.forEach(function(object) {
+                    var price = $scope.prices.filter(function(obj) {
+                        return obj.VehicleID === object.Vehicle.VehicleID;
+                    }); 
+                    price[0].PricePerKM = object.PricePerKM;
+                    price[0].MinimumFee = object.MinimumFee;
+                    price[0].isMaster = ($scope.webstore.value !== 0) ? true : false;
+                });
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
+        });
+    }
+
+    /**
+     * Get distance prices
+     * 
+     * @return {void}
+     */
+    $scope.getDistancePrices = function() {              
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            var params = {
+                WebstoreUserID: $scope.webstore.value
+            }
+            Services2.getDistancePrices(params).$promise
+            .then(function(data) {
+                var result = data.data.Prices;
                 result.forEach(function(object) {
                     var price = $scope.prices.filter(function(obj) {
                         return obj.VehicleID === object.Vehicle.VehicleID;
@@ -118,32 +159,8 @@ angular.module('adminApp')
                     price[0].MinimumFee = object.MinimumFee;
                     price[0].isMaster = false;
                 });
-            } else {
-                $scope.getMasterPrices();
-            }
-            $rootScope.$emit('stopSpin');
-        });
-    }
-
-    /**
-     * Get master prices
-     * 
-     * @return {void}
-     */
-    $scope.getMasterPrices = function() {
-        var params = {
-            WebstoreUserID: 0
-        }
-        Services2.getDistancePrices(params).$promise
-        .then(function(data) {
-            var result = data.data.Prices;
-            result.forEach(function(object) {
-                var price = $scope.prices.filter(function(obj) {
-                    return obj.VehicleID === object.Vehicle.VehicleID;
-                }); 
-                price[0].PricePerKM = object.PricePerKM;
-                price[0].MinimumFee = object.MinimumFee;
-                price[0].isMaster = ($scope.webstore.value !== 0) ? true : false;
+                $rootScope.$emit('stopSpin');
+                resolve()
             });
         });
     }
