@@ -50,8 +50,11 @@ angular.module('adminApp')
     };
 
     $scope.tabs = [
-        { heading: 'Price based on selected weight', value: 'price' },
-        { heading: 'Additional Price / kg', value: 'additional' }
+        { heading: 'Price / selected weight', value: 'price' },
+        {   heading: 'Additional Price / kg', 
+            value: 'additional',
+            tooltip: 'Additional price is applied when package is heavier than available weight'
+        }
     ];
 
     $scope.filter = 'price';
