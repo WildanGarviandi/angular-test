@@ -39,7 +39,6 @@ angular.module('adminApp')
     $scope.chooseWebstore = function(item) {
         $scope.webstore = item;
         if (!$stateParams.query) {
-            $rootScope.$emit('startSpin');
             $scope.getPrices();
         }
     }
@@ -105,8 +104,7 @@ angular.module('adminApp')
             .then($scope.getDistancePrices);
         } else {
             $scope.getMasterPrices();            
-        }
-        
+        }        
     }
 
     /**
@@ -119,7 +117,7 @@ angular.module('adminApp')
             $rootScope.$emit('startSpin');
             var params = {
                 WebstoreUserID: 0
-            }
+            };
             Services2.getDistancePrices(params).$promise
             .then(function(data) {
                 var result = data.data.Prices;
@@ -147,7 +145,7 @@ angular.module('adminApp')
             $rootScope.$emit('startSpin');
             var params = {
                 WebstoreUserID: $scope.webstore.value
-            }
+            };
             Services2.getDistancePrices(params).$promise
             .then(function(data) {
                 var result = data.data.Prices;
@@ -160,7 +158,7 @@ angular.module('adminApp')
                     price[0].isMaster = false;
                 });
                 $rootScope.$emit('stopSpin');
-                resolve()
+                resolve();
             });
         });
     }
