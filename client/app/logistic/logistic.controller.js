@@ -170,7 +170,7 @@ angular.module('adminApp')
             _id: $scope.input.company.FleetManagerID,
             fees: changedFees
         };
-        Services2.updateSomeLogisticFees(params).$promise.then(function (result) {
+        Services2.updateMultipleLogisticFees(params).$promise.then(function (result) {
             if (result.data === undefined || result.data.RowsAffected !== changedFees.length) {
                 alert('Save Fees failed. Please try again or contact tech support.');
             }
