@@ -1,10 +1,12 @@
 'use strict';
 
 angular.module('adminApp')
-  .controller('LoginCtrl', function ($scope, Auth, $location) {
+  .controller('LoginCtrl', function ($scope, Auth, $location, $rootScope) {
     $scope.user = {};
     $scope.errors = {};
     $scope.currentDate = new Date();
+
+    $rootScope.$emit('stopSpin');
 
     $scope.login = function(form) {
         $scope.submitted = true;
@@ -16,6 +18,7 @@ angular.module('adminApp')
             })
             .then( function() {
                 // Logged in, redirect to home
+                $rootScope.$emit('startSpin');
                 $location.path('/');
             })
             .catch( function(err) {
