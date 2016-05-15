@@ -51,7 +51,8 @@ angular.module('adminApp')
 
     $scope.tabs = [
         { heading: 'Price / selected weight', value: 'price' },
-        {   heading: 'Additional Price / kg', 
+        {   
+            heading: 'Additional Price / kg', 
             value: 'additional',
             tooltip: 'Additional price is applied when package is heavier than available weight'
         }
