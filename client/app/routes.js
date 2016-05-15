@@ -240,5 +240,25 @@ angular.module('adminApp')
                 }
             },
             authenticate: true
+        })
+        .state('app.order', {
+            url: 'orders',
+             views: {
+                'content@': {
+                    templateUrl: 'app/order/order.html',
+                    controller: 'OrderCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.order-details', {
+            url: 'order/details/:orderID',
+             views: {
+                'content@': {
+                    templateUrl: 'app/order/order_details.html',
+                    controller: 'OrderCtrl',
+                }
+            },
+            authenticate: true
         });
     });
