@@ -235,6 +235,19 @@ angular.module('adminApp')
             params: {
                 module: 'company'
             }
+        },
+        getOrder: {
+            method: 'GET',
+            params: {
+                module: 'order'
+            },
+        },
+        getOrderDetails: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                id: null
+            },
         }
     });
 });
