@@ -223,7 +223,7 @@ angular.module('adminApp')
                 controller: 'logistic'
             }
         },
-        updateLogisticFees: {
+        updateMultipleLogisticFees: {
             method: 'POST',
             params: {
                 module: 'price',
