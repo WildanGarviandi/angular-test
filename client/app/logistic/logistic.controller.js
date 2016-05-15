@@ -39,6 +39,10 @@ angular.module('adminApp')
     $scope.vehicleTypes = [];
     $scope.showing = false;
 
+    $scope.displayed = [];
+
+    var oldFees = [];
+
     /**
      * Get default values from config
      * 
@@ -60,9 +64,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.chooseCompany = function() {
-        if (!$stateParams.query) {
-            getFees();
-        }
+        getFees();
     };
 
     /**
@@ -74,7 +76,10 @@ angular.module('adminApp')
         return $q(function (resolve) {
             $rootScope.$emit('startSpin');
             Services2.getAllCompanies().$promise.then(function(result) {
-                $scope.companies = $scope.companies.concat(result.data.Companies);
+                var companies = lodash.sortBy(result.data.Companies, function (i) { 
+                    return i.CompanyName.toLowerCase(); 
+                });
+                $scope.companies = $scope.companies.concat(companies);
                 $scope.companies.forEach(function(company) {
                     if (typeof company.FleetManagerID === 'undefined' && company.User) {
                         company.FleetManagerID = company.User.UserID;
@@ -105,44 +110,41 @@ angular.module('adminApp')
             id: 0
         };
         Services2.getLogisticFees(paramsMaster).$promise.then(function(masterResult) {
-            var masterData = masterResult.data.Fees;
-            Services2.getLogisticFees(params).$promise.then(function(result) {
-                $scope.displayed = result.data.Fees;
-                $scope.vehicleTypes.forEach(function (vehicle) {
-                    var index = $scope.displayed.findIndex(function (fee) {
-                        return fee.Vehicle.VehicleID === vehicle.VehicleID;
+            oldFees = [];
+            $scope.displayed = masterResult.data.Fees;
+            $scope.displayed.forEach(function (val, index, array) {
+                array[index].VehicleID = val.Vehicle.VehicleID;
+                array[index].VehicleType = val.Vehicle.Name;
+                array[index].isMaster = true;
+                oldFees.push({
+                    PricePerKM: val.PricePerKM,
+                    MinimumFee: val.MinimumFee,
+                    PerItemFee: val.PerItemFee
+                });
+            });
+            if (params.id !== 0) {
+                Services2.getLogisticFees(params).$promise.then(function(result) {
+                    var fees = result.data.Fees;
+                    fees.forEach(function (fee) {
+                        var index = $scope.displayed.findIndex(function (master) {
+                            return fee.Vehicle.VehicleID === master.VehicleID;
+                        });
+                        if (index !== -1) {
+                            lodash.assign($scope.displayed[index], fee);
+                            $scope.displayed[index].isMaster = false;
+                            lodash.assign(oldFees[index], {
+                                PricePerKM: fee.PricePerKM,
+                                MinimumFee: fee.MinimumFee,
+                                PerItemFee: fee.PerItemFee
+                            });
+                        }
                     });
-                    if (index !== -1) {
-                        $scope.displayed[index].VehicleType = vehicle.Name;
-                        $scope.displayed[index].VehicleID = vehicle.VehicleID;
-                    } else {
-                        var fromMaster = lodash.find(masterData, {'VehicleID': vehicle.VehicleID});
-                        fromMaster.FleetManagerID = $scope.input.company.FleetManagerID;
-                        fromMaster.VehicleType = vehicle.Name;
-                        $scope.displayed.push(fromMaster);
-                    }
+                    $rootScope.$emit('stopSpin');
                 });
-                $scope.displayed = lodash.sortBy($scope.displayed, 'VehicleID');
+            } else {
                 $rootScope.$emit('stopSpin');
-            });
-        });
-    };
-
-    /**
-     * Get all vehicles
-     * 
-     * @return {Object} Promise
-     */
-    var getVehicles = function () {
-        return $q(function (resolve) {
-            $scope.vehicleTypes = [];
-            Services2.getVehicles().$promise.then(function (result) {
-                $scope.vehicleTypes = result.data.Vehicles;
-                result.data.Vehicles.forEach(function (vehicle, i) {
-                    $scope.vehicleTypes[i].value = vehicle.Name + ' (' + vehicle.Description + ')';
-                });
-                resolve();
-            });
+            }
+            
         });
     };
 
@@ -153,11 +155,23 @@ angular.module('adminApp')
      */
     $scope.saveLogisticFee = function () {
         $rootScope.$emit('startSpin');
+        var changedFees = [];
+
+        $scope.displayed.forEach(function (fee, index) {
+            var old = oldFees[index];
+            if (fee.PricePerKM !== old.PricePerKM ||
+                fee.MinimumFee !== old.MinimumFee ||
+                fee.PerItemFee !== old.PerItemFee) {
+                changedFees.push(fee);
+            }
+        });
+
         var params = {
-            fees: $scope.displayed
+            _id: $scope.input.company.FleetManagerID,
+            fees: changedFees
         };
-        Services2.updateLogisticFees(params).$promise.then(function (result) {
-            if (result.data === undefined || result.data.RowsAffected !== $scope.vehicleTypes.length) {
+        Services2.updateMultipleLogisticFees(params).$promise.then(function (result) {
+            if (result.data === undefined || result.data.RowsAffected !== changedFees.length) {
                 alert('Save Fees failed. Please try again or contact tech support.');
             }
             $rootScope.$emit('stopSpin');
@@ -172,7 +186,9 @@ angular.module('adminApp')
 
     getDefaultValues()
         .then(getCompanies)
-        .then(getVehicles)
-        .then(getFees);
-
+        .then(getFees)
+        .catch(function (e) {
+            alert('Error occured. Please contact tech support.');
+            $rootScope.$emit('stopSpin');
+        });
 });

@@ -50,9 +50,24 @@ angular.module('adminApp')
     };
 
     $scope.tabs = [
-        { heading: 'Price based on selected weight', value: 'price' },
-        { heading: 'Additional Price / kg', value: 'additional' }
+        { heading: 'Price / selected weight', value: 'price' },
+        {   
+            heading: 'Additional Price / kg', 
+            value: 'additional',
+            tooltip: 'Additional price is applied when package is heavier than available weight'
+        }
     ];
+
+    $scope.$watch(function () {
+        return $scope.input.weight;
+    }, function (weight) {
+        if (weight && weight.value !== $scope.maxWeight) {
+            $scope.tabs[1].hide = true;
+            $scope.tabs[0].active = true;
+        } else {
+            $scope.tabs[1].hide = false;
+        }   
+    });
 
     $scope.filter = 'price';
 
@@ -70,6 +85,7 @@ angular.module('adminApp')
                 $scope.pickupTypes = data.pickupTypes;
                 $scope.input.pickupTypes = $scope.pickupTypes[0];
                 $scope.weight = data.weight;
+                $scope.maxWeight = Math.max.apply(Math, $scope.weight.map(function(o){return o.value;}));
                 $scope.input.weight = $scope.weight[0];
                 $scope.discount = data.discount;
                 $scope.input.discount = $scope.discount[0];
@@ -167,17 +183,10 @@ angular.module('adminApp')
     var getPlaces = function () {
         return $q(function (resolve) {
             var params = {
-                CountryID: $scope.countryID
+                status: true
             };
-            Services.getCountryStates(params).$promise.then(function (data) {
-                $scope.states = data.states;
-                data.states.forEach(function (state) {
-                    if (state.Cities) {
-                        state.Cities.forEach(function (city) {
-                            $scope.cities.push(city);
-                        });
-                    }
-                });
+            Services2.getCities(params).$promise.then(function (result) {
+                $scope.cities = result.data.Cities.rows;
                 $scope.originList = $scope.cities;
                 $scope.destList = $scope.cities;
                 resolve();
