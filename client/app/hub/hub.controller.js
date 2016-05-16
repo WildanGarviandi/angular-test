@@ -14,7 +14,8 @@ angular.module('adminApp')
             $stateParams,
             $location, 
             $http, 
-            $window
+            $window,
+            $q
         ) {
 
     Auth.getCurrentUser().$promise.then(function(data) {
@@ -66,10 +67,11 @@ angular.module('adminApp')
             State: $scope.hub.State,
             Country: $scope.hub.Country,
             ZipCode: $scope.hub.ZipCode,
+            FleetManagerID: $scope.hub.FleetManagerID,
             CountryCode: null,
             CityID: null,
             StateID: null,
-            CountryID: null
+            CountryID: null,
         };
         $rootScope.$emit('startSpin');
         Services2.createHub(hub).$promise.then(function(response, error) {
@@ -99,10 +101,11 @@ angular.module('adminApp')
             State: $scope.hub.State,
             Country: $scope.hub.Country,
             ZipCode: $scope.hub.ZipCode,
+            FleetManagerID: $scope.hub.FleetManagerID,
             CountryCode: null,
             CityID: null,
             StateID: null,
-            CountryID: null
+            CountryID: null,
         }
         $rootScope.$emit('startSpin');
         Services2.updateHub({
@@ -140,6 +143,11 @@ angular.module('adminApp')
         $scope.hub.Type = item.value;
         $scope.type = item;
     }
+
+    $scope.chooseFleetManager = function(item) {
+        $scope.hub.FleetManagerID = item.FleetManagerID;
+        $scope.fleetManager = item;
+    };
 
     /**
      * Add zipcode field
@@ -208,6 +216,25 @@ angular.module('adminApp')
     }
 
     /**
+     * Get all companies
+     * 
+     * @return {Object} Promise
+     */
+    var getCompanies = function() {
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            Services2.getAllCompanies().$promise.then(function(result) {
+                var companies = lodash.sortBy(result.data.Companies, function (i) { 
+                    return i.CompanyName.toLowerCase(); 
+                });
+                $scope.companies = companies;
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
+        });
+    };
+
+    /**
      * Pick location from maps
      * 
      * @return {void}
@@ -252,6 +279,7 @@ angular.module('adminApp')
                     $scope.zipcodes.push({key: idx, value: zip.ZipCode});
                 }) 
             }
+            $scope.fleetManager = lodash.find($scope.companies, {FleetManagerID: $scope.hub.FleetManagerID});
             $scope.locationPicker();
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
@@ -281,6 +309,10 @@ angular.module('adminApp')
                 $scope.hubs.push({key: hub.Name, value: hub.HubID});
             });
             $scope.displayed = hubs;
+            $scope.displayed.forEach(function (hub, index, array) {
+                var company = lodash.find($scope.companies, {FleetManagerID: hub.FleetManagerID});
+                array[index].FleetManager = company;
+            })
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.data.Hubs.count / $scope.tableState.pagination.number);
@@ -463,6 +495,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.loadManagePage = function() {
+        getCompanies();
         $scope.getCountries();
         $scope.getStates();
         $scope.getCities();

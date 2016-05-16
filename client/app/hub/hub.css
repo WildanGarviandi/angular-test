@@ -2,7 +2,7 @@
     margin-left: 20px;
     margin-right: 20px;
     margin-top: 20px;
-    width: 348px;
+    width: 420px;
     padding: 0 !important;
 }
 
@@ -83,7 +83,7 @@
     background-color: rgb(229, 227, 223); 
     overflow: hidden; 
     position: absolute; 
-    margin-left: 400px; 
+    margin-left: 450px; 
     margin-top: -150px;
 }
 
@@ -101,7 +101,7 @@
     background-color: #transparent;
     overflow: hidden;
     position: absolute;
-    margin-left: 400px;
+    margin-left: 450px;
     margin-top: -60px;
 }
 
@@ -252,7 +252,7 @@ a:hover {
     background: #37b392;
 }
 
-td {
+td, th {
     vertical-align: middle !important;
 }
 
