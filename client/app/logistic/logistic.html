@@ -41,7 +41,6 @@
                     <div class="col-md-4 col-md-offset-2">
                         <button class="btn btn-block btn-primary pull-right" ng-click="saveLogisticFee()">Save Changes</button>
                     </div>
-                        
                     <table st-table="displayed" st-pipe="callServer" class="table table-hover">
                         <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                             <tr>
@@ -69,15 +68,18 @@
                                 <td>{{fee.VehicleType}}</id>
                                 <td><input type="number" min="0"
                                             value="{{fee.PricePerKM | number}}" 
-                                            ng-model="fee.PricePerKM">
+                                            ng-model="fee.PricePerKM"
+                                            ng-class="{red : fee.isMaster}">
                                     </input></td>
                                 <td><input type="number" min="0"
                                             value="{{fee.MinimumFee | number}}" 
-                                            ng-model="fee.MinimumFee">
+                                            ng-model="fee.MinimumFee"
+                                            ng-class="{red : fee.isMaster}">
                                     </input></td>
                                 <td><input type="number" min="0"
                                             value="{{fee.PerItemFee | number}}" 
-                                            ng-model="fee.PerItemFee">
+                                            ng-model="fee.PerItemFee"
+                                            ng-class="{red : fee.isMaster}">
                                     </input></td>
                             </tr>
                         </tbody>

@@ -32,6 +32,9 @@ angular.module('adminApp')
             },
             map: {
                 routes: ['/map']
+            },
+            orders: {
+                routes: ['/orders']
             }
         };
 
