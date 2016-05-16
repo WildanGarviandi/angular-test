@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('adminApp')
-    .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q, config) {
+    .factory('Auth', function Auth($location, $rootScope, $http, User, $cookies, $q, config) {
         var currentUser = {};
-        if ($cookieStore.get('token')) {
-          currentUser = User.get();
+        if ($cookies.get('token')) {
+          currentUser = JSON.parse($cookies.get('user'));
         }
 
         return {
@@ -26,9 +26,9 @@ angular.module('adminApp')
                 }).
                 success(function(data) {
                     data = data.data.SignIn;
-                    $cookieStore.put('token', data.LoginSessionKey);
-                    $cookieStore.put('userID', data.UserID);
-                    currentUser = User.get();
+                    $cookies.put('token', data.LoginSessionKey);
+                    $cookies.put('user', JSON.stringify(data.User));
+                    currentUser = data.User;
                     deferred.resolve(data);
                     return cb();
                 }).
@@ -47,7 +47,7 @@ angular.module('adminApp')
             * @param  {Function}
             */
             logout: function() {
-                $cookieStore.remove('token');
+                $cookies.remove('token');
                 currentUser = {};
             },
 
@@ -73,13 +73,7 @@ angular.module('adminApp')
             * Waits for currentUser to resolve before checking if user is logged in
             */
             isLoggedInAsync: function(cb) {
-                if (currentUser.hasOwnProperty('$promise')) {
-                    currentUser.$promise.then(function() {
-                    cb(true);
-                    }).catch(function() {
-                        cb(false);
-                    });
-                } else if (currentUser.hasOwnProperty('role')) {
+                if ($cookies.get('token')) {
                     cb(true);
                 } else {
                     cb(false);
@@ -92,14 +86,14 @@ angular.module('adminApp')
             * @return {Boolean}
             */
             isAdmin: function() {
-                return currentUser.role === 'admin';
+                return currentUser.UserType.UserTypeID === 2;
             },
 
             /**
             * Get auth token
             */
             getToken: function() {
-                return $cookieStore.get('token');
+                return $cookies.get('token');
             }
         };
     });
