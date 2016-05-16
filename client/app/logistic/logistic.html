@@ -69,21 +69,24 @@
                                 <td><input type="number" min="0"
                                             value="{{fee.PricePerKM | number}}" 
                                             ng-model="fee.PricePerKM"
-                                            ng-class="{red : fee.isMaster}">
+                                            ng-class="{red: fee.isMaster, yellow: !fee.PricePerKM}">
                                     </input></td>
                                 <td><input type="number" min="0"
                                             value="{{fee.MinimumFee | number}}" 
                                             ng-model="fee.MinimumFee"
-                                            ng-class="{red : fee.isMaster}">
+                                            ng-class="{red: fee.isMaster, yellow: !fee.PricePerKM}">
                                     </input></td>
                                 <td><input type="number" min="0"
                                             value="{{fee.PerItemFee | number}}" 
                                             ng-model="fee.PerItemFee"
-                                            ng-class="{red : fee.isMaster}">
+                                            ng-class="{red: fee.isMaster, yellow: !fee.PricePerKM}">
                                     </input></td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="row">
+                    <h6><strong>Note:</strong> <span class="red">Red prices</span> are from master / default price.<span class="yellow">Yellow boxes</span> have to be filled.</h6>
                 </div>
             </div>
         </form>
