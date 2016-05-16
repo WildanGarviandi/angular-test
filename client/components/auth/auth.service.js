@@ -57,7 +57,9 @@ angular.module('adminApp')
             * @return {Object} user
             */
             getCurrentUser: function() {
-                return currentUser;
+                return $q(function (resolve) {
+                    resolve(currentUser);
+                });
             },
 
             /**

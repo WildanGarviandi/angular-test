@@ -16,7 +16,7 @@ angular.module('adminApp')
             templateUrl: 'userPopover.html',
         };
 
-        Auth.getCurrentUser().$promise.then(function(data) {
+        Auth.getCurrentUser().then(function(data) {
             $scope.user = data.profile;
         });
 
