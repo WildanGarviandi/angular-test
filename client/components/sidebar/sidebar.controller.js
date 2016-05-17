@@ -14,6 +14,7 @@ angular.module('adminApp')
             },
             location: {
                 submenus: {
+                    operational: { routes: ['/operational-district'] },
                     district: { routes: ['/district']},
                     cities: { routes: ['/cities'] }
                 }

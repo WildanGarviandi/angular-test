@@ -71,12 +71,22 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.operational-district', {
+            url: 'operational-district',
+            views: {
+                'content@': {
+                    templateUrl: 'app/operational-district/district.html',
+                    controller: 'OperationalDistrictCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.update-district', {
             url: 'update-district/:districtID',
             views: {
                 'content@': {
-                    templateUrl: 'app/district/manage-district.html',
-                    controller: 'DistrictCtrl',
+                    templateUrl: 'app/operational-district/manage-district.html',
+                    controller: 'OperationalDistrictCtrl',
                 }
             },
             authenticate: true
@@ -85,8 +95,8 @@ angular.module('adminApp')
             url: 'add-district',
             views: {
                 'content@': {
-                    templateUrl: 'app/district/manage-district.html',
-                    controller: 'DistrictCtrl',
+                    templateUrl: 'app/operational-district/manage-district.html',
+                    controller: 'OperationalDistrictCtrl',
                 }
             },
             authenticate: true
@@ -95,8 +105,8 @@ angular.module('adminApp')
             url: 'district/:districtID/zipcodes',
             views: {
                 'content@': {
-                    templateUrl: 'app/district/manage-zipcodes.html',
-                    controller: 'DistrictCtrl',
+                    templateUrl: 'app/operational-district/manage-zipcodes.html',
+                    controller: 'OperationalDistrictCtrl',
                 }
             },
             authenticate: true
