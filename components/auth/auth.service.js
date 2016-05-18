@@ -5,7 +5,6 @@ var config = require('../../config');
 var jwt = require('jsonwebtoken');
 var expressJwt = require('express-jwt');
 var compose = require('composable-middleware');
-var async = require('async');
 
 var validateJwt = expressJwt({
     secret: config.secret_codes
