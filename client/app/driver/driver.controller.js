@@ -14,7 +14,8 @@ angular.module('adminApp')
             $stateParams,
             $location, 
             $http, 
-            $window
+            $window,
+            $q
         ) {
 
     Auth.getCurrentUser().$promise.then(function(data) {
@@ -42,6 +43,13 @@ angular.module('adminApp')
         value: 'all'
     };
 
+    $scope.companies = [{
+        CompanyDetailID: 'all',
+        CompanyName: 'All'
+    }];
+
+    $scope.company = $scope.companies[0];
+
     $scope.codStatuses = [$scope.codStatus,  {
         key: 'No',
         value: '0'
@@ -65,7 +73,12 @@ angular.module('adminApp')
                 LastName: $scope.driver.Driver.LastName,
                 Email: $scope.driver.Driver.Email,
                 PhoneNumber: $scope.driver.Driver.PhoneNumber,
-                StatusID: $scope.driver.Driver.StatusID
+                StatusID: $scope.driver.Driver.StatusID,
+            },
+            FleetDriver: {
+                CompanyDetailID: $scope.company.CompanyDetailID,
+                FleetManagerID: $scope.company.FleetManager.FleetManagerID,
+                FleetManagerDriverID: $scope.driver.Driver.Driver.FleetManagerDriverID
             }
         };
         $rootScope.$emit('startSpin');
@@ -103,6 +116,25 @@ angular.module('adminApp')
     }
 
     /**
+     * Get all companies
+     * 
+     * @return {Object} Promise
+     */
+    var getCompanies = function() {
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            Services2.getAllCompanies().$promise.then(function(result) {
+                var companies = lodash.sortBy(result.data.Companies, function (i) { 
+                    return i.CompanyName.toLowerCase(); 
+                });
+                $scope.companies = $scope.companies.concat(companies);
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
+        });
+    };
+
+    /**
      * Assign status to the chosen item
      * 
      * @return {void}
@@ -113,6 +145,18 @@ angular.module('adminApp')
         $scope.tableState.pagination.start = 0;
         $scope.getDrivers(); 
     }
+
+    /**
+     * Assign fleet company to the chosen item
+     * @param  {Object} item
+     * 
+     */
+    $scope.chooseCompany = function(item) {
+        $scope.company = item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getDrivers(); 
+    };
 
     /**
      * Choose status COD
@@ -136,6 +180,16 @@ angular.module('adminApp')
     $scope.chooseStatusEdit = function(item) {
         $scope.driver.Driver.StatusID = item.value;
         $scope.status = item;
+    }
+
+    /**
+     * Assign status to the chosen item on edit page
+     * 
+     * @return {void}
+     */
+    $scope.chooseCompanyEdit = function(item) {
+        $scope.driver.Driver.CompanyDetailID = item.CompanyDetailID;
+        $scope.company = item;
     }
 
     /**
@@ -186,6 +240,8 @@ angular.module('adminApp')
         }).$promise.then(function(data) {
             $scope.driver = data.data.Driver;
             $scope.status = {key: $scope.driver.Driver.UserStatus.StatusName, value: $scope.driver.Driver.UserStatus.StatusId};
+            $scope.company = lodash.find($scope.companies, {
+                CompanyDetailID: data.data.Driver.Driver.Driver.CompanyDetail.CompanyDetailID});
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
@@ -209,7 +265,8 @@ angular.module('adminApp')
             email: $scope.reqSearchEmail,
             phone: $scope.reqSearchPhone,
             status: $scope.status.value,
-            codStatus: $scope.codStatus.value
+            codStatus: $scope.codStatus.value,
+            company: $scope.company.CompanyDetailID
         };
         Services2.getDrivers(params).$promise.then(function(data) {
             $scope.displayed = data.data.Drivers.rows;
@@ -287,9 +344,10 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.loadManagePage = function() {
+        getCompanies();
         if ($stateParams.driverID !== undefined) {
             $scope.getDriverDetails();
-            $scope.getStatus(); 
+            $scope.getStatus();
             $scope.updatePage = true;
             $scope.addPage = false;
         } else {
