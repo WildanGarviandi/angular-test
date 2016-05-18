@@ -216,6 +216,12 @@ angular.module('adminApp')
                 module: 'state'
             },
         },
+        getCountries: {
+            method: 'GET',
+            params: {
+                module: 'country'
+            },
+        },
         getLogisticFees: {
             method: 'GET',
             params: {
@@ -248,6 +254,13 @@ angular.module('adminApp')
                 module: 'order',
                 id: null
             },
-        }
+        },
+        updateAddress: {
+            method: 'POST',
+            params: {
+                module: 'address',
+                id: null
+            },
+        },
     });
 });

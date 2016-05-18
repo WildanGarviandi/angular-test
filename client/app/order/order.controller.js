@@ -15,7 +15,8 @@ angular.module('adminApp')
             $location, 
             $http, 
             $window,
-            config
+            config,
+            ngDialog
         ) {
 
     Auth.getCurrentUser().$promise.then(function(data) {
@@ -277,6 +278,88 @@ angular.module('adminApp')
 
     $scope.loadDetails();
     $scope.isCollapsed = true;
+
+    $scope.editPickupAddress = function() {
+        var editPickupAddressDialog = ngDialog.open({
+            template: 'editPickupAddressTemplate',
+            scope: $scope,
+            className: 'ngdialog-theme-default edit-pickup-address-popup'
+        });
+    };
+
+    $scope.editDropoffAddress = function() {
+        var editDropoffAddressDialog = ngDialog.open({
+            template: 'editDropoffAddressTemplate',
+            scope: $scope,
+            className: 'ngdialog-theme-default edit-dropoff-address-popup'
+        });
+    };
+
+    $scope.updateAddress = function(address) {
+        if (address === 'pickup') {
+            var params = $scope.order.PickupAddress;
+        } else if (address === 'dropoff') {
+            var params = $scope.order.DropoffAddress;
+        }
+        $rootScope.$emit('startSpin');
+        Services2.updateAddress({
+            id: params.UserAddressID,
+        }, params).$promise.then(function(response, error) {
+            $rootScope.$emit('stopSpin');
+            alert('Update address success');
+            $scope.detailsPage($stateParams.orderID);
+        })
+        .catch(function(error) {
+            $rootScope.$emit('stopSpin');
+            alert('Update address failed');
+        });
+    }
+
+    /**
+     * Get all countries
+     * 
+     * @return {void}
+     */
+    $scope.getCountries = function(val) {
+        return Services2.getCountries({
+            search: val
+        }).$promise.then(function(response){
+            return response.data.Countries.rows.map(function(item){
+                return item.Name;
+            });
+        });
+    };
+
+    /**
+     * Get all states
+     * 
+     * @return {void}
+     */
+    $scope.getStates = function(val) {
+        return Services2.getStates({
+            search: val
+        }).$promise.then(function(response){
+            return response.data.States.rows.map(function(item){
+                return item.Name;
+            });
+        });
+    };
+
+    /**
+     * Get all cities
+     * 
+     * @return {void}
+     */
+    $scope.getCities = function(val) {
+        return Services2.getCities({
+            search: val,
+            status: 'all'
+        }).$promise.then(function(response){
+            return response.data.Cities.rows.map(function(item){
+                return item.Name;
+            });
+        });
+    };
 
 
   });
