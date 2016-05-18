@@ -19,7 +19,7 @@
     
     <div class="">
         <div class="col-md-12">
-            <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
+            <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
                         <th>AWB / Web Order ID</th>
@@ -155,14 +155,14 @@
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
-                    <tr ng-repeat="order in displayed">
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.PickupAddress.Address1}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.DropoffAddress.Address1}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.OrderStatus.OrderStatus}}</td>
+                    <tr ng-click="detailsPage(order.UserOrderID)" class="clickableRow" ng-repeat="order in displayed">
+                        <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
+                        <td>{{order.PickupAddress.Address1}}</td>
+                        <td>{{order.DropoffAddress.Address1}}</td>
+                        <td>{{order.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                        <td>{{order.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                        <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
+                        <td>{{order.OrderStatus.OrderStatus}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">

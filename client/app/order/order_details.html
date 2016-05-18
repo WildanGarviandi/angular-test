@@ -111,7 +111,13 @@
                         Pickup Address
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.PickupAddress.Address1}}
+                        {{order.PickupAddress.Address1}} {{order.PickupAddress.Address2}} {{order.PickupAddress.City}} 
+                        {{order.PickupAddress.State}} {{order.PickupAddress.Country}} {{order.PickupAddress.ZipCode}}  
+                        <div>
+                            <a class="address-buttons" type="" ng-click="editPickupAddress()"> 
+                                Edit
+                            </a>
+                        </div>
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -131,7 +137,13 @@
                         Dropoff Address
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.PickupAddress.Address1}}
+                        {{order.DropoffAddress.Address1}} {{order.DropoffAddress.Address2}} {{order.DropoffAddress.City}} 
+                        {{order.DropoffAddress.State}} {{order.DropoffAddress.Country}} {{order.DropoffAddress.ZipCode}}
+                        <div>
+                        <a class="address-buttons" type="" ng-click="editDropoffAddress()"> 
+                            Edit
+                        </a>
+                        </div>
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -224,7 +236,219 @@
     </div>
 </div>
 
-<script>
+<script type="text/ng-template" id="editPickupAddressTemplate">
+    <h3>Edit Pickup Address</h3>
+    <div class="container-fluid">
+        <div class="row-fluid">                    
+            <div class="label-input">
+                Address :
+            </div> 
+            <div class="hub-field">
+                <input id="us2-address" 
+                    ng-model="order.PickupAddress.Address1" 
+                    type="text" 
+                    name="address1" 
+                    value="" 
+                    placeholder="Address" 
+                    required
+                    class="first form-control" />
+            </div>
+        </div>
+        <div class="row-fluid">                    
+            <div class="label-input">
+                Details :
+            </div> 
+            <div class="hub-field">
+                <input id="us2-address" 
+                    ng-model="order.PickupAddress.Address2" 
+                    type="text" 
+                    name="address2" 
+                    value="" 
+                    placeholder="Address Details" 
+                    required
+                    class="first form-control" />
+            </div>
+        </div>
+        <div class="row-fluid">                    
+            <div class="label-input">
+                Country :
+            </div> 
+            <div class="hub-field">
+                <input type="text" 
+                    ng-model="order.PickupAddress.Country" 
+                    placeholder="Country" 
+                    uib-typeahead="address for address in getCountries($viewValue)" 
+                    typeahead-loading="loadingLocationsCountry" 
+                    typeahead-no-results="noResultsCountry" 
+                    class="form-control" />
+                <i ng-show="loadingLocationsCountry" class="glyphicon glyphicon-refresh"></i>
+                <div ng-show="noResultsCountry">
+                    <i class="glyphicon glyphicon-remove"></i> No Results Found
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <div class="label-input">
+                State :
+            </div> 
+            <div class="hub-field">
+                <input type="text" 
+                    ng-model="order.PickupAddress.State" 
+                    placeholder="State" 
+                    uib-typeahead="address for address in getStates($viewValue)" 
+                    typeahead-loading="loadingLocationsState" 
+                    typeahead-no-results="noResultsState" 
+                    class="form-control" />
+                <i ng-show="loadingLocationsState" class="glyphicon glyphicon-refresh"></i>
+                <div ng-show="noResultsState">
+                    <i class="glyphicon glyphicon-remove"></i> No Results Found
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">                    
+            <div class="label-input">
+                City :
+            </div> 
+            <div class="hub-field">
+                <input type="text" 
+                    ng-model="order.PickupAddress.City" 
+                    placeholder="City" 
+                    uib-typeahead="address for address in getCities($viewValue)" 
+                    typeahead-loading="loadingLocationsCity" 
+                    typeahead-no-results="noResultsCity" 
+                    class="form-control" />
+                <i ng-show="loadingLocationsCity" class="glyphicon glyphicon-refresh"></i>
+                <div ng-show="noResultsCity">
+                    <i class="glyphicon glyphicon-remove"></i> No Results Found
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">                    
+            <div class="label-input">
+                Zip Code :
+            </div> 
+            <div class="hub-field">
+                <input ng-model="order.PickupAddress.ZipCode"
+                    type="text"
+                    name="zipcode"
+                    value=""
+                    placeholder="Zipcode"
+                    required
+                    class="first form-control">
+            </div>
+        </div>
+        <div class="row-fluid">
+            <a class="address-buttons" ng-click="updateAddress('pickup')">Update</a>
+        </div>
+    </div>
+</script>
 
+<script type="text/ng-template" id="editDropoffAddressTemplate">
+    <h3>Edit Dropoff Address</h3>
+    <div class="container-fluid">
+        <div class="row-fluid">                    
+            <div class="label-input">
+                Address :
+            </div> 
+            <div class="hub-field">
+                <input id="us2-address" 
+                    ng-model="order.DropoffAddress.Address1" 
+                    type="text" 
+                    name="address1" 
+                    value="" 
+                    placeholder="Address" 
+                    required
+                    class="first form-control" />
+            </div>
+        </div>
+        <div class="row-fluid">                    
+            <div class="label-input">
+                Details:
+            </div> 
+            <div class="hub-field">
+                <input id="us2-address" 
+                    ng-model="order.DropoffAddress.Address2" 
+                    type="text" 
+                    name="address2" 
+                    value="" 
+                    placeholder="Address Details" 
+                    required
+                    class="first form-control" />
+            </div>
+        </div>
+        <div class="row-fluid">                    
+            <div class="label-input">
+                Country :
+            </div> 
+            <div class="hub-field">
+                <input type="text" 
+                    ng-model="order.DropoffAddress.Country" 
+                    placeholder="Country" 
+                    uib-typeahead="address for address in getCountries($viewValue)" 
+                    typeahead-loading="loadingLocationsCountry" 
+                    typeahead-no-results="noResultsCountry" 
+                    class="form-control" />
+                <i ng-show="loadingLocationsCountry" class="glyphicon glyphicon-refresh"></i>
+                <div ng-show="noResultsCountry">
+                    <i class="glyphicon glyphicon-remove"></i> No Results Found
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <div class="label-input">
+                State :
+            </div> 
+            <div class="hub-field">
+                <input type="text" 
+                    ng-model="order.DropoffAddress.State" 
+                    placeholder="State" 
+                    uib-typeahead="address for address in getStates($viewValue)" 
+                    typeahead-loading="loadingLocationsState" 
+                    typeahead-no-results="noResultsState" 
+                    class="form-control" />
+                <i ng-show="loadingLocationsState" class="glyphicon glyphicon-refresh"></i>
+                <div ng-show="noResultsState">
+                    <i class="glyphicon glyphicon-remove"></i> No Results Found
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">                    
+            <div class="label-input">
+                City :
+            </div> 
+            <div class="hub-field">
+                <input ng-model="order.DropoffAddress.City"
+                    type="text"
+                    name="city"
+                    value=""
+                    placeholder="City"
+                    required
+                    class="first form-control" />
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">                    
+            <div class="label-input">
+                Zip Code :
+            </div> 
+            <div class="hub-field">
+                <input ng-model="order.DropoffAddress.ZipCode"
+                    type="text"
+                    name="zipcode"
+                    value=""
+                    placeholder="Zipcode"
+                    required
+                    class="first form-control">
+            </div>
+        </div>
+        <div class="row-fluid">
+            <a class="address-buttons" ng-click="updateAddress('dropoff')">Update</a>
+        </div>
+    </div>
 </script>
 
