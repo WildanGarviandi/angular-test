@@ -67,7 +67,7 @@ angular.module('adminApp')
             State: $scope.hub.State,
             Country: $scope.hub.Country,
             ZipCode: $scope.hub.ZipCode,
-            FleetManagerID: $scope.hub.FleetManagerID,
+            FleetManagerID: $scope.fleetManager.FleetManager.FleetManagerID,
             CountryCode: null,
             CityID: null,
             StateID: null,
@@ -101,7 +101,7 @@ angular.module('adminApp')
             State: $scope.hub.State,
             Country: $scope.hub.Country,
             ZipCode: $scope.hub.ZipCode,
-            FleetManagerID: $scope.hub.FleetManagerID,
+            FleetManagerID: $scope.fleetManager.FleetManager.FleetManagerID,
             CountryCode: null,
             CityID: null,
             StateID: null,
@@ -277,9 +277,9 @@ angular.module('adminApp')
                 $scope.zipcodes = []
                 $scope.hub.HubZipCodes.forEach(function(zip, idx) {
                     $scope.zipcodes.push({key: idx, value: zip.ZipCode});
-                }) 
+                })
             }
-            $scope.fleetManager = lodash.find($scope.companies, {FleetManagerID: $scope.hub.FleetManagerID});
+            $scope.fleetManager = $scope.hub.FleetManager.CompanyDetail;
             $scope.locationPicker();
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
@@ -309,10 +309,6 @@ angular.module('adminApp')
                 $scope.hubs.push({key: hub.Name, value: hub.HubID});
             });
             $scope.displayed = hubs;
-            $scope.displayed.forEach(function (hub, index, array) {
-                var company = lodash.find($scope.companies, {FleetManagerID: hub.FleetManagerID});
-                array[index].FleetManager = company;
-            })
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.data.Hubs.count / $scope.tableState.pagination.number);
@@ -388,18 +384,20 @@ angular.module('adminApp')
      */
     $scope.deleteHub = function(id) {
         if ($window.confirm('Are you sure you want to delete this hub?')) {
-        Services2.deleteHub({
-            id: id,
-        }, {}).$promise.then(function(result) {  
-            if (result.data.Status === 1) {
-                alert('Success');
-            } else {
-                alert('Failed');                
-            }
-            $scope.getHubs();
-        }).catch(function() {
-            alert('Failed');
-        });
+            $rootScope.$emit('startSpin');
+            Services2.deleteHub({
+                id: id,
+            }, {}).$promise.then(function(result) { 
+                $rootScope.$emit('stopSpin'); 
+                if (result.data.Status === 1) {
+                    alert('Success');
+                } else {
+                    alert('Failed');                
+                }
+                $scope.getHubs();
+            }).catch(function() {
+                alert('Failed');
+            });
       }
     }
     
