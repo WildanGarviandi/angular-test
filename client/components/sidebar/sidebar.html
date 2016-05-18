@@ -124,6 +124,18 @@
             <ul class="sub-panel"
                 ng-class="{ hidden: !menus.location.expanded }">
                 <li class="">
+                    <a ui-sref="app.operational-district" >
+                        <div class="side-image side-district-image"
+                            ng-class="{ expanded: expanded, active: menus.location.submenus.operational.active }"></div>
+                        <div class="side-text"
+                            ng-class="{ expanded: expanded, active: menus.location.submenus.operational.active }">
+                            Operational Districts
+                        </div>
+                    </a>
+                    <div class="clearfix"></div>
+                </li>
+
+                <li class="">
                     <a ui-sref="app.district" >
                         <div class="side-image side-district-image"
                             ng-class="{ expanded: expanded, active: menus.location.submenus.district.active }"></div>
