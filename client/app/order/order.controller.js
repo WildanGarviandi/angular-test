@@ -83,7 +83,7 @@ angular.module('adminApp')
     }
 
     /**
-     * Get all trips
+     * Get all orders
      * 
      * @return {void}
      */
@@ -234,7 +234,7 @@ angular.module('adminApp')
     };
 
     /**
-     * Get single trip
+     * Get single order
      * 
      * @return {void}
      */
@@ -279,6 +279,11 @@ angular.module('adminApp')
     $scope.loadDetails();
     $scope.isCollapsed = true;
 
+    /**
+     * Show edit pickup address
+     * 
+     * @return {void}
+     */
     $scope.editPickupAddress = function() {
         var editPickupAddressDialog = ngDialog.open({
             template: 'editPickupAddressTemplate',
@@ -287,6 +292,11 @@ angular.module('adminApp')
         });
     };
 
+    /**
+     * Show edit dropoff address
+     * 
+     * @return {void}
+     */
     $scope.editDropoffAddress = function() {
         var editDropoffAddressDialog = ngDialog.open({
             template: 'editDropoffAddressTemplate',
@@ -295,6 +305,11 @@ angular.module('adminApp')
         });
     };
 
+    /**
+     * Update address
+     * 
+     * @return {void}
+     */
     $scope.updateAddress = function(address) {
         if (address === 'pickup') {
             var params = $scope.order.PickupAddress;
