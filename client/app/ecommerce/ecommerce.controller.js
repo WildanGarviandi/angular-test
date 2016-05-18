@@ -183,7 +183,8 @@ angular.module('adminApp')
     var getPlaces = function () {
         return $q(function (resolve) {
             var params = {
-                status: true
+                status: true,
+                limit: 1000
             };
             Services2.getCities(params).$promise.then(function (result) {
                 $scope.cities = result.data.Cities.rows;
