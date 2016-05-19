@@ -1,7 +1,6 @@
 {
     "env": "development",
     "hostname": "localhost",
-    "port": 3000,
     "app": {
         "debug": true,
         "url": "http://localhost:3000",
