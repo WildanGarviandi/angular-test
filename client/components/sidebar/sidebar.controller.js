@@ -34,7 +34,10 @@ angular.module('adminApp')
                 routes: ['/map']
             },
             orders: {
-                routes: ['/orders']
+                submenus: {
+                    all: { routes: ['/orders'] },
+                    cod: { routes: ['/codorders'] },
+                }
             }
         };
 

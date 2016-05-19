@@ -248,6 +248,19 @@ angular.module('adminApp')
                 module: 'order',
                 id: null
             },
-        }
+        },
+        getCODOrder: {
+            method: 'GET',
+            params: {
+                module: 'codorder'
+            },
+        },
+        getCODOrderDetails: {
+            method: 'GET',
+            params: {
+                module: 'codorder',
+                id: null
+            },
+        },
     });
 });
