@@ -1,0 +1,38 @@
+.picture-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    font-size: 12px;
+    color: #000;
+    text-align: center;
+    background: #fff;
+    box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+    -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+    -moz-box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+}
+
+.input-component {
+    width: 75%;
+    float: left;
+}
+
+form .progress {
+    line-height: 15px;
+}
+
+.progress {
+    display: block;
+    border: 3px groove #CCC;
+    text-align: center;
+    margin-bottom: 0px;
+}
+
+.report-upload {
+    text-align: center;
+}
+
+.progress div {
+    font-size: smaller;
+    background: orange;
+    width: 0;
+}

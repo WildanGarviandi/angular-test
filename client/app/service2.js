@@ -248,6 +248,12 @@ angular.module('adminApp')
                 module: 'order',
                 id: null
             },
+        },
+        updateUserProfile: {
+            method: 'POST',
+            params: {
+                module: 'user'
+            }
         }
     });
 });
