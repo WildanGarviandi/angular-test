@@ -1,0 +1,30 @@
+{
+    /**
+     * Application configuration section
+     * http://pm2.keymetrics.io/docs/usage/application-declaration/
+     */
+    "apps" : [
+        {
+            "name" : "etobee-admin-ph",
+            "script" : "app.js",
+            "env": {
+                "NODE_ENV": "production"
+            }
+        }
+    ],
+
+    /**
+     * Deployment section
+     * http://pm2.keymetrics.io/docs/usage/deployment/
+     */
+    "deploy" : {
+        "staging" : {
+            "user" : "ubuntu",
+            "host" : "admin2.etobee.com.ph",
+            "ref" : "origin/master",
+            "repo": "git@gitlab.com:etobee-techgroup/etobee-admin.git",
+            "path" : "/home/ubuntu/etobee-admin-ph",
+            "post-deploy" : "npm install && bower install && pm2 startOrRestart ecosystem.production-ph.json --env production"
+        }
+    }
+}
