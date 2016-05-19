@@ -61,8 +61,7 @@ angular.module('adminApp')
         getMultipleDistrictsMaster: {
             method: 'GET',
             params: {
-                module: 'district',
-                submodule: 'master'
+                module: 'district-master',
             }
         },
         createDistrict: {
