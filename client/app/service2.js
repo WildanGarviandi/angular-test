@@ -276,5 +276,11 @@ angular.module('adminApp')
                 id: null
             },
         },
+        updateUserProfile: {
+            method: 'POST',
+            params: {
+                module: 'user'
+            }
+        }
     });
 });

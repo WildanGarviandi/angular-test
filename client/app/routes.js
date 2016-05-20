@@ -21,6 +21,16 @@ angular.module('adminApp')
             templateUrl: 'app/account/login/login.html',
             controller: 'LoginCtrl'
         })
+        .state('app.profile', {
+            url: 'profile',
+            views: {
+                'content@': {
+                    templateUrl: 'app/account/profile/profile.html',
+                    controller: 'ProfileCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.hub', {
             url: 'hub',
             views: {
