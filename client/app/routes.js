@@ -280,5 +280,25 @@ angular.module('adminApp')
                 }
             },
             authenticate: true
+        })
+        .state('app.codorder', {
+            url: 'codorders',
+             views: {
+                'content@': {
+                    templateUrl: 'app/codorder/codorder.html',
+                    controller: 'CODOrderCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.codorder-details', {
+            url: 'codorder/details/:orderID',
+             views: {
+                'content@': {
+                    templateUrl: 'app/codorder/codorder_details.html',
+                    controller: 'CODOrderCtrl',
+                }
+            },
+            authenticate: true
         });
     });

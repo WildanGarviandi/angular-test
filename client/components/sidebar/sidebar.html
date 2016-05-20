@@ -20,14 +20,49 @@
                     ng-class="{ expanded: expanded, active: menus.trips.active }">Trips</div>
             </a>
         </li>
-            
+        
         <li class="row">
-            <a ui-sref="app.order" >
-                <div class="side-image side-orders-image"
-                    ng-class="{ expanded: expanded, active: menus.orders.active }"></div>
-                <div class="side-text"
-                    ng-class="{ expanded: expanded, active: menus.orders.active }">Orders</div>
-            </a>
+            <div ng-click="toggleExpandMenu('orders')">
+                <div class="side-image side-orders-image"  
+                    ng-class="{ expanded: expanded, active: menus.orders.active }">
+                </div>
+                <div class="side-text"  
+                    ng-class="{ expanded: expanded, active: menus.orders.active }">
+                    <span>Orders</span>
+                </div>
+                <div class="side-caret">
+                    <span class="fa fa-caret-down fa-lg pull-right caret-icon"
+                        ng-class="{ expanded: expanded, 'image-caret': expanded, 'fa-caret-up': menus.orders.expanded }"
+                        caret-dropdown="orders"></span>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <ul class="sub-panel"
+                ng-class="{ hidden: !menus.orders.expanded }">
+                <li class="">
+                    <a ui-sref="app.order" >
+                        <div class="side-image side-orders-image"
+                            ng-class="{ expanded: expanded, active: menus.orders.submenus.all.active }"></div>
+                        <div class="side-text"
+                            ng-class="{ expanded: expanded, active: menus.orders.submenus.all.active }">
+                            All Orders
+                        </div>
+                    </a>
+                    <div class="clearfix"></div>
+                </li>
+
+                <li class="">
+                    <a ui-sref="app.codorder" >
+                        <div class="side-image side-codorders-image"
+                            ng-class="{ expanded: expanded, active: menus.orders.submenus.cod.active }"></div>
+                        <div class="side-text"
+                            ng-class="{ expanded: expanded, active: menus.orders.submenus.cod.active }">
+                            COD Orders
+                        </div>
+                    </a>
+                    <div class="clearfix"></div>
+                </li>
+            </ul>
         </li>
 
         <li class="row">

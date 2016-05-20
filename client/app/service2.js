@@ -281,6 +281,19 @@ angular.module('adminApp')
             params: {
                 module: 'user'
             }
+        },
+        getCODOrder: {
+            method: 'GET',
+            params: {
+                module: 'codorder'
+            },
+        },
+        getCODOrderDetails: {
+            method: 'GET',
+            params: {
+                module: 'codorder',
+                id: null
+            },
         }
     });
 });
