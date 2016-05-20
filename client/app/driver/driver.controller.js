@@ -77,7 +77,7 @@ angular.module('adminApp')
             },
             FleetDriver: {
                 CompanyDetailID: $scope.company.CompanyDetailID,
-                FleetManagerID: $scope.company.FleetManager.FleetManagerID,
+                FleetManagerID: $scope.company.User.FleetManagerID,
                 FleetManagerDriverID: $scope.driver.Driver.Driver.FleetManagerDriverID
             }
         };
