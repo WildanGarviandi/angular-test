@@ -203,6 +203,13 @@ angular.module('adminApp')
                 id: null
             },
         },
+        deleteEcommercePrice: {
+            method: 'DELETE',
+            params: {
+                module: 'price',
+                controller: 'ecommerce'
+            }
+        },
         getDistancePrices: {
             method: 'GET',
             params: {
