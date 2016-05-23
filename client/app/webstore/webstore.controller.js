@@ -7,6 +7,7 @@ angular.module('adminApp')
             Auth, 
             $rootScope, 
             Services,
+            Services2,
             Webstores,
             moment, 
             lodash, 
@@ -98,12 +99,13 @@ angular.module('adminApp')
             Categories: $scope.webstore.WebstoreCompany.Categories,
             AverageWeights: $scope.webstore.WebstoreCompany.AverageWeights,
             PickupOptions: $scope.webstore.WebstoreCompany.PickupOptions,
+            CODCommission: $scope.webstore.WebstoreCompany.CODCommission/100,
             SourceID: 1,
             RegistrationSourceKey: 0,
             ReferrerTypeID: 2,
             DeviceTypeID: 7,
             StatusID: 2,
-            UserTypeID: 5
+            UserTypeID: 5,
         };
         $rootScope.$emit('startSpin');
         Webstores.createWebstore(webstore).$promise.then(function(response) {
@@ -142,7 +144,8 @@ angular.module('adminApp')
             ZipCode: $scope.webstore.UserAddress.ZipCode,
             Categories: $scope.webstore.WebstoreCompany.Categories,
             AverageWeights: $scope.webstore.WebstoreCompany.AverageWeights,
-            PickupOptions: $scope.webstore.WebstoreCompany.PickupOptions
+            PickupOptions: $scope.webstore.WebstoreCompany.PickupOptions,
+            CODCommission: $scope.webstore.WebstoreCompany.CODCommission/100,
         };
         $rootScope.$emit('startSpin');
         Webstores.updateWebstore({_id: $stateParams.webstoreID, webstore: webstore}).$promise.then(function(response) {
@@ -225,11 +228,11 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getHubs = function() {
-        Services.getAll().$promise.then(function(data) {
-            $scope.hubs = []; 
-            data.hubs.forEach(function(hub) {
+        Services2.getHubs().$promise.then(function(data) {
+            $scope.hubs = [];
+            data.data.Hubs.rows.forEach(function(hub) {
                 $scope.hubs.push({key: hub.Name, value: hub.HubID});
-            }) 
+            });
         });
     }
 
@@ -269,7 +272,9 @@ angular.module('adminApp')
                     Latitude: -6.2115, 
                     Longitude: 106.8452
                 };
-            }            
+            }
+
+            $scope.webstore.WebstoreCompany.CODCommission = Math.round($scope.webstore.WebstoreCompany.CODCommission*10000)/100;
             $scope.locationPicker();
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
@@ -324,6 +329,14 @@ angular.module('adminApp')
         };
     }
 
+    function AlertFormInvalidation(form) {
+        if(form.codCommission.$error) {
+            alert('Please fill COD Commission with appropiate value');
+        } else {
+            alert('Please fill all required fields');
+        }
+    }
+
     /**
      * Create single webstore
      * 
@@ -339,7 +352,7 @@ angular.module('adminApp')
                 $location.path('/webstore');
             })        
         } else {
-            alert('Please fill all required fields');
+            AlertFormInvalidation(form);
         }
     }
 
@@ -359,7 +372,7 @@ angular.module('adminApp')
                 }
             })
         } else {
-            alert('Please fill all required fields');
+            AlertFormInvalidation(form);
         }
     }    
     
