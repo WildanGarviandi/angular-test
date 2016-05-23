@@ -165,7 +165,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.addWebstore = function() {
-        window.location = '/add-webstore';
+        $location.path('/add-webstore');
     }
 
     /**
@@ -174,7 +174,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.editWebstore = function(id) {
-        window.location = '/update-webstore/' + id;
+        $location.path('/update-webstore/' + id);
     }
 
     /**
