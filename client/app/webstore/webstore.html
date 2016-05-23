@@ -50,6 +50,7 @@
                         <th>Allow COD</th>
                         <th>Status</th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -103,6 +104,9 @@
                         <td class="webstore-cell">{{webstore.WebstoreCompany.AllowCOD ? "Yes" : "No"}}</td>
                         <td class="webstore-cell">{{webstore.RegistrationStatus}}</td>
                         <td>
+                            <button class="btn btn-default" ng-click="bucket(webstore.UserID)">Bucket</button>
+                        </td>
+                        <td>
                             <button class="btn btn-primary" type="button" ng-click="editWebstore(webstore.UserID)">Edit</button>
                         </td>
                     </tr>
@@ -121,3 +125,37 @@
         </div>
     </div>
 </div>
+
+<script type="text/ng-template" id="deliverySettingsTemplate">
+    <div class="container-fluid">
+        <div class="row dialog-header">
+            <div class="col-md-6 dialog-header-title">
+                Webstore Settings
+            </div>
+        </div>
+        <div class="row delivery-settings-body">
+            <h4>Cutoff Time</h4>
+            <div class="row">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-10">
+                    <form id="cutoff" class="form" name="deliverySettingsForm" ng-submit="setCutoffTimes()" novalidate>
+                        <div class="col-xs-9">
+                            <div class="col-xs-3 time-select" ng-repeat="chunkedBroadcast in chunkedBroadcastTime">
+                                <div class="form-group" ng-repeat="time in chunkedBroadcast">
+                                    <input type="checkbox" ng-model="time.active">
+                                    <label ng-if="time.value < 10">0{{time.value}}:00</label>
+                                    <label ng-if="time.value > 9">{{time.value}}:00</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <button class="btn btn-success btn-sm" type="submit">
+                                Update
+                            </button>
+                        </div>
+                    </form>          
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

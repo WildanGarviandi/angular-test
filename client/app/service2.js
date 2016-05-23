@@ -175,6 +175,20 @@ angular.module('adminApp')
                 module: 'webstore',
             },
         },
+        getCutoffTimes: {
+            method: 'GET',
+            params: {
+                module: 'webstore',
+                submodule: 'cutoff'
+            }
+        },
+        setCutoffTimes: {
+            method: 'POST',
+            params: {
+                module: 'webstore',
+                submodule: 'cutoff'
+            }
+        },
         getVehicles: {
             method: 'GET',
             params: {
