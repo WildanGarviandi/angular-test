@@ -153,6 +153,7 @@ angular.module('adminApp')
                         MinimumFee: val.MinimumFee,
                         PerItemFee: val.PerItemFee
                     });
+                    array[index].isEmpty = true;
                 }
             });
             if (params.id !== 0) {
