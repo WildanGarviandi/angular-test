@@ -280,7 +280,7 @@ angular.module('adminApp')
                 })
             }
             $scope.fleetManager = lodash.find($scope.companies, {
-                CompanyDetailID: $scope.hub.FleetManager.CompanyDetail.CompanyDetailID});
+                CompanyDetailID: $scope.hub.User.CompanyDetail.CompanyDetailID});
             $scope.locationPicker();
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
