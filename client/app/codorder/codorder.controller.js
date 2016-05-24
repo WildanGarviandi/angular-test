@@ -15,7 +15,9 @@ angular.module('adminApp')
             $location, 
             $http, 
             $window,
-            config
+            config,
+            $document,
+            $timeout
         ) {
 
     Auth.getCurrentUser().$promise.then(function(data) {
@@ -315,6 +317,44 @@ angular.module('adminApp')
 
     $scope.loadDetails();
     $scope.isCollapsed = true;
+
+    /**
+     *  export orders csv
+     */
+    $scope.exportCsv = function(){
+        var params = {
+            userOrderNumber: $scope.reqSearchUserOrderNumber,
+            driver: $scope.reqSearchDriver,
+            user: $scope.reqSearchUser,
+            pickup: $scope.reqSearchPickup,
+            dropoff: $scope.reqSearchDropoff,
+            status: $scope.status.value,
+            codPaymentStatus: $scope.codPaymentStatus.value,
+            startPickup: $scope.pickupDatePicker.startDate,
+            endPickup: $scope.pickupDatePicker.endDate,
+            startDropoff: $scope.dropoffDatePicker.startDate,
+            endDropoff: $scope.dropoffDatePicker.endDate,
+        };
+        var filename = 'codorders.csv';
+        $http.get(config.url + 'codorder/export/csv', {
+            params: params
+        }).success(function(data){
+            var blob = new Blob([data], {
+                type: "text/csv;charset=UTF-8;"
+            });
+            var downloadLink = angular.element('<a></a>');
+            downloadLink.attr('href', window.URL.createObjectURL(blob));
+            downloadLink.attr('download', filename);
+            downloadLink.attr('target', '_blank');
+            $document.find('body').append(downloadLink);
+            $timeout(function () {
+                downloadLink[0].click();
+                downloadLink.remove();
+            }, null);
+        }).error(function(){
+
+        });
+    };
 
 
   });
