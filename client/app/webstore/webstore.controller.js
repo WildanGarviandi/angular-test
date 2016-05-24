@@ -99,7 +99,7 @@ angular.module('adminApp')
             Categories: $scope.webstore.WebstoreCompany.Categories,
             AverageWeights: $scope.webstore.WebstoreCompany.AverageWeights,
             PickupOptions: $scope.webstore.WebstoreCompany.PickupOptions,
-            CODCommission: $scope.webstore.WebstoreCompany.CODCommission/100,
+            CODCommission: $scope.webstore.WebstoreCompany.CODCommission,
             SourceID: 1,
             RegistrationSourceKey: 0,
             ReferrerTypeID: 2,
@@ -145,7 +145,7 @@ angular.module('adminApp')
             Categories: $scope.webstore.WebstoreCompany.Categories,
             AverageWeights: $scope.webstore.WebstoreCompany.AverageWeights,
             PickupOptions: $scope.webstore.WebstoreCompany.PickupOptions,
-            CODCommission: $scope.webstore.WebstoreCompany.CODCommission/100,
+            CODCommission: $scope.webstore.WebstoreCompany.CODCommission,
         };
         $rootScope.$emit('startSpin');
         Webstores.updateWebstore({_id: $stateParams.webstoreID, webstore: webstore}).$promise.then(function(response) {
@@ -274,7 +274,7 @@ angular.module('adminApp')
                 };
             }
 
-            $scope.webstore.WebstoreCompany.CODCommission = Math.round($scope.webstore.WebstoreCompany.CODCommission*10000)/100;
+            $scope.webstore.WebstoreCompany.CODCommission = Math.round($scope.webstore.WebstoreCompany.CODCommission*100)/100;
             $scope.locationPicker();
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
