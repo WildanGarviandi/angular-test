@@ -279,7 +279,8 @@ angular.module('adminApp')
                     $scope.zipcodes.push({key: idx, value: zip.ZipCode});
                 })
             }
-            $scope.fleetManager = $scope.hub.FleetManager.CompanyDetail;
+            $scope.fleetManager = lodash.find($scope.companies, {
+                CompanyDetailID: $scope.hub.FleetManager.CompanyDetail.CompanyDetailID});
             $scope.locationPicker();
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
