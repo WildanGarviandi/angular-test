@@ -20,7 +20,7 @@ angular.module('adminApp')
             $timeout
         ) {
 
-    Auth.getCurrentUser().$promise.then(function(data) {
+    Auth.getCurrentUser().then(function(data) {
         $scope.user = data.profile;
     });
 
