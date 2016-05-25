@@ -69,17 +69,17 @@
                                 <td><input type="number" min="0"
                                             value="{{fee.PricePerKM | number}}" 
                                             ng-model="fee.PricePerKM"
-                                            ng-class="{red: fee.isMaster, yellow: !fee.PricePerKM}">
+                                            ng-class="{red: fee.isMaster, yellow: fee.isEmpty}">
                                     </input></td>
                                 <td><input type="number" min="0"
                                             value="{{fee.MinimumFee | number}}" 
                                             ng-model="fee.MinimumFee"
-                                            ng-class="{red: fee.isMaster, yellow: !fee.PricePerKM}">
+                                            ng-class="{red: fee.isMaster, yellow: fee.isEmpty}">
                                     </input></td>
                                 <td><input type="number" min="0"
                                             value="{{fee.PerItemFee | number}}" 
                                             ng-model="fee.PerItemFee"
-                                            ng-class="{red: fee.isMaster, yellow: !fee.PricePerKM}">
+                                            ng-class="{red: fee.isMaster, yellow: fee.isEmpty}">
                                     </input></td>
                             </tr>
                         </tbody>

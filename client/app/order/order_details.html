@@ -332,7 +332,7 @@
             </div> 
             <div class="hub-field">
                 <input ng-model="order.PickupAddress.ZipCode"
-                    type="text"
+                    type="text" maxlength="{{zipLength}}"
                     name="zipcode"
                     value=""
                     placeholder="Zipcode"
@@ -438,7 +438,7 @@
             </div> 
             <div class="hub-field">
                 <input ng-model="order.DropoffAddress.ZipCode"
-                    type="text"
+                    type="text" maxlength="{{zipLength}}"
                     name="zipcode"
                     value=""
                     placeholder="Zipcode"

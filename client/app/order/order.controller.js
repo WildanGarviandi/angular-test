@@ -53,6 +53,7 @@ angular.module('adminApp')
     };
 
     $scope.currency = config.currency + " ";
+    $scope.zipLength = config.zipLength;
     $scope.isFirstSort = true;
 
     /**
@@ -313,8 +314,16 @@ angular.module('adminApp')
     $scope.updateAddress = function(address) {
         if (address === 'pickup') {
             var params = $scope.order.PickupAddress;
+            if (isNaN($scope.order.PickupAddress.ZipCode)) {
+                alert('Pickup zipcode is not valid');
+                return;
+            }
         } else if (address === 'dropoff') {
             var params = $scope.order.DropoffAddress;
+            if (isNaN($scope.order.DropoffAddress.ZipCode)) {
+                alert('Dropoff zipcode is not valid');
+                return;
+            }
         }
         $rootScope.$emit('startSpin');
         Services2.updateAddress({
@@ -322,7 +331,8 @@ angular.module('adminApp')
         }, params).$promise.then(function(response, error) {
             $rootScope.$emit('stopSpin');
             alert('Update address success');
-            $scope.detailsPage($stateParams.orderID);
+            ngDialog.closeAll();
+            $scope.loadDetails();
         })
         .catch(function(error) {
             $rootScope.$emit('stopSpin');

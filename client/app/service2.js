@@ -61,8 +61,7 @@ angular.module('adminApp')
         getMultipleDistrictsMaster: {
             method: 'GET',
             params: {
-                module: 'district',
-                submodule: 'master'
+                module: 'district-master',
             }
         },
         createDistrict: {
@@ -191,23 +190,20 @@ angular.module('adminApp')
         getEcommercePrices: {
             method: 'GET',
             params: {
-                module: 'price',
-                controller: 'ecommerce',
+                module: 'ecommerce-price'
             },
         },
         saveEcommercePrice: {
             method: 'POST',
             params: {
-                module: 'price',
-                controller: 'ecommerce',
+                module: 'ecommerce-price',
                 id: null
             },
         },
         deleteEcommercePrice: {
             method: 'DELETE',
             params: {
-                module: 'price',
-                controller: 'ecommerce'
+                module: 'ecommerce-price'
             }
         },
         getDistancePrices: {

@@ -139,7 +139,9 @@ angular.module('adminApp')
                     array[index] = data;
                     array[index].VehicleID = data.Vehicle.VehicleID;
                     array[index].VehicleType = data.Vehicle.Name;
-                    array[index].isMaster = true;
+                    if (params.id !== 0) {
+                        array[index].isMaster = true;
+                    }
                     oldFees.push({
                         PricePerKM: data.PricePerKM,
                         MinimumFee: data.MinimumFee,
@@ -151,6 +153,7 @@ angular.module('adminApp')
                         MinimumFee: val.MinimumFee,
                         PerItemFee: val.PerItemFee
                     });
+                    array[index].isEmpty = true;
                 }
             });
             if (params.id !== 0) {
