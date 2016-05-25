@@ -323,11 +323,11 @@ angular.module('adminApp')
      */
     $scope.exportCsv = function(){
         var params = {
-            userOrderNumber: $scope.reqSearchUserOrderNumber,
-            driver: $scope.reqSearchDriver,
-            user: $scope.reqSearchUser,
-            pickup: $scope.reqSearchPickup,
-            dropoff: $scope.reqSearchDropoff,
+            userOrderNumber: $scope.queryUserOrderNumber,
+            driver: $scope.queryDriver,
+            user: $scope.queryUser,
+            pickup: $scope.queryPickup,
+            dropoff: $scope.queryDropoff,
             status: $scope.status.value,
             codPaymentStatus: $scope.codPaymentStatus.value,
             startPickup: $scope.pickupDatePicker.startDate,
