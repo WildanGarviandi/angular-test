@@ -274,7 +274,7 @@ angular.module('adminApp')
                 };
             }
 
-            $scope.webstore.WebstoreCompany.CODCommission = Math.round($scope.webstore.WebstoreCompany.CODCommission*100)/100;
+            $scope.webstore.WebstoreCompany.CODCommission = Math.round($scope.webstore.WebstoreCompany.CODCommission*1000)/1000;
             $scope.locationPicker();
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
