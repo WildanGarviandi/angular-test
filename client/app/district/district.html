@@ -65,7 +65,7 @@
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="district in displayed">
                         <td>{{district.Name}}</td>
-                        <td>{{district.City.Name}}</td>
+                        <td>{{district.CityMaster.Name}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
