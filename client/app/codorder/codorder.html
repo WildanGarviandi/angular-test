@@ -17,8 +17,11 @@
         </div>
     </div>
     
-    <div class="">
+    <div class="container-content">
         <div class="col-md-12">
+            <div>
+                <button class="btn btn-primary" type="button" ng-click="exportCsv()">Export CSV</button>
+            </div>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
