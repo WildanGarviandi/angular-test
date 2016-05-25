@@ -8,7 +8,8 @@ angular.module('adminApp')
                                 ngDialog, 
                                 User, 
                                 $window, 
-                                $rootScope
+                                $rootScope,
+                                $state
     ) {
         $scope.amountTopup = 1000000;
 
@@ -16,7 +17,7 @@ angular.module('adminApp')
             templateUrl: 'userPopover.html',
         };
 
-        Auth.getCurrentUser().$promise.then(function(data) {
+        Auth.getCurrentUser().then(function(data) {
             $scope.user = data.profile;
         });
 
@@ -27,13 +28,17 @@ angular.module('adminApp')
 
         $scope.showNotification = function(params) {
             ngDialog.close()
-            return ngDialog.open({
-            template: 'notificationModal',
-            scope: $scope,
-            data: {
-                notification: params
-            }
-        });
+                return ngDialog.open({
+                template: 'notificationModal',
+                scope: $scope,
+                data: {
+                    notification: params
+                }
+            });
         }
+
+        $scope.editProfile = function () {
+            $state.go('app.profile');
+        };
 
     });

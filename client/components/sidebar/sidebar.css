@@ -321,6 +321,18 @@
     background-repeat: no-repeat;
 }
 
+.side-codorders-image {
+    background-image: url('../../assets/images/nav-codorder.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
+.side-codorders-image.active {
+    background-image: url('../../assets/images/nav-codorder-active.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
 /* Booking */
 
 .side-booking-image {
