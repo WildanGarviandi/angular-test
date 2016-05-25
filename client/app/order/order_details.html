@@ -337,7 +337,14 @@
                     value=""
                     placeholder="Zipcode"
                     required
+                    uib-typeahead="address for address in getZipcodes($viewValue)" 
+                    typeahead-loading="loadingLocationsZip" 
+                    typeahead-no-results="noResultsZip" 
                     class="first form-control">
+                <i ng-show="loadingLocationsZip" class="glyphicon glyphicon-refresh"></i>
+                <div ng-show="noResultsZip">
+                    <i class="glyphicon glyphicon-remove"></i> No Results Found
+                </div>
             </div>
         </div>
         <div class="row-fluid">
@@ -443,7 +450,14 @@
                     value=""
                     placeholder="Zipcode"
                     required
+                    uib-typeahead="address for address in getZipcodes($viewValue)" 
+                    typeahead-loading="loadingLocationsZip" 
+                    typeahead-no-results="noResultsZip" 
                     class="first form-control">
+                <i ng-show="loadingLocationsZip" class="glyphicon glyphicon-refresh"></i>
+                <div ng-show="noResultsZip">
+                    <i class="glyphicon glyphicon-remove"></i> No Results Found
+                </div>
             </div>
         </div>
         <div class="row-fluid">
