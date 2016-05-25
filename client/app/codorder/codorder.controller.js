@@ -24,8 +24,6 @@ angular.module('adminApp')
 
     $scope.itemsByPage = 10;
     $scope.offset = 0;
-    $scope.sortBy = 'PickupTime';
-    $scope.sortCriteria = 'DESC';
 
     $scope.status = {
         key: 'All',
