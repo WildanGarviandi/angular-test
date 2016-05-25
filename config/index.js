@@ -54,7 +54,6 @@ function loadEnv() {
 }
 
 loadConfigFiles();
-loadEnv();
 
 config.root = path.normalize(__dirname + '/..');
 

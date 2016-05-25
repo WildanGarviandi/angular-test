@@ -206,7 +206,7 @@ angular.module('adminApp')
             .then(function(data) {
                 $rootScope.$emit('stopSpin');
                 alert('Save success'); 
-                $scope.getPrices();           
+                $scope.getPrices();
             })
             .catch(function(err){
                 $rootScope.$emit('stopSpin');

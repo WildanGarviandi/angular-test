@@ -4,7 +4,7 @@
         <div>
             <div class="col-md-6 col-sm-7">
                 <div class="hub-title-box">
-                    Districts
+                    Operational Districts
                 </div>
             </div>
             <div class="col-md-3 col-sm-5 pull-right">
@@ -36,17 +36,22 @@
     
     <div class="container-content">
         <div class="col-md-12">
-            <div class="pull-right">
-                <button class="btn btn-primary" ng-click="changeItemsByPage(10)">10</button>
-                <button class="btn btn-primary" ng-click="changeItemsByPage(20)">20</button>
-                <button class="btn btn-primary" ng-click="changeItemsByPage('All')">All</button>
+            <div class="addButton">
+                <button class="btn btn-primary" type="button" ng-click="addDistrict()">Add District</button>
+                <div class="pull-right">
+                    <button class="btn btn-primary" ng-click="changeItemsByPage(10)">10</button>
+                    <button class="btn btn-primary" ng-click="changeItemsByPage(20)">20</button>
+                    <button class="btn btn-primary" ng-click="changeItemsByPage('All')">All</button>
+                </div>
             </div>
-            <br>
+
             <table st-table="displayed" st-pipe="callServer" class="table table-hover">
                 <thead class="hub-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
                         <th>Name</th>
                         <th>City</th>
+                        <th>Province</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
@@ -65,7 +70,14 @@
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="district in displayed">
                         <td>{{district.Name}}</td>
-                        <td>{{district.City.Name}}</td>
+                        <td>{{district.City}}</td>
+                        <td>{{district.Province}}</td>
+                        <td>
+                            <button class="btn btn-primary" 
+                                    type="button" 
+                                    ng-click="editDistrict(district.DistrictID)"
+                                >Edit</button>
+                        </td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
