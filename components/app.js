@@ -13,7 +13,7 @@ var app = express();
 
 module.exports = function(di) {
 
-    app.set('port', di.config.port);
+    app.set('port', process.env.PORT);
     app.use(logger('dev'));
     app.use(bodyParser.json({ limit:di.config.app.request_limit }));
     app.use(bodyParser.urlencoded({ extended: false, limit: di.config.app.request_limit }));

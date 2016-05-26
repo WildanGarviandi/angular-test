@@ -15,10 +15,11 @@ angular.module('adminApp')
             $location, 
             $http, 
             $window,
-            config
+            config,
+            ngDialog
         ) {
 
-    Auth.getCurrentUser().$promise.then(function(data) {
+    Auth.getCurrentUser().then(function(data) {
         $scope.user = data.profile;
     });
 
@@ -52,6 +53,7 @@ angular.module('adminApp')
     };
 
     $scope.currency = config.currency + " ";
+    $scope.zipLength = config.zipLength;
     $scope.isFirstSort = true;
 
     /**
@@ -82,7 +84,7 @@ angular.module('adminApp')
     }
 
     /**
-     * Get all trips
+     * Get all orders
      * 
      * @return {void}
      */
@@ -233,7 +235,7 @@ angular.module('adminApp')
     };
 
     /**
-     * Get single trip
+     * Get single order
      * 
      * @return {void}
      */
@@ -277,6 +279,112 @@ angular.module('adminApp')
 
     $scope.loadDetails();
     $scope.isCollapsed = true;
+
+    /**
+     * Show edit pickup address
+     * 
+     * @return {void}
+     */
+    $scope.editPickupAddress = function() {
+        var editPickupAddressDialog = ngDialog.open({
+            template: 'editPickupAddressTemplate',
+            scope: $scope,
+            className: 'ngdialog-theme-default edit-pickup-address-popup'
+        });
+    };
+
+    /**
+     * Show edit dropoff address
+     * 
+     * @return {void}
+     */
+    $scope.editDropoffAddress = function() {
+        var editDropoffAddressDialog = ngDialog.open({
+            template: 'editDropoffAddressTemplate',
+            scope: $scope,
+            className: 'ngdialog-theme-default edit-dropoff-address-popup'
+        });
+    };
+
+    /**
+     * Update address
+     * 
+     * @return {void}
+     */
+    $scope.updateAddress = function(address) {
+        if (address === 'pickup') {
+            var params = $scope.order.PickupAddress;
+            if (isNaN($scope.order.PickupAddress.ZipCode)) {
+                alert('Pickup zipcode is not valid');
+                return;
+            }
+        } else if (address === 'dropoff') {
+            var params = $scope.order.DropoffAddress;
+            if (isNaN($scope.order.DropoffAddress.ZipCode)) {
+                alert('Dropoff zipcode is not valid');
+                return;
+            }
+        }
+        $rootScope.$emit('startSpin');
+        Services2.updateAddress({
+            id: params.UserAddressID,
+        }, params).$promise.then(function(response, error) {
+            $rootScope.$emit('stopSpin');
+            alert('Update address success');
+            ngDialog.closeAll();
+            $scope.loadDetails();
+        })
+        .catch(function(error) {
+            $rootScope.$emit('stopSpin');
+            alert('Update address failed');
+        });
+    }
+
+    /**
+     * Get all countries
+     * 
+     * @return {void}
+     */
+    $scope.getCountries = function(val) {
+        return Services2.getCountries({
+            search: val
+        }).$promise.then(function(response){
+            return response.data.Countries.rows.map(function(item){
+                return item.Name;
+            });
+        });
+    };
+
+    /**
+     * Get all states
+     * 
+     * @return {void}
+     */
+    $scope.getStates = function(val) {
+        return Services2.getStates({
+            search: val
+        }).$promise.then(function(response){
+            return response.data.States.rows.map(function(item){
+                return item.Name;
+            });
+        });
+    };
+
+    /**
+     * Get all cities
+     * 
+     * @return {void}
+     */
+    $scope.getCities = function(val) {
+        return Services2.getCities({
+            search: val,
+            status: 'all'
+        }).$promise.then(function(response){
+            return response.data.Cities.rows.map(function(item){
+                return item.Name;
+            });
+        });
+    };
 
 
   });

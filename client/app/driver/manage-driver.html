@@ -97,6 +97,24 @@
                         </ui-select-choices>
                     </ui-select>
                 </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid-driver">                    
+                    <div class="label-input-driver">
+                        Fleet Company :
+                    </div>  
+                    <ui-select class="driver-field select-field" 
+                        ng-model="company" 
+                        theme="selectize" 
+                        ng-disabled="disabled" 
+                        on-select="chooseCompanyEdit($item)">
+                        <ui-select-match placeholder="Choose status">
+                            {{ $select.selected.CompanyName }}
+                        </ui-select-match>
+                        <ui-select-choices repeat="c in companies" selected>
+                            <span ng-bind-html="c.CompanyName"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
                 <div class="clearfix"></div>                
                 <div class="row-fluid-driver">                    
                     <div class="label-input-driver">

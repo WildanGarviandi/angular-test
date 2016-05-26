@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('adminApp')
-    .controller('TripCtrl', 
+    .controller('CODOrderCtrl', 
         function(
             $scope, 
             Auth, 
@@ -15,7 +15,9 @@ angular.module('adminApp')
             $location, 
             $http, 
             $window,
-            config
+            config,
+            $document,
+            $timeout
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -29,6 +31,15 @@ angular.module('adminApp')
         key: 'All',
         value: 'All'
     };
+    $scope.codPaymentStatus = {
+        key: 'All',
+        value: 'All'
+    };
+    $scope.codPaymentStatuses = [
+        {key: 'All', value: 'All'},
+        {key: 'Paid', value: 'Paid'},
+        {key: 'Unpaid', value: 'Unpaid'}
+    ]
 
     $scope.pickupDatePicker = {
         startDate: null,
@@ -46,7 +57,7 @@ angular.module('adminApp')
             'apply.daterangepicker': function(ev, picker) {
                 $scope.offset = 0;
                 $scope.tableState.pagination.start = 0;
-                $scope.getTrip();
+                $scope.getOrder();
             }
         }
     };
@@ -78,7 +89,19 @@ angular.module('adminApp')
         $scope.status = item;
         $scope.offset = 0;
         $scope.tableState.pagination.start = 0;
-        $scope.getTrip(); 
+        $scope.getOrder(); 
+    }
+
+    /**
+     * Assign CODPayment status to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.chooseCodPaymentStatus = function(item) {
+        $scope.codPaymentStatus = item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getOrder(); 
     }
 
     /**
@@ -86,7 +109,7 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.getTrip = function() {
+    $scope.getOrder = function() {
         $rootScope.$emit('startSpin');
         if ($scope.pickupDatePicker.startDate) {
             $scope.pickupDatePicker.startDate = new Date($scope.pickupDatePicker.startDate);
@@ -116,13 +139,13 @@ angular.module('adminApp')
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
-            tripNumber: $scope.reqSearchTripNumber,
-            containerNumber: $scope.reqSearchContainerNumber,
-            district: $scope.reqSearchDistrict,
+            userOrderNumber: $scope.reqSearchUserOrderNumber,
             driver: $scope.reqSearchDriver,
+            user: $scope.reqSearchUser,
             pickup: $scope.reqSearchPickup,
             dropoff: $scope.reqSearchDropoff,
             status: $scope.status.value,
+            codPaymentStatus: $scope.codPaymentStatus.value,
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
             startDropoff: $scope.dropoffDatePicker.startDate,
@@ -130,7 +153,7 @@ angular.module('adminApp')
             sortBy: $scope.sortBy,
             sortCriteria: $scope.sortCriteria,
         }
-        Services2.getTrip(params).$promise.then(function(data) {
+        Services2.getCODOrder(params).$promise.then(function(data) {
             $scope.displayed = data.data.rows;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
@@ -140,47 +163,32 @@ angular.module('adminApp')
     }
 
     /**
-     * Add search trip number
+     * Add search user order number
      * 
      * @return {void}
      */
-    $scope.reqSearchTripNumber = '';
-    $scope.searchTrip = function(event) {
+    $scope.reqSearchUserOrderNumber = '';
+    $scope.searchOrder = function(event) {
         if ((event && event.keyCode === 13) || !event) {
-            $scope.reqSearchTripNumber = $scope.queryTripNumber;
+            $scope.reqSearchUserOrderNumber = $scope.queryUserOrderNumber;
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
-            $scope.getTrip();
+            $scope.getOrder();
         };
     }
 
     /**
-     * Add search container number
+     * Add search user
      * 
      * @return {void}
      */
-    $scope.reqSearchContainerNumber = '';
-    $scope.searchContainer = function(event) {
+    $scope.reqSearchUser = '';
+    $scope.searchUser = function(event) {
         if ((event && event.keyCode === 13) || !event) {
-            $scope.reqSearchContainerNumber = $scope.queryContainerNumber;
+            $scope.reqSearchUser = $scope.queryUser;
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
-            $scope.getTrip();
-        };
-    }
-
-    /**
-     * Add search district
-     * 
-     * @return {void}
-     */
-    $scope.reqSearchDistrict = '';
-    $scope.searchDistrict = function(event) {
-        if ((event && event.keyCode === 13) || !event) {
-            $scope.reqSearchDistrict = $scope.queryDistrict;
-            $scope.offset = 0;
-            $scope.tableState.pagination.start = 0;
-            $scope.getTrip();
+            $scope.getOrder();
         };
     }
 
@@ -195,7 +203,7 @@ angular.module('adminApp')
             $scope.reqSearchDriver = $scope.queryDriver;
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
-            $scope.getTrip();
+            $scope.getOrder();
         };
     }
 
@@ -210,7 +218,7 @@ angular.module('adminApp')
             $scope.reqSearchPickup = $scope.queryPickup;
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
-            $scope.getTrip();
+            $scope.getOrder();
         };
     }
 
@@ -225,7 +233,7 @@ angular.module('adminApp')
             $scope.reqSearchDropoff = $scope.queryDropoff;
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
-            $scope.getTrip();
+            $scope.getOrder();
         };
     }
 
@@ -238,7 +246,9 @@ angular.module('adminApp')
         $scope.sortBy = sortBy;
         $scope.sortCriteria = sortCriteria;
         $scope.isFirstSort = false;
-        $scope.getTrip();
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getOrder();
     }
     
     /**
@@ -250,7 +260,7 @@ angular.module('adminApp')
         $scope.offset = state.pagination.start;
         $scope.tableState = state;
         $scope.getStatus(); 
-        $scope.getTrip();
+        $scope.getOrder();
         $scope.isFirstLoaded = true;
     }
 
@@ -259,7 +269,7 @@ angular.module('adminApp')
     };
 
     $scope.detailsPage = function(id) {
-        window.location = '/trip/details/' + id;
+        window.location = '/codorder/details/' + id;
     };
 
     /**
@@ -267,32 +277,28 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.getTripDetails = function() {
+    $scope.getOrderDetails = function() {
         $rootScope.$emit('startSpin');
         $scope.isLoading = true;
-        $scope.id = $stateParams.tripID;
-        Services2.getTripDetails({
+        $scope.id = $stateParams.orderID;
+        Services2.getCODOrderDetails({
             id: $scope.id,
         }).$promise.then(function(data) {
-            $scope.trip = data.data;
-            if ($scope.trip.UserOrderRoutes) {
-                $scope.trip.UserOrderRoutes.forEach(function(route){
-                    switch (route.UserOrder.PickupType) {
-                        case 1:
-                            route.UserOrder.PickupType = 'Now';
-                            break;        
-                        case 2:
-                            route.UserOrder.PickupType = 'Later';
-                            break;    
-                        case 3:
-                            route.UserOrder.PickupType = 'On Demand';
-                            break;    
-                        default:
-                            route.UserOrder.PickupType = '-';
-                    }
-                    route.UserOrder.PaymentType = (route.UserOrder.PaymentType === 2) ? 'Wallet' : 'Cash';
-                })
+            $scope.order = data.data;
+            switch ($scope.order.PickupType) {
+                case 1:
+                    $scope.order.PickupType = 'Now';
+                    break;        
+                case 2:
+                    $scope.order.PickupType = 'Later';
+                    break;    
+                case 3:
+                    $scope.order.PickupType = 'On Demand';
+                    break;    
+                default:
+                    $scope.order.PickupType = '-';
             }
+            $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
@@ -304,13 +310,51 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.loadDetails = function() {
-        if ($stateParams.tripID !== undefined) {
-            $scope.getTripDetails();
+        if ($stateParams.orderID !== undefined) {
+            $scope.getOrderDetails();
         }
     }
 
     $scope.loadDetails();
     $scope.isCollapsed = true;
+
+    /**
+     *  export orders csv
+     */
+    $scope.exportCsv = function(){
+        var params = {
+            userOrderNumber: $scope.reqSearchUserOrderNumber,
+            driver: $scope.reqSearchDriver,
+            user: $scope.reqSearchUser,
+            pickup: $scope.reqSearchPickup,
+            dropoff: $scope.reqSearchDropoff,
+            status: $scope.status.value,
+            codPaymentStatus: $scope.codPaymentStatus.value,
+            startPickup: $scope.pickupDatePicker.startDate,
+            endPickup: $scope.pickupDatePicker.endDate,
+            startDropoff: $scope.dropoffDatePicker.startDate,
+            endDropoff: $scope.dropoffDatePicker.endDate,
+        };
+        var filename = 'codorders.csv';
+        $http.get(config.url + 'codorder/export/csv', {
+            params: params
+        }).success(function(data){
+            var blob = new Blob([data], {
+                type: "text/csv;charset=UTF-8;"
+            });
+            var downloadLink = angular.element('<a></a>');
+            downloadLink.attr('href', window.URL.createObjectURL(blob));
+            downloadLink.attr('download', filename);
+            downloadLink.attr('target', '_blank');
+            $document.find('body').append(downloadLink);
+            $timeout(function () {
+                downloadLink[0].click();
+                downloadLink.remove();
+            }, null);
+        }).error(function(){
+
+        });
+    };
 
 
   });

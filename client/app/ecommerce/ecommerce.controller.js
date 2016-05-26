@@ -18,7 +18,7 @@ angular.module('adminApp')
             $q
     ) {
 
-    Auth.getCurrentUser().$promise.then(function(data) {
+    Auth.getCurrentUser().then(function(data) {
         $scope.user = data.profile;
     });
 
@@ -265,6 +265,27 @@ angular.module('adminApp')
         });
     };
 
+    var deletePrice = function (originID, destID) {
+        $rootScope.$emit('startSpin');
+        var params = {
+            webstoreUserID: $scope.input.webstore.value,
+            pickupType: $scope.input.pickup.value,
+            vehicleID: $scope.input.vehicle.VehicleID,
+            maxWeight: $scope.input.weight.value,
+            discountID: $scope.input.discount.id,
+            originID: originID,
+            destinationID: destID
+        };
+        Services2.deleteEcommercePrice(params).$promise.then(function (result) {
+            $rootScope.$emit('stopSpin');
+            getPrices();
+        })
+        .catch(function (error) {
+            alert('Error: ' + error);
+            $rootScope.$emit('stopSpin');
+        });
+    }
+
     /**
      * Build / define column definition for ui.grid table
      * 
@@ -296,7 +317,7 @@ angular.module('adminApp')
                 editableCellTemplate: 
                     '<div>' +
                       '<form name="inputForm">' +
-                        '<input  type="INPUT_TYPE" ng-class="' + "'colt'" + ' + col.uid" ui-grid-editor ' +
+                        '<input  type="number" ng-class="' + "'colt'" + ' + col.uid" ui-grid-editor ' +
                                 'ng-model="MODEL_COL_FIELD.price"/>' +
                       '</form>' +
                     '</div>'
@@ -392,11 +413,17 @@ angular.module('adminApp')
                             savePrice(rowEntity.id, colDef.name, null, price);
                         }
                     } else {
-                        alert('Empty or contains non number character');
-                        getPrices();
+                        if ($scope.input.webstore.value !== 0) {
+                            // if not a master, then delete the price
+                            deletePrice(rowEntity.id, colDef.name);
+                        } else {
+                            // if master
+                            alert('Empty or contains non number character');
+                            getPrices();
+                        }
                     }
                 }
-            }
+            } 
         });
     };
 

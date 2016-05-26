@@ -69,13 +69,13 @@ angular.module('adminApp', [
         .setPrefix('etobee');
     })
 
-    .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
+    .factory('authInterceptor', function ($rootScope, $q, $cookies, $location) {
         return {
             // Add authorization token to headers
             request: function (config) {
                 config.headers = config.headers || {};
-                if ($cookieStore.get('token')) {
-                    config.headers.LoginSessionKey = $cookieStore.get('token');
+                if ($cookies.get('token')) {
+                    config.headers.LoginSessionKey = $cookies.get('token');
                 }
                 return config;
             },
@@ -85,7 +85,7 @@ angular.module('adminApp', [
                 if(response.status === 403) {
                     $location.path('/login');
                     // remove any stale tokens
-                    $cookieStore.remove('token');
+                    $cookies.remove('token');
                     return $q.reject(response);
                 } else {
                     return $q.reject(response);

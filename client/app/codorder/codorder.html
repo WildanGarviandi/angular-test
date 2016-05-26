@@ -4,7 +4,7 @@
         <div>
             <div class="col-md-6 col-sm-7">
                 <div class="hub-title-box">
-                    Order Management
+                    COD Order Management
                 </div>
             </div>
             <div class="col-md-3 col-sm-5 pull-right">
@@ -17,50 +17,24 @@
         </div>
     </div>
     
-    <div class="">
+    <div class="container-content">
         <div class="col-md-12">
-            <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
+            <div>
+                <button class="btn btn-primary" type="button" ng-click="exportCsv()">Export CSV</button>
+            </div>
+            <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
                         <th>AWB / Web Order ID</th>
-                        <th>Pickup Address</th>
-                        <th>Dropoff Address</th>
-                        <th class="sortable-column"
-                            ng-if="sortBy !== 'PickupTime' || isFirstSort"
-                            ng-click="sortColumn('PickupTime', 'ASC')">
-                            Pickup Time
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'PickupTime' && sortCriteria == 'ASC'" 
-                            ng-click="sortColumn('PickupTime', 'DESC')">
-                            <span class="caret caret-reversed" ></span>
-                            Pickup Time
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'PickupTime' && sortCriteria == 'DESC'" 
-                            ng-click="sortColumn('PickupTime', 'ASC')">
-                            <span class="caret" ></span>
-                            Pickup Time
-                        </th>
+                        <th>User</th>
+                        <th>Pickup Time</th>
                         <th>Dropoff Time</th>
-                        <th class="sortable-column"
-                            ng-if="sortBy !== 'Driver.FirstName' || isFirstSort"
-                            ng-click="sortColumn('Driver.FirstName', 'ASC')">
-                            Driver
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'Driver.FirstName' && sortCriteria == 'ASC'" 
-                            ng-click="sortColumn('Driver.FirstName', 'DESC')">
-                            <span class="caret caret-reversed" ></span>
-                            Driver
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'Driver.FirstName' && sortCriteria == 'DESC'" 
-                            ng-click="sortColumn('Driver.FirstName', 'ASC')">
-                            <span class="caret" ></span>
-                            Driver
-                        </th>
-                        <th>Status</th>
+                        <th>Driver</th>
+                        <th>COD Value</th>
+                        <th>Webstore Share</th>
+                        <th>Etobee Share</th>
+                        <th>Order Status</th>
+                        <th>Driver Transfer</th>
                     </tr>
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
@@ -93,17 +67,8 @@
                                     type="search" 
                                     class="form-control input-table" 
                                     value="" 
-                                    ng-model="queryPickup" 
-                                    ng-keyup="searchPickup($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" ng-model="queryDropoff" 
-                                    ng-keyup="searchDropoff($event)">
+                                    ng-model="queryUser" 
+                                    ng-keyup="searchUser($event)">
                             </div>
                         </th>
                         <th>
@@ -138,6 +103,9 @@
                                     ng-keyup="searchDriver($event)">
                             </div>
                         </th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                         <th>
                             <div class="filter-table">
                                 <ui-select ng-model="status" 
@@ -151,18 +119,34 @@
                                 </ui-select>
                             </div>
                         </th>
+                        <th>
+                            <div class="filter-table">
+                                <ui-select ng-model="codPaymentStatus" 
+                                    theme="selectize" 
+                                    on-select="chooseCodPaymentStatus($item)" 
+                                    class="booking-order-type">
+                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                                    <ui-select-choices repeat="ot in codPaymentStatuses | filter: $select.search" selected>
+                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </th>
                     </tr>
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
-                    <tr ng-click="detailsPage(order.UserOrderID)" class="clickableRow" ng-repeat="order in displayed">
-                        <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
-                        <td>{{order.PickupAddress.Address1}}</td>
-                        <td>{{order.DropoffAddress.Address1}}</td>
-                        <td>{{order.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-                        <td>{{order.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-                        <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
-                        <td>{{order.OrderStatus.OrderStatus}}</td>
+                    <tr ng-repeat="order in displayed">
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.User.FirstName}} {{order.User.LastName}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.TotalValue}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPayments[0].CODPaymentUserOrder.WebstoreShare}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPayments[0].CODPaymentUserOrder.EtobeeShare}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.OrderStatus.OrderStatus}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPayments[0].Status}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">

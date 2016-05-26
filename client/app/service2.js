@@ -52,10 +52,16 @@ angular.module('adminApp')
                 module: 'district'
             }
         },
-        getManyDistricts: {
+        getMultipleDistricts: {
             method: 'GET',
             params: {
                 module: 'district'
+            }
+        },
+        getMultipleDistrictsMaster: {
+            method: 'GET',
+            params: {
+                module: 'district-master',
             }
         },
         createDistrict: {
@@ -184,17 +190,21 @@ angular.module('adminApp')
         getEcommercePrices: {
             method: 'GET',
             params: {
-                module: 'price',
-                controller: 'ecommerce',
+                module: 'ecommerce-price'
             },
         },
         saveEcommercePrice: {
             method: 'POST',
             params: {
-                module: 'price',
-                controller: 'ecommerce',
+                module: 'ecommerce-price',
                 id: null
             },
+        },
+        deleteEcommercePrice: {
+            method: 'DELETE',
+            params: {
+                module: 'ecommerce-price'
+            }
         },
         getDistancePrices: {
             method: 'GET',
@@ -214,6 +224,12 @@ angular.module('adminApp')
             method: 'GET',
             params: {
                 module: 'state'
+            },
+        },
+        getCountries: {
+            method: 'GET',
+            params: {
+                module: 'country'
             },
         },
         getLogisticFees: {
@@ -249,6 +265,13 @@ angular.module('adminApp')
                 id: null
             },
         },
+        updateAddress: {
+            method: 'POST',
+            params: {
+                module: 'address',
+                id: null
+            },
+        },
         getUserProfile: {
             method: 'GET',
             params: {
@@ -260,6 +283,19 @@ angular.module('adminApp')
             params: {
                 module: 'user'
             }
+        },
+        getCODOrder: {
+            method: 'GET',
+            params: {
+                module: 'codorder'
+            },
+        },
+        getCODOrderDetails: {
+            method: 'GET',
+            params: {
+                module: 'codorder',
+                id: null
+            },
         }
     });
 });

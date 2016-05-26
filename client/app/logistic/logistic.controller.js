@@ -17,7 +17,7 @@ angular.module('adminApp')
         $q
     ) {
 
-    Auth.getCurrentUser().$promise.then(function(data) {
+    Auth.getCurrentUser().then(function(data) {
         $scope.user = data.profile;
     });
 
@@ -92,6 +92,27 @@ angular.module('adminApp')
     };
 
     /**
+     * Get all vehicle
+     * @return {[type]} [description]
+     */
+    var getVehicles = function () {
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            Services2.getVehicles().$promise.then(function (result) {
+                $scope.vehicles = result.data.Vehicles;
+                $scope.vehicles.forEach(function (val) {
+                    $scope.displayed.push({
+                        VehicleType: val.Name,
+                        VehicleID: val.VehicleID,
+                    });
+                });
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
+        });
+    };
+
+    /**
      * Get all logistic prices
      * 
      * @return {void}
@@ -111,16 +132,29 @@ angular.module('adminApp')
         };
         Services2.getLogisticFees(paramsMaster).$promise.then(function(masterResult) {
             oldFees = [];
-            $scope.displayed = masterResult.data.Fees;
+            var masterData = masterResult.data.Fees;
             $scope.displayed.forEach(function (val, index, array) {
-                array[index].VehicleID = val.Vehicle.VehicleID;
-                array[index].VehicleType = val.Vehicle.Name;
-                array[index].isMaster = true;
-                oldFees.push({
-                    PricePerKM: val.PricePerKM,
-                    MinimumFee: val.MinimumFee,
-                    PerItemFee: val.PerItemFee
-                });
+                var data = lodash.find(masterData, {Vehicle: {VehicleID: val.VehicleID}});
+                if (data) {
+                    array[index] = data;
+                    array[index].VehicleID = data.Vehicle.VehicleID;
+                    array[index].VehicleType = data.Vehicle.Name;
+                    if (params.id !== 0) {
+                        array[index].isMaster = true;
+                    }
+                    oldFees.push({
+                        PricePerKM: data.PricePerKM,
+                        MinimumFee: data.MinimumFee,
+                        PerItemFee: data.PerItemFee
+                    });
+                } else {
+                    oldFees.push({
+                        PricePerKM: val.PricePerKM,
+                        MinimumFee: val.MinimumFee,
+                        PerItemFee: val.PerItemFee
+                    });
+                    array[index].isEmpty = true;
+                }
             });
             if (params.id !== 0) {
                 Services2.getLogisticFees(params).$promise.then(function(result) {
@@ -185,6 +219,7 @@ angular.module('adminApp')
     };
 
     getDefaultValues()
+        .then(getVehicles)
         .then(getCompanies)
         .then(getFees)
         .catch(function (e) {
