@@ -389,10 +389,10 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getCountries = function(val) {
-        return Services.getCountries({
-            address: val
+        return Services2.getCountries({
+            search: val
         }).$promise.then(function(response){
-            return response.countries.map(function(item){
+            return response.data.Countries.rows.map(function(item){
                 return item.Name;
             });
         });
@@ -404,10 +404,11 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getCities = function(val) {
-        return Services.getCities({
-            address: val
+        return Services2.getCities({
+            search: val,
+            status: 'all'
         }).$promise.then(function(response){
-            return response.cities.map(function(item){
+            return response.data.Cities.rows.map(function(item){
                 return item.Name;
             });
         });
@@ -419,10 +420,10 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getStates = function(val) {
-        return Services.getStates({
-            address: val
+        return Services2.getStates({
+            search: val
         }).$promise.then(function(response){
-            return response.states.map(function(item){
+            return response.data.States.rows.map(function(item){
                 return item.Name;
             });
         });
