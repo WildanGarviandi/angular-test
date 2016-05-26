@@ -249,6 +249,12 @@ angular.module('adminApp')
                 id: null
             },
         },
+        getUserProfile: {
+            method: 'GET',
+            params: {
+                module: 'user'
+            }
+        },
         updateUserProfile: {
             method: 'POST',
             params: {

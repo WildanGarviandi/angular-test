@@ -1,11 +1,8 @@
 'use strict';
 
 angular.module('adminApp')
-    .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q, config) {
+    .factory('Auth', function Auth($location, $rootScope, $http, User, $cookies, $q, config, Services2) {
         var currentUser = {};
-        if ($cookieStore.get('token')) {
-          currentUser = User.get();
-        }
 
         return {
 
@@ -26,9 +23,7 @@ angular.module('adminApp')
                 }).
                 success(function(data) {
                     data = data.data.SignIn;
-                    $cookieStore.put('token', data.LoginSessionKey);
-                    $cookieStore.put('userID', data.UserID);
-                    currentUser = User.get();
+                    $cookies.put('token', JSON.stringify(data.LoginSessionKey));
                     deferred.resolve(data);
                     return cb();
                 }).
@@ -47,8 +42,7 @@ angular.module('adminApp')
             * @param  {Function}
             */
             logout: function() {
-                $cookieStore.remove('token');
-                currentUser = {};
+                $cookies.remove('token');
             },
 
             /**
@@ -57,7 +51,15 @@ angular.module('adminApp')
             * @return {Object} user
             */
             getCurrentUser: function() {
-                return currentUser;
+                return $q(function (resolve) {
+                    Services2.getUserProfile()
+                    .$promise.then(function (result) {
+                        currentUser = result.data.User;
+                        var data = {};
+                        data.profile = currentUser;
+                        resolve(data);
+                    });
+                });
             },
 
             /**
@@ -65,21 +67,8 @@ angular.module('adminApp')
             *
             * @return {Boolean}
             */
-            isLoggedIn: function() {
-                return currentUser.hasOwnProperty('role');
-            },
-
-            /**
-            * Waits for currentUser to resolve before checking if user is logged in
-            */
-            isLoggedInAsync: function(cb) {
-                if (currentUser.hasOwnProperty('$promise')) {
-                    currentUser.$promise.then(function() {
-                    cb(true);
-                    }).catch(function() {
-                        cb(false);
-                    });
-                } else if (currentUser.hasOwnProperty('role')) {
+            isLoggedIn: function(cb) {
+                if ($cookies.get('token')) {
                     cb(true);
                 } else {
                     cb(false);
@@ -92,14 +81,20 @@ angular.module('adminApp')
             * @return {Boolean}
             */
             isAdmin: function() {
-                return currentUser.role === 'admin';
+                return $q(function (resolve) {
+                    Services2.getUserProfile()
+                    .$promise.then(function (result) {
+                        currentUser = result.data.User;
+                        resolve(currentUser.UserType.UserTypeID === 2);
+                    });
+                });
             },
 
             /**
             * Get auth token
             */
             getToken: function() {
-                return $cookieStore.get('token');
+                return JSON.parse($cookies.get('token'));
             }
         };
     });
