@@ -331,7 +331,7 @@ angular.module('adminApp')
 
     function AlertFormInvalidation(form) {
         if(form.codCommission.$invalid) {
-            alert('Please fill COD Commission with appropiate value');
+            alert('Please fill COD Commission between 1-100');
         } else {
             alert('Please fill all required fields');
         }
