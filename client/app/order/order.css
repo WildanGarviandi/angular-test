@@ -259,3 +259,7 @@
 .order-table tbody tr:hover td, .table tbody tr:hover th {
     background-color: #dddddd;
 }
+
+.row-pickup {
+    width: 800px;
+}

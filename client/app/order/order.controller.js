@@ -16,7 +16,9 @@ angular.module('adminApp')
             $http, 
             $window,
             config,
-            ngDialog
+            ngDialog,
+            Webstores,
+            Upload
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -40,6 +42,11 @@ angular.module('adminApp')
         startDate: null,
         endDate: null
     };
+
+    $scope.importedDatePicker = new Date();
+ 
+     $scope.isStartDatePicker = false;
+     $scope.isEndDatePicker = false;
 
     $scope.optionsDatepicker = {
         separator: ':',
@@ -223,6 +230,7 @@ angular.module('adminApp')
         $scope.tableState = state;
         $scope.getStatus(); 
         $scope.getOrder();
+        $scope.getMerchants();
         $scope.isFirstLoaded = true;
     }
 
@@ -386,5 +394,64 @@ angular.module('adminApp')
         });
     };
 
+    /**
+     * Get merchant selection
+     * 
+     * @return {void}
+     */
+    $scope.getMerchants = function() {
+        Webstores.getWebstore().$promise.then(function(data) {
+            $scope.merchants = []; 
+            data.data.webstores.forEach(function(merchant) {
+                $scope.merchants.push({
+                    key: merchant.webstore.FirstName + ' ' + merchant.webstore.LastName, 
+                    value: merchant.webstore.UserID
+                });
+            });
+        });
+    }
+
+    /**
+     * Show import orders modals
+     * 
+     * @return {void}
+    */
+    $scope.showImportOrders = function() {
+        ngDialog.close()
+        return ngDialog.open({
+            template: 'importModal',
+            scope: $scope
+        });
+    }
+
+    $scope.uploadOrders = function(files) {
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                if (!file.$error) {
+                    //$rootScope.$emit('startSpin');
+                    Upload.upload({
+                            url: config.url + 'order/import/xlsx',
+                            data: {
+                                file: file
+                            }
+                    }).then(function(response) {
+                        $scope.uploadedFiles.push(response.data);
+                        if (response.data.report && 
+                            response.data.report.ordersAdded &&
+                            response.data.report.ordersAdded > 0) {
+                                $scope.uploadCompleted = true;
+                        } else {
+                            $scope.uploadCompleted = false;
+                        }
+                        $rootScope.$emit('stopSpin');
+                    }, function(response) {
+                        $scope.uploadedFiles.push(response.data);
+                        $rootScope.$emit('stopSpin');
+                    });
+                }
+            }
+        }
+    };
 
   });
