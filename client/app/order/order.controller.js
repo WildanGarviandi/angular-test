@@ -31,6 +31,12 @@ angular.module('adminApp')
         value: 'All'
     };
 
+    $scope.pickupType = {
+        key: 'All',
+        value: 'All'
+    };
+    $scope.pickupTypes = [$scope.pickupType];
+
     $scope.pickupDatePicker = {
         startDate: null,
         endDate: null
@@ -55,6 +61,19 @@ angular.module('adminApp')
     $scope.currency = config.currency + " ";
     $scope.zipLength = config.zipLength;
     $scope.isFirstSort = true;
+
+    /**
+     * Get default values from config
+     * 
+     * @return {void}
+     */
+    var getDefaultValues = function() {
+        $http.get('config/defaultValues.json').success(function(data) {
+            $scope.pickupTypes = $scope.pickupTypes.concat(data.pickupTypes);
+        });
+    };
+
+    getDefaultValues();
 
     /**
      * Get status
@@ -82,6 +101,18 @@ angular.module('adminApp')
         $scope.tableState.pagination.start = 0;
         $scope.getOrder(); 
     }
+
+    /**
+     * Assign pickup type to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.choosePickupType = function(item) {
+        $scope.pickupType = item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getOrder(); 
+    };
 
     /**
      * Get all orders
@@ -120,8 +151,10 @@ angular.module('adminApp')
             limit: $scope.itemsByPage,
             userOrderNumber: $scope.reqSearchUserOrderNumber,
             driver: $scope.reqSearchDriver,
+            merchant: $scope.queryMerchant,
             pickup: $scope.reqSearchPickup,
             dropoff: $scope.reqSearchDropoff,
+            pickupType: $scope.pickupType.value,
             status: $scope.status.value,
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
@@ -132,6 +165,9 @@ angular.module('adminApp')
         }
         Services2.getOrder(params).$promise.then(function(data) {
             $scope.displayed = data.data.rows;
+            $scope.displayed.forEach(function (val, index, array) {
+                array[index].PickupType = (lodash.find($scope.pickupTypes, {value: val.PickupType})).key;
+            });
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.data.count / $scope.tableState.pagination.number);
@@ -163,6 +199,19 @@ angular.module('adminApp')
     $scope.searchDriver = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchDriver = $scope.queryDriver;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getOrder();
+        };
+    }
+
+    /**
+     * Add search merchant
+     * 
+     * @return {void}
+     */
+    $scope.searchMerchant = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
             $scope.getOrder();

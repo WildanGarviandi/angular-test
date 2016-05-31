@@ -137,15 +137,19 @@
             "Price": null
         }]
     },
-    "pickupTypes": [
-        {
-            "key": "Same Day",
-            "value":1
-        }, {
-            "key": "Next Day",
-            "value":2
-        }
-    ],
+    "pickupTypes": [{
+        "key": "Same Day",
+        "value": 1
+    }, {
+        "key": "Next Day",
+        "value": 2
+    }, {
+        "key": "On Demand",
+        "value": 3
+    }, {
+        "key": "Regular", 
+        "value": 4
+    }],
     "percentage": {
         "bike": {
             "LogisticShare": null,
