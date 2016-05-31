@@ -57,6 +57,19 @@ angular.module('adminApp')
     $scope.isFirstSort = true;
 
     /**
+     * Get default values from config
+     * 
+     * @return {void}
+     */
+    var getDefaultValues = function() {
+        $http.get('config/defaultValues.json').success(function(data) {
+            $scope.extraHelperFee = data.extraHelperFee;
+            $scope.insurance = data.insurance;
+        });
+    };
+    getDefaultValues();
+
+    /**
      * Get status
      * 
      * @return {void}
@@ -121,7 +134,9 @@ angular.module('adminApp')
             userOrderNumber: $scope.reqSearchUserOrderNumber,
             driver: $scope.reqSearchDriver,
             pickup: $scope.reqSearchPickup,
+            sender: $scope.querySender,
             dropoff: $scope.reqSearchDropoff,
+            recipient: $scope.queryRecipient,
             status: $scope.status.value,
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
@@ -200,6 +215,32 @@ angular.module('adminApp')
     }
 
     /**
+     * Add search by sender name or phone number or email
+     * 
+     * @return {void}
+     */
+    $scope.searchSender = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getOrder();
+        };
+    }
+
+    /**
+     * Add search by recipient name or phone number or email
+     * 
+     * @return {void}
+     */
+    $scope.searchRecipient = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getOrder();
+        };
+    }
+
+    /**
      * Sort by column
      * 
      * @return {void}
@@ -261,6 +302,14 @@ angular.module('adminApp')
                     $scope.order.PickupType = '-';
             }
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
+            $scope.order.Insurance = 0;
+            $scope.order.ExtraHelperFee = 0;
+            if ($scope.order.IncludeInsurance) {
+                $scope.order.Insurance = $scope.insurance * $scope.order.TotalValue;
+            }
+            if ($scope.order.UseExtraHelper) {
+                $scope.order.ExtraHelperFee = $scope.extraHelperFee;
+            }
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });

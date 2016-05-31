@@ -25,89 +25,89 @@
             <div class="row-fluid order-details-body">
                 <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         Airway Bill
                     </div>
                     <div class="col-sm-8 summary-from">
                         {{order.UserOrderNumber}}
                     </div>
-                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4"></div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         Web Order ID
                     </div>
                     <div class="col-sm-8 summary-from">
                         {{order.WebOrderID}}
                     </div>
-                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4"></div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         User
                     </div>
                     <div class="col-sm-8 summary-from">
                         {{order.User.FirstName}} {{order.User.LastName}} / 
                         {{order.User.Email}} / {{order.User.PhoneNumber}}
                     </div>
-                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4"></div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         Webstore
                     </div>
                     <div class="col-sm-8 summary-from">
                         {{order.WebstoreUser.FirstName}} {{order.WebstoreUser.LastName}} / 
                         {{order.WebstoreUser.Email}} / {{order.WebstoreUser.PhoneNumber}}
                     </div>
-                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4"></div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         Pickup Type
                     </div>
                     <div class="col-sm-8 summary-from">
                         {{order.PickupType}}
                     </div>
-                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4"></div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         Payment Type
                     </div>
                     <div class="col-sm-8 summary-from">
                         {{order.PaymentType}}
                     </div>
-                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4"></div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         Status
                     </div>
                     <div class="col-sm-8 summary-from">
                         {{order.OrderStatus.OrderStatus}}
                     </div>
-                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4"></div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         Pickup Time
                     </div>
                     <div class="col-sm-8 summary-from">
                         {{order.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}
                     </div>
-                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4"></div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         Pickup Address
                     </div>
                     <div class="col-sm-8 summary-from">
@@ -119,21 +119,21 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4"></div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         Dropoff Time
                     </div>
                     <div class="col-sm-8 summary-from">
                         {{order.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}
                     </div>
-                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4"></div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         Dropoff Address
                     </div>
                     <div class="col-sm-8 summary-from">
@@ -145,11 +145,11 @@
                         </a>
                         </div>
                     </div>
-                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4"></div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
-                    <div class="col-sm-3">
+                    <div class="col-sm-4">
                         Paid By Parent
                     </div>
                     <div class="col-sm-8 summary-from">
@@ -161,7 +161,90 @@
                             (by {{order.WebstoreUser.FirstName}} {{order.WebstoreUser.LastName}})
                         </span>
                     </div>
-                    <div class="col-sm-3"></div>
+                    <div class="col-sm-4"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        Order Cost
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.OrderCost}}
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        Final Cost
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.OrderCost + order.Insurance + order.ExtraHelperFee}}
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        VAT
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.VAT}}
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        Insurance
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        <span ng-if="order.IncludeInsurance">{{order.Insurance}}</span>
+                        <span ng-if="!order.IncludeInsurance">None</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        Total Value
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.TotalValue}}
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        Extra Helper Fee
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        <span ng-if="order.UseExtraHelper">{{order.ExtraHelperFee}}</span>
+                        <span ng-if="!order.UseExtraHelper">None</span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        Etobee Share
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.Share}}
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        Driver Share
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.DriverShare}}
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        Logistic Share
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.LogisticShare}}
+                    </div>
                 </div>
             </div>
         </div>
