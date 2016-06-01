@@ -44,9 +44,6 @@ angular.module('adminApp')
     };
 
     $scope.importedDatePicker = new Date();
- 
-     $scope.isStartDatePicker = false;
-     $scope.isEndDatePicker = false;
 
     $scope.optionsDatepicker = {
         separator: ':',
@@ -456,13 +453,20 @@ angular.module('adminApp')
                         }
                     }).then(function(response) {
                         if (response.data.data.error) {
+                            $rootScope.$emit('stopSpin');
                             $scope.success = null;
+                            $scope.errorFile = null;
                             $scope.error = response.data.data.error;
-                            $rootScope.$emit('stopSpin');
+                            if (!(response.data.data.error instanceof Array)) {
+                                $scope.success = null;
+                                $scope.error = null;
+                                $scope.errorFile = response.data.data.error;
+                            }
                         } else {
-                            $scope.error = null;
-                            $scope.success = response.data.data;
                             $rootScope.$emit('stopSpin');
+                            $scope.error = null;
+                            $scope.errorFile = null;
+                            $scope.success = response.data.data;
                         }
                     });
                 }
