@@ -484,7 +484,7 @@ angular.module('adminApp')
                 array[index].active = false;
             });
             _.each(cutoff, function (time) {
-                $scope.cutoffTimes[(new Date(time.BroadcastTime)).getUTCHours()].active = true;
+                $scope.cutoffTimes[time.BroadcastTime].active = true;
             });
 
             $scope.chunkedBroadcastTime = [];
