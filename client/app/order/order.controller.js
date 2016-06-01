@@ -91,6 +91,15 @@ angular.module('adminApp')
     }
 
     /**
+     * Assign merchant to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.chooseMerchant = function(item) {
+        $scope.merchant = item;
+    }
+
+    /**
      * Get all orders
      * 
      * @return {void}
@@ -424,30 +433,37 @@ angular.module('adminApp')
         });
     }
 
+    $scope.onTimeSet = function (newDate, oldDate) {
+        $scope.importedDatePicker = newDate;
+    }
+
     $scope.uploadOrders = function(files) {
+        if ($scope.merchant === undefined) {
+            alert('Please select merchant');
+            return;
+        }
         if (files && files.length) {
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
                 if (!file.$error) {
-                    //$rootScope.$emit('startSpin');
+                    $rootScope.$emit('startSpin');
                     Upload.upload({
-                            url: config.url + 'order/import/xlsx',
-                            data: {
-                                file: file
-                            }
-                    }).then(function(response) {
-                        $scope.uploadedFiles.push(response.data);
-                        if (response.data.report && 
-                            response.data.report.ordersAdded &&
-                            response.data.report.ordersAdded > 0) {
-                                $scope.uploadCompleted = true;
-                        } else {
-                            $scope.uploadCompleted = false;
+                        url: config.url + 'order/import/xlsx',
+                        data: {
+                            file: file,
+                            merchantID : $scope.merchant.value,
+                            pickupTime: $scope.importedDatePicker,
                         }
-                        $rootScope.$emit('stopSpin');
-                    }, function(response) {
-                        $scope.uploadedFiles.push(response.data);
-                        $rootScope.$emit('stopSpin');
+                    }).then(function(response) {
+                        if (response.data.data.error) {
+                            $scope.success = null;
+                            $scope.error = response.data.data.error;
+                            $rootScope.$emit('stopSpin');
+                        } else {
+                            $scope.error = null;
+                            $scope.success = response.data.data;
+                            $rootScope.$emit('stopSpin');
+                        }
                     });
                 }
             }
