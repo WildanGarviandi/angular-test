@@ -259,3 +259,19 @@
 .order-table tbody tr:hover td, .table tbody tr:hover th {
     background-color: #dddddd;
 }
+
+#order-page .row {
+    margin-top: 10px;
+}
+
+#order-page uib-accordion .panel-group {
+    margin-bottom: 0px;
+}
+
+#order-page uib-accordion h4 {
+    font-size: 14px;
+}
+
+#order-page uib-accordion a:hover {
+    color: black;
+}

@@ -1,4 +1,4 @@
-<div class="container-fluid container-hubs">
+<div class="container-fluid container-hubs" id="order-page">
     <div class="clearfix"></div>
     <div class="row-fluid box-header">
         <div>
@@ -19,6 +19,25 @@
     
     <div class="">
         <div class="col-md-12">
+            <div class="row">
+                <uib-accordion>
+                    <uib-accordion-group is-open="areaFilter.open">
+                        <uib-accordion-heading>
+                            Multiple Filter by EDS / AWB / WebOrderID
+                            <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': areaFilter.open, 'glyphicon-chevron-right': !areaFilter.open}"></i>
+                        </uib-accordion-heading>
+                        <textarea ng-model="queryMultipleEDS" id="eds-textarea" placeholder="Write/Paste EDS Number or Order ID here, separated with newline" style="height: 100px; width: 100%;"></textarea>
+                        <span ng-if="queryMultipleEDS !== ''">{{queryMultipleEDS.split('\n').length}}</span> 
+                        <span ng-if="queryMultipleEDS === ''">0</span>
+                        found
+                        <div class="pull-right">
+                            <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
+                            <a class="btn btn-default" ng-click="areaFilter.open = false">Cancel</a>
+                            <a ng-click="filterMultipleEDS(queryMultipleEDS)" class="btn btn-success">Filter</a>
+                        </div>
+                    </uib-accordion-group>
+                </uib-accordion>
+            </div>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>

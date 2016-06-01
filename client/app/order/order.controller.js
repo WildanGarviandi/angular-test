@@ -25,6 +25,7 @@ angular.module('adminApp')
 
     $scope.itemsByPage = 10;
     $scope.offset = 0;
+    $scope.queryMultipleEDS = '';
 
     $scope.status = {
         key: 'All',
@@ -119,6 +120,7 @@ angular.module('adminApp')
             offset: $scope.offset,
             limit: $scope.itemsByPage,
             userOrderNumber: $scope.reqSearchUserOrderNumber,
+            userOrderNumbers: $scope.userOrderNumbers,
             driver: $scope.reqSearchDriver,
             pickup: $scope.reqSearchPickup,
             dropoff: $scope.reqSearchDropoff,
@@ -131,6 +133,7 @@ angular.module('adminApp')
             sortCriteria: $scope.sortCriteria,
         }
         Services2.getOrder(params).$promise.then(function(data) {
+            $scope.userOrderNumbers = '';
             $scope.displayed = data.data.rows;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
@@ -386,5 +389,13 @@ angular.module('adminApp')
         });
     };
 
+    $scope.clearTextArea = function () {
+        $('#eds-textarea').val('');
+    };
+
+    $scope.filterMultipleEDS = function (query) {
+        $scope.userOrderNumbers = query;
+        $scope.getOrder();
+    };
 
   });
