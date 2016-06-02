@@ -119,7 +119,7 @@ angular.module('adminApp')
             offset: $scope.offset,
             limit: $scope.itemsByPage,
             userOrderNumber: $scope.reqSearchUserOrderNumber,
-            userOrderNumbers: $scope.userOrderNumbers,
+            userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
             driver: $scope.reqSearchDriver,
             pickup: $scope.reqSearchPickup,
             dropoff: $scope.reqSearchDropoff,
