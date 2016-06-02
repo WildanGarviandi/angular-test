@@ -232,7 +232,6 @@
             </p>
         </div>
         <div class="clearfix"></div>
-        <div class="row-fluid order-import">Example for import: <a ng-click="getExample()">example_orders.xlsx</a></div>
         <div class="row-fluid uploadXls">
             <div ngf-drop="uploadOrders($files)" ngf-select="uploadOrders($files)" ng-model="files" class="drop-box" ngf-drag-over-class="dragover" ngf-multiple="true" ngf-allow-dir="true" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ngf-pattern="'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'">
                 Drop <strong>.xlsx</strong> or click here to upload
@@ -243,7 +242,7 @@
             <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
         </div>
         <div class="clearfix"></div>
-        <div class="row-fluid" ng-if="error.length > 0 || sumUploaded > 0">            
+        <div class="row-fluid" ng-if="error.length > 0 || sumUploaded > 0 || updated.length > 0">            
             <div ng-if="error.length > 0">
                 <div ng-repeat="err in error">
                     <uib-alert type="danger">
@@ -255,6 +254,13 @@
                 <uib-alert type="success">
                     {{sumUploaded}} order uploaded
                 </uib-alert>
+            </div>
+            <div ng-if="updated.length > 0">
+                <div ng-repeat="update in updated">
+                    <uib-alert type="success">
+                        {{update}} 
+                    </uib-alert>
+                </div>
             </div>
         <div class="clearfix"></div>
     </div>

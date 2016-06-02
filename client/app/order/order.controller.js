@@ -455,6 +455,7 @@ angular.module('adminApp')
                         if (response.data.data.error) {
                             $rootScope.$emit('stopSpin');
                             $scope.sumUploaded = 0;
+                            $scope.updated = [];
                             $scope.error = response.data.data.error;
                             if (!(response.data.data.error instanceof Array)) {
                                 $scope.error = [];
@@ -463,10 +464,14 @@ angular.module('adminApp')
                         } else {
                             $scope.sumUploaded = 0;
                             $scope.error = [];
+                            $scope.updated = [];
                             $rootScope.$emit('stopSpin');
                             response.data.data.forEach(function(order){
+                                console.log(order);
                                 if (order.UserTrackOrderID) {
                                     $scope.sumUploaded += 1;
+                                } else if (order.message) {
+                                    $scope.updated.push(order.message);
                                 } else {
                                     $scope.error.push(order.error);
                                 }
@@ -475,6 +480,7 @@ angular.module('adminApp')
                     }).catch(function(error){
                         $rootScope.$emit('stopSpin');
                         $scope.sumUploaded = 0;
+                        $scope.updated = [];
                         $scope.error = [];
                         $scope.error.push(error.data.error.message);
                     });
