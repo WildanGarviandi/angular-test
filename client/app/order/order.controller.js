@@ -467,7 +467,6 @@ angular.module('adminApp')
                             $scope.updated = [];
                             $rootScope.$emit('stopSpin');
                             response.data.data.forEach(function(order){
-                                console.log(order);
                                 if (order.UserTrackOrderID) {
                                     $scope.sumUploaded += 1;
                                 } else if (order.message) {
