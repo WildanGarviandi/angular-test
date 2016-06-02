@@ -25,6 +25,7 @@ angular.module('adminApp')
 
     $scope.itemsByPage = 10;
     $scope.offset = 0;
+    $scope.queryMultipleEDS = '';
 
     $scope.status = {
         key: 'All',
@@ -55,6 +56,16 @@ angular.module('adminApp')
     $scope.currency = config.currency + " ";
     $scope.zipLength = config.zipLength;
     $scope.isFirstSort = true;
+
+    $scope.$watch(
+        'queryMultipleEDS',
+        function (newValue) {
+            // Filter empty line(s)
+            $scope.userOrderNumbers = newValue.split('\n').filter(function (val) {
+                return (val);
+            });
+        }
+    );
 
     /**
      * Get status
@@ -132,7 +143,6 @@ angular.module('adminApp')
             sortCriteria: $scope.sortCriteria,
         }
         Services2.getOrder(params).$promise.then(function(data) {
-            $scope.userOrderNumbers = [];
             $scope.displayed = data.data.rows;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
@@ -390,10 +400,10 @@ angular.module('adminApp')
 
     $scope.clearTextArea = function () {
         $scope.queryMultipleEDS = '';
+        $scope.userOrderNumbers = [];
     };
 
     $scope.filterMultipleEDS = function () {
-        $scope.userOrderNumbers = $scope.queryMultipleEDS.split('\n');
         $scope.getOrder();
     };
 

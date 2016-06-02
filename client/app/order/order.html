@@ -31,13 +31,14 @@
                             placeholder="Write/Paste EDS Number or Order ID here, separated with newline" style="height: 100px; width: 100%;">
                         </textarea>
                         <span ng-if="$parent.$parent.$parent.queryMultipleEDS !== ''">
-                            {{$parent.$parent.$parent.queryMultipleEDS.split('\n').length}}
+                            {{userOrderNumbers.length}}
                         </span> 
                         <span ng-if="!$parent.$parent.$parent.queryMultipleEDS">0</span>
                         found
                         <div class="pull-right">
                             <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
-                            <a class="btn btn-default" ng-click="areaFilter.open = false">Cancel</a>
+                            <a class="btn btn-default" 
+                                ng-click="areaFilter.open = false; clearTextArea()">Cancel</a>
                             <a ng-click="filterMultipleEDS()" class="btn btn-success">Filter</a>
                         </div>
                     </uib-accordion-group>
