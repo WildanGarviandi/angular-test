@@ -26,14 +26,19 @@
                             Multiple Filter by EDS / AWB / WebOrderID
                             <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': areaFilter.open, 'glyphicon-chevron-right': !areaFilter.open}"></i>
                         </uib-accordion-heading>
-                        <textarea ng-model="queryMultipleEDS" id="eds-textarea" placeholder="Write/Paste EDS Number or Order ID here, separated with newline" style="height: 100px; width: 100%;"></textarea>
-                        <span ng-if="queryMultipleEDS !== ''">{{queryMultipleEDS.split('\n').length}}</span> 
-                        <span ng-if="queryMultipleEDS === ''">0</span>
+                        <textarea ng-model="$parent.$parent.$parent.queryMultipleEDS" 
+                            id="eds-textarea" 
+                            placeholder="Write/Paste EDS Number or Order ID here, separated with newline" style="height: 100px; width: 100%;">
+                        </textarea>
+                        <span ng-if="$parent.$parent.$parent.queryMultipleEDS !== ''">
+                            {{$parent.$parent.$parent.queryMultipleEDS.split('\n').length}}
+                        </span> 
+                        <span ng-if="!$parent.$parent.$parent.queryMultipleEDS">0</span>
                         found
                         <div class="pull-right">
                             <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
                             <a class="btn btn-default" ng-click="areaFilter.open = false">Cancel</a>
-                            <a ng-click="filterMultipleEDS(queryMultipleEDS)" class="btn btn-success">Filter</a>
+                            <a ng-click="filterMultipleEDS()" class="btn btn-success">Filter</a>
                         </div>
                     </uib-accordion-group>
                 </uib-accordion>
