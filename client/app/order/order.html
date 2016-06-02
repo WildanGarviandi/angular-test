@@ -225,8 +225,8 @@
                     <ui-select-match placeholder="Choose merchant">
                         {{ $select.selected.key }}
                     </ui-select-match>
-                    <ui-select-choices repeat="m in merchants" selected>
-                        <span ng-bind-html="m.key"></span>
+                    <ui-select-choices repeat="m in merchants | filter: $select.search" selected>
+                        <span ng-bind-html="m.key | highlight: $select.search"></span>
                     </ui-select-choices>
                 </ui-select>
             </p>
@@ -243,21 +243,19 @@
             <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
         </div>
         <div class="clearfix"></div>
-        <div class="row-fluid" ng-if="error.length > 0 || success.length > 0 || errorFile">            
-            <uib-alert>
-                <div ng-if="error.length > 0">
-                    <div ng-repeat="err in error">
+        <div class="row-fluid" ng-if="error.length > 0 || sumUploaded > 0">            
+            <div ng-if="error.length > 0">
+                <div ng-repeat="err in error">
+                    <uib-alert type="danger">
                         {{err}} 
-                        <hr>
-                    </div>
+                    </uib-alert>
                 </div>
-                <div ng-if="success.length > 0">
-                    {{success.length}} order uploaded
-                </div>
-                <div ng-if="errorFile">
-                    Error: {{errorFile}}
-                </div>
-            </uib-alert>
+            </div>
+            <div ng-if="sumUploaded > 0">
+                <uib-alert type="success">
+                    {{sumUploaded}} order uploaded
+                </uib-alert>
+            </div>
         <div class="clearfix"></div>
     </div>
  </script>

@@ -454,20 +454,29 @@ angular.module('adminApp')
                     }).then(function(response) {
                         if (response.data.data.error) {
                             $rootScope.$emit('stopSpin');
-                            $scope.success = null;
-                            $scope.errorFile = null;
+                            $scope.sumUploaded = 0;
                             $scope.error = response.data.data.error;
                             if (!(response.data.data.error instanceof Array)) {
-                                $scope.success = null;
-                                $scope.error = null;
-                                $scope.errorFile = response.data.data.error;
+                                $scope.error = [];
+                                $scope.error.push(response.data.data.error);
                             }
                         } else {
+                            $scope.sumUploaded = 0;
+                            $scope.error = [];
                             $rootScope.$emit('stopSpin');
-                            $scope.error = null;
-                            $scope.errorFile = null;
-                            $scope.success = response.data.data;
+                            response.data.data.forEach(function(order){
+                                if (order.UserTrackOrderID) {
+                                    $scope.sumUploaded += 1;
+                                } else {
+                                    $scope.error.push(order.error);
+                                }
+                            });
                         }
+                    }).catch(function(error){
+                        $rootScope.$emit('stopSpin');
+                        $scope.sumUploaded = 0;
+                        $scope.error = [];
+                        $scope.error.push(error.data.error.message);
                     });
                 }
             }
