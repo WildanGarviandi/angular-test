@@ -101,7 +101,7 @@
                         Pickup Time
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                        {{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -127,7 +127,7 @@
                         Dropoff Time
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                        {{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -182,13 +182,13 @@
                             Pickup Address: {{route.PickupAddress.Address1}}
                         </div>
                         <div class="order-status-container-body">
-                            Pickup Time: {{route.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                            Pickup Time: {{route.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
                         </div>
                         <div class="order-status-container-body">
                             Dropoff Address: {{route.DropoffAddress.Address1}}
                         </div>
                         <div class="order-status-container-body">
-                            Dropoff Time: {{route.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                            Dropoff Time: {{route.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
                         </div>
                         <div class="order-status-container-body">
                             Distance: {{route.Distance / 1000 | number : 3 }} km
@@ -221,10 +221,10 @@
                                 Status: {{route.Trip.OrderStatus.OrderStatus}}
                             </div>
                             <div class="order-status-container-body">
-                                PickupTime: {{route.Trip.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                                PickupTime: {{route.Trip.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
                             </div>
                             <div class="order-status-container-body">
-                                Dropoff Time: {{route.Trip.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                                Dropoff Time: {{route.Trip.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
                             </div>                            
                         </uib-accordion-group>   
                         </uib-accordion>
