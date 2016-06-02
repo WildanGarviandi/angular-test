@@ -261,9 +261,9 @@ angular.module('adminApp')
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
-            name: $scope.reqSearchName,
-            email: $scope.reqSearchEmail,
-            phone: $scope.reqSearchPhone,
+            name: $scope.queryName,
+            email: $scope.queryEmail,
+            phone: $scope.queryPhone,
             status: $scope.status.value,
             codStatus: $scope.codStatus.value,
             company: $scope.company.CompanyDetailID

@@ -290,6 +290,12 @@ angular.module('adminApp')
                 module: 'codorder',
                 id: null
             },
-        }
+        },
+        getZipcodes: {
+            method: 'GET',
+            params: {
+                module: 'zip'
+            },
+        },
     });
 });

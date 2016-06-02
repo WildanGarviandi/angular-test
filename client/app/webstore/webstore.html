@@ -94,7 +94,7 @@
                     <tr ng-repeat="webstore in displayed">
                         <td>{{webstore.FirstName}} {{webstore.LastName}}</td>
                         <td>{{webstore.Email}}</td>
-                        <td>{{webstore.LastLoginDate | date: 'MMM d, y h:mm:ss a'}}</td>
+                        <td>{{webstore.LastLoginDate | date: 'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{webstore.PhoneNumber}}</td>
                         <td>{{webstore.WebstoreCompany.UserAddress.Address1}} 
                             {{webstore.WebstoreCompany.UserAddress.City}}

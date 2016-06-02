@@ -189,8 +189,8 @@
                             {{order.DropoffAddress.CountryCode}}-{{order.DropoffAddress.MobileNumber}} /
                             {{order.DropoffAddress.EmailID}}
                         </td>
-                        <td>{{order.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-                        <td>{{order.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                        <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                         <td>{{order.OrderStatus.OrderStatus}}</td>
                     </tr>
