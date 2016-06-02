@@ -16,7 +16,8 @@ angular.module('adminApp')
             $http, 
             $window,
             config,
-            ngDialog
+            ngDialog,
+            $q
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -149,12 +150,11 @@ angular.module('adminApp')
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
-            userOrderNumber: $scope.reqSearchUserOrderNumber,
-            driver: $scope.reqSearchDriver,
+            userOrderNumber: $scope.queryUserOrderNumber,
+            driver: $scope.queryDriver,
             merchant: $scope.queryMerchant,
-            pickup: $scope.reqSearchPickup,
-            dropoff: $scope.reqSearchDropoff,
-            pickupType: $scope.pickupType.value,
+            pickup: $scope.queryPickup,
+            dropoff: $scope.queryDropoff,
             status: $scope.status.value,
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
@@ -361,27 +361,30 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.updateAddress = function(address) {
+        $rootScope.$emit('startSpin');
         if (address === 'pickup') {
             var params = $scope.order.PickupAddress;
-            if (isNaN($scope.order.PickupAddress.ZipCode)) {
-                alert('Pickup zipcode is not valid');
-                return;
-            }
         } else if (address === 'dropoff') {
             var params = $scope.order.DropoffAddress;
-            if (isNaN($scope.order.DropoffAddress.ZipCode)) {
-                alert('Dropoff zipcode is not valid');
-                return;
-            }
         }
-        $rootScope.$emit('startSpin');
-        Services2.updateAddress({
-            id: params.UserAddressID,
-        }, params).$promise.then(function(response, error) {
-            $rootScope.$emit('stopSpin');
-            alert('Update address success');
-            ngDialog.closeAll();
-            $scope.loadDetails();
+        
+        Services2.getZipcodes({
+            search: params.ZipCode
+        }).$promise
+        .then(function(response, error) {
+            if (response.data.Zipcodes.rows.length === 0) {
+                alert('Zipcode not valid');
+                $rootScope.$emit('stopSpin');
+            } else {
+                Services2.updateAddress({
+                    id: params.UserAddressID,
+                }, params).$promise.then(function(response, error) {
+                    $rootScope.$emit('stopSpin');
+                    alert('Update address success');
+                    ngDialog.closeAll();
+                    $scope.loadDetails();
+                })
+            }
         })
         .catch(function(error) {
             $rootScope.$emit('stopSpin');
@@ -431,6 +434,21 @@ angular.module('adminApp')
         }).$promise.then(function(response){
             return response.data.Cities.rows.map(function(item){
                 return item.Name;
+            });
+        });
+    };
+
+    /**
+     * Get all zipcodes
+     * 
+     * @return {void}
+     */
+    $scope.getZipcodes = function(val) {
+        return Services2.getZipcodes({
+            search: val
+        }).$promise.then(function(response){
+            return response.data.Zipcodes.rows.map(function(item){
+                return item.ZipCode;
             });
         });
     };

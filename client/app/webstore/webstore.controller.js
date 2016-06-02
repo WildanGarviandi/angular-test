@@ -395,10 +395,25 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getCountries = function(val) {
-        return Services.getCountries({
-            address: val
+        return Services2.getCountries({
+            search: val
         }).$promise.then(function(response){
-            return response.countries.map(function(item){
+            return response.data.Countries.rows.map(function(item){
+                return item.Name;
+            });
+        });
+    };
+
+    /**
+     * Get all states
+     * 
+     * @return {void}
+     */
+    $scope.getStates = function(val) {
+        return Services2.getStates({
+            search: val
+        }).$promise.then(function(response){
+            return response.data.States.rows.map(function(item){
                 return item.Name;
             });
         });
