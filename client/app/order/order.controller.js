@@ -430,10 +430,31 @@ angular.module('adminApp')
         });
     }
 
+    /**
+     * Set imported date picker
+     * 
+     * @return {void}
+    */
     $scope.onTimeSet = function (newDate, oldDate) {
         $scope.importedDatePicker = newDate;
     }
 
+    /**
+     * Clear message
+     * 
+     * @return {void}
+    */
+    $scope.clearMessage = function () {
+        $scope.sumUploaded = 0;
+        $scope.error = [];
+        $scope.updated = [];
+    }
+
+    /**
+     * Upload orders
+     * 
+     * @return {void}
+    */
     $scope.uploadOrders = function(files) {
         if ($scope.merchant === undefined) {
             alert('Please select merchant');
@@ -452,36 +473,26 @@ angular.module('adminApp')
                             pickupTime: $scope.importedDatePicker,
                         }
                     }).then(function(response) {
-                        if (response.data.data.error) {
-                            $rootScope.$emit('stopSpin');
-                            $scope.sumUploaded = 0;
-                            $scope.updated = [];
-                            $scope.error = response.data.data.error;
-                            if (!(response.data.data.error instanceof Array)) {
-                                $scope.error = [];
-                                $scope.error.push(response.data.data.error);
+                        $rootScope.$emit('stopSpin');
+                        $scope.clearMessage();
+                        response.data.data.forEach(function(order){
+                            if (order.UserTrackOrderID) {
+                                $scope.sumUploaded += 1;
+                            } else if (order.updated) {
+                                $scope.updated.push(order.updated);
+                            } else {
+                                $scope.error.push(order.message.error);
                             }
-                        } else {
-                            $scope.sumUploaded = 0;
-                            $scope.error = [];
-                            $scope.updated = [];
-                            $rootScope.$emit('stopSpin');
-                            response.data.data.forEach(function(order){
-                                if (order.UserTrackOrderID) {
-                                    $scope.sumUploaded += 1;
-                                } else if (order.message) {
-                                    $scope.updated.push(order.message);
-                                } else {
-                                    $scope.error.push(order.error);
-                                }
-                            });
-                        }
+                        });
                     }).catch(function(error){
                         $rootScope.$emit('stopSpin');
-                        $scope.sumUploaded = 0;
-                        $scope.updated = [];
-                        $scope.error = [];
-                        $scope.error.push(error.data.error.message);
+                        var errorMessage = error.data.error.message;
+                        $scope.clearMessage();
+                        $scope.error = errorMessage;
+                        if (!(errorMessage instanceof Array)) {
+                            $scope.error = [];
+                            $scope.error.push(error.data.error.message);
+                        }
                     });
                 }
             }
