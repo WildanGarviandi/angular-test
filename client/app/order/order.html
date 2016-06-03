@@ -19,6 +19,7 @@
     
     <div class="">
         <div class="col-md-12">
+            <button class="btn btn-primary" ng-click="showExportOrders()">Export Orders</button>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
@@ -179,3 +180,44 @@
         </div>
     </div>
 </div>
+
+<script type="text/ng-template" id="exportModal">
+    <div class="header-wrapper">
+        <h1>Export Orders</h1>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid">
+        <div class="row-fluid">
+            <p class="input-group" style="float: left; width: 170px;">
+                <input type="text"
+                    class="form-control"
+                    ng-model="createdDatePicker.startDate"
+                    uib-datepicker-popup
+                    date:'yyyy-MM-dd'
+                    is-open="isStartDatePickerOpen"
+                    ng-click="isStartDatePickerOpen = !isStartDatePickerOpen" />
+                <span class="input-group-btn">
+                <button type="button"
+                    class="btn btn-default"
+                    ng-click="isStartDatePickerOpen = !isStartDatePickerOpen"><i class="glyphicon glyphicon-calendar"></i>
+                </button>
+            </p>
+            <p class="input-group" style="float: left; width: 170px;">
+                <input type="text"
+                    class="form-control"
+                    ng-model="createdDatePicker.endDate"
+                    uib-datepicker-popup
+                    date:'yyyy-MM-dd'
+                    is-open="isEndDatePickerOpen"
+                    ng-click="isEndDatePickerOpen = !isEndDatePickerOpen" />
+                <span class="input-group-btn">
+                <button type="button"
+                    class="btn btn-default"
+                    ng-click="isEndDatePickerOpen = !isEndDatePickerOpen"><i class="glyphicon glyphicon-calendar"></i>
+                </button>
+            </p>
+            <button class="btn btn-primary" ng-click="exportNormalOrders()">Old Format</button>  
+            <button class="btn btn-primary" ng-click="exportUploadableOrders()">Import Format</button>  
+            <button class="btn btn-primary" ng-click="exportCompletedOrders()">Completed Orders</button>            
+        </div>
+    </div>
+ </script>

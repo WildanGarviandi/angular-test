@@ -290,6 +290,30 @@ angular.module('adminApp')
                 module: 'codorder',
                 id: null
             },
+        },
+        exportNormalOrders: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'normal'
+            },
+        },
+        exportUploadableOrders: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'uploadable'
+            },
+        },
+        exportCompletedOrders: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'completed'
+            },
         }
     });
 });

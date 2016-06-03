@@ -56,6 +56,14 @@ angular.module('adminApp')
     $scope.zipLength = config.zipLength;
     $scope.isFirstSort = true;
 
+    $scope.createdDatePicker = {
+        startDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 7),
+        endDate: new Date()
+    };
+ 
+    $scope.isStartDatePicker = false;
+    $scope.isEndDatePicker = false;
+
     /**
      * Get status
      * 
@@ -385,6 +393,76 @@ angular.module('adminApp')
             });
         });
     };
+
+    /**
+     * Show export orders modals
+     * 
+     * @return {void}
+     */
+    $scope.showExportOrders = function() {
+        ngDialog.close()
+        return ngDialog.open({
+            template: 'exportModal',
+            scope: $scope
+        });
+    }
+ 
+    /**
+     * Export normal orders
+     * 
+     * @return {void}
+     */
+    $scope.exportNormalOrders = function() {
+        $rootScope.$emit('startSpin');
+        Services2.exportNormalOrders({
+            startDate: $scope.createdDatePicker.startDate,
+            endDate: $scope.createdDatePicker.endDate,
+        }).$promise.then(function(result) {
+            ngDialog.closeAll();
+            $rootScope.$emit('stopSpin');
+            window.location = config.url + 'order/download/' + result.data.hash;
+        }).catch(function() {
+            $rootScope.$emit('stopSpin');
+        })
+    }
+
+    /**
+     * Export uploadable orders
+     * 
+     * @return {void}
+     */
+    $scope.exportUploadableOrders = function() {
+        $rootScope.$emit('startSpin');
+        Services2.exportUploadableOrders({
+            startDate: $scope.createdDatePicker.startDate,
+            endDate: $scope.createdDatePicker.endDate,
+        }).$promise.then(function(result) {
+            ngDialog.closeAll();
+            $rootScope.$emit('stopSpin');
+            window.location = config.url + 'order/download/' + result.data.hash;
+        }).catch(function() {
+            $rootScope.$emit('stopSpin');
+        })
+    }
+
+    /**
+     * Export completed orders
+     * 
+     * @return {void}
+     */
+    $scope.exportCompletedOrders = function() {
+        $rootScope.$emit('startSpin');
+        Services2.exportCompletedOrders({
+            startDate: $scope.createdDatePicker.startDate,
+            endDate: $scope.createdDatePicker.endDate,
+        }).$promise.then(function(result) {
+            ngDialog.closeAll();
+            $rootScope.$emit('stopSpin');
+            window.location = config.url + 'order/download/' + result.data.hash;
+        }).catch(function() {
+            $rootScope.$emit('stopSpin');
+        })
+    }
 
 
   });
