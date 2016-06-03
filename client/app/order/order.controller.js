@@ -155,6 +155,7 @@ angular.module('adminApp')
             merchant: $scope.queryMerchant,
             pickup: $scope.queryPickup,
             dropoff: $scope.queryDropoff,
+            pickupType: $scope.pickupType.value,
             status: $scope.status.value,
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
