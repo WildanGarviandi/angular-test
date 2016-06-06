@@ -386,5 +386,27 @@ angular.module('adminApp')
         });
     };
 
+    /**
+     * Change order status to RETURN_CUSTOMER
+     * 
+     */
+    $scope.returnCustomer = function () {
+        $rootScope.$emit('startSpin');
+        if (confirm("Are you sure to return this order to customer? This process can't be reversed.")) {
+            return Services2.returnCustomer({
+                id: $scope.order.UserOrderID
+            }, {}).$promise.then(function (result) {
+                $scope.order.OrderStatus = result.data.order.OrderStatus;
+                $rootScope.$emit('stopSpin');
+            }).catch(function (e) {
+                alert('Failed to change the status.\n' + e.data.error.message);
+                $state.reload();
+                $rootScope.$emit('stopSpin');
+            });
+        } else {
+            $rootScope.$emit('stopSpin');
+        }
+    };
+
 
   });

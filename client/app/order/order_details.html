@@ -165,6 +165,18 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="row text-center">
+                <h2><strong>{{order.OrderStatus.OrderStatus}}</strong></h2>
+            </div>
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <button class="btn btn-danger btn-block" 
+                            ng-click="returnCustomer()"
+                            ng-if="order.OrderStatus.OrderStatusID === 15">Return to Customer</button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="row box-order-details">
         <div class="col-md-12 order-details">

@@ -290,6 +290,14 @@ angular.module('adminApp')
                 module: 'codorder',
                 id: null
             },
+        },
+        returnCustomer: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'return-customer',
+                id: null
+            }
         }
     });
 });
