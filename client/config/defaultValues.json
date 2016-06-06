@@ -203,7 +203,5 @@
     "country": {
         "id": "95",
         "name": "Indonesia"
-    },
-    "extraHelperFee": 50000,
-    "insurance": 0.0025
+    }
 }

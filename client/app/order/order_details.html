@@ -169,7 +169,7 @@
                         Order Cost
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.OrderCost}}
+                        {{currency}}{{order.OrderCost | number}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -178,7 +178,7 @@
                         Final Cost
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.OrderCost + order.Insurance + order.ExtraHelperFee}}
+                        {{currency}}{{order.FinalCost | number}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -187,17 +187,17 @@
                         VAT
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.VAT}}
+                        {{currency}}{{order.VAT | number}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
                     <div class="col-sm-4">
-                        Insurance
+                        Include Insurance
                     </div>
                     <div class="col-sm-8 summary-from">
-                        <span ng-if="order.IncludeInsurance">{{order.Insurance}}</span>
-                        <span ng-if="!order.IncludeInsurance">None</span>
+                        <span ng-if="order.IncludeInsurance">Yes</span>
+                        <span ng-if="!order.IncludeInsurance">No</span>
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -206,17 +206,17 @@
                         Total Value
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.TotalValue}}
+                        {{currency}}{{order.TotalValue}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
                     <div class="col-sm-4">
-                        Extra Helper Fee
+                        Use Extra Helper
                     </div>
                     <div class="col-sm-8 summary-from">
-                        <span ng-if="order.UseExtraHelper">{{order.ExtraHelperFee}}</span>
-                        <span ng-if="!order.UseExtraHelper">None</span>
+                        <span ng-if="order.UseExtraHelper">Yes</span>
+                        <span ng-if="!order.UseExtraHelper">No</span>
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -225,7 +225,7 @@
                         Etobee Share
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.Share}}
+                        {{currency}}{{order.Share | number}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -234,7 +234,7 @@
                         Driver Share
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.DriverShare}}
+                        {{currency}}{{order.DriverShare | number}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -243,7 +243,7 @@
                         Logistic Share
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.LogisticShare}}
+                        {{currency}}{{order.LogisticShare | number}} 
                     </div>
                 </div>
             </div>

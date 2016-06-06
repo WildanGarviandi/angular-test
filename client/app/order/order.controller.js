@@ -58,19 +58,6 @@ angular.module('adminApp')
     $scope.isFirstSort = true;
 
     /**
-     * Get default values from config
-     * 
-     * @return {void}
-     */
-    var getDefaultValues = function() {
-        $http.get('config/defaultValues.json').success(function(data) {
-            $scope.extraHelperFee = data.extraHelperFee;
-            $scope.insurance = data.insurance;
-        });
-    };
-    getDefaultValues();
-
-    /**
      * Get status
      * 
      * @return {void}
@@ -303,14 +290,6 @@ angular.module('adminApp')
                     $scope.order.PickupType = '-';
             }
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
-            $scope.order.Insurance = 0;
-            $scope.order.ExtraHelperFee = 0;
-            if ($scope.order.IncludeInsurance) {
-                $scope.order.Insurance = $scope.insurance * $scope.order.TotalValue;
-            }
-            if ($scope.order.UseExtraHelper) {
-                $scope.order.ExtraHelperFee = $scope.extraHelperFee;
-            }
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
