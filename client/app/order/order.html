@@ -143,11 +143,13 @@
                         <th>
                             <div class="filter-table">
                                 <input 
-                                    type="search" 
+                                    type="text" 
                                     class="form-control input-table" 
                                     value="" 
                                     ng-model="queryMerchant" 
-                                    ng-keyup="searchMerchant($event)">
+                                    ng-keyup="searchMerchant($event)"
+                                    uib-typeahead="merchant for merchant in merchants | filter:$viewValue | limitTo: 10"
+                                    typeahead-min-length="3">
                             </div>
                         </th>
                         <th>

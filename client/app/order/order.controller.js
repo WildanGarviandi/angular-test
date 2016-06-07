@@ -439,6 +439,15 @@ angular.module('adminApp')
         });
     };
 
+    var getWebstores = function () {
+        return Services2.getWebstores().$promise.then(function (result) {
+            $scope.merchants = result.data.webstores.map(function (val) {
+                return val.webstore.FirstName + ' ' + val.webstore.LastName;
+            });
+        });
+    };
+    getWebstores();
+
     /**
      * Get all zipcodes
      * 
