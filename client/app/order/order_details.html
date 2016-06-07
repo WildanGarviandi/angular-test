@@ -169,7 +169,7 @@
                         Order Cost
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.OrderCost | number}}
+                        {{currency}}{{order.OrderCost | awnum:2:decimalSeparator:'round':'false':'true'}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -178,7 +178,7 @@
                         Final Cost
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.FinalCost | number}}
+                        {{currency}}{{order.FinalCost | awnum:2:decimalSeparator:'round':'false':'true'}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -187,7 +187,7 @@
                         VAT
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.VAT | number}}
+                        {{currency}}{{order.VAT | awnum:2:decimalSeparator:'round':'false':'true'}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -206,7 +206,7 @@
                         Total Value
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.TotalValue}}
+                        {{currency}}{{order.TotalValue | awnum:2:decimalSeparator:'round':'false':'true'}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -224,8 +224,8 @@
                     <div class="col-sm-4">
                         Etobee Share
                     </div>
-                    <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.Share | number}}
+                    <div class="col-sm-8 summary-from" >
+                        {{currency}}{{order.Share | awnum:2:decimalSeparator:'round':'false':'true'}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -234,7 +234,7 @@
                         Driver Share
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.DriverShare | number}}
+                        {{currency}}{{order.DriverShare | awnum:2:decimalSeparator:'round':'false':'true'}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -243,7 +243,7 @@
                         Logistic Share
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.LogisticShare | number}} 
+                        {{currency}}{{order.LogisticShare | awnum:2:decimalSeparator:'round':'false':'true'}} 
                     </div>
                 </div>
             </div>

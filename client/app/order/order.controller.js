@@ -54,6 +54,7 @@ angular.module('adminApp')
     };
 
     $scope.currency = config.currency + " ";
+    $scope.decimalSeparator = config.decimalSeparator;
     $scope.zipLength = config.zipLength;
     $scope.isFirstSort = true;
 
