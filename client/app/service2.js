@@ -290,6 +290,13 @@ angular.module('adminApp')
                 module: 'codorder',
                 id: null
             },
+        },
+        getExistOrder: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'check-exist'
+            }
         }
     });
 });

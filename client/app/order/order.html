@@ -30,11 +30,18 @@
                             id="eds-textarea" 
                             placeholder="Write/Paste EDS Number or Order ID here, separated with newline" style="height: 100px; width: 100%;">
                         </textarea>
-                        <span ng-if="$parent.$parent.$parent.queryMultipleEDS !== ''">
-                            {{userOrderNumbers.length}}
-                        </span> 
-                        <span ng-if="!$parent.$parent.$parent.queryMultipleEDS">0</span>
-                        found
+                        <div class="col-md-9">
+                            <div>
+                                <span ng-if="$parent.$parent.$parent.queryMultipleEDS !== ''">
+                                    {{userOrderNumbers.length}} </span> 
+                                <span ng-if="!$parent.$parent.$parent.queryMultipleEDS">0</span> inserted.
+                            </div>
+                            <div class="text-danger" ng-if="orderNotFound.length > 0">
+                                <span ng-if="orderNotFound.length > 1">These orders <span ng-repeat="o in orderNotFound">{{o}}, </span> are not found.</span>
+                                <span ng-if="orderNotFound.length === 1">This order <span ng-repeat="o in orderNotFound">{{o}}</span> is not found.</span>
+                            </div>
+                        </div>
+                        
                         <div class="pull-right">
                             <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
                             <a class="btn btn-default" 
@@ -192,7 +199,10 @@
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
                     <tr>
-                        <td colspan="9" 
+                        <td colspan="1">
+                            <h5 class="text-primary"><strong>{{orderFound | number}} orders found</strong></h5>
+                        </td>
+                        <td colspan="4" 
                             class="text-center" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 

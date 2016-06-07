@@ -26,6 +26,7 @@ angular.module('adminApp')
     $scope.itemsByPage = 10;
     $scope.offset = 0;
     $scope.queryMultipleEDS = '';
+    $scope.orderNotFound = [];
 
     $scope.status = {
         key: 'All',
@@ -143,13 +144,31 @@ angular.module('adminApp')
             sortCriteria: $scope.sortCriteria,
         }
         Services2.getOrder(params).$promise.then(function(data) {
+            $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
+            $rootScope.$emit('stopSpin');
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.data.count / $scope.tableState.pagination.number);
-            $rootScope.$emit('stopSpin');
         });
     }
+
+    /**
+     * Get all order that exist on multiple EDS / WebOrderID searching
+     * @return void
+     */
+    var getExistOrder = function () {
+        Services2.getExistOrder({
+            userOrderNumbers: JSON.stringify($scope.userOrderNumbers)
+        }).$promise.then(function (result) {
+            $scope.orderNotFound = [];
+            result.data.forEach(function (order) {
+                if (!order.exist) {
+                    $scope.orderNotFound.push(order.key);
+                }
+            });
+        });
+    };
 
     /**
      * Add search user order number
@@ -400,10 +419,15 @@ angular.module('adminApp')
 
     $scope.clearTextArea = function () {
         $scope.queryMultipleEDS = '';
-        $scope.userOrderNumbers = [];
+        $scope.orderNotFound = [];
+        if ($scope.userOrderNumbers.length > 0) {
+            $scope.userOrderNumbers = [];
+            $scope.getOrder();
+        }
     };
 
     $scope.filterMultipleEDS = function () {
+        getExistOrder();
         $scope.getOrder();
     };
 
