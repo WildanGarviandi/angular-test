@@ -56,6 +56,15 @@ angular.module('adminApp')
         }
     };
 
+    $scope.beforeRender = function($dates){
+        var minDate = new Date().setHours(0,0,0,0);
+        for(var d in $dates){         
+            if($dates[d].utcDateValue < minDate){
+                $dates[d].selectable = false;
+            }
+        }
+    };
+
     $scope.currency = config.currency + " ";
     $scope.zipLength = config.zipLength;
     $scope.isFirstSort = true;
@@ -445,9 +454,9 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.clearMessage = function () {
-        $scope.sumUploaded = 0;
-        $scope.error = [];
+        $scope.uploaded = [];
         $scope.updated = [];
+        $scope.error = [];
     }
 
     /**
@@ -475,19 +484,20 @@ angular.module('adminApp')
                     }).then(function(response) {
                         $rootScope.$emit('stopSpin');
                         $scope.clearMessage();
-                        response.data.data.forEach(function(order){
-                            if (order.UserTrackOrderID) {
-                                $scope.sumUploaded += 1;
-                            } else if (order.updated) {
-                                $scope.updated.push(order.updated);
+                        response.data.data.forEach(function(order, index){
+                            var row = index + 1;
+                            if (order.isCreated) {
+                                $scope.uploaded.push(order);
+                            } else if (order.isUpdated) {
+                                $scope.updated.push(order);
                             } else {
-                                $scope.error.push(order.message.error);
+                                $scope.error.push('Row '+ row + ': ' +order.error.join());
                             }
                         });
                     }).catch(function(error){
                         $rootScope.$emit('stopSpin');
-                        var errorMessage = error.data.error.message;
                         $scope.clearMessage();
+                        var errorMessage = error.data.error.message;
                         $scope.error = errorMessage;
                         if (!(errorMessage instanceof Array)) {
                             $scope.error = [];

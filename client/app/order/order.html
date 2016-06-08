@@ -204,6 +204,7 @@
                     </a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                         <datetimepicker 
+                            data-before-render="beforeRender($dates)"
                             data-ng-model="importedDatePicker" 
                             data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"
                             data-on-set-time="onTimeSet(newDate, oldDate)"/>
@@ -250,7 +251,7 @@
             <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
         </div>
         <div class="clearfix"></div>
-        <div class="row-fluid" ng-if="error.length > 0 || sumUploaded > 0 || updated.length > 0">            
+        <div class="row-fluid" ng-if="error.length > 0 || uploaded.length > 0 || updated.length > 0">            
             <div ng-if="error.length > 0">
                 <div ng-repeat="err in error track by $index">
                     <uib-alert type="danger">
@@ -258,15 +259,17 @@
                     </uib-alert>
                 </div>
             </div>
-            <div ng-if="sumUploaded > 0">
-                <uib-alert type="success">
-                    {{sumUploaded}} order uploaded
-                </uib-alert>
+            <div ng-if="uploaded.length > 0">
+                <div ng-repeat="upload in uploaded track by $index">
+                    <uib-alert type="success">
+                        {{upload.WebOrderID}} is uploaded 
+                    </uib-alert>
+                </div>
             </div>
             <div ng-if="updated.length > 0">
-                <div ng-repeat="update in updated">
+                <div ng-repeat="update in updated track by $index">
                     <uib-alert type="success">
-                        {{update}} 
+                        {{update.WebOrderID}} is updated 
                     </uib-alert>
                 </div>
             </div>

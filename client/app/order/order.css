@@ -269,3 +269,7 @@
     padding-top: 25px;
     cursor: pointer;
 }
+
+.dragover {
+    border: 5px dashed blue;
+}
