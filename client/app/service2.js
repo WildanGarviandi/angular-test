@@ -290,6 +290,24 @@ angular.module('adminApp')
                 module: 'codorder',
                 id: null
             },
+        },
+        cancelOrder: {
+            method: 'POST',
+            params: {
+                module: 'cancel'
+            }
+        },
+        copyCancelledOrder: {
+            method: 'POST',
+            params: {
+                module: 'copy-cancelled'
+            }
+        },
+        reassignDriver: {
+            method: 'POST',
+            params: {
+                module: 'reassign'
+            }
         }
     });
 });

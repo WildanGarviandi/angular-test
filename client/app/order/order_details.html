@@ -165,6 +165,27 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="row text-center">
+                <h2>{{order.OrderStatus.OrderStatus}}</h2>
+            </div>
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <button class="btn btn-primary btn-block" 
+                            ng-click="copyCancelledOrder()"
+                            ng-if="canBeCopied">Make a new order with same details
+                    </button>
+                    <button class="btn btn-danger btn-block" 
+                            ng-click="cancelOrder()"
+                            ng-if="true">Cancel this order
+                    </button>
+                    <button class="btn btn-success btn-block" 
+                            ng-click="reassignDriver()"
+                            ng-if="canBeReassigned">Reassign driver
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="row box-order-details">
         <div class="col-md-12 order-details">
@@ -452,3 +473,40 @@
     </div>
 </script>
 
+<script type="text/ng-template" id="reassignDriverTemplate">
+    <div class="container-fluid" id="reassignDriverModal">
+        <h3>Reassign Driver</h3>
+        <ui-select ng-model="company" 
+            theme="selectize" 
+            on-select="chooseCompany($item)" 
+            class="booking-order-type">
+            <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
+            <ui-select-choices repeat="c in companies | filter: $select.search" selected>
+                <span class="input-table" ng-bind-html="c.CompanyName | highlight: $select.search"></span>
+            </ui-select-choices>
+        </ui-select>
+        <div class="row-fluid">
+            <div ng-if="company.CompanyDetailID === 'all'">
+                <div><input 
+                    type="search" 
+                    class="form-control input-table" 
+                    placeholder="search driver by name"
+                    ng-model="$parent.$parent.queryDriverName" 
+                    ng-keyup="searchDriverName($event)"></div>
+            </div>
+            <div class="modal-table">
+                <table>
+                    <tr ng-if="isLoading">
+                        <td class="text-center">Loading</td>
+                    </tr>
+                    <tr ng-if="!isLoading" ng-repeat="driver in displayed">
+                        <td class="text-center">{{driver.Driver.FirstName}} {{driver.Driver.LastName}}</td>
+                        <td class="text-center">{{driver.Driver.CountryCode}}-{{driver.Driver.PhoneNumber}}</td>
+                        <td><button class="btn btn-primary" 
+                                    ng-click="selectDriver(driver)">Reassign</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</script>

@@ -16,7 +16,8 @@ angular.module('adminApp')
             $http, 
             $window,
             config,
-            ngDialog
+            ngDialog,
+            $q
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -55,6 +56,11 @@ angular.module('adminApp')
     $scope.currency = config.currency + " ";
     $scope.zipLength = config.zipLength;
     $scope.isFirstSort = true;
+
+    $scope.companies = [{
+        CompanyDetailID: 'all',
+        CompanyName: 'All (search by name)'
+    }];
 
     /**
      * Get status
@@ -260,6 +266,9 @@ angular.module('adminApp')
                 default:
                     $scope.order.PickupType = '-';
             }
+            $scope.canBeCopied = ($scope.order.OrderStatus.OrderStatusID === 13);
+            $scope.canBeReassigned = (  $scope.order.OrderStatus.OrderStatusID === 6 ||
+                                        $scope.order.OrderStatus.OrderStatusID === 15);
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
@@ -386,5 +395,163 @@ angular.module('adminApp')
         });
     };
 
+    /**
+     * Make a request to copy the details of the order and copy it to a new order, then
+     *     redirect to that order
+     * @return void
+     */
+    $scope.copyCancelledOrder = function () {
+        $rootScope.$emit('startSpin');
+        Services2.copyCancelledOrder({
+            id: $scope.order.UserOrderID
+        }, {}).$promise.then(function (result) {
+            $rootScope.$emit('stopSpin');
+            $location.path('/order/details/' + result.data.newOrder.UserOrderID);
+        }).catch(function (e) {
+            alert('Copy order was failed.\n' + e.data.error.message);
+            $state.reload();
+            $rootScope.$emit('stopSpin');
+        });
+    };
+
+    /**
+     * Cancel the order
+     * @return void
+     */
+    $scope.cancelOrder = function () {
+        if (confirm('Are you sure to cancel this order ?')) {
+            $rootScope.$emit('startSpin');
+            Services2.cancelOrder({
+                id: $scope.order.UserOrderID
+            }, {}).$promise.then(function (result) {
+                $scope.order.OrderStatus = result.data.order.OrderStatus;
+                $rootScope.$emit('stopSpin');
+            }).catch(function (e) {
+                alert('Cancel order was failed.\n' + e.data.error.message);
+                $state.reload();
+                $rootScope.$emit('stopSpin');
+            });
+        }
+    };
+
+    /**
+     * Get all companies
+     * 
+     * @return {Object} Promise
+     */
+    var getCompanies = function () {
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            Services2.getAllCompanies().$promise.then(function(result) {
+                var companies = lodash.sortBy(result.data.Companies, function (i) { 
+                    return i.CompanyName.toLowerCase(); 
+                });
+                $scope.companies = $scope.companies.concat(companies);
+                $scope.company = $scope.companies[0];
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
+        });
+    };
+
+    /**
+     * Get all drivers for reassign feature
+     * @param  {[type]} params [description]
+     * @return {[type]}        [description]
+     */
+    var getAllDrivers = function (params) {
+        $scope.isLoading = true;
+        return $q(function (resolve) {
+            Services2.getDrivers(params).$promise.then(function(result) {
+                params.limit = result.data.Drivers.count;
+                Services2.getDrivers(params).$promise.then(function(result) {
+                    $scope.displayed = result.data.Drivers.rows;
+                    $scope.displayed = lodash.sortBy($scope.displayed, function (val) { 
+                        return val.Driver.FirstName.toLowerCase(); 
+                    });
+                    $rootScope.$emit('stopSpin');
+                    $scope.isLoading = false;
+                    resolve();
+                });
+            });
+        });
+    };
+
+    /**
+     * Reassign order to new driver
+     * @return void
+     */
+    $scope.reassignDriver = function () {
+        $rootScope.$emit('startSpin');
+        getCompanies()
+        .then(function () {
+            ngDialog.open({
+                template: 'reassignDriverTemplate',
+                scope: $scope,
+                className: 'ngdialog-theme-default reassign-driver-popup'
+            });
+        });
+    };
+
+    /**
+     * Call getAllDrivers function when a company is choosen
+     * @param  {[type]} company [description]
+     * @return {[type]}         [description]
+     */
+    $scope.chooseCompany = function (company) {
+        $scope.company = company;
+        if (company.CompanyDetailID !== 'all') {
+            var params = {
+                offset: 0,
+                limit: 0,
+                status: 'All',
+                codStatus: 'all',
+                company: company.CompanyDetailID
+            };
+            getAllDrivers(params);
+        }
+    };
+
+    /**
+     * Call getAllDrivers function when user searching it by name
+     * @param  {[type]} event [description]
+     * @return {[type]}       [description]
+     */
+    $scope.searchDriverName = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            var params = {
+                offset: 0,
+                limit: 0,
+                status: 'All',
+                codStatus: 'all',
+                company: 'all',
+                name: $scope.queryDriverName
+            };
+            getAllDrivers(params);
+        }
+    };
+
+    /**
+     * [selectDriver description]
+     * @param  {[type]} driver [description]
+     * @return {[type]}        [description]
+     */
+    $scope.selectDriver = function (driver) {
+        var params = {
+            driverID : driver.Driver.UserID,
+            fleetManagerID: driver.Driver.Driver.CompanyDetail.CompanyDetailID
+        };
+        Services2.reassignDriver({
+            id: $scope.order.UserOrderID
+        }, params).$promise.then(function (result) {
+            $state.reload();
+            ngDialog.close();
+        })
+        .catch(function (e) {
+            alert('Reassign driver was failed.\n' + e.data.error.message);
+            $state.reload();
+            ngDialog.close();
+        });
+    };
 
   });

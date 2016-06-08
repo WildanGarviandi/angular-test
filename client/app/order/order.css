@@ -259,3 +259,18 @@
 .order-table tbody tr:hover td, .table tbody tr:hover th {
     background-color: #dddddd;
 }
+
+#reassignDriverModal table {
+    width: 100%;
+}
+
+#reassignDriverModal table tr {
+    height: 40px;
+    border: solid;
+    border-width: 1px;
+}
+
+#reassignDriverModal .modal-table {
+    max-height: 400px;
+    overflow: scroll;
+}
