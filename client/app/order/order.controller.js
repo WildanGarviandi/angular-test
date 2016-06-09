@@ -38,6 +38,12 @@ angular.module('adminApp')
     };
     $scope.pickupTypes = [$scope.pickupType];
 
+    $scope.orderType = {
+        key: 'All',
+        value: 'All'
+    };
+    $scope.orderTypes = [$scope.orderType];
+
     $scope.pickupDatePicker = {
         startDate: null,
         endDate: null
@@ -71,6 +77,7 @@ angular.module('adminApp')
     var getDefaultValues = function() {
         $http.get('config/defaultValues.json').success(function(data) {
             $scope.pickupTypes = $scope.pickupTypes.concat(data.pickupTypes);
+            $scope.orderTypes = $scope.orderTypes.concat(data.orderTypes);
         });
     };
 
@@ -110,6 +117,13 @@ angular.module('adminApp')
      */
     $scope.choosePickupType = function(item) {
         $scope.pickupType = item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getOrder(); 
+    };
+
+    $scope.chooseOrderType = function ($item) {
+        $scope.orderType = $item;
         $scope.offset = 0;
         $scope.tableState.pagination.start = 0;
         $scope.getOrder(); 
@@ -156,6 +170,7 @@ angular.module('adminApp')
             pickup: $scope.queryPickup,
             dropoff: $scope.queryDropoff,
             pickupType: $scope.pickupType.value,
+            deviceType: $scope.orderType.value,
             status: $scope.status.value,
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
@@ -168,6 +183,16 @@ angular.module('adminApp')
             $scope.displayed = data.data.rows;
             $scope.displayed.forEach(function (val, index, array) {
                 array[index].PickupType = (lodash.find($scope.pickupTypes, {value: val.PickupType})).key;
+                if (val.DeviceType && val.DeviceType.DeviceTypeID === 7) {
+                    array[index].OrderType = (lodash.find($scope.orderTypes, {value: 7})).key;
+                } else {
+                    array[index].OrderType = (lodash.find($scope.orderTypes, {value: 1})).key;
+                }
+                if (val.WebstoreUser) {
+                    array[index].CustomerName = val.WebstoreUser.FirstName + ' ' + val.WebstoreUser.LastName;
+                } else {
+                    array[index].CustomerName = val.User.FirstName + ' ' + val.User.LastName;
+                }
             });
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
@@ -463,5 +488,21 @@ angular.module('adminApp')
         });
     };
 
+    /**
+     * Get all user data on searching by name
+     * @param  {[type]} val [description]
+     * @return {[type]}     [description]
+     */
+    $scope.getCustomers = function (val) {
+        var userLimit = 50;
+        return Services2.getUsers({
+            search: val,
+            limit: userLimit
+        }).$promise.then(function (result) {
+            return result.data.Users.map(function (user) {
+                return user.FirstName + ' ' + user.LastName;
+            });
+        });
+    };
 
   });

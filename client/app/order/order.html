@@ -60,8 +60,9 @@
                             <span class="caret" ></span>
                             Driver
                         </th>
-                        <th>Merchant</th>
+                        <th>Customer</th>
                         <th>Pickup Type</th>
+                        <th>Order Type</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -148,8 +149,8 @@
                                     value="" 
                                     ng-model="queryMerchant" 
                                     ng-keyup="searchMerchant($event)"
-                                    uib-typeahead="merchant for merchant in merchants | filter:$viewValue | limitTo: 10"
-                                    typeahead-min-length="3">
+                                    uib-typeahead="customer for customer in getCustomers($viewValue)"
+                                    typeahead-min-length="2">
                             </div>
                         </th>
                         <th>
@@ -160,6 +161,19 @@
                                     class="booking-order-type">
                                     <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
                                     <ui-select-choices repeat="ot in pickupTypes | filter: $select.search" selected>
+                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <ui-select ng-model="orderType" 
+                                    theme="selectize" 
+                                    on-select="chooseOrderType($item)" 
+                                    class="booking-order-type">
+                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                                    <ui-select-choices repeat="ot in orderTypes | filter: $select.search" selected>
                                         <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
                                     </ui-select-choices>
                                 </ui-select>
@@ -189,8 +203,9 @@
                         <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
-                        <td>{{order.User.FirstName}} {{order.User.LastName}}</td>
+                        <td>{{order.CustomerName}}</td>
                         <td>{{order.PickupType}}</td>
+                        <td>{{order.OrderType}}</td>
                         <td>{{order.OrderStatus.OrderStatus}}</td>
                     </tr>
                 </tbody>

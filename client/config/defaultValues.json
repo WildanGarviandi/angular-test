@@ -204,6 +204,15 @@
             "description": "500 orders / day"
         }
     ],
+    "orderTypes": [
+        {
+            "key": "Marketplace",
+            "value": 1
+        },{
+            "key": "Ecommerce",
+            "value": 7
+        }
+    ],
     "country": {
         "id": "95",
         "name": "Indonesia"
