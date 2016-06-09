@@ -476,6 +476,18 @@
 <script type="text/ng-template" id="reassignDriverTemplate">
     <div class="container-fluid" id="reassignDriverModal">
         <h3>Reassign Driver</h3>
+        <div>
+            <label>
+                <input type="checkbox" ng-model="$parent.isUpdateDeliveryFee">
+                Update delivery fee ?
+            </label>
+            <input  ng-if="$parent.isUpdateDeliveryFee"
+                    type="number"
+                    class="form-control input-table"
+                    placeholder="input delivery fee"
+                    ng-model="$parent.$parent.newDeliveryFee">
+            <br>
+        </div>
         <ui-select ng-model="company" 
             theme="selectize" 
             on-select="chooseCompany($item)" 

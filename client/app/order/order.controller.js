@@ -62,6 +62,9 @@ angular.module('adminApp')
         CompanyName: 'All (search by name)'
     }];
 
+    $scope.newDeliveryFee = 0;
+    $scope.isUpdateDeliveryFee = false;
+
     /**
      * Get status
      * 
@@ -424,6 +427,7 @@ angular.module('adminApp')
             Services2.cancelOrder({
                 id: $scope.order.UserOrderID
             }, {}).$promise.then(function (result) {
+                alert('Cancelling order was success');
                 $scope.order.OrderStatus = result.data.order.OrderStatus;
                 $rootScope.$emit('stopSpin');
             }).catch(function (e) {
@@ -539,11 +543,13 @@ angular.module('adminApp')
     $scope.selectDriver = function (driver) {
         var params = {
             driverID : driver.Driver.UserID,
-            fleetManagerID: driver.Driver.Driver.CompanyDetail.CompanyDetailID
+            fleetManagerID: driver.Driver.Driver.CompanyDetail.CompanyDetailID,
+            deliveryFee: ($scope.isUpdateDeliveryFee) ? $scope.newDeliveryFee : null,
         };
         Services2.reassignDriver({
             id: $scope.order.UserOrderID
         }, params).$promise.then(function (result) {
+            alert('Reassigning driver was success');
             $state.reload();
             ngDialog.close();
         })
