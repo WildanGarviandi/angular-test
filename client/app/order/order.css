@@ -259,3 +259,15 @@
 .order-table tbody tr:hover td, .table tbody tr:hover th {
     background-color: #dddddd;
 }
+
+.label-date-export {
+    float: left;
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+.input-date-export {
+    float: left; 
+    width: 140px;
+}

@@ -60,6 +60,8 @@ angular.module('adminApp')
         startDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 7),
         endDate: new Date()
     };
+
+    $scope.maxExportDate = new Date();
  
     $scope.isStartDatePicker = false;
     $scope.isEndDatePicker = false;
@@ -414,6 +416,10 @@ angular.module('adminApp')
      */
     $scope.exportNormalOrders = function() {
         $rootScope.$emit('startSpin');
+        if ($scope.createdDatePicker.endDate) {
+            $scope.createdDatePicker.endDate = new Date($scope.createdDatePicker.endDate);
+            $scope.createdDatePicker.endDate.setHours(0,0,0,0);
+        }
         Services2.exportNormalOrders({
             startDate: $scope.createdDatePicker.startDate,
             endDate: $scope.createdDatePicker.endDate,

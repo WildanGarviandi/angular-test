@@ -187,13 +187,17 @@
     </div>
     <div class="content-wrapper booking-popup notification-popup container-fluid">
         <div class="row-fluid">
-            <p class="input-group" style="float: left; width: 170px;">
+            <p class="label-date-export">
+                From:
+            </p>
+            <p class="input-group input-date-export"> 
                 <input type="text"
                     class="form-control"
                     ng-model="createdDatePicker.startDate"
                     uib-datepicker-popup
                     date:'yyyy-MM-dd'
                     is-open="isStartDatePickerOpen"
+                    max-date="maxExportDate"
                     ng-click="isStartDatePickerOpen = !isStartDatePickerOpen" />
                 <span class="input-group-btn">
                 <button type="button"
@@ -201,13 +205,17 @@
                     ng-click="isStartDatePickerOpen = !isStartDatePickerOpen"><i class="glyphicon glyphicon-calendar"></i>
                 </button>
             </p>
-            <p class="input-group" style="float: left; width: 170px;">
+            <p class="label-date-export">
+                To:
+            </p>
+            <p class="input-group input-date-export">
                 <input type="text"
                     class="form-control"
                     ng-model="createdDatePicker.endDate"
                     uib-datepicker-popup
                     date:'yyyy-MM-dd'
                     is-open="isEndDatePickerOpen"
+                    max-date="maxExportDate"
                     ng-click="isEndDatePickerOpen = !isEndDatePickerOpen" />
                 <span class="input-group-btn">
                 <button type="button"
