@@ -303,5 +303,12 @@ angular.module('adminApp')
                 module: 'zip'
             },
         },
+        getExistOrder: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'check-exist'
+            }
+        }
     });
 });
