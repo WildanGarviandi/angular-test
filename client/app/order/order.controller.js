@@ -54,6 +54,7 @@ angular.module('adminApp')
     };
 
     $scope.currency = config.currency + " ";
+    $scope.decimalSeparator = config.decimalSeparator;
     $scope.zipLength = config.zipLength;
     $scope.isFirstSort = true;
 
@@ -122,7 +123,9 @@ angular.module('adminApp')
             userOrderNumber: $scope.queryUserOrderNumber,
             driver: $scope.queryDriver,
             pickup: $scope.queryPickup,
+            sender: $scope.querySender,
             dropoff: $scope.queryDropoff,
+            recipient: $scope.queryRecipient,
             status: $scope.status.value,
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
@@ -194,6 +197,32 @@ angular.module('adminApp')
     $scope.searchDropoff = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchDropoff = $scope.queryDropoff;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getOrder();
+        };
+    }
+
+    /**
+     * Add search by sender name or phone number or email
+     * 
+     * @return {void}
+     */
+    $scope.searchSender = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getOrder();
+        };
+    }
+
+    /**
+     * Add search by recipient name or phone number or email
+     * 
+     * @return {void}
+     */
+    $scope.searchRecipient = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
             $scope.getOrder();
