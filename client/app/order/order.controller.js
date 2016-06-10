@@ -55,6 +55,7 @@ angular.module('adminApp')
 
     $scope.currency = config.currency + " ";
     $scope.zipLength = config.zipLength;
+    $scope.reassignableOrderStatus = config.reassignableOrderStatus;
     $scope.isFirstSort = true;
 
     $scope.companies = [{
@@ -270,8 +271,10 @@ angular.module('adminApp')
                     $scope.order.PickupType = '-';
             }
             $scope.canBeCopied = ($scope.order.OrderStatus.OrderStatusID === 13);
-            $scope.canBeReassigned = (  $scope.order.OrderStatus.OrderStatusID === 6 ||
-                                        $scope.order.OrderStatus.OrderStatusID === 15);
+            $scope.canBeReassigned = false;
+            $scope.reassignableOrderStatus.forEach(function (status) {
+                if ($scope.order.OrderStatus.OrderStatusID === status) { $scope.canBeReassigned = true; }
+            });
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');

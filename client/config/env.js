@@ -45,7 +45,8 @@ function env() {
         endpoints: {
             signIn: 'sign-in',
         },
-        defaultLocation: defaultLocation
+        defaultLocation: defaultLocation,
+        reassignableOrderStatus: [6, 10, 12, 15]
     };
 }
 
