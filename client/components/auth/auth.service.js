@@ -23,7 +23,7 @@ angular.module('adminApp')
                 }).
                 success(function(data) {
                     data = data.data.SignIn;
-                    $cookies.put('token', JSON.stringify(data.LoginSessionKey));
+                    $cookies.put('token', data.LoginSessionKey);
                     deferred.resolve(data);
                     return cb();
                 }).
