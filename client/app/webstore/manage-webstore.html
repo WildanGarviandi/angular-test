@@ -20,6 +20,29 @@
     <div class="webstore-details">
         <form class="form" name="hubForm" novalidate>
             <div class="container-fluid hub-container">
+                <div class="row-fluid">
+                    <div class="label-input">
+                        Profile picture :
+                    </div>
+                    <div class="input-component col-md-8">
+                        <img    class="picture-circle" 
+                            ng-src="{{webstore.ProfilePicture}}" 
+                            alt="Profile Picture"/>
+                        <button class="btn btn-default" ngf-select="uploadPic($file)" ng-model="file" ngf-model-invalid="errorFile"
+                                type="file" accept="image/*" ngf-max-size="2MB">Upload
+                        </button>
+                        <div style="font:smaller">
+                            <div class="report-upload">
+                                {{f.name}} {{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}
+                            </div>
+                            <div class="progress" ng-show="f.progress >= 0">
+                                <div style="width:{{f.progress}}%"  
+                                     ng-bind="f.progress + '%'"></div>
+                            </div>
+                        </div>     
+                        {{errorMsg}}
+                    </div>
+                </div>
                 <div class="row-fluid">                
                     <div class="label-input">
                         Hub* :

@@ -15,7 +15,10 @@ angular.module('adminApp')
             $stateParams,
             $location, 
             $http, 
-            $window
+            $window,
+            Upload,
+            config,
+            $timeout
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -133,6 +136,7 @@ angular.module('adminApp')
             PhoneNumber: CleanPhoneNumber($scope.webstore.PhoneNumber),
             Email: $scope.webstore.Email,
             Password: $scope.webstore.Password,
+            ProfilePicture: $scope.webstore.ProfilePicture,
             Latitude: $scope.webstore.UserAddress.Latitude,
             Longitude: $scope.webstore.UserAddress.Longitude,
             CountryCode: $scope.webstore.CountryCode,
@@ -479,6 +483,31 @@ angular.module('adminApp')
         $scope.tableState.pagination.start = 0;
         $scope.getWebstores();
     }
+
+    $scope.uploadPic = function (file) {
+        $rootScope.$emit('startSpin');
+        if (file) {
+            $scope.f = file;
+            file.upload = Upload.upload({
+                url: config.url + 'upload/picture',
+                data: {file: file}
+            })
+            .then(function (response) {
+                $timeout(function () {
+                    file.result = response.data;
+                    $scope.webstore.ProfilePicture = response.data.data.Location;
+                    $rootScope.$emit('stopSpin');
+                });
+            }, function (response) {
+                if (response.status > 0) {
+                    $scope.errorMsg = response.status + ': ' + response.data;
+                }
+                $rootScope.$emit('stopSpin');
+            }, function (evt) {
+                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            });
+        }
+    };
 
     $scope.loadManagePage();
 
