@@ -417,8 +417,7 @@ angular.module('adminApp')
     $scope.exportNormalOrders = function() {
         $rootScope.$emit('startSpin');
         if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate = new Date($scope.createdDatePicker.endDate);
-            $scope.createdDatePicker.endDate.setHours(0,0,0,0);
+            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
         }
         Services2.exportNormalOrders({
             startDate: $scope.createdDatePicker.startDate,
@@ -439,6 +438,9 @@ angular.module('adminApp')
      */
     $scope.exportUploadableOrders = function() {
         $rootScope.$emit('startSpin');
+        if ($scope.createdDatePicker.endDate) {
+            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
+        }
         Services2.exportUploadableOrders({
             startDate: $scope.createdDatePicker.startDate,
             endDate: $scope.createdDatePicker.endDate,
@@ -458,6 +460,9 @@ angular.module('adminApp')
      */
     $scope.exportCompletedOrders = function() {
         $rootScope.$emit('startSpin');
+        if ($scope.createdDatePicker.endDate) {
+            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
+        }
         Services2.exportCompletedOrders({
             startDate: $scope.createdDatePicker.startDate,
             endDate: $scope.createdDatePicker.endDate,
