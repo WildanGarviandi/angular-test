@@ -260,6 +260,7 @@ angular.module('adminApp')
                 default:
                     $scope.order.PickupType = '-';
             }
+            $scope.canBeReturned = ($scope.order.OrderStatus.OrderStatusID === 15);
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
@@ -392,7 +393,7 @@ angular.module('adminApp')
      */
     $scope.returnCustomer = function () {
         $rootScope.$emit('startSpin');
-        if (confirm("Are you sure to return this order to customer? This process can't be reversed.")) {
+        if (confirm("Are you sure to return this order to customer / sender ? This process can't be reversed.")) {
             return Services2.returnCustomer({
                 id: $scope.order.UserOrderID
             }, {}).$promise.then(function (result) {
