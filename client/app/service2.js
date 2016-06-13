@@ -294,19 +294,22 @@ angular.module('adminApp')
         cancelOrder: {
             method: 'POST',
             params: {
-                module: 'cancel'
+                module: 'order',
+                controller: 'cancel'
             }
         },
         copyCancelledOrder: {
             method: 'POST',
             params: {
-                module: 'copy-cancelled'
+                module: 'order',
+                controller: 'copy-cancelled'
             }
         },
         reassignDriver: {
             method: 'POST',
             params: {
-                module: 'reassign'
+                module: 'order',
+                controller: 'reassign'
             }
         }
     });
