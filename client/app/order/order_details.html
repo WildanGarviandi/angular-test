@@ -21,6 +21,28 @@
         <div class="col-md-6 order-details">
             <div class="row-fluid order-details-main-header">
                 Order Detail
+                <div class="btn-group pull-right" uib-dropdown is-open="status.isopen">
+                    <button id="single-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="disabled">
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                        <li role="menuitem">
+                            <a href="#"
+                            ng-click="copyCancelledOrder()"
+                            ng-if="canBeCopied">Copy as a new order</a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#"
+                            ng-click="cancelOrder()"
+                            ng-if="true">Cancel this order</a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#"
+                            ng-click="reassignDriver()"
+                            ng-if="canBeReassigned">Reassign Driver</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div class="row-fluid order-details-body">
                 <div class="clearfix"></div>
@@ -167,23 +189,7 @@
         </div>
         <div class="col-md-6">
             <div class="row text-center">
-                <h2>{{order.OrderStatus.OrderStatus}}</h2>
-            </div>
-            <div class="row">
-                <div class="col-md-8 col-md-offset-2">
-                    <button class="btn btn-primary btn-block" 
-                            ng-click="copyCancelledOrder()"
-                            ng-if="canBeCopied">Make a new order with same details
-                    </button>
-                    <button class="btn btn-danger btn-block" 
-                            ng-click="cancelOrder()"
-                            ng-if="true">Cancel this order
-                    </button>
-                    <button class="btn btn-success btn-block" 
-                            ng-click="reassignDriver()"
-                            ng-if="canBeReassigned">Reassign driver
-                    </button>
-                </div>
+                <h2><strong>{{order.OrderStatus.OrderStatus}}</strong></h2>
             </div>
         </div>
     </div>
