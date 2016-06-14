@@ -432,6 +432,7 @@ angular.module('adminApp')
             }, {}).$promise.then(function (result) {
                 alert('Cancelling order was success');
                 $scope.order.OrderStatus = result.data.order.OrderStatus;
+                $state.reload();
                 $rootScope.$emit('stopSpin');
             }).catch(function (e) {
                 alert('Cancel order was failed.\n' + e.data.error.message);
