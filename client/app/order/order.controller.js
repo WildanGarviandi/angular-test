@@ -16,7 +16,8 @@ angular.module('adminApp')
             $http, 
             $window,
             config,
-            ngDialog
+            ngDialog,
+            SweetAlert
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -392,21 +393,31 @@ angular.module('adminApp')
      * 
      */
     $scope.returnCustomer = function () {
-        $rootScope.$emit('startSpin');
-        if (confirm("Are you sure to return this order to customer / sender ? This process can't be reversed.")) {
-            return Services2.returnCustomer({
-                id: $scope.order.UserOrderID
-            }, {}).$promise.then(function (result) {
-                $state.reload();
+        SweetAlert.swal({
+            title: "Are you sure?",
+            text: "You will return this order to customer / sender ? This process can't be reversed.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Return this order",
+        }, function (isConfirm) { 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                return Services2.returnCustomer({
+                    id: $scope.order.UserOrderID
+                }, {}).$promise.then(function (result) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Order was successfully returned to sender');
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Failed to change the status', e.data.error.message);
+                    $state.reload();
+                });
+            } else {
                 $rootScope.$emit('stopSpin');
-            }).catch(function (e) {
-                alert('Failed to change the status.\n' + e.data.error.message);
-                $state.reload();
-                $rootScope.$emit('stopSpin');
-            });
-        } else {
-            $rootScope.$emit('stopSpin');
-        }
+            }
+        });
     };
 
 
