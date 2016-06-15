@@ -397,7 +397,7 @@ angular.module('adminApp')
             return Services2.returnCustomer({
                 id: $scope.order.UserOrderID
             }, {}).$promise.then(function (result) {
-                $scope.order.OrderStatus = result.data.order.OrderStatus;
+                $state.reload();
                 $rootScope.$emit('stopSpin');
             }).catch(function (e) {
                 alert('Failed to change the status.\n' + e.data.error.message);
