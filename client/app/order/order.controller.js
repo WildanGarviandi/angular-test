@@ -17,7 +17,8 @@ angular.module('adminApp')
             $window,
             config,
             ngDialog,
-            $q
+            $q,
+            SweetAlert
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -412,11 +413,17 @@ angular.module('adminApp')
             id: $scope.order.UserOrderID
         }, {}).$promise.then(function (result) {
             $rootScope.$emit('stopSpin');
-            $location.path('/order/details/' + result.data.newOrder.UserOrderID);
+            SweetAlert.swal({
+                title: "Copy order was success", 
+                text: "Redirect to new copied order"
+            }, function () {
+                $location.path('/order/details/' + result.data.newOrder.UserOrderID);
+            });
+            
         }).catch(function (e) {
-            alert('Copy order was failed.\n' + e.data.error.message);
-            $state.reload();
             $rootScope.$emit('stopSpin');
+            SweetAlert.swal('Copy order was failed', e.data.error.message);
+            $state.reload();
         });
     };
 
@@ -425,21 +432,31 @@ angular.module('adminApp')
      * @return void
      */
     $scope.cancelOrder = function () {
-        if (confirm('Are you sure to cancel this order ?')) {
-            $rootScope.$emit('startSpin');
-            Services2.cancelOrder({
-                id: $scope.order.UserOrderID
-            }, {}).$promise.then(function (result) {
-                alert('Cancelling order was success');
-                $scope.order.OrderStatus = result.data.order.OrderStatus;
-                $state.reload();
-                $rootScope.$emit('stopSpin');
-            }).catch(function (e) {
-                alert('Cancel order was failed.\n' + e.data.error.message);
-                $state.reload();
-                $rootScope.$emit('stopSpin');
-            });
-        }
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Cancel this order?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.cancelOrder({
+                    id: $scope.order.UserOrderID
+                }, {}).$promise.then(function (result) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Cancelling order was success');
+                    $scope.order.OrderStatus = result.data.order.OrderStatus;
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Cancel order was failed', e.data.error.message);
+                    $state.reload();
+                });
+            }
+        });
     };
 
     /**
@@ -464,8 +481,8 @@ angular.module('adminApp')
 
     /**
      * Get all drivers for reassign feature
-     * @param  {[type]} params [description]
-     * @return {[type]}        [description]
+     * @param  {Object} params - get params
+     * @return void
      */
     var getAllDrivers = function (params) {
         $scope.isLoading = true;
@@ -504,7 +521,7 @@ angular.module('adminApp')
     /**
      * Call getAllDrivers function when a company is choosen
      * @param  {[type]} company [description]
-     * @return {[type]}         [description]
+     * @return {Object} promise of data of all drivers
      */
     $scope.chooseCompany = function (company) {
         $scope.company = company;
@@ -540,7 +557,7 @@ angular.module('adminApp')
     };
 
     /**
-     * [selectDriver description]
+     * Pass driver, fleet manager and delivery fee value to request to reassign the order
      * @param  {[type]} driver [description]
      * @return {[type]}        [description]
      */
@@ -550,17 +567,19 @@ angular.module('adminApp')
             fleetManagerID: driver.Driver.Driver.CompanyDetail.CompanyDetailID,
             deliveryFee: ($scope.isUpdateDeliveryFee) ? $scope.newDeliveryFee : null,
         };
+        $rootScope.$emit('startSpin');
+        ngDialog.close();
         Services2.reassignDriver({
             id: $scope.order.UserOrderID
         }, params).$promise.then(function (result) {
-            alert('Reassigning driver was success');
+            $rootScope.$emit('stopSpin');
+            SweetAlert.swal('Reassigning driver was success');
             $state.reload();
-            ngDialog.close();
         })
         .catch(function (e) {
-            alert('Reassign driver was failed.\n' + e.data.error.message);
+            $rootScope.$emit('stopSpin');
+            SweetAlert.swal('Reassign driver was failed', e.data.error.message);
             $state.reload();
-            ngDialog.close();
         });
     };
 

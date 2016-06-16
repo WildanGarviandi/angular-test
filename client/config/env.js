@@ -46,7 +46,8 @@ function env() {
             signIn: 'sign-in',
         },
         defaultLocation: defaultLocation,
-        reassignableOrderStatus: [6, 10, 12, 15]
+        reassignableOrderStatus: [2, 6, 10, 12, 15]
+        // ACCEPTED, NOTASSIGNED, NO-DRIVER, EXPIRED, RETURNED_WAREHOUSE
     };
 }
 
