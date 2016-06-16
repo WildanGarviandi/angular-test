@@ -269,6 +269,18 @@
     background-color: #dddddd;
 }
 
+.label-date-export {
+    float: left;
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+.input-date-export {
+    float: left; 
+    width: 140px;
+}
+
 #order-page .row {
     margin-top: 10px;
 }
