@@ -407,11 +407,11 @@ angular.module('adminApp')
                     id: $scope.order.UserOrderID
                 }, {}).$promise.then(function (result) {
                     $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Order was successfully returned to sender');
+                    SweetAlert.swal('Order returned to sender');
                     $state.reload();
                 }).catch(function (e) {
                     $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Failed to change the status', e.data.error.message);
+                    SweetAlert.swal('Failed in returning order to sender', e.data.error.message);
                     $state.reload();
                 });
             } else {
