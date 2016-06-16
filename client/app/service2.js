@@ -290,6 +290,19 @@ angular.module('adminApp')
                 module: 'codorder',
                 id: null
             },
-        }
+        },
+        getCODPayment: {
+            method: 'GET',
+            params: {
+                module: 'codpayment'
+            },
+        },
+        getCODPaymentDetails: {
+            method: 'GET',
+            params: {
+                module: 'codpayment',
+                id: null
+            },
+        },
     });
 });
