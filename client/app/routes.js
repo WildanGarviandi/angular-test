@@ -81,6 +81,15 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.detail-district', {
+            url: 'district/:districtID',
+            views: {
+                'content@': {
+                    templateUrl: 'app/district/detailDistrict.html',
+                    controller: 'DistrictCtrl'
+                }
+            }
+        })
         .state('app.operational-district', {
             url: 'operational-district',
             views: {

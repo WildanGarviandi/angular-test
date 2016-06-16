@@ -15,7 +15,9 @@ angular.module('adminApp')
             $stateParams,
             $location, 
             $http, 
-            $window
+            $window,
+            ngDialog,
+            Services2
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -60,6 +62,14 @@ angular.module('adminApp')
     $scope.searchFilter = {};
     $scope.itemsByPage = 10;
     $scope.offset = 0;
+
+    $scope.cutoffTimes = [];
+    for (var i = 0; i < 24; i++) {
+        $scope.cutoffTimes.push({
+            value: i,
+            active: false
+        });
+    }
 
     function CleanPhoneNumber(phone) {
       if(phone.indexOf('0') == 0) {
@@ -395,10 +405,25 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getCountries = function(val) {
-        return Services.getCountries({
-            address: val
+        return Services2.getCountries({
+            search: val
         }).$promise.then(function(response){
-            return response.countries.map(function(item){
+            return response.data.Countries.rows.map(function(item){
+                return item.Name;
+            });
+        });
+    };
+
+    /**
+     * Get all states
+     * 
+     * @return {void}
+     */
+    $scope.getStates = function(val) {
+        return Services2.getStates({
+            search: val
+        }).$promise.then(function(response){
+            return response.data.States.rows.map(function(item){
                 return item.Name;
             });
         });
@@ -473,6 +498,52 @@ angular.module('adminApp')
             alert('Verify failed.');
         });
     }
+
+    $scope.bucket = function (webstoreID) {
+        $scope.webstoreID = webstoreID;
+        var params = {
+            id: webstoreID
+        };
+
+        Services2.getCutoffTimes(params).$promise
+        .then(function (result) {
+            var cutoff = result.data.CutoffTimes;
+            _.each($scope.cutoffTimes, function (time, index, array){
+                array[index].active = false;
+            });
+            _.each(cutoff, function (time) {
+                $scope.cutoffTimes[time.BroadcastTime].active = true;
+            });
+
+            $scope.chunkedBroadcastTime = [];
+            for (var i = 0, j = $scope.cutoffTimes.length; i < j; i += 6) {
+                $scope.chunkedBroadcastTime.push($scope.cutoffTimes.slice(i, i+6));
+            }
+
+            ngDialog.open({
+                template: 'deliverySettingsTemplate',
+                scope: $scope,
+                className: 'ngdialog-theme-default delivery-settings'
+            });
+        });
+    };
+
+    $scope.setCutoffTimes = function () {
+        var cutoffTimes = $scope.cutoffTimes.filter(function (time) {
+            return (time.active) ? true : false;
+        });
+        var params = {
+            _id: $scope.webstoreID,
+            cutoffTimes: cutoffTimes
+        };
+        Services2.setCutoffTimes(params).$promise
+        .then(function (result) {
+            alert('Cutoff Time successfully updated');
+        })
+        .catch(function (e) {
+            alert('Updating Cutoff Time failed');
+        });
+    };
 
     $scope.filterWebstores = function () {
         $scope.offset = 0;
