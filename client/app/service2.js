@@ -52,6 +52,12 @@ angular.module('adminApp')
                 module: 'district'
             }
         },
+        getDistrictMaster: {
+            method: 'GET',
+            params: {
+                module: 'district-master'
+            }
+        },
         getMultipleDistricts: {
             method: 'GET',
             params: {
@@ -181,6 +187,20 @@ angular.module('adminApp')
                 module: 'webstore',
             },
         },
+        getCutoffTimes: {
+            method: 'GET',
+            params: {
+                module: 'webstore',
+                submodule: 'cutoff'
+            }
+        },
+        setCutoffTimes: {
+            method: 'POST',
+            params: {
+                module: 'webstore',
+                submodule: 'cutoff'
+            }
+        },
         getVehicles: {
             method: 'GET',
             params: {
@@ -291,6 +311,30 @@ angular.module('adminApp')
                 id: null
             },
         },
+        exportNormalOrders: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'normal'
+            },
+        },
+        exportUploadableOrders: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'uploadable'
+            },
+        },
+        exportCompletedOrders: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'completed'
+            },
+        }
         getZipcodes: {
             method: 'GET',
             params: {
@@ -301,6 +345,13 @@ angular.module('adminApp')
             method: 'GET',
             params: {
                 module: 'user'
+            }
+        },
+        getExistOrder: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'check-exist'
             }
         }
     });
