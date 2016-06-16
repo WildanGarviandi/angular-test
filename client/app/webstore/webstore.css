@@ -40,3 +40,66 @@
     margin-left: 450px; 
     margin-top: -250px;
 }
+
+.delivery-settings .ngdialog-content {
+    padding: 0px !important;
+    width: 580px !important;
+}
+
+.delivery-settings .ngdialog-content {
+    padding: 0px !important;
+    width: 450px!important;
+}
+
+.delivery-settings .ngdialog-close::before {
+    font-size: 35px !important;
+    right: 10px !important;
+    top: 13px !important;
+}
+
+.delivery-settings-body {
+    text-align: center;
+}
+
+.delivery-settings-body .form-group {
+    margin: 0;
+    padding: 0;
+    float: left;
+    font-size: 13px;
+}
+
+.delivery-settings .row {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.delivery-settings-body #cutoff {
+    display: flex;
+    flex-wrap: wrap;
+    height: 200px;
+    flex-direction: column;
+}
+.delivery-settings-body .time-select {
+    padding: 0px;
+}
+
+.delivery-settings-body .form-control {
+    width: auto;
+    height: 25px;
+    font-size: 12px;
+    display: inline;
+}
+
+.dialog-header {
+  color: white;
+  background: #381E39;
+  height: 50px;
+  font-family: 'Avenir-Heavy' !important;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 15px;
+}
+
+.dialog-header-title {
+
+}

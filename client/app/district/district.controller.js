@@ -11,7 +11,9 @@ angular.module('adminApp')
             moment, 
             lodash, 
             $state, 
-            $stateParams
+            $stateParams,
+            $location,
+            $window
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -55,6 +57,10 @@ angular.module('adminApp')
 
     // REQUEST PART
 
+    /**
+     * Get multiple district from API
+     * @param  {Object} params - options
+     */
     var getMultipleDistricts = function (params) {
         Services2.getMultipleDistrictsMaster(params).$promise.then(function(result) {
             $scope.districts = []; 
@@ -65,6 +71,22 @@ angular.module('adminApp')
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 result.data.count / $scope.tableState.pagination.number);
+            $rootScope.$emit('stopSpin');
+        });
+    };
+
+    /**
+     * Get detail of a district by its ID
+     * @param  {Number} districtID 
+     * 
+     */
+    var getDistrictDetails = function (districtID) {
+        $rootScope.$emit('starSpin');
+        var params = {
+            id: districtID
+        };
+        Services2.getDistrictMaster(params).$promise.then(function (result) {
+            $scope.district = result.data.district;
             $rootScope.$emit('stopSpin');
         });
     };
@@ -116,6 +138,26 @@ angular.module('adminApp')
         }
     };
 
+    //  ROUTING PART
+     
+    /**
+     * Redirect to detail page
+     * @param  {Number} districtID 
+     * 
+     */
+    $scope.detail = function (districtID) {
+        $location.path('/district/' + districtID);
+    };
+
+    /**
+     * Redirect to previous page
+     * 
+     * @return {void}
+     */
+    $scope.backButton = function() {
+        $window.history.back();
+    };
+
     // INITIALIZATION PART
 
     /**
@@ -133,5 +175,9 @@ angular.module('adminApp')
         }
         $scope.isFirstLoaded = true;
     };
+
+    if ($state.includes('app.detail-district')) {
+        getDistrictDetails($stateParams.districtID);
+    }
 
 });

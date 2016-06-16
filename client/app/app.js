@@ -25,7 +25,8 @@ angular.module('adminApp', [
     'ui.grid.edit',
     'ui.grid.pinning',
     'ui.grid.cellNav',
-    'oitozero.ngSweetAlert'
+    'oitozero.ngSweetAlert',
+    'dynamicNumber'
 ])
     .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
         $urlRouterProvider
