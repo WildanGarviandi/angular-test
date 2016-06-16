@@ -34,6 +34,18 @@ angular.module('adminApp')
         value: 'All'
     };
 
+    $scope.pickupType = {
+        key: 'All',
+        value: 'All'
+    };
+    $scope.pickupTypes = [$scope.pickupType];
+
+    $scope.orderType = {
+        key: 'All',
+        value: 'All'
+    };
+    $scope.orderTypes = [$scope.orderType];
+
     $scope.pickupDatePicker = {
         startDate: null,
         endDate: null
@@ -80,6 +92,20 @@ angular.module('adminApp')
     );
 
     /**
+     * Get default values from config
+     * 
+     * @return {void}
+     */
+    var getDefaultValues = function() {
+        $http.get('config/defaultValues.json').success(function(data) {
+            $scope.pickupTypes = $scope.pickupTypes.concat(data.pickupTypes);
+            $scope.orderTypes = $scope.orderTypes.concat(data.orderTypes);
+        });
+    };
+
+    getDefaultValues();
+
+    /**
      * Get status
      * 
      * @return {void}
@@ -105,6 +131,25 @@ angular.module('adminApp')
         $scope.tableState.pagination.start = 0;
         $scope.getOrder(); 
     }
+
+    /**
+     * Assign pickup type to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.choosePickupType = function(item) {
+        $scope.pickupType = item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getOrder(); 
+    };
+
+    $scope.chooseOrderType = function ($item) {
+        $scope.orderType = $item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getOrder(); 
+    };
 
     /**
      * Get all orders
@@ -144,9 +189,12 @@ angular.module('adminApp')
             userOrderNumber: $scope.queryUserOrderNumber,
             userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
             driver: $scope.queryDriver,
+            merchant: $scope.queryMerchant,
             pickup: $scope.queryPickup,
             sender: $scope.querySender,
             dropoff: $scope.queryDropoff,
+            pickupType: $scope.pickupType.value,
+            deviceType: $scope.orderType.value,
             recipient: $scope.queryRecipient,
             status: $scope.status.value,
             startPickup: $scope.pickupDatePicker.startDate,
@@ -159,6 +207,19 @@ angular.module('adminApp')
         Services2.getOrder(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
+            $scope.displayed.forEach(function (val, index, array) {
+                array[index].PickupType = (lodash.find($scope.pickupTypes, {value: val.PickupType})).key;
+                if (val.DeviceType && val.DeviceType.DeviceTypeID === 7) {
+                    array[index].OrderType = (lodash.find($scope.orderTypes, {value: 7})).key;
+                } else {
+                    array[index].OrderType = (lodash.find($scope.orderTypes, {value: 1})).key;
+                }
+                if (val.WebstoreUser) {
+                    array[index].CustomerName = val.WebstoreUser.FirstName + ' ' + val.WebstoreUser.LastName;
+                } else {
+                    array[index].CustomerName = val.User.FirstName + ' ' + val.User.LastName;
+                }
+            });
             $rootScope.$emit('stopSpin');
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
@@ -207,6 +268,19 @@ angular.module('adminApp')
     $scope.searchDriver = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchDriver = $scope.queryDriver;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getOrder();
+        };
+    }
+
+    /**
+     * Add search merchant
+     * 
+     * @return {void}
+     */
+    $scope.searchMerchant = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
             $scope.getOrder();
@@ -459,6 +533,15 @@ angular.module('adminApp')
         });
     };
 
+    var getWebstores = function () {
+        return Services2.getWebstores().$promise.then(function (result) {
+            $scope.merchants = result.data.webstores.map(function (val) {
+                return val.webstore.FirstName + ' ' + val.webstore.LastName;
+            });
+        });
+    };
+    getWebstores();
+
     /**
      * Show export orders modals
      * 
@@ -549,6 +632,23 @@ angular.module('adminApp')
         }).$promise.then(function(response){
             return response.data.Zipcodes.rows.map(function(item){
                 return item.ZipCode;
+            });
+        });
+    };
+
+    /**
+     * Get all user data on searching by name
+     * @param  {[type]} val [description]
+     * @return {[type]}     [description]
+     */
+    $scope.getCustomers = function (val) {
+        var userLimit = 50;
+        return Services2.getUsers({
+            search: val,
+            limit: userLimit
+        }).$promise.then(function (result) {
+            return result.data.Users.map(function (user) {
+                return user.FirstName + ' ' + user.LastName;
             });
         });
     };

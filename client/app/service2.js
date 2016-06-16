@@ -341,6 +341,12 @@ angular.module('adminApp')
                 module: 'zip'
             },
         },
+        getUsers: {
+            method: 'GET',
+            params: {
+                module: 'user'
+            }
+        },
         getExistOrder: {
             method: 'GET',
             params: {
