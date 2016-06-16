@@ -415,6 +415,7 @@ angular.module('adminApp')
                 default:
                     $scope.order.PickupType = '-';
             }
+            $scope.canBeReturned = ($scope.order.OrderStatus.OrderStatusID === 15);
             $scope.canBeCopied = ($scope.order.OrderStatus.OrderStatusID === 13);
             $scope.canBeReassigned = false;
             $scope.reassignableOrderStatus.forEach(function (status) {
@@ -553,6 +554,38 @@ angular.module('adminApp')
             return response.data.Cities.rows.map(function(item){
                 return item.Name;
             });
+        });
+    };
+
+    /**
+     * Change order status to RETURN_CUSTOMER
+     * 
+     */
+    $scope.returnCustomer = function () {
+        SweetAlert.swal({
+            title: "Are you sure?",
+            text: "You will return this order to customer / sender ? This process can't be reversed.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Return this order",
+        }, function (isConfirm) { 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                return Services2.returnCustomer({
+                    id: $scope.order.UserOrderID
+                }, {}).$promise.then(function (result) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Order returned to sender');
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Failed in returning order to sender', e.data.error.message);
+                    $state.reload();
+                });
+            } else {
+                $rootScope.$emit('stopSpin');
+            }
         });
     };
 

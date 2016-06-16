@@ -311,6 +311,14 @@ angular.module('adminApp')
                 id: null
             },
         },
+        returnCustomer: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'return-customer',
+                id: null
+            }
+        },
         cancelOrder: {
             method: 'POST',
             params: {

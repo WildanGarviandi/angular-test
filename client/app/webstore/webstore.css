@@ -1,34 +1,44 @@
 .webstore-status-field {
-  width: 100%;
+    width: 100%;
 }
 
 .webstore-status-cell {
-  width: 130px;
+    width: 130px;
 }
 
 .webstore-filter {
-  width: 100%;
-  text-indent: 10px;
-  height: 100%;
-  border-radius: 3px;
-  border: solid 1px #ccc;
+    width: 100%;
+    text-indent: 10px;
+    height: 100%;
+    border-radius: 3px;
+    border: solid 1px #ccc;
 }
 
 .webstore-table > thead > tr > th {
-  vertical-align: middle;
-  text-align: center;
+    vertical-align: middle;
+    text-align: center;
 }
 
 .webstore-cell {
-  text-align: center;
+    text-align: center;
 }
 
 .webstore-details {
-  padding-bottom: 30px;
+    padding-bottom: 30px;
 }
 
 .webstore-verify {
-  background-color: #428bca;
+    background-color: #428bca;
+}
+
+.maps-webstore {
+    width: 650px; 
+    height: 480px; 
+    background-color: rgb(229, 227, 223); 
+    overflow: hidden; 
+    position: absolute; 
+    margin-left: 450px; 
+    margin-top: -250px;
 }
 
 .delivery-settings .ngdialog-content {

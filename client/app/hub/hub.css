@@ -87,16 +87,6 @@
     margin-top: -150px;
 }
 
-.maps-webstore {
-    width: 650px; 
-    height: 480px; 
-    background-color: rgb(229, 227, 223); 
-    overflow: hidden; 
-    position: absolute; 
-    margin-left: 400px; 
-    margin-top: -250px;
-}
-
 .hubzipcodes-form {
     background-color: #transparent;
     overflow: hidden;
