@@ -22,7 +22,7 @@
             <div class="row-fluid order-details-main-header">
                 Order Detail
                 <div class="btn-group pull-right" uib-dropdown is-open="status.isopen">
-                    <button id="single-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="disabled">
+                    <button id="single-button" type="button" class="btn btn-default" uib-dropdown-toggle>
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
@@ -34,12 +34,16 @@
                         <li role="menuitem">
                             <a href="#"
                             ng-click="cancelOrder()"
-                            ng-if="true">Cancel this order</a>
+                            ng-if="canBeCancelled">Cancel this order</a>
                         </li>
                         <li role="menuitem">
                             <a href="#"
                             ng-click="reassignDriver()"
                             ng-if="canBeReassigned">Reassign Driver</a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#"
+                            ng-if="noAction">No action available</a>
                         </li>
                     </ul>
                 </div>
