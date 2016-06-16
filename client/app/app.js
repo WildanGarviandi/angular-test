@@ -24,7 +24,8 @@ angular.module('adminApp', [
     'ui.grid',
     'ui.grid.edit',
     'ui.grid.pinning',
-    'ui.grid.cellNav'
+    'ui.grid.cellNav',
+    'dynamicNumber'
 ])
     .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
         $urlRouterProvider

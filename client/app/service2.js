@@ -52,6 +52,12 @@ angular.module('adminApp')
                 module: 'district'
             }
         },
+        getDistrictMaster: {
+            method: 'GET',
+            params: {
+                module: 'district-master'
+            }
+        },
         getMultipleDistricts: {
             method: 'GET',
             params: {
@@ -180,6 +186,20 @@ angular.module('adminApp')
             params: {
                 module: 'webstore',
             },
+        },
+        getCutoffTimes: {
+            method: 'GET',
+            params: {
+                module: 'webstore',
+                submodule: 'cutoff'
+            }
+        },
+        setCutoffTimes: {
+            method: 'POST',
+            params: {
+                module: 'webstore',
+                submodule: 'cutoff'
+            }
         },
         getVehicles: {
             method: 'GET',
@@ -314,6 +334,19 @@ angular.module('adminApp')
                 submodule: 'export',
                 controller: 'completed'
             },
+        }
+        getZipcodes: {
+            method: 'GET',
+            params: {
+                module: 'zip'
+            },
+        },
+        getExistOrder: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'check-exist'
+            }
         }
     });
 });

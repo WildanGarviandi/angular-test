@@ -139,8 +139,8 @@
                     <tr ng-repeat="order in displayed">
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.User.FirstName}} {{order.User.LastName}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.TotalValue}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPayments[0].CODPaymentUserOrder.WebstoreShare}}</td>

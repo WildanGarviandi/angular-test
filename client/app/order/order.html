@@ -1,4 +1,4 @@
-<div class="container-fluid container-hubs">
+<div class="container-fluid container-order" id="order-page">
     <div class="clearfix"></div>
     <div class="row-fluid box-header">
         <div>
@@ -20,12 +20,46 @@
     <div class="">
         <div class="col-md-12">
             <button class="btn btn-primary" ng-click="showExportOrders()">Export Orders</button>
+            <div class="row">
+                <uib-accordion>
+                    <uib-accordion-group is-open="areaFilter.open">
+                        <uib-accordion-heading>
+                            Multiple Filter by EDS / AWB / WebOrderID
+                            <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': areaFilter.open, 'glyphicon-chevron-right': !areaFilter.open}"></i>
+                        </uib-accordion-heading>
+                        <textarea ng-model="$parent.$parent.$parent.queryMultipleEDS" 
+                            id="eds-textarea" 
+                            placeholder="Write/Paste EDS Number or Order ID here, separated with newline" style="height: 100px; width: 100%;">
+                        </textarea>
+                        <div class="col-md-9">
+                            <div>
+                                <span ng-if="$parent.$parent.$parent.queryMultipleEDS !== ''">
+                                    {{userOrderNumbers.length}} </span> 
+                                <span ng-if="!$parent.$parent.$parent.queryMultipleEDS">0</span> inserted.
+                            </div>
+                            <div class="text-danger" ng-if="orderNotFound.length > 0">
+                                <span ng-if="orderNotFound.length > 1">These orders <span ng-repeat="o in orderNotFound">{{o}}, </span> are not found.</span>
+                                <span ng-if="orderNotFound.length === 1">This order <span ng-repeat="o in orderNotFound">{{o}}</span> is not found.</span>
+                            </div>
+                        </div>
+                        
+                        <div class="pull-right">
+                            <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
+                            <a class="btn btn-default" 
+                                ng-click="areaFilter.open = false; clearTextArea()">Cancel</a>
+                            <a ng-click="filterMultipleEDS()" class="btn btn-success">Filter</a>
+                        </div>
+                    </uib-accordion-group>
+                </uib-accordion>
+            </div>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
                         <th>AWB / Web Order ID</th>
                         <th>Pickup Address</th>
+                        <th>Sender</th>
                         <th>Dropoff Address</th>
+                        <th>Recipient</th>
                         <th class="sortable-column"
                             ng-if="sortBy !== 'PickupTime' || isFirstSort"
                             ng-click="sortColumn('PickupTime', 'ASC')">
@@ -103,8 +137,28 @@
                                 <input 
                                     type="search" 
                                     class="form-control input-table" 
+                                    value="" 
+                                    ng-model="querySender" 
+                                    ng-keyup="searchSender($event)">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    type="search" 
+                                    class="form-control input-table" 
                                     value="" ng-model="queryDropoff" 
                                     ng-keyup="searchDropoff($event)">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    type="search" 
+                                    class="form-control input-table" 
+                                    value="" 
+                                    ng-model="queryRecipient" 
+                                    ng-keyup="searchRecipient($event)">
                             </div>
                         </th>
                         <th>
@@ -159,16 +213,27 @@
                     <tr ng-click="detailsPage(order.UserOrderID)" class="clickableRow" ng-repeat="order in displayed">
                         <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
                         <td>{{order.PickupAddress.Address1}}</td>
+                        <td>{{order.PickupAddress.FirstName}} {{order.PickupAddress.LastName}} /
+                            {{order.PickupAddress.CountryCode}}-{{order.PickupAddress.MobileNumber}} /
+                            {{order.PickupAddress.EmailID}}
+                        </td>
                         <td>{{order.DropoffAddress.Address1}}</td>
-                        <td>{{order.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-                        <td>{{order.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                        <td>{{order.DropoffAddress.FirstName}} {{order.DropoffAddress.LastName}} /
+                            {{order.DropoffAddress.CountryCode}}-{{order.DropoffAddress.MobileNumber}} /
+                            {{order.DropoffAddress.EmailID}}
+                        </td>
+                        <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                         <td>{{order.OrderStatus.OrderStatus}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
                     <tr>
-                        <td colspan="9" 
+                        <td colspan="1">
+                            <h5 class="text-primary"><strong>{{orderFound | number}} orders found</strong></h5>
+                        </td>
+                        <td colspan="4" 
                             class="text-center" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 
