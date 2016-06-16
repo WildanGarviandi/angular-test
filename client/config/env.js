@@ -51,7 +51,11 @@ function env() {
         endpoints: {
             signIn: 'sign-in',
         },
-        defaultLocation: defaultLocation
+        defaultLocation: defaultLocation,
+        notCancellableOrderStatus: [5, 13, 16],
+        // DELIVERED, REJECT, CANCELLED, RETURNED_SENDER
+        reassignableOrderStatus: [2, 6, 10, 12, 15]
+        // ACCEPTED, NOTASSIGNED, NO-DRIVER, EXPIRED, RETURNED_WAREHOUSE
     };
 }
 

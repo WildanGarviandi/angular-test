@@ -269,6 +269,21 @@
     background-color: #dddddd;
 }
 
+#reassignDriverModal table {
+    width: 100%;
+}
+
+#reassignDriverModal table tr {
+    height: 40px;
+    border: solid;
+    border-width: 1px;
+}
+
+#reassignDriverModal .modal-table {
+    max-height: 400px;
+    overflow: scroll;
+}
+
 #order-page {
     width: 2000px;
 }

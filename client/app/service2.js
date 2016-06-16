@@ -311,6 +311,27 @@ angular.module('adminApp')
                 id: null
             },
         },
+        cancelOrder: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'cancel'
+            }
+        },
+        copyCancelledOrder: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'copy-cancelled'
+            }
+        },
+        reassignDriver: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'reassign'
+            }
+        },
         exportNormalOrders: {
             method: 'GET',
             params: {
