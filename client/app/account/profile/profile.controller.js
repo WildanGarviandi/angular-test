@@ -28,7 +28,12 @@ angular.module('adminApp')
             .then(function (response) {
                 $timeout(function () {
                     file.result = response.data;
-                    $scope.user.ProfilePicture = response.data.data.Location;
+                    if (response.data.data && !response.data.error) {
+                        $scope.user.ProfilePicture = response.data.data.Location;
+                    } else {
+                        alert('Uploading picture failed. Please try again');
+                        $scope.errorMsg = 'Uploading picture failed. Please try again';
+                    }
                     $rootScope.$emit('stopSpin');
                 });
             }, function (response) {
