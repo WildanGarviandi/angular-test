@@ -16,8 +16,10 @@ angular.module('adminApp')
             $location, 
             $http, 
             $window,
-            ngDialog,
-            Services2
+            Upload,
+            config,
+            $timeout,
+            ngDialog
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -62,6 +64,7 @@ angular.module('adminApp')
     $scope.searchFilter = {};
     $scope.itemsByPage = 10;
     $scope.offset = 0;
+    $scope.uploadError = false;
 
     $scope.cutoffTimes = [];
     for (var i = 0; i < 24; i++) {
@@ -143,6 +146,7 @@ angular.module('adminApp')
             PhoneNumber: CleanPhoneNumber($scope.webstore.PhoneNumber),
             Email: $scope.webstore.Email,
             Password: $scope.webstore.Password,
+            ProfilePicture: $scope.webstore.ProfilePicture,
             Latitude: $scope.webstore.UserAddress.Latitude,
             Longitude: $scope.webstore.UserAddress.Longitude,
             CountryCode: $scope.webstore.CountryCode,
@@ -550,6 +554,38 @@ angular.module('adminApp')
         $scope.tableState.pagination.start = 0;
         $scope.getWebstores();
     }
+
+    $scope.uploadPic = function (file) {
+        $rootScope.$emit('startSpin');
+        if (file) {
+            $scope.f = file;
+            file.upload = Upload.upload({
+                url: config.url + 'upload/picture',
+                data: {file: file}
+            })
+            .then(function (response) {
+                $timeout(function () {
+                    file.result = response.data;
+                    if (response.data.data && !response.data.error) {
+                        $scope.uploadError = false;
+                        $scope.webstore.ProfilePicture = response.data.data.Location;
+                    } else {
+                        $scope.uploadError = true;
+                        alert('Uploading picture failed. Please try again');
+                        $scope.errorMsg = 'Uploading picture failed. Please try again';
+                    }
+                    $rootScope.$emit('stopSpin');
+                });
+            }, function (response) {
+                if (response.status > 0) {
+                    $scope.errorMsg = response.status + ': ' + response.data;
+                }
+                $rootScope.$emit('stopSpin');
+            }, function (evt) {
+                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            });
+        }
+    };
 
     $scope.loadManagePage();
 
