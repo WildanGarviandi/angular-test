@@ -295,7 +295,8 @@ angular.module('adminApp')
         getUserProfile: {
             method: 'GET',
             params: {
-                module: 'user'
+                module: 'user',
+                controller: 'me'
             }
         },
         updateUserProfile: {
