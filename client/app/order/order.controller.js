@@ -573,7 +573,7 @@ angular.module('adminApp')
     $scope.selectDriver = function (driver) {
         var params = {
             driverID : driver.Driver.UserID,
-            fleetManagerID: driver.Driver.Driver.CompanyDetail.CompanyDetailID,
+            fleetManagerID: driver.Driver.Driver.FleetManager.UserID,
             deliveryFee: ($scope.isUpdateDeliveryFee) ? $scope.newDeliveryFee : null,
         };
         $rootScope.$emit('startSpin');
@@ -587,7 +587,7 @@ angular.module('adminApp')
         })
         .catch(function (e) {
             $rootScope.$emit('stopSpin');
-            SweetAlert.swal('Failed in cancelling order', e.data.error.message);
+            SweetAlert.swal('Failed in reassigning order', e.data.error.message);
             $state.reload();
         });
     };
