@@ -307,7 +307,7 @@
 }
 
 #order-page .row {
-    margin-top: 10px;
+    margin: 10px 0 0 0;
 }
 
 #order-page uib-accordion .panel-group {
@@ -332,4 +332,9 @@
 .input-date-export {
     float: left; 
     width: 140px;
+}
+
+#eds-textarea {
+    height: 100px;
+    width: 100%;
 }
