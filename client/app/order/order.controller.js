@@ -18,7 +18,7 @@ angular.module('adminApp')
             config,
             ngDialog,
             Webstores,
-            Upload
+            Upload,
             $q,
             SweetAlert
         ) {
