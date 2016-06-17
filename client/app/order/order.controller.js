@@ -423,7 +423,7 @@ angular.module('adminApp')
         }, {}).$promise.then(function (result) {
             $rootScope.$emit('stopSpin');
             SweetAlert.swal({
-                title: "Copy order was success", 
+                title: "Order copied", 
                 text: "Redirect to new copied order"
             }, function () {
                 $location.path('/order/details/' + result.data.newOrder.UserOrderID);
@@ -431,7 +431,7 @@ angular.module('adminApp')
             
         }).catch(function (e) {
             $rootScope.$emit('stopSpin');
-            SweetAlert.swal('Copy order was failed', e.data.error.message);
+            SweetAlert.swal('Failed in copying order', e.data.error.message);
             $state.reload();
         });
     };
@@ -456,12 +456,12 @@ angular.module('adminApp')
                     id: $scope.order.UserOrderID
                 }, {}).$promise.then(function (result) {
                     $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Cancelling order was success');
+                    SweetAlert.swal('Order cancelled');
                     $scope.order.OrderStatus = result.data.order.OrderStatus;
                     $state.reload();
                 }).catch(function (e) {
                     $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Cancel order was failed', e.data.error.message);
+                    SweetAlert.swal('Failed in cancelling order', e.data.error.message);
                     $state.reload();
                 });
             }
@@ -582,12 +582,12 @@ angular.module('adminApp')
             id: $scope.order.UserOrderID
         }, params).$promise.then(function (result) {
             $rootScope.$emit('stopSpin');
-            SweetAlert.swal('Reassigning driver was success');
+            SweetAlert.swal('Order reassigned');
             $state.reload();
         })
         .catch(function (e) {
             $rootScope.$emit('stopSpin');
-            SweetAlert.swal('Reassign driver was failed', e.data.error.message);
+            SweetAlert.swal('Failed in cancelling order', e.data.error.message);
             $state.reload();
         });
     };
