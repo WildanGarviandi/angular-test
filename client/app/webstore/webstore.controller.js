@@ -63,6 +63,7 @@ angular.module('adminApp')
     $scope.searchFilter = {};
     $scope.itemsByPage = 10;
     $scope.offset = 0;
+    $scope.uploadError = false;
 
     function CleanPhoneNumber(phone) {
       if(phone.indexOf('0') == 0) {
@@ -495,7 +496,14 @@ angular.module('adminApp')
             .then(function (response) {
                 $timeout(function () {
                     file.result = response.data;
-                    $scope.webstore.ProfilePicture = response.data.data.Location;
+                    if (response.data.data && !response.data.error) {
+                        $scope.uploadError = false;
+                        $scope.webstore.ProfilePicture = response.data.data.Location;
+                    } else {
+                        $scope.uploadError = true;
+                        alert('Uploading picture failed. Please try again');
+                        $scope.errorMsg = 'Uploading picture failed. Please try again';
+                    }
                     $rootScope.$emit('stopSpin');
                 });
             }, function (response) {

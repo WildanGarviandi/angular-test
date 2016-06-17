@@ -35,7 +35,7 @@
                             <div class="report-upload">
                                 {{f.name}} {{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}
                             </div>
-                            <div class="progress" ng-show="f.progress >= 0">
+                            <div class="progress" ng-show="f.progress >= 0 && !uploadError">
                                 <div style="width:{{f.progress}}%"  
                                      ng-bind="f.progress + '%'"></div>
                             </div>
