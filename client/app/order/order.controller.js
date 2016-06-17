@@ -17,6 +17,8 @@ angular.module('adminApp')
             $window,
             config,
             ngDialog,
+            Webstores,
+            Upload,
             $q,
             SweetAlert
         ) {
@@ -57,6 +59,8 @@ angular.module('adminApp')
         endDate: null
     };
 
+    $scope.importedDatePicker = new Date();
+
     $scope.optionsDatepicker = {
         separator: ':',
         eventHandlers: {
@@ -64,6 +68,15 @@ angular.module('adminApp')
                 $scope.offset = 0;
                 $scope.tableState.pagination.start = 0;
                 $scope.getOrder();
+            }
+        }
+    };
+
+    $scope.beforeRender = function($dates){
+        var minDate = new Date().setHours(0,0,0,0);
+        for(var d in $dates){         
+            if($dates[d].utcDateValue < minDate){
+                $dates[d].selectable = false;
             }
         }
     };
@@ -141,6 +154,15 @@ angular.module('adminApp')
         $scope.offset = 0;
         $scope.tableState.pagination.start = 0;
         $scope.getOrder(); 
+    }
+
+    /**
+     * Assign merchant to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.chooseMerchant = function(item) {
+        $scope.merchant = item;
     }
 
     /**
@@ -378,6 +400,7 @@ angular.module('adminApp')
         $scope.tableState = state;
         $scope.getStatus(); 
         $scope.getOrder();
+        $scope.getMerchants();
         $scope.isFirstLoaded = true;
     }
 
@@ -555,6 +578,106 @@ angular.module('adminApp')
                 return item.Name;
             });
         });
+    };
+
+    /**
+     * Get merchant selection
+     * 
+     * @return {void}
+     */
+    $scope.getMerchants = function() {
+        Webstores.getWebstore().$promise.then(function(data) {
+            $scope.merchants = []; 
+            data.data.webstores.forEach(function(merchant) {
+                $scope.merchants.push({
+                    key: merchant.webstore.FirstName + ' ' + merchant.webstore.LastName, 
+                    value: merchant.webstore.UserID
+                });
+            });
+        });
+    }
+
+    /**
+     * Show import orders modals
+     * 
+     * @return {void}
+    */
+    $scope.showImportOrders = function() {
+        ngDialog.close()
+        return ngDialog.open({
+            template: 'importModal',
+            scope: $scope
+        });
+    }
+
+    /**
+     * Set imported date picker
+     * 
+     * @return {void}
+    */
+    $scope.onTimeSet = function (newDate, oldDate) {
+        $scope.importedDatePicker = newDate;
+    }
+
+    /**
+     * Clear message
+     * 
+     * @return {void}
+    */
+    $scope.clearMessage = function () {
+        $scope.uploaded = [];
+        $scope.updated = [];
+        $scope.error = [];
+    }
+
+    /**
+     * Upload orders
+     * 
+     * @return {void}
+    */
+    $scope.uploadOrders = function(files) {
+        if ($scope.merchant === undefined) {
+            alert('Please select merchant');
+            return;
+        }
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                if (!file.$error) {
+                    $rootScope.$emit('startSpin');
+                    Upload.upload({
+                        url: config.url + 'order/import/xlsx',
+                        data: {
+                            file: file,
+                            merchantID : $scope.merchant.value,
+                            pickupTime: $scope.importedDatePicker,
+                        }
+                    }).then(function(response) {
+                        $rootScope.$emit('stopSpin');
+                        $scope.clearMessage();
+                        response.data.data.forEach(function(order, index){
+                            var row = index + 1;
+                            if (order.isCreated) {
+                                $scope.uploaded.push(order);
+                            } else if (order.isUpdated) {
+                                $scope.updated.push(order);
+                            } else {
+                                $scope.error.push('Row '+ row + ': ' +order.error.join());
+                            }
+                        });
+                    }).catch(function(error){
+                        $rootScope.$emit('stopSpin');
+                        $scope.clearMessage();
+                        var errorMessage = error.data.error.message;
+                        $scope.error = errorMessage;
+                        if (!(errorMessage instanceof Array)) {
+                            $scope.error = [];
+                            $scope.error.push(error.data.error.message);
+                        }
+                    });
+                }
+            }
+        }
     };
 
     /**
