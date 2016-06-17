@@ -47,6 +47,7 @@
                     <tr>
                         <th>Name</th>
                         <th>City</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
@@ -66,6 +67,7 @@
                     <tr ng-repeat="district in displayed">
                         <td>{{district.Name}}</td>
                         <td>{{district.CityMaster.Name}}</td>
+                        <td><button class="btn btn-primary" ng-click="detail(district.DistrictID)">Detail</button></td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">

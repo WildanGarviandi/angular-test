@@ -59,7 +59,7 @@
                         Pickup Time
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{trip.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                        {{trip.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -69,7 +69,7 @@
                         Dropoff Time
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{trip.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                        {{trip.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -92,13 +92,13 @@
                             Pickup Address: {{route.PickupAddress.Address1}}
                         </div>
                         <div class="order-status-container-body">
-                            Pickup Time: {{route.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                            Pickup Time: {{route.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
                         </div>
                         <div class="order-status-container-body">
                             Dropoff Address: {{route.DropoffAddress.Address1}}
                         </div>
                         <div class="order-status-container-body">
-                            Dropoff Time: {{route.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}
+                            Dropoff Time: {{route.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
                         </div>
                         <div class="order-status-container-body">
                             Distance: {{route.Distance / 1000 | number : 3 }} km
