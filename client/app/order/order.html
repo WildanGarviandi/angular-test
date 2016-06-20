@@ -255,7 +255,10 @@
             <div ng-if="error.length > 0">
                 <div ng-repeat="err in error track by $index">
                     <uib-alert type="danger">
-                        {{err}} 
+                        Row {{err.row}} : 
+                        <p ng-repeat="errorList in err.list track by $index">
+                            {{errorList}}
+                        </p>
                     </uib-alert>
                 </div>
             </div>

@@ -485,13 +485,13 @@ angular.module('adminApp')
                         $rootScope.$emit('stopSpin');
                         $scope.clearMessage();
                         response.data.data.forEach(function(order, index){
-                            var row = index + 1;
+                            var row = index + 2;
                             if (order.isCreated) {
                                 $scope.uploaded.push(order);
                             } else if (order.isUpdated) {
                                 $scope.updated.push(order);
                             } else {
-                                $scope.error.push('Row '+ row + ': ' +order.error.join());
+                                $scope.error.push({row: row, list: order.error});
                             }
                         });
                     }).catch(function(error){
