@@ -15,7 +15,11 @@ angular.module('adminApp')
             $stateParams,
             $location, 
             $http, 
-            $window
+            $window,
+            Upload,
+            config,
+            $timeout,
+            ngDialog
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -60,6 +64,15 @@ angular.module('adminApp')
     $scope.searchFilter = {};
     $scope.itemsByPage = 10;
     $scope.offset = 0;
+    $scope.uploadError = false;
+
+    $scope.cutoffTimes = [];
+    for (var i = 0; i < 24; i++) {
+        $scope.cutoffTimes.push({
+            value: i,
+            active: false
+        });
+    }
 
     function CleanPhoneNumber(phone) {
       if(phone.indexOf('0') == 0) {
@@ -133,6 +146,7 @@ angular.module('adminApp')
             PhoneNumber: CleanPhoneNumber($scope.webstore.PhoneNumber),
             Email: $scope.webstore.Email,
             Password: $scope.webstore.Password,
+            ProfilePicture: $scope.webstore.ProfilePicture,
             Latitude: $scope.webstore.UserAddress.Latitude,
             Longitude: $scope.webstore.UserAddress.Longitude,
             CountryCode: $scope.webstore.CountryCode,
@@ -331,7 +345,7 @@ angular.module('adminApp')
 
     function AlertFormInvalidation(form) {
         if(form.codCommission.$invalid) {
-            alert('Please fill COD Commission with appropiate value');
+            alert('Please fill COD Commission between 1-100');
         } else {
             alert('Please fill all required fields');
         }
@@ -395,10 +409,25 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getCountries = function(val) {
-        return Services.getCountries({
-            address: val
+        return Services2.getCountries({
+            search: val
         }).$promise.then(function(response){
-            return response.countries.map(function(item){
+            return response.data.Countries.rows.map(function(item){
+                return item.Name;
+            });
+        });
+    };
+
+    /**
+     * Get all states
+     * 
+     * @return {void}
+     */
+    $scope.getStates = function(val) {
+        return Services2.getStates({
+            search: val
+        }).$promise.then(function(response){
+            return response.data.States.rows.map(function(item){
                 return item.Name;
             });
         });
@@ -474,11 +503,89 @@ angular.module('adminApp')
         });
     }
 
+    $scope.bucket = function (webstoreID) {
+        $scope.webstoreID = webstoreID;
+        var params = {
+            id: webstoreID
+        };
+
+        Services2.getCutoffTimes(params).$promise
+        .then(function (result) {
+            var cutoff = result.data.CutoffTimes;
+            _.each($scope.cutoffTimes, function (time, index, array){
+                array[index].active = false;
+            });
+            _.each(cutoff, function (time) {
+                $scope.cutoffTimes[time.BroadcastTime].active = true;
+            });
+
+            $scope.chunkedBroadcastTime = [];
+            for (var i = 0, j = $scope.cutoffTimes.length; i < j; i += 6) {
+                $scope.chunkedBroadcastTime.push($scope.cutoffTimes.slice(i, i+6));
+            }
+
+            ngDialog.open({
+                template: 'deliverySettingsTemplate',
+                scope: $scope,
+                className: 'ngdialog-theme-default delivery-settings'
+            });
+        });
+    };
+
+    $scope.setCutoffTimes = function () {
+        var cutoffTimes = $scope.cutoffTimes.filter(function (time) {
+            return (time.active) ? true : false;
+        });
+        var params = {
+            _id: $scope.webstoreID,
+            cutoffTimes: cutoffTimes
+        };
+        Services2.setCutoffTimes(params).$promise
+        .then(function (result) {
+            alert('Cutoff Time successfully updated');
+        })
+        .catch(function (e) {
+            alert('Updating Cutoff Time failed');
+        });
+    };
+
     $scope.filterWebstores = function () {
         $scope.offset = 0;
         $scope.tableState.pagination.start = 0;
         $scope.getWebstores();
     }
+
+    $scope.uploadPic = function (file) {
+        $rootScope.$emit('startSpin');
+        if (file) {
+            $scope.f = file;
+            file.upload = Upload.upload({
+                url: config.url + 'upload/picture',
+                data: {file: file}
+            })
+            .then(function (response) {
+                $timeout(function () {
+                    file.result = response.data;
+                    if (response.data.data && !response.data.error) {
+                        $scope.uploadError = false;
+                        $scope.webstore.ProfilePicture = response.data.data.Location;
+                    } else {
+                        $scope.uploadError = true;
+                        alert('Uploading picture failed. Please try again');
+                        $scope.errorMsg = 'Uploading picture failed. Please try again';
+                    }
+                    $rootScope.$emit('stopSpin');
+                });
+            }, function (response) {
+                if (response.status > 0) {
+                    $scope.errorMsg = response.status + ': ' + response.data;
+                }
+                $rootScope.$emit('stopSpin');
+            }, function (evt) {
+                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            });
+        }
+    };
 
     $scope.loadManagePage();
 

@@ -20,3 +20,7 @@
     padding: 0 !important;
     width: 400px;
 }
+
+#district-detail button {
+    margin-top: 20px;
+}

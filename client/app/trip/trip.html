@@ -213,8 +213,8 @@
                         <td ng-click="detailsPage(trip.TripID)">{{trip.TripNumber}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.PickupAddress.Address1}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffAddress.Address1}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.Driver.FirstName}} {{trip.Driver.LastName}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.ContainerNumber}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.District.Name}}</td>

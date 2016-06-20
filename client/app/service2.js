@@ -52,6 +52,12 @@ angular.module('adminApp')
                 module: 'district'
             }
         },
+        getDistrictMaster: {
+            method: 'GET',
+            params: {
+                module: 'district-master'
+            }
+        },
         getMultipleDistricts: {
             method: 'GET',
             params: {
@@ -181,6 +187,20 @@ angular.module('adminApp')
                 module: 'webstore',
             },
         },
+        getCutoffTimes: {
+            method: 'GET',
+            params: {
+                module: 'webstore',
+                submodule: 'cutoff'
+            }
+        },
+        setCutoffTimes: {
+            method: 'POST',
+            params: {
+                module: 'webstore',
+                submodule: 'cutoff'
+            }
+        },
         getVehicles: {
             method: 'GET',
             params: {
@@ -272,6 +292,13 @@ angular.module('adminApp')
                 id: null
             },
         },
+        getUserProfile: {
+            method: 'GET',
+            params: {
+                module: 'user',
+                controller: 'me'
+            }
+        },
         updateUserProfile: {
             method: 'POST',
             params: {
@@ -290,6 +317,78 @@ angular.module('adminApp')
                 module: 'codorder',
                 id: null
             },
+        },
+        returnCustomer: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'return-customer',
+                id: null
+            }
+        },
+        cancelOrder: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'cancel'
+            }
+        },
+        copyCancelledOrder: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'copy-cancelled'
+            }
+        },
+        reassignDriver: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'reassign'
+            }
+        },
+        exportNormalOrders: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'normal'
+            },
+        },
+        exportUploadableOrders: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'uploadable'
+            },
+        },
+        exportCompletedOrders: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'completed'
+            },
+        }
+        getZipcodes: {
+            method: 'GET',
+            params: {
+                module: 'zip'
+            },
+        },
+        getUsers: {
+            method: 'GET',
+            params: {
+                module: 'user'
+            }
+        },
+        getExistOrder: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'check-exist'
+            }
         }
     });
 });
