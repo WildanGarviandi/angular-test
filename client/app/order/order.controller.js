@@ -498,10 +498,8 @@ angular.module('adminApp')
                         $rootScope.$emit('stopSpin');
                         $scope.clearMessage();
                         var errorMessage = error.data.error.message;
-                        $scope.error = errorMessage;
                         if (!(errorMessage instanceof Array)) {
-                            $scope.error = [];
-                            $scope.error.push(error.data.error.message);
+                            $scope.error.push({list: [error.data.error.message]});
                         }
                     });
                 }
