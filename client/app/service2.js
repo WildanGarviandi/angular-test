@@ -370,7 +370,7 @@ angular.module('adminApp')
                 submodule: 'export',
                 controller: 'completed'
             },
-        }
+        },
         getZipcodes: {
             method: 'GET',
             params: {
