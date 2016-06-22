@@ -389,6 +389,19 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'check-exist'
             }
+        },
+        getReturnedOrders: {
+            method: 'GET',
+            params: {
+                module: 'returnedorder'
+            },
+        },
+        getReturnedOrderDetails: {
+            method: 'GET',
+            params: {
+                module: 'returnedorder',
+                id: null
+            },
         }
     });
 });
