@@ -141,6 +141,7 @@ angular.module('adminApp')
             limit: $scope.itemsByPage,
             userOrderNumber: $scope.reqSearchUserOrderNumber,
             driver: $scope.reqSearchDriver,
+            fleetManager: $scope.reqSearchFleetManager,
             user: $scope.reqSearchUser,
             pickup: $scope.reqSearchPickup,
             dropoff: $scope.reqSearchDropoff,
@@ -201,6 +202,21 @@ angular.module('adminApp')
     $scope.searchDriver = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.reqSearchDriver = $scope.queryDriver;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getOrder();
+        };
+    }
+
+    /**
+     * Add search fleet manager
+     * 
+     * @return {void}
+     */
+    $scope.reqSearchFleetManager = '';
+    $scope.searchFleetManager = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            $scope.reqSearchFleetManager = $scope.queryFleetManager;
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
             $scope.getOrder();
@@ -325,6 +341,7 @@ angular.module('adminApp')
         var params = {
             userOrderNumber: $scope.reqSearchUserOrderNumber,
             driver: $scope.reqSearchDriver,
+            fleetManager: $scope.reqSearchFleetManager,
             user: $scope.reqSearchUser,
             pickup: $scope.reqSearchPickup,
             dropoff: $scope.reqSearchDropoff,

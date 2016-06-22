@@ -30,6 +30,7 @@
                         <th>Pickup Time</th>
                         <th>Dropoff Time</th>
                         <th>Driver</th>
+                        <th>Fleet Manager</th>
                         <th>COD Value</th>
                         <th>Webstore Share</th>
                         <th>Etobee Share</th>
@@ -103,6 +104,16 @@
                                     ng-keyup="searchDriver($event)">
                             </div>
                         </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    type="search" 
+                                    class="form-control input-table" 
+                                    value="" 
+                                    ng-model="queryFleetManager" 
+                                    ng-keyup="searchFleetManager($event)">
+                            </div>
+                        </th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -142,6 +153,7 @@
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.PickupTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.Driver.Driver.FleetManager.FirstName}} {{order.Driver.Driver.FleetManager.LastName}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.TotalValue}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.WebstoreShare}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.EtobeeShare}}</td>
