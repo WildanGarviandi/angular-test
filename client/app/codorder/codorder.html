@@ -158,7 +158,7 @@
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.WebstoreShare}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.EtobeeShare}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.OrderStatus.OrderStatus}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.CODPayment.Status}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.CODPayment.Status || 'Unpaid'}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
