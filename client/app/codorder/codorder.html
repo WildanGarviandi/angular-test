@@ -34,7 +34,7 @@
                         <th>Webstore Share</th>
                         <th>Etobee Share</th>
                         <th>Order Status</th>
-                        <th>Driver Transfer</th>
+                        <th>Driver/Logistic Transfer</th>
                     </tr>
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
@@ -143,10 +143,10 @@
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.DropoffTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.TotalValue}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPayments[0].CODPaymentUserOrder.WebstoreShare}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPayments[0].CODPaymentUserOrder.EtobeeShare}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.WebstoreShare}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.EtobeeShare}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.OrderStatus.OrderStatus}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPayments[0].Status}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.CODPayment.Status}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">

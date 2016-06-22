@@ -102,7 +102,7 @@
                         Webstore Share
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.CODPayments[0].CODPaymentUserOrder.WebstoreShare}}
+                        {{order.CODPaymentUserOrder.WebstoreShare}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -112,7 +112,7 @@
                         Etobee Share
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.CODPayments[0].CODPaymentUserOrder.EtobeeShare}}
+                        {{order.CODPaymentUserOrder.EtobeeShare}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -132,7 +132,7 @@
                         Driver Transfer
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.CODPayments[0].Status}}
+                        {{order.CODPaymentUserOrder.CODPayment.Status}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -172,7 +172,7 @@
                         Dropoff Address
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.PickupAddress.Address1}}
+                        {{order.DropoffAddress.Address1}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
