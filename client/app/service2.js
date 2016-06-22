@@ -318,6 +318,7 @@ angular.module('adminApp')
                 id: null
             },
         },
+<<<<<<< HEAD
         returnCustomer: {
             method: 'POST',
             params: {
@@ -389,6 +390,19 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'check-exist'
             }
+        },
+        getCODPayment: {
+            method: 'GET',
+            params: {
+                module: 'codpayment'
+            },
+        },
+        getCODPaymentDetails: {
+            method: 'GET',
+            params: {
+                module: 'codpayment',
+                id: null
+            },
         }
     });
 });
