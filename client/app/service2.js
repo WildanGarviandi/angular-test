@@ -389,6 +389,21 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'check-exist'
             }
+        },
+        setDeliveredStatus: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'set-delivered',
+                id: null
+            }
+        },
+        bulkSetDeliveredStatus: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-set-delivered'
+            }
         }
     });
 });

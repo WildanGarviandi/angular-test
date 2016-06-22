@@ -86,6 +86,7 @@ angular.module('adminApp')
     $scope.zipLength = config.zipLength;
     $scope.reassignableOrderStatus = config.reassignableOrderStatus;
     $scope.notCancellableOrderStatus = config.notCancellableOrderStatus;
+    $scope.deliverableOrderStatus = config.deliverableOrderStatus;
 
     $scope.isFirstSort = true;
 
@@ -448,7 +449,14 @@ angular.module('adminApp')
             $scope.notCancellableOrderStatus.forEach(function (status) {
                 if ($scope.order.OrderStatus.OrderStatusID === status) { $scope.canBeCancelled = false; }
             });
-            if (!$scope.canBeCopied && !$scope.canBeReassigned && !$scope.canBeCancelled) {
+            $scope.canBeDelivered = false;
+            $scope.deliverableOrderStatus.forEach(function (status) {
+                if ($scope.order.OrderStatus.OrderStatusID === status) { $scope.canBeDelivered = true; }
+            })
+            if (!$scope.canBeCopied && 
+                !$scope.canBeReassigned && 
+                !$scope.canBeCancelled &&
+                !$scope.canBeDelivered) {
                 $scope.noAction = true;
             }
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
@@ -1023,6 +1031,86 @@ angular.module('adminApp')
     $scope.filterMultipleEDS = function () {
         getExistOrder();
         $scope.getOrder();
+    };
+
+    $scope.changeItemsByPage = function (limit) {
+        $scope.itemsByPage = limit;
+        $scope.getOrder();
+    }
+
+    /**
+     * Set an order status to DELIVERED
+     *
+     * @return {void}
+     */
+    $scope.setDeliveredStatus = function () {
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Set status as DELIVERED?",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.setDeliveredStatus({
+                    id: $scope.order.UserOrderID
+                }, {}).$promise.then(function (result) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Order status changed');
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Failed in setting status as DELIVERED', e.data.error.message);
+                    $state.reload();
+                });
+            }
+        });
+    }
+
+    $scope.bulkSetDeliveredStatus = function () {
+        var totalSelected = 0;
+        var orders = [];
+        $scope.displayed.forEach(function (val) {
+            if (val.Selected) { totalSelected++; orders.push(val.UserOrderID)}
+        });
+        if (totalSelected) {
+            SweetAlert.swal({
+                title: 'Are you sure?',
+                text: "Set status as DELIVERED for " + totalSelected + " orders ?",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: 'No'
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    $rootScope.$emit('startSpin');
+                    Services2.bulkSetDeliveredStatus({
+                        orders: orders
+                    }).$promise.then(function (result) {
+                        $rootScope.$emit('stopSpin');
+                        SweetAlert.swal('Order status changed');
+                        $state.reload();
+                    }).catch(function (e) {
+                        $rootScope.$emit('stopSpin');
+                        SweetAlert.swal('Failed in setting status', e.data.error.message, "error");
+                    });
+                }
+            });
+        } else {
+            SweetAlert.swal('No orders selected');
+        }
+    }
+
+    /**
+     * Select all or unselect all orders.
+     * 
+     * @return {void}
+     */
+    $scope.checkUncheckSelected = function() {
+        $scope.displayed.forEach(function(order) {
+            order.Selected = $scope.status.selectedAll;
+        });
     };
 
 });

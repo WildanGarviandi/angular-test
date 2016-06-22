@@ -57,9 +57,26 @@
                     </uib-accordion-group>
                 </uib-accordion>
             </div>
+            <div class="row">
+                <button class="btn btn-primary" ng-click="changeItemsByPage(limit)" ng-repeat="limit in [10, 20, 50, 100]" ng-disabled="limit === itemsByPage">{{limit}}</button>
+                <div class="btn-group" uib-dropdown is-open="status.isopen">
+                    <button id="single-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="disabled">
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Action <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                        <li role="menuitem">
+                            <a href="#"
+                            ng-click="bulkSetDeliveredStatus()">Mark as delivered</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
+                        <th class="order-checkbox">
+                            <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
+                        </th>
                         <th>AWB / Web Order ID</th>
                         <th>Pickup Address</th>
                         <th>Sender</th>
@@ -120,6 +137,8 @@
                 </tbody>
                 <tbody>
                     <tr>
+                        <th class="order-checkbox">
+                        </th>
                         <th>
                             <div class="filter-table">
                                 <input 
@@ -264,6 +283,9 @@
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
                     <tr ng-click="detailsPage(order.UserOrderID)" class="clickableRow" ng-repeat="order in displayed">
+                        <td class="order-checkbox" ng-click="$event.stopPropagation()">
+                            <input type="checkbox" ng-model="order.Selected" />
+                        </td>
                         <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
                         <td>{{order.PickupAddress.Address1}}</td>
                         <td>{{order.PickupAddress.FirstName}} {{order.PickupAddress.LastName}} /
