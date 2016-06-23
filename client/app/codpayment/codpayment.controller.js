@@ -266,7 +266,7 @@ angular.module('adminApp')
      * 
      * @return void
      */
-    $scope.getCODOrders = function (userID) {
+    $scope.getCODOrdersNoPayment = function (userID) {
         $scope.selectedUserID = userID;
         $scope.isFetchingOrders = true;
         $rootScope.$emit('startSpin');
