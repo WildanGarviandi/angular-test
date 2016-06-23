@@ -23,7 +23,7 @@
                 <button class="btn btn-primary" type="button" ng-click="exportCsv()">Export CSV</button>
             </div>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
-                <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
+                <thead class="hubs-table-head">
                     <tr>
                         <th>AWB / Web Order ID</th>
                         <th>User</th>
@@ -39,18 +39,6 @@
                         <th>Driver/Logistic Transfer</th>
                     </tr>
                 </thead>
-                <tbody ng-show="!isLoading && displayed.length == 0">
-                    <tr>
-                        <td colspan="9" class="text-center">
-                            No data found
-                        </td>
-                    </tr>
-                </tbody>
-                <tbody ng-show="isLoading">
-                    <tr>
-                        <td colspan="9" class="text-center">Loading ... </td>
-                    </tr>
-                </tbody>
                 <tbody>
                     <tr>
                         <th>
@@ -145,6 +133,18 @@
                                 </ui-select>
                             </div>
                         </th>
+                    </tr>
+                </tbody>
+                <tbody ng-show="!isLoading && displayed.length == 0">
+                    <tr>
+                        <td colspan="9" class="text-center">
+                            No data found
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody ng-show="isLoading">
+                    <tr>
+                        <td colspan="9" class="text-center">Loading ... </td>
                     </tr>
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
