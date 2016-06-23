@@ -12,7 +12,7 @@ angular.module('adminApp')
     $state
 ) {
     $rootScope.$emit('startSpin');
-    Auth.getCurrentUser().$promise.then(function(data) {
+    Auth.getCurrentUser().then(function(data) {
         $scope.user = data.profile;
         $rootScope.$emit('stopSpin');
     });
@@ -28,7 +28,12 @@ angular.module('adminApp')
             .then(function (response) {
                 $timeout(function () {
                     file.result = response.data;
-                    $scope.user.ProfilePicture = response.data.data.Location;
+                    if (response.data.data && !response.data.error) {
+                        $scope.user.ProfilePicture = response.data.data.Location;
+                    } else {
+                        alert('Uploading picture failed. Please try again');
+                        $scope.errorMsg = 'Uploading picture failed. Please try again';
+                    }
                     $rootScope.$emit('stopSpin');
                 });
             }, function (response) {
@@ -45,7 +50,6 @@ angular.module('adminApp')
     $scope.updateProfile = function () {
         $rootScope.$emit('startSpin');
         var params = {
-            _id: $scope.user.UserID,
             ProfilePicture: $scope.user.ProfilePicture
         };
         Services2.updateUserProfile(params)
