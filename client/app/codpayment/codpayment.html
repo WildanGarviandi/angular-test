@@ -19,7 +19,7 @@
     
     <div class="container-content">
         <div class="col-md-12">
-            <button class="btn btn-primary" type="button" ng-click="openCreateCODPaymentModal()">Create COD Payment</button>
+            <button class="btn btn-primary" type="button" ng-click="openCreateCODPaymentModal()">Confirm Manual COD Payment</button>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
                 <thead class="hubs-table-head" ng-show="!isLoading">
                     <tr>
@@ -141,15 +141,15 @@
 
 <script type="text/ng-template" id="createCODPaymentTemplate">
     <div class="container-fluid" id="createCODPaymentModal">
-        <h3>Create COD Payment</h3>
+        <h3>Confirm Manual COD Payment</h3>
         <div class="row-fluid">                    
             <div class="label-payment">
                 Paid By :
             </div> 
             <div class="input-payment">
-                <input type="radio" ng-change="onPaidByChange()" ng-model="paidBy" value="driver">
+                <input type="radio" ng-change="resetPaymentParams()" ng-model="paidBy" value="driver">
                     Driver
-                <input type="radio" ng-change="onPaidByChange()" ng-model="paidBy" value="company">
+                <input type="radio" ng-change="resetPaymentParams()" ng-model="paidBy" value="company">
                     Company
             </div>
         </div>
@@ -157,7 +157,7 @@
         <div ng-if="paidBy == 'driver'" class="animate-if">
             <div class="row-fluid">                    
                 <div class="label-payment">
-                    Select Company :
+                    Select Fleet :
                 </div> 
                 <div class="input-payment">
                     <ui-select ng-model="company" 
@@ -195,7 +195,7 @@
         <div ng-if="paidBy == 'company'" class="animate-if">
             <div class="row-fluid">                    
                 <div class="label-payment">
-                    Select Company :
+                    Select Fleet :
                 </div>
                 <div class="input-payment"> 
                     <ui-select ng-model="company" 
@@ -209,8 +209,9 @@
                     </ui-select>
                 </div>
             </div>
+            <div class="clearfix"></div>
         </div>
-        <div ng-show="codOrdersNoPayment.length > 0" >
+        <div class="content-payment" ng-show="codOrdersNoPayment.length > 0" >
             <table class="table table-hover table-main-trip">
                 <thead class="hubs-table-head">
                     <tr>
@@ -296,6 +297,7 @@
             <div class="clearfix"></div>
             <div class="row-fluid">
                 <a class="button-payment" ng-click="createCODPayment()">Confirm Manual COD Payment</a>
+                <a class="button-payment" ng-click="cancelCODPayment()">Cancel</a>
             </div>
         </div>
     </div>

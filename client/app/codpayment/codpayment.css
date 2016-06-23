@@ -1,5 +1,6 @@
 .ngdialog.ngdialog-theme-default.create-cod-payment-popup .ngdialog-content {
     width: 650px;
+    margin-top: -120px;
 }
 
 .label-payment {
@@ -16,7 +17,7 @@
 .label-amount {
     float: left;
     width: 100px;
-    margin-left: 350px;
+    margin-left: 300px;
     margin-bottom: 20px;
 }
 
@@ -29,7 +30,7 @@
 
 .button-payment {
     margin-top: 20px;
-    width: 50%;
+    padding: 10px;
     text-decoration: none;
     text-transform: uppercase;
     text-align: center;
@@ -39,6 +40,10 @@
     color: #ffffff;
     padding-top: 10px;
     font-size: 13px;
-    bhub-radius: 3px;
     height: 35px;
+}
+
+.content-payment {
+    height: 380px;
+    overflow-y: scroll;
 }

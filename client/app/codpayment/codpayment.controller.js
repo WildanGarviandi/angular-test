@@ -200,7 +200,7 @@ angular.module('adminApp')
     };
 
     /**
-     * Call getAllDrivers function when a company is choosen
+     * Call getDrivers function when a company is choosen
      * @param  {[type]} company [description]
      * @return {Object} promise of data of all drivers
      */
@@ -229,7 +229,10 @@ angular.module('adminApp')
                 var drivers = [];
                 result.data.Drivers.rows.forEach(function(driver){
                     drivers.push({key: driver.UserID, value: driver.Driver.FirstName + ' ' + driver.Driver.LastName})
-                })
+                });
+                drivers = lodash.sortBy(drivers, function (i) { 
+                    return i.value.toLowerCase(); 
+                });
                 $scope.drivers = $scope.drivers.concat(drivers);
                 $scope.driver = $scope.drivers[0];
                 $rootScope.$emit('stopSpin');
@@ -329,8 +332,17 @@ angular.module('adminApp')
         $scope.transactionDate = newDate;
     }
 
-    $scope.onPaidByChange = function () {
+    /**
+     * Reset all payment params
+     * 
+     * @return {void}
+    */
+    $scope.resetPaymentParams = function () {
         $scope.codOrdersNoPayment = [];
+        $scope.selectedUserID = 0;
+        $scope.selectedOrder = {};
+        $scope.amountPaid = 0;
+        $scope.transactionDetails = '';
     }
 
     /**
@@ -343,7 +355,8 @@ angular.module('adminApp')
             SweetAlert.swal('Error', 'Please select at least one order before confirm payment', 'error');
             return false;
         }
-        var orderIDs = []
+        var orderIDs = [];
+        var userID = $scope.selectedUserID;
         $scope.selectedOrders.forEach(function(order) {
             orderIDs.push(order.UserOrderID);
         });
@@ -354,18 +367,41 @@ angular.module('adminApp')
             orderIDs: orderIDs,
             paidDate: $scope.transactionDate
         };
-        $rootScope.$emit('startSpin');
-        Services2.createCODPayment(params).$promise.then(function(result) {
-            SweetAlert.swal('Success', 'Your COD Payment has been created', 'success');
-            $scope.getCODOrders($scope.selectedUserID);
-            $scope.prepareSelectedOrders();
-            $rootScope.$emit('stopSpin');
-        })
-        .catch(function(err) {
-            SweetAlert.swal('Error', err.data.error.message, 'error');
-            $rootScope.$emit('stopSpin');
+        SweetAlert.swal({
+            title: "Are you sure?",
+            text: "You will create COD Payment with total amount: " + $scope.amountPaid,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, create it!",
+            closeOnConfirm: false
+        },
+        function(isConfirm){
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.createCODPayment(params).$promise.then(function(result) {
+                    SweetAlert.swal('Success', 'Your COD Payment has been created', 'success');
+                    $scope.resetPaymentParams();
+                    $scope.getCODOrders(userID);
+                    $rootScope.$emit('stopSpin');
+                })
+                .catch(function(err) {
+                    SweetAlert.swal('Error', err.data.error.message, 'error');
+                    $rootScope.$emit('stopSpin');
+                });
+            } else {
+                return false;
+            }
         });
     };
+
+    /**
+     * Cancel COD Payment
+     * @return void
+     */
+    $scope.cancelCODPayment = function() {
+        ngDialog.close();
+    }
 
 
 });
