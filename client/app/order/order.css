@@ -338,3 +338,8 @@
     height: 100px;
     width: 100%;
 }
+
+.failed-image {
+    width: 150px;
+    height: 200px;
+}
