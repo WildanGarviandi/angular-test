@@ -318,7 +318,6 @@ angular.module('adminApp')
                 id: null
             },
         },
-<<<<<<< HEAD
         returnCustomer: {
             method: 'POST',
             params: {
@@ -403,6 +402,20 @@ angular.module('adminApp')
                 module: 'codpayment',
                 id: null
             },
+        },  
+        createCODPayment: {
+            method: 'POST',
+            params: {
+                module: 'codpayment'
+            },
+        },      
+        getCODOrdersNoPayment: {
+            method: 'GET',
+            params: {
+                module: 'codorder',
+                controller: 'nopayment',
+                id: null
+            }
         }
     });
 });

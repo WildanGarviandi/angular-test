@@ -17,7 +17,10 @@ angular.module('adminApp')
             $window,
             config,
             $document,
-            $timeout
+            $timeout,
+            SweetAlert,
+            ngDialog,
+            $q
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -52,6 +55,20 @@ angular.module('adminApp')
     $scope.currency = config.currency + " ";
     $scope.isFirstSort = true;
 
+    $scope.companies = [];
+    $scope.drivers = [];
+
+    $scope.selectedUserID = 0;
+    $scope.selectedOrder = {};
+    $scope.amountPaid = 0;
+    $scope.transactionDate = new Date();
+    $scope.transactionTypes = [
+        {key: 'Cash', value: 'Cash'},
+        {key: 'Bank Transfer', value: 'BankTransfer'}
+    ];
+    $scope.transactionType = $scope.transactionTypes[0];
+    $scope.transactionDetails = '';
+
     $scope.chooseStatus = function(item) {
         $scope.status = item;
         $scope.offset = 0;
@@ -71,6 +88,10 @@ angular.module('adminApp')
         $scope.offset = 0;
         $scope.tableState.pagination.start = 0;
         $scope.getPayment(); 
+    }
+
+    $scope.chooseTransactionType = function(item) {
+        $scope.transactionType = item;
     }
 
     $scope.queryTransactionId = '';
@@ -158,4 +179,193 @@ angular.module('adminApp')
     $scope.loadDetails();
     $scope.isCollapsed = true;
 
-  });
+    /**
+     * Get all companies
+     * 
+     * @return {Object} Promise
+     */
+    var getCompanies = function () {
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            Services2.getAllCompanies().$promise.then(function(result) {
+                var companies = lodash.sortBy(result.data.Companies, function (i) { 
+                    return i.CompanyName.toLowerCase(); 
+                });
+                $scope.companies = $scope.companies.concat(companies);
+                $scope.company = $scope.companies[0];
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
+        });
+    };
+
+    /**
+     * Call getAllDrivers function when a company is choosen
+     * @param  {[type]} company [description]
+     * @return {Object} promise of data of all drivers
+     */
+    $scope.chooseCompany = function (company) {
+        $scope.company = company;
+        var params = {
+            offset: 0,
+            limit: 0,
+            status: 'All',
+            codStatus: 'all',
+            company: company.CompanyDetailID
+        };
+        $scope.getDrivers(params);
+    };
+
+    /**
+     * Get all drivers
+     * 
+     * @return {Object} Promise
+     */
+    $scope.getDrivers = function (params) {
+        $rootScope.$emit('startSpin');
+        Services2.getDrivers(params).$promise.then(function(result) {
+            params.limit = result.data.Drivers.count;
+            Services2.getDrivers(params).$promise.then(function(result) {
+                var drivers = [];
+                result.data.Drivers.rows.forEach(function(driver){
+                    drivers.push({key: driver.UserID, value: driver.Driver.FirstName + ' ' + driver.Driver.LastName})
+                })
+                $scope.drivers = $scope.drivers.concat(drivers);
+                $scope.driver = $scope.drivers[0];
+                $rootScope.$emit('stopSpin');
+            });
+        });
+    };
+
+    /**
+     * Open create COD Payment modals
+     * @return void
+     */
+    $scope.openCreateCODPaymentModal = function () {
+        $rootScope.$emit('startSpin');
+        $scope.paidBy = '';
+        $scope.codOrdersNoPayment = [];
+        getCompanies()
+        .then(function () {
+            ngDialog.open({
+                template: 'createCODPaymentTemplate',
+                scope: $scope,
+                className: 'ngdialog-theme-default create-cod-payment-popup'
+            });
+        });
+    };
+
+    /**
+     * Get all cod orders by userID
+     * 
+     * @return void
+     */
+    $scope.getCODOrders = function (userID) {
+        $scope.selectedUserID = userID;
+        $rootScope.$emit('startSpin');
+        Services2.getCODOrdersNoPayment({
+            id: userID
+        }).$promise.then(function(result) {
+            $scope.codOrdersNoPayment = result.data;
+            $rootScope.$emit('stopSpin');
+        });
+    };
+
+    /**
+     * Select all or unselect all orders.
+     * 
+     * @return {void}
+     */
+    $scope.checkUncheckSelected = function() {
+        $scope.codOrdersNoPayment.forEach(function(order) {
+            order.Selected = $scope.status.selectedAll;
+        });
+        $scope.prepareSelectedOrders();
+    };
+
+    /**
+     * Check whether there is one or more orders selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedOrderExists = function() {
+        var checked = false;
+        $scope.codOrdersNoPayment.some(function(order) {
+            if (order.Selected) {
+                checked = true;
+                return true;
+            }
+        });
+
+        return checked;
+    };
+
+    /**
+     * Prepare selected orders.
+     * 
+     * @return {array}
+     */
+    $scope.prepareSelectedOrders = function() {            
+        var selectedOrders = [];
+        var amountPaid = 0;
+
+        $scope.codOrdersNoPayment.forEach(function (order) {
+            if (order.Selected) {
+                selectedOrders.push(order);
+                amountPaid += order.TotalValue;
+            }
+        });
+
+        $scope.amountPaid = amountPaid;
+        $scope.selectedOrders = selectedOrders;
+    };
+
+    /**
+     * Set imported date picker
+     * 
+     * @return {void}
+    */
+    $scope.onTimeSet = function (newDate, oldDate) {
+        $scope.transactionDate = newDate;
+    }
+
+    $scope.onPaidByChange = function () {
+        $scope.codOrdersNoPayment = [];
+    }
+
+    /**
+     * Create COD Payment
+     * @return void
+     */
+    $scope.createCODPayment = function () {
+        var checked = $scope.selectedOrderExists();
+        if (!checked) {
+            SweetAlert.swal('Error', 'Please select at least one order before confirm payment', 'error');
+            return false;
+        }
+        var orderIDs = []
+        $scope.selectedOrders.forEach(function(order) {
+            orderIDs.push(order.UserOrderID);
+        });
+        var params = {
+            userID: $scope.selectedUserID,
+            paymentMethod: $scope.transactionType.value,
+            transactionDetail: $scope.transactionDetails,
+            orderIDs: orderIDs,
+            paidDate: $scope.transactionDate
+        };
+        $rootScope.$emit('startSpin');
+        Services2.createCODPayment(params).$promise.then(function(result) {
+            SweetAlert.swal('Success', 'Your COD Payment has been created', 'success');
+            $scope.getCODOrders($scope.selectedUserID);
+            $scope.prepareSelectedOrders();
+            $rootScope.$emit('stopSpin');
+        })
+        .catch(function(err) {
+            SweetAlert.swal('Error', err.data.error.message, 'error');
+            $rootScope.$emit('stopSpin');
+        });
+    };
+
+
+});
