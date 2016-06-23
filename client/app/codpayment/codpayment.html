@@ -177,7 +177,7 @@
                     Select Driver :
                 </div> 
                 <div class="input-payment">
-                    <div ng-if="drivers.length > 0" class="animate-if">
+                    <div ng-if="drivers.length > 0 && isFetchingDrivers" class="animate-if">
                         <ui-select ng-model="driver" 
                             theme="selectize" 
                             on-select="getCODOrders($item.key)" 
@@ -187,6 +187,9 @@
                                 <span class="input-table" ng-bind-html="d.value | highlight: $select.search"></span>
                             </ui-select-choices>
                         </ui-select>
+                    </div>
+                    <div ng-if="drivers.length == 0 && isFetchingDrivers" class="animate-if">
+                        No driver found
                     </div>
                 </div>
             </div>
@@ -211,7 +214,10 @@
             </div>
             <div class="clearfix"></div>
         </div>
-        <div class="content-payment" ng-show="codOrdersNoPayment.length > 0" >
+        <div ng-show="isFetchingOrders && codOrdersNoPayment.length == 0">
+            No data found
+        </div>
+        <div class="content-payment" ng-show="isFetchingOrders && codOrdersNoPayment.length > 0" >
             <table class="table table-hover table-main-trip">
                 <thead class="hubs-table-head">
                     <tr>

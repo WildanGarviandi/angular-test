@@ -68,6 +68,8 @@ angular.module('adminApp')
     ];
     $scope.transactionType = $scope.transactionTypes[0];
     $scope.transactionDetails = '';
+    $scope.isFetchingDrivers = false;
+    $scope.isFetchingOrders = false;
 
     $scope.chooseStatus = function(item) {
         $scope.status = item;
@@ -206,6 +208,8 @@ angular.module('adminApp')
      */
     $scope.chooseCompany = function (company) {
         $scope.company = company;
+        $scope.drivers = [];
+        $scope.isFetchingDrivers = true;
         var params = {
             offset: 0,
             limit: 0,
@@ -246,8 +250,7 @@ angular.module('adminApp')
      */
     $scope.openCreateCODPaymentModal = function () {
         $rootScope.$emit('startSpin');
-        $scope.paidBy = '';
-        $scope.codOrdersNoPayment = [];
+        $scope.resetPaymentParams();
         getCompanies()
         .then(function () {
             ngDialog.open({
@@ -265,6 +268,7 @@ angular.module('adminApp')
      */
     $scope.getCODOrders = function (userID) {
         $scope.selectedUserID = userID;
+        $scope.isFetchingOrders = true;
         $rootScope.$emit('startSpin');
         Services2.getCODOrdersNoPayment({
             id: userID
@@ -343,6 +347,8 @@ angular.module('adminApp')
         $scope.selectedOrder = {};
         $scope.amountPaid = 0;
         $scope.transactionDetails = '';
+        $scope.isFetchingOrders = false;
+        $scope.isFetchingDrivers = false;
     }
 
     /**
@@ -381,8 +387,7 @@ angular.module('adminApp')
                 $rootScope.$emit('startSpin');
                 Services2.createCODPayment(params).$promise.then(function(result) {
                     SweetAlert.swal('Success', 'Your COD Payment has been created', 'success');
-                    $scope.resetPaymentParams();
-                    $scope.getCODOrders(userID);
+                    ngDialog.close();
                     $rootScope.$emit('stopSpin');
                 })
                 .catch(function(err) {
