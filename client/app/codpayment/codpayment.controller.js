@@ -193,7 +193,7 @@ angular.module('adminApp')
                 var companies = lodash.sortBy(result.data.Companies, function (i) { 
                     return i.CompanyName.toLowerCase(); 
                 });
-                $scope.companies = $scope.companies.concat(companies);
+                $scope.companies = companies;
                 $scope.company = $scope.companies[0];
                 $rootScope.$emit('stopSpin');
                 resolve();
@@ -237,7 +237,7 @@ angular.module('adminApp')
                 drivers = lodash.sortBy(drivers, function (i) { 
                     return i.value.toLowerCase(); 
                 });
-                $scope.drivers = $scope.drivers.concat(drivers);
+                $scope.drivers = drivers;
                 $scope.driver = $scope.drivers[0];
                 $rootScope.$emit('stopSpin');
             });
@@ -273,7 +273,7 @@ angular.module('adminApp')
         Services2.getCODOrdersNoPayment({
             id: userID
         }).$promise.then(function(result) {
-            $scope.codOrdersNoPayment = result.data;
+            $scope.codOrdersNoPayment = result.data.rows;
             $rootScope.$emit('stopSpin');
         });
     };
