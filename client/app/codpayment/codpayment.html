@@ -20,7 +20,7 @@
     <div class="container-content">
         <div class="col-md-12">
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
-                <thead class="hubs-table-head" ng-show="!isLoading">
+                <thead class="hubs-table-head">
                     <tr>
                         <th>Transaction ID</th>
                         <th>Created Time</th>
@@ -32,18 +32,6 @@
                         <th>Paid Time</th>
                     </tr>
                 </thead>
-                <tbody ng-show="!isLoading && displayed.length == 0">
-                    <tr>
-                        <td colspan="9" class="text-center">
-                            No data found
-                        </td>
-                    </tr>
-                </tbody>
-                <tbody ng-show="isLoading">
-                    <tr>
-                        <td colspan="9" class="text-center">Loading ... </td>
-                    </tr>
-                </tbody>
                 <tbody>
                     <tr>
                         <th>
@@ -109,13 +97,25 @@
                         </th>
                     </tr>
                 </tbody>
+                <tbody ng-show="!isLoading && displayed.length == 0">
+                    <tr>
+                        <td colspan="9" class="text-center">
+                            No data found
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody ng-show="isLoading">
+                    <tr>
+                        <td colspan="9" class="text-center">Loading ... </td>
+                    </tr>
+                </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="payment in displayed">
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.TransactionId}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.CreatedDate | date:'dd-MM-yyyy HH:mm:ss'}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.User.UserType.Name}}</td>
-                        <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.User.FirstName}} {{payment.User.LastName}}</td>
+                        <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.User.FullName}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.TotalAmount}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.Status}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.PaymentMethod}}</td>

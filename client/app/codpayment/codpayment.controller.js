@@ -76,8 +76,18 @@ angular.module('adminApp')
     $scope.queryTransactionId = '';
     $scope.queryUser = '';
 
+    function processPayment(payment){
+        if (payment.User.UserType.UserTypeID == 3){
+            // driver
+            payment.User.FullName = payment.User.FirstName+' '+payment.User.LastName;
+        } else if (payment.User.UserType.UserTypeID == 4){
+            // fleet manager
+            payment.User.FullName = payment.User.CompanyDetail.CompanyName;
+        }
+    }
+
     /**
-     * Get all trips
+     * Get all payment
      * 
      * @return {void}
      */
@@ -94,6 +104,7 @@ angular.module('adminApp')
             userType: $scope.userType.value
         }
         Services2.getCODPayment(params).$promise.then(function(data) {
+            _.each(data.data.rows, processPayment);
             $scope.displayed = data.data.rows;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
@@ -138,6 +149,7 @@ angular.module('adminApp')
         Services2.getCODPaymentDetails({
             id: $scope.id,
         }).$promise.then(function(data) {
+            processPayment(data.data);
             $scope.payment = data.data;
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');

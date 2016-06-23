@@ -44,10 +44,19 @@
                 <div class="clearfix"></div>
                 <div class="row-fluid">
                     <div class="col-sm-4">
+                        User Type
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{payment.User.UserType.Name}}
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
                         User
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{payment.User.FirstName}} {{payment.User.LastName}} / 
+                        {{payment.User.FullName}} / 
                         {{payment.User.Email}} / {{payment.User.PhoneNumber}}
                     </div>
                 </div>
