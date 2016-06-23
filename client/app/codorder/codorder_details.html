@@ -132,8 +132,18 @@
                     <div class="col-sm-3">
                         Status
                     </div>
-                    <div class="col-sm-8 summary-from">
+                    <div class="col-sm-8 summary-from" ng-class="order.UnpaidClass">
                         {{order.OrderStatus.OrderStatus}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-3">
+                        Delivered Time
+                    </div>
+                    <div class="col-sm-8 summary-from" ng-class="order.UnpaidClass">
+                        {{order.DeliveredTime}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -142,7 +152,7 @@
                     <div class="col-sm-3">
                         Driver/Logistic Transfer
                     </div>
-                    <div class="col-sm-8 summary-from">
+                    <div class="col-sm-8 summary-from" ng-class="order.UnpaidClass">
                         {{order.CODPaymentUserOrder.CODPayment.Status || 'Unpaid'}}
                     </div>
                     <div class="col-sm-3"></div>

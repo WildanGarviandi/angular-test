@@ -35,6 +35,7 @@
                         <th>Webstore Share</th>
                         <th>Etobee Share</th>
                         <th>Order Status</th>
+                        <th>Delivered Time</th>
                         <th>Driver/Logistic Transfer</th>
                     </tr>
                 </thead>
@@ -130,6 +131,7 @@
                                 </ui-select>
                             </div>
                         </th>
+                        <th></th>
                         <th>
                             <div class="filter-table">
                                 <ui-select ng-model="codPaymentStatus" 
@@ -157,8 +159,9 @@
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.TotalValue}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.WebstoreShare}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.EtobeeShare}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.OrderStatus.OrderStatus}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.CODPayment.Status || 'Unpaid'}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.OrderStatus.OrderStatus}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.DeliveredTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.CODPaymentUserOrder.CODPayment.Status || 'Unpaid'}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">

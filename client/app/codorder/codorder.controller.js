@@ -105,6 +105,28 @@ angular.module('adminApp')
     }
 
     /**
+     * Process order from backend to add some attributes
+     */
+    function processOrder(o){
+        if (o.UserTrackOrders && o.UserTrackOrders.length > 0){
+            var t = _.find(o.UserTrackOrders, function(t){ return t.OrderStatus.OrderStatus == 'DELIVERED'});
+            if (t){
+                o.DeliveredTime = t.CreatedDate;
+            }
+        }
+        if (o.DeliveredTime && (!o.CODPaymentUserOrder || o.CODPaymentUserOrder.CODPayment.Status != 'Paid')){
+            o.DaysUnpaid = moment().diff(moment(o.DeliveredTime), 'days');
+            if (o.DaysUnpaid < 1){
+                o.UnpaidClass = 'bg-info';
+            } else if (o.DaysUnpaid < 7){
+                o.UnpaidClass = 'bg-warning';
+            } else {
+                o.UnpaidClass = 'bg-danger';
+            }
+        }
+    }
+
+    /**
      * Get all trips
      * 
      * @return {void}
@@ -155,6 +177,8 @@ angular.module('adminApp')
             sortCriteria: $scope.sortCriteria,
         }
         Services2.getCODOrder(params).$promise.then(function(data) {
+            // modify data, add DeliveredTime
+            _.each(data.data.rows, processOrder);
             $scope.displayed = data.data.rows;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
@@ -300,6 +324,7 @@ angular.module('adminApp')
         Services2.getCODOrderDetails({
             id: $scope.id,
         }).$promise.then(function(data) {
+            processOrder(data.data);
             $scope.order = data.data;
             switch ($scope.order.PickupType) {
                 case 1:
