@@ -118,7 +118,7 @@ angular.module('adminApp')
             o.DaysUnpaid = moment().diff(moment(o.DeliveredTime), 'days');
             if (o.DaysUnpaid < 1){
                 o.UnpaidClass = 'bg-info';
-            } else if (o.DaysUnpaid < 7){
+            } else if (o.DaysUnpaid < 3){
                 o.UnpaidClass = 'bg-warning';
             } else {
                 o.UnpaidClass = 'bg-danger';
