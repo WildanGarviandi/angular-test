@@ -34,6 +34,7 @@
                         <th>Pickup Type</th>
                         <th>Order Type</th>
                         <th>Status</th>
+                        <th>Return Time</th>
                     </tr>
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
@@ -189,6 +190,8 @@
                                 </ui-select>
                             </div>
                         </th>
+                        <th>
+                        </th>
                     </tr>
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
@@ -212,6 +215,7 @@
                         <td>{{order.UserOrder.PickupType}}</td>
                         <td>{{order.UserOrder.OrderType}}</td>
                         <td>{{order.UserOrder.OrderStatus.OrderStatus}}</td>
+                        <td>{{order.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
