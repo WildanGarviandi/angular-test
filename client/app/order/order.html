@@ -384,7 +384,7 @@
             <p class="input-group input-import">
                 <ui-select ng-model="fleet" 
                     theme="selectize" 
-                    on-select="chooseCompanyOnImport($item)" 
+                    on-select="chooseCompanyOnModals($item)" 
                     class="booking-order-type">
                     <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
                     <ui-select-choices repeat="f in fleets | filter: $select.search track by $index" selected>
@@ -496,8 +496,17 @@
         <h1>Set Price Orders</h1>
     </div>
     <div class="content-wrapper booking-popup notification-popup container-fluid">
+        <div class="row-fluid">                    
+            <div class="label-import">
+                Price :
+            </div> 
+            <div class="input-import">
+                <input type="number" ng-model="$parent.newPrice" class="form-control" />
+            </div>
+        </div>
+        <div class="clearfix"></div>
         <div class="row-fluid">
-            <button class="btn btn-primary" ng-click="updatePrices()">Update Prices</button>              
+            <button class="btn btn-primary" ng-click="setPrice()">Update Price</button>              
         </div>
     </div>
 </script>
@@ -507,8 +516,28 @@
         <h1>Reassign Fleet</h1>
     </div>
     <div class="content-wrapper booking-popup notification-popup container-fluid">
+        <div class="row-fluid">                
+            <div class="label-import">
+                Fleet :
+                <p class="label-notes">
+                    *Set to 'All' to open orders to all logistic vendors
+                </p>
+            </div>  
+            <p class="input-group input-import">
+                <ui-select ng-model="fleet" 
+                    theme="selectize" 
+                    on-select="chooseCompanyOnModals($item)" 
+                    class="booking-order-type">
+                    <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
+                    <ui-select-choices repeat="f in fleets | filter: $select.search track by $index" selected>
+                        <span class="input-table" ng-bind-html="f.CompanyName | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </p>
+        </div>
+        <div class="clearfix"></div>
         <div class="row-fluid">
-            <button class="btn btn-primary" ng-click="reassignFleet()">Update Prices</button>              
+            <button class="btn btn-primary" ng-click="reassignFleet()">Reassign Fleet</button>              
         </div>
     </div>
 </script>

@@ -391,3 +391,11 @@
 .label-notes {
     font-size: 11px;
 }
+
+.ngdialog.ngdialog-theme-default.reassign-fleet .ngdialog-content {
+    width: 650px;
+}
+
+.ngdialog.ngdialog-theme-default.set-price .ngdialog-content {
+    width: 650px;
+}

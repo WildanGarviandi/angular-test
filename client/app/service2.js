@@ -389,6 +389,20 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'check-exist'
             }
+        },
+        bulkSetPrice: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-set-price'
+            }
+        },
+        bulkReassignFleet: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-reassign-fleet'
+            }
         }
     });
 });
