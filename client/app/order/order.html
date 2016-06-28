@@ -352,6 +352,23 @@
             </p>
         </div>
         <div class="clearfix"></div>
+        <div class="row-fluid">                
+            <div style="float: left;">
+                Fleet :
+            </div>  
+            <p class="input-group" style="float: left; width: 300px;">
+                <ui-select ng-model="company" 
+                    theme="selectize" 
+                    on-select="chooseCompanyOnImport($item)" 
+                    class="booking-order-type">
+                    <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
+                    <ui-select-choices repeat="c in companies | filter: $select.search" selected>
+                        <span class="input-table" ng-bind-html="c.CompanyName | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </p>
+        </div>
+        <div class="clearfix"></div>
         <div class="row-fluid uploadXls">
             <div ngf-drop="uploadOrders($files)" 
                 ngf-select="uploadOrders($files)" 
