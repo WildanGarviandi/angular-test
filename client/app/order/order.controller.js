@@ -403,7 +403,6 @@ angular.module('adminApp')
         $scope.tableState = state;
         $scope.getStatus(); 
         $scope.getOrder();
-        $scope.getMerchants();
         $scope.isFirstLoaded = true;
     }
 
@@ -606,10 +605,21 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.showImportOrders = function() {
-        ngDialog.close()
-        return ngDialog.open({
-            template: 'importModal',
-            scope: $scope
+        $scope.fleets = [{
+            User: {
+                UserID: '0'
+            },
+            CompanyName: 'All'
+        }];
+        $scope.getMerchants();
+        getCompanies()
+        .then(function () {
+            ngDialog.close()
+            ngDialog.open({
+                template: 'importModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default import-orders'
+            });
         });
     }
 
@@ -654,6 +664,7 @@ angular.module('adminApp')
                             file: file,
                             merchantID : $scope.merchant.value,
                             pickupTime: $scope.importedDatePicker,
+                            fleetManagerID: $scope.fleet.User.UserID
                         }
                     }).then(function(response) {
                         $rootScope.$emit('stopSpin');
@@ -783,7 +794,9 @@ angular.module('adminApp')
                     return i.CompanyName.toLowerCase(); 
                 });
                 $scope.companies = $scope.companies.concat(companies);
-                $scope.company = $scope.companies[0];
+                $scope.company = $scope.companies[0];                
+                $scope.fleets = $scope.fleets.concat(companies);
+                $scope.fleet = $scope.fleets[0];   
                 $rootScope.$emit('stopSpin');
                 resolve();
             });
@@ -949,6 +962,15 @@ angular.module('adminApp')
             };
             getAllDrivers(params);
         }
+    };
+
+    /**
+     * Choose company on import orders
+     * @param  {[type]} company [description]
+     * @return {void}
+     */
+    $scope.chooseCompanyOnImport = function (company) {
+        $scope.fleet = company;
     };
 
     /**

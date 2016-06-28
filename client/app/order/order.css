@@ -367,3 +367,27 @@
     color: #ffffff;
     text-decoration: none;
 }
+
+.ngdialog.ngdialog-theme-default.import-orders .ngdialog-content {
+    width: 650px;
+}
+
+.label-import {
+    float: left;
+    width: 170px;
+}
+
+.input-import {
+    float: left;
+    width: 300px;
+    margin-left: 10px;
+}
+
+.dateinput-import {
+    margin-top: -15px;
+    margin-bottom: 15px;
+}
+
+.label-notes {
+    font-size: 11px;
+}
