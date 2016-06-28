@@ -308,13 +308,13 @@
     </div>
     <div class="content-wrapper booking-popup notification-popup container-fluid">
         <div class="row-fluid">              
-            <div style="float: left;">
+            <div class="label-import">
                 Pickup Time :
             </div>  
-            <p class="input-group" style="float: left;">
+            <p class="input-group">
                 <div class="dropdown">
                     <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
-                        <div class="input-group">
+                        <div class="input-group dateinput-import input-import">
                             <input type="text" class="form-control" data-ng-model="importedDatePicker" datetime="MM/dd/yyyy HH:mm:ss">
                             <span class="input-group-addon">
                                 <i class="glyphicon glyphicon-calendar"></i>
@@ -333,10 +333,10 @@
         </div>
         <div class="clearfix"></div>
         <div class="row-fluid">                
-            <div style="float: left;">
+            <div class="label-import">
                 Merchant :
             </div>  
-            <p class="input-group" style="float: left; width: 300px;">
+            <p class="input-group input-import">
                 <ui-select class="hub-field select-field" 
                     ng-model="parent" 
                     theme="selectize" 
@@ -345,7 +345,7 @@
                     <ui-select-match placeholder="Choose merchant">
                         {{ $select.selected.key }}
                     </ui-select-match>
-                    <ui-select-choices repeat="m in merchants | filter: $select.search" selected>
+                    <ui-select-choices repeat="m in merchants | filter: $select.search track by $index" selected>
                         <span ng-bind-html="m.key | highlight: $select.search"></span>
                     </ui-select-choices>
                 </ui-select>
@@ -353,17 +353,20 @@
         </div>
         <div class="clearfix"></div>
         <div class="row-fluid">                
-            <div style="float: left;">
+            <div class="label-import">
                 Fleet :
+                <p class="label-notes">
+                    *Set all to open orders to all logistic vendors
+                </p>
             </div>  
-            <p class="input-group" style="float: left; width: 300px;">
-                <ui-select ng-model="company" 
+            <p class="input-group input-import">
+                <ui-select ng-model="fleet" 
                     theme="selectize" 
                     on-select="chooseCompanyOnImport($item)" 
                     class="booking-order-type">
                     <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
-                    <ui-select-choices repeat="c in companies | filter: $select.search" selected>
-                        <span class="input-table" ng-bind-html="c.CompanyName | highlight: $select.search"></span>
+                    <ui-select-choices repeat="f in fleets | filter: $select.search track by $index" selected>
+                        <span class="input-table" ng-bind-html="f.CompanyName | highlight: $select.search"></span>
                     </ui-select-choices>
                 </ui-select>
             </p>

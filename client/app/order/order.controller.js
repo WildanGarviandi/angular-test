@@ -400,7 +400,6 @@ angular.module('adminApp')
         $scope.tableState = state;
         $scope.getStatus(); 
         $scope.getOrder();
-        $scope.getMerchants();
         $scope.isFirstLoaded = true;
     }
 
@@ -603,12 +602,20 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.showImportOrders = function() {
+        $scope.fleets = [{
+            User: {
+                UserID: '0'
+            },
+            CompanyName: 'All'
+        }];
+        $scope.getMerchants();
         getCompanies()
         .then(function () {
             ngDialog.close()
             ngDialog.open({
                 template: 'importModal',
-                scope: $scope
+                scope: $scope,
+                className: 'ngdialog-theme-default import-orders'
             });
         });
     }
@@ -643,10 +650,6 @@ angular.module('adminApp')
             alert('Please select merchant');
             return;
         }
-        var fleetManagerID = 0;
-        if ($scope.fleet.CompanyDetailID !== 'all') {
-            fleetManagerID = $scope.fleet.CompanyDetailID;
-        }
         if (files && files.length) {
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
@@ -658,7 +661,7 @@ angular.module('adminApp')
                             file: file,
                             merchantID : $scope.merchant.value,
                             pickupTime: $scope.importedDatePicker,
-                            fleetManagerID: fleetManagerID
+                            fleetManagerID: $scope.fleet.User.UserID
                         }
                     }).then(function(response) {
                         $rootScope.$emit('stopSpin');
@@ -788,7 +791,9 @@ angular.module('adminApp')
                     return i.CompanyName.toLowerCase(); 
                 });
                 $scope.companies = $scope.companies.concat(companies);
-                $scope.company = $scope.companies[0];
+                $scope.company = $scope.companies[0];                
+                $scope.fleets = $scope.fleets.concat(companies);
+                $scope.fleet = $scope.fleets[0];   
                 $rootScope.$emit('stopSpin');
                 resolve();
             });
