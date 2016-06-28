@@ -18,13 +18,25 @@
     </div>
     
     <div class="">
-        <div class="col-md-12">
-            <div class="row">
-                <button class="btn btn-primary"
-                    ng-click="showImportOrders()">Import Orders</button>
-                <button class="btn btn-primary"
-                    ng-click="showExportOrders()">Export Orders</button>
+        <div class="col-md-10">
+            <div class="col-md-1">
+                <button class="btn order-buttons" ng-click="showImportOrders()">Import Orders</button>
             </div>
+            <div class="col-md-1">
+                <button class="btn order-buttons" ng-click="showExportOrders()">Export Orders</button>
+            </div>
+            <div class="col-md-1">
+                <div class="dropdown">
+                    <button class="order-buttons btn dropdown-toggle" type="button" data-toggle="dropdown">Action
+                    <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="showSetPrice()">Set Price</a></li>
+                        <li><a ng-click="showReassignFleet()">Reassign Fleet</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>        
+        <div class="col-md-4">
             <div class="row">
                 <uib-accordion>
                     <uib-accordion-group is-open="areaFilter.open">
@@ -57,9 +69,14 @@
                     </uib-accordion-group>
                 </uib-accordion>
             </div>
+        </div>
+        <div class="col-md-12">
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
+                        <th class="checkbox-header">
+                            <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
+                        </th>
                         <th>AWB / Web Order ID</th>
                         <th>Pickup Address</th>
                         <th>Sender</th>
@@ -120,6 +137,8 @@
                 </tbody>
                 <tbody>
                     <tr>
+                        <th>
+                        </th>
                         <th>
                             <div class="filter-table">
                                 <input 
@@ -263,8 +282,11 @@
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
-                    <tr ng-click="detailsPage(order.UserOrderID)" class="clickableRow" ng-repeat="order in displayed">
-                        <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
+                    <tr class="clickableRow" ng-repeat="order in displayed">
+                        <td class="">
+                            <input type="checkbox" ng-change="prepareSelectedOrders()" ng-model="order.Selected" />
+                        </td>
+                        <td><a ng-href="/order/details/{{order.UserOrderID}}">{{order.UserOrderNumber}} / {{order.WebOrderID}}</a></td>
                         <td>{{order.PickupAddress.Address1}}</td>
                         <td>{{order.PickupAddress.FirstName}} {{order.PickupAddress.LastName}} /
                             {{order.PickupAddress.CountryCode}}-{{order.PickupAddress.MobileNumber}} /
@@ -286,10 +308,10 @@
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
                     <tr>
-                        <td colspan="1">
+                        <td colspan="2">
                             <h5 class="text-primary"><strong>{{orderFound | number}} orders found</strong></h5>
                         </td>
-                        <td colspan="4" 
+                        <td colspan="9" 
                             class="text-center" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 
@@ -445,6 +467,28 @@
             <button class="btn btn-primary" ng-click="exportNormalOrders()">Old Format</button>  
             <button class="btn btn-primary" ng-click="exportUploadableOrders()">Import Format</button>  
             <button class="btn btn-primary" ng-click="exportCompletedOrders()">Completed Orders</button>            
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="setPriceModal">
+    <div class="header-wrapper">
+        <h1>Set Price Orders</h1>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid">
+        <div class="row-fluid">
+            <button class="btn btn-primary" ng-click="updatePrices()">Update Prices</button>              
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="reassignFleetModal">
+    <div class="header-wrapper">
+        <h1>Reassign Fleet</h1>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid">
+        <div class="row-fluid">
+            <button class="btn btn-primary" ng-click="reassignFleet()">Update Prices</button>              
         </div>
     </div>
 </script>

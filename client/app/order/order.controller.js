@@ -115,6 +115,8 @@ angular.module('adminApp')
         }
     );
 
+    $scope.orders = [];
+
     /**
      * Get default values from config
      * 
@@ -240,6 +242,7 @@ angular.module('adminApp')
         Services2.getOrder(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
+            $scope.orders = data.data.rows;
             $scope.displayed.forEach(function (val, index, array) {
                 array[index].PickupType = (lodash.find($scope.pickupTypes, {value: val.PickupType})).key;
                 if (val.DeviceType && val.DeviceType.DeviceTypeID === 7) {
@@ -1024,5 +1027,76 @@ angular.module('adminApp')
         getExistOrder();
         $scope.getOrder();
     };
+
+    /**
+     * Select all or unselect all orders.
+     * 
+     * @return {void}
+     */
+    $scope.checkUncheckSelected = function() {
+        $scope.orders.forEach(function(order) {
+            order.Selected = $scope.status.selectedAll;
+        });
+        $scope.prepareSelectedOrders();
+    };
+ 
+    /**
+     * Check whether there is one or more orders selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedOrderExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected) {
+                checked = true;
+                return true;
+            }
+        });
+ 
+        return checked;
+    };
+ 
+    /**
+     * Prepare selected orders.
+     * 
+     * @return {array}
+     */
+    $scope.prepareSelectedOrders = function() {            
+        var selectedOrders = [];
+        $scope.orders.forEach(function (order) {
+            if (order.Selected) {
+                selectedOrders.push(order);
+            }
+        });
+ 
+        $scope.selectedOrders = selectedOrders;
+    };
+
+    /**
+     * Show set price modals
+     * 
+     * @return {void}
+    */
+    $scope.showSetPrice = function() {
+        ngDialog.close()
+        return ngDialog.open({
+            template: 'setPriceModal',
+            scope: $scope
+        });
+    }
+
+    /**
+     * Show reassign fleet modals
+     * 
+     * @return {void}
+    */
+    $scope.showReassignFleet = function() {
+        ngDialog.close()
+        return ngDialog.open({
+            template: 'reassignFleetModal',
+            scope: $scope
+        });
+    }
 
 });
