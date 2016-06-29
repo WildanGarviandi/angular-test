@@ -77,12 +77,16 @@ angular.module('adminApp')
     $scope.queryUser = '';
 
     function processPayment(payment){
-        if (payment.User.UserType.UserTypeID == 3){
-            // driver
-            payment.User.FullName = payment.User.FirstName+' '+payment.User.LastName;
-        } else if (payment.User.UserType.UserTypeID == 4){
-            // fleet manager
-            payment.User.FullName = payment.User.CompanyDetail.CompanyName;
+        if (payment.User){
+            if (payment.User.UserType.UserTypeID == 3){
+                // driver
+                payment.User.FullName = payment.User.FirstName+' '+payment.User.LastName;
+            } else if (payment.User.UserType.UserTypeID == 4){
+                // fleet manager
+                payment.User.FullName = payment.User.CompanyDetail.CompanyName;
+            } else {
+                payment.User.FullName = '';
+            }
         }
     }
 
