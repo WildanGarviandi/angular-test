@@ -17,8 +17,8 @@
         </div>
     </div>
     
-    <div class="">
-        <div class="col-md-10">
+    <div class="row">
+        <div class="col-md-11 action-button">
             <div class="col-md-1">
                 <button class="btn order-buttons" ng-click="showImportOrders()">Import Orders</button>
             </div>
@@ -69,6 +69,21 @@
                     </uib-accordion-group>
                 </uib-accordion>
             </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-4 content-set-limit">
+            <ui-select ng-model="itemsByPage" 
+                theme="selectize" 
+                on-select="setLimit($item)" 
+                class="content-choose-limit">
+                <ui-select-match>{{$select.selected}}</ui-select-match>
+                <ui-select-choices repeat="ot in limitPages" selected>
+                    <span ng-bind-html="ot"></span>
+                </ui-select-choices>
+            </ui-select>
+            <p class="label-limit">
+                records per page
+            </p>
         </div>
         <div class="col-md-12">
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
@@ -282,7 +297,7 @@
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
-                    <tr class="clickableRow" ng-repeat="order in displayed">
+                    <tr ng-repeat="order in displayed">
                         <td class="">
                             <input type="checkbox" ng-change="prepareSelectedOrders()" ng-model="order.Selected" />
                         </td>
@@ -311,7 +326,7 @@
                         <td colspan="2">
                             <h5 class="text-primary"><strong>{{orderFound | number}} orders found</strong></h5>
                         </td>
-                        <td colspan="9" 
+                        <td colspan="4" 
                             class="text-center" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 

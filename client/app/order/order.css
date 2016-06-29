@@ -399,3 +399,21 @@
 .ngdialog.ngdialog-theme-default.set-price .ngdialog-content {
     width: 650px;
 }
+
+.content-set-limit {
+    margin-top: 10px;
+}
+
+.content-choose-limit {
+    width: 70px;
+    float: left;
+}
+
+.label-limit {
+    padding: 8px;
+    float: left;
+}
+
+.action-button {
+    margin-left: -15px;
+}

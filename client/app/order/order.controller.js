@@ -117,6 +117,7 @@ angular.module('adminApp')
 
     $scope.orders = [];
     $scope.newPrice = 0;
+    $scope.limitPages = [$scope.itemsByPage, 25, 50,100]; 
 
     /**
      * Get default values from config
@@ -1049,7 +1050,6 @@ angular.module('adminApp')
     $scope.filterMultipleEDS = function () {
         getExistOrder();
         $scope.getOrder();
-        $scope.itemsByPage = $scope.orderFound;
     };
 
     /**
@@ -1144,6 +1144,11 @@ angular.module('adminApp')
         });
     }
 
+    /**
+     * Bulk set price
+     * 
+     * @return {void}
+     */
     $scope.setPrice = function() {
         var regexNumber = /^[0-9]+$/;
         if ((!regexNumber.test($scope.newPrice)) || ($scope.newPrice < 0)) {
@@ -1181,6 +1186,11 @@ angular.module('adminApp')
         });
     }
 
+    /**
+     * Bulk reassign fleet
+     * 
+     * @return {void}
+     */
     $scope.reassignFleet = function() {
         var orderIDs = []
         $scope.selectedOrders.forEach(function(order) {
@@ -1211,6 +1221,18 @@ angular.module('adminApp')
                 });
             }
         });
+    }
+
+    /**
+     * Set limit page
+     * 
+     * @return {void}
+     */
+    $scope.setLimit = function(item) {
+        $scope.itemsByPage = item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getOrder(); 
     }
 
 });
