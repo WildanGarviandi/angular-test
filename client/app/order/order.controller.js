@@ -1074,7 +1074,7 @@ angular.module('adminApp')
         $scope.orders.some(function(order) {
             if (order.Selected) {
                 checked = true;
-                return true;
+                return;
             }
         });
  
