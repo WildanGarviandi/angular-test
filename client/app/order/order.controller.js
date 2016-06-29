@@ -1098,6 +1098,19 @@ angular.module('adminApp')
     };
 
     /**
+     * Check selected orders.
+     * 
+     * @return {array}
+     */
+    $scope.checkSelectedOrders = function() {
+        var checked = $scope.selectedOrderExists();
+        if (!checked) {
+            SweetAlert.swal('Error', 'Please select at least one order before take an action', 'error');
+            return false;
+        }
+    }
+
+    /**
      * Show set price modals
      * 
      * @return {void}

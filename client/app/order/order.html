@@ -27,8 +27,13 @@
             </div>
             <div class="col-md-1">
                 <div class="dropdown">
-                    <button class="order-buttons btn dropdown-toggle" type="button" data-toggle="dropdown">Action
-                    <span class="caret"></span></button>
+                    <button ng-click="checkSelectedOrders()"
+                        class="order-buttons btn dropdown-toggle" 
+                        type="button" 
+                        data-toggle="dropdown">
+                        Action
+                        <span class="caret"></span>
+                    </button>
                     <ul class="dropdown-menu">
                         <li><a ng-click="showSetPrice()">Set Price</a></li>
                         <li><a ng-click="showReassignFleet()">Reassign Fleet</a></li>
