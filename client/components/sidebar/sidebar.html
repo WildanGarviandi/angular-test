@@ -3,7 +3,16 @@
         <div class="side-logo-image"></div>
     </div>
     <ul>
-       <li class="row">
+        <li class="row">
+            <a ui-sref="app.dashboard" >
+                <div class="side-image side-hub-image"
+                    ng-class="{ expanded: expanded, active: menus.dashboard.active }"></div>
+                <div class="side-text" 
+                    ng-class="{ expanded: expanded, active: menus.dashboard.active }">Dashboard</div>
+            </a>
+        </li>
+
+        <li class="row">
             <a ui-sref="app.hub" >
                 <div class="side-image side-hub-image"
                     ng-class="{ expanded: expanded, active: menus.hub.active }"></div>

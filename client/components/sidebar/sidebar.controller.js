@@ -34,6 +34,9 @@ angular.module('adminApp')
             map: {
                 routes: ['/map']
             },
+            dashboard: {
+                routes: ['/dashboard']
+            },
             orders: {
                 submenus: {
                     all: { routes: ['/orders'] },

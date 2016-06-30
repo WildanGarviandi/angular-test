@@ -31,6 +31,16 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.dashboard', {
+            url: 'dashboard',
+            views: {
+                'content@': {
+                    templateUrl: 'app/dashboard/dashboard.html',
+                    controller: 'DashboardCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.hub', {
             url: 'hub',
             views: {
