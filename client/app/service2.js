@@ -390,19 +390,25 @@ angular.module('adminApp')
                 controller: 'check-exist'
             }
         },
-        setDeliveredStatus: {
-            method: 'POST',
-            params: {
-                module: 'order',
-                controller: 'set-delivered',
-                id: null
-            }
-        },
         bulkSetDeliveredStatus: {
             method: 'POST',
             params: {
                 module: 'order',
-                controller: 'bulk-set-delivered'
+                controller: 'mark-as-delivered'
+            }
+        },
+        bulkSetPrice: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-set-price'
+            }
+        },
+        bulkReassignFleet: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-reassign-fleet'
             }
         }
     });

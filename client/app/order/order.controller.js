@@ -116,6 +116,10 @@ angular.module('adminApp')
         }
     );
 
+    $scope.orders = [];
+    $scope.newPrice = 0;
+    $scope.limitPages = [$scope.itemsByPage, 25, 50,100]; 
+
     /**
      * Get default values from config
      * 
@@ -241,6 +245,7 @@ angular.module('adminApp')
         Services2.getOrder(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
+            $scope.orders = data.data.rows;
             $scope.displayed.forEach(function (val, index, array) {
                 array[index].PickupType = (lodash.find($scope.pickupTypes, {value: val.PickupType})).key;
                 if (val.DeviceType && val.DeviceType.DeviceTypeID === 7) {
@@ -401,7 +406,6 @@ angular.module('adminApp')
         $scope.tableState = state;
         $scope.getStatus(); 
         $scope.getOrder();
-        $scope.getMerchants();
         $scope.isFirstLoaded = true;
     }
 
@@ -410,7 +414,7 @@ angular.module('adminApp')
     };
 
     $scope.detailsPage = function(id) {
-        window.location = '/order/details/' + id;
+        $window.open('/order/details/' + id);
     };
 
     /**
@@ -611,10 +615,21 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.showImportOrders = function() {
-        ngDialog.close()
-        return ngDialog.open({
-            template: 'importModal',
-            scope: $scope
+        $scope.fleets = [{
+            User: {
+                UserID: '0'
+            },
+            CompanyName: 'All'
+        }];
+        $scope.getMerchants();
+        getCompanies()
+        .then(function () {
+            ngDialog.close()
+            ngDialog.open({
+                template: 'importModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default import-orders'
+            });
         });
     }
 
@@ -659,6 +674,7 @@ angular.module('adminApp')
                             file: file,
                             merchantID : $scope.merchant.value,
                             pickupTime: $scope.importedDatePicker,
+                            fleetManagerID: $scope.fleet.User.UserID
                         }
                     }).then(function(response) {
                         $rootScope.$emit('stopSpin');
@@ -788,7 +804,9 @@ angular.module('adminApp')
                     return i.CompanyName.toLowerCase(); 
                 });
                 $scope.companies = $scope.companies.concat(companies);
-                $scope.company = $scope.companies[0];
+                $scope.company = $scope.companies[0];                
+                $scope.fleets = $scope.fleets.concat(companies);
+                $scope.fleet = $scope.fleets[0];   
                 $rootScope.$emit('stopSpin');
                 resolve();
             });
@@ -957,6 +975,15 @@ angular.module('adminApp')
     };
 
     /**
+     * Choose company on import orders
+     * @param  {[type]} company [description]
+     * @return {void}
+     */
+    $scope.chooseCompanyOnModals = function (company) {
+        $scope.fleet = company;
+    };
+
+    /**
      * Call getAllDrivers function when user searching it by name
      * @param  {[type]} event [description]
      * @return {[type]}       [description]
@@ -1033,11 +1060,6 @@ angular.module('adminApp')
         $scope.getOrder();
     };
 
-    $scope.changeItemsByPage = function (limit) {
-        $scope.itemsByPage = limit;
-        $scope.getOrder();
-    }
-
     /**
      * Set an order status to DELIVERED
      *
@@ -1046,7 +1068,7 @@ angular.module('adminApp')
     $scope.setDeliveredStatus = function () {
         SweetAlert.swal({
             title: 'Are you sure?',
-            text: "Set status as DELIVERED?",
+            text: "Mark as DELIVERED?",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "Yes",
@@ -1054,31 +1076,51 @@ angular.module('adminApp')
         }, function (isConfirm) {
             if (isConfirm) {
                 $rootScope.$emit('startSpin');
-                Services2.setDeliveredStatus({
-                    id: $scope.order.UserOrderID
-                }, {}).$promise.then(function (result) {
+                Services2.bulkSetDeliveredStatus({
+                    orderIDs: [$scope.order.UserOrderID]
+                }).$promise.then(function (result) {
+                    if (result.data.error) {
+                        throw {
+                            data: {
+                                error: {
+                                    message: result.data.error[0].error.message
+                                }
+                            }
+                        }
+                    }
                     $rootScope.$emit('stopSpin');
                     SweetAlert.swal('Order status changed');
                     $state.reload();
                 }).catch(function (e) {
                     $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Failed in setting status as DELIVERED', e.data.error.message);
-                    $state.reload();
+                    SweetAlert.swal({
+                            title: 'Failed in marking status as DELIVERED', 
+                            text: e.data.error.message, 
+                            type: "error"
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            $state.reload();
+                        }
+                    });
                 });
             }
         });
     }
 
+    /**
+     * Set multiple order status to DELIVERED
+     * @return {void}
+     */
     $scope.bulkSetDeliveredStatus = function () {
         var totalSelected = 0;
-        var orders = [];
+        var orderIDs = [];
         $scope.displayed.forEach(function (val) {
-            if (val.Selected) { totalSelected++; orders.push(val.UserOrderID)}
+            if (val.Selected) { totalSelected++; orderIDs.push(val.UserOrderID)}
         });
         if (totalSelected) {
             SweetAlert.swal({
                 title: 'Are you sure?',
-                text: "Set status as DELIVERED for " + totalSelected + " orders ?",
+                text: "Mark as DELIVERED for " + totalSelected + " orders ?",
                 showCancelButton: true,
                 confirmButtonText: "Yes",
                 cancelButtonText: 'No'
@@ -1086,14 +1128,22 @@ angular.module('adminApp')
                 if (isConfirm) {
                     $rootScope.$emit('startSpin');
                     Services2.bulkSetDeliveredStatus({
-                        orders: orders
+                        orderIDs: orderIDs
                     }).$promise.then(function (result) {
                         $rootScope.$emit('stopSpin');
-                        SweetAlert.swal('Order status changed');
+                        SweetAlert.swal('Orders status changed');
                         $state.reload();
                     }).catch(function (e) {
                         $rootScope.$emit('stopSpin');
-                        SweetAlert.swal('Failed in setting status', e.data.error.message, "error");
+                        SweetAlert.swal({
+                            title: 'Failed in marking status as DELIVERED', 
+                            text: e.data.error.message, 
+                            type: "error"
+                        }, function (isConfirm) {
+                            if (isConfirm) {
+                                $state.reload();
+                            }
+                        });
                     });
                 }
             });
@@ -1108,9 +1158,194 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.checkUncheckSelected = function() {
-        $scope.displayed.forEach(function(order) {
+        $scope.orders.forEach(function(order) {
             order.Selected = $scope.status.selectedAll;
         });
+        $scope.prepareSelectedOrders();
     };
+ 
+    /**
+     * Check whether there is one or more orders selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedOrderExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+ 
+    /**
+     * Prepare selected orders.
+     * 
+     * @return {array}
+     */
+    $scope.prepareSelectedOrders = function() {            
+        var selectedOrders = [];
+        $scope.orders.forEach(function (order) {
+            if (order.Selected) {
+                selectedOrders.push(order);
+            }
+        });
+ 
+        $scope.selectedOrders = selectedOrders;
+    };
+
+    /**
+     * Check selected orders.
+     * 
+     * @return {array}
+     */
+    $scope.checkSelectedOrders = function() {
+        var checked = $scope.selectedOrderExists();
+        if (!checked) {
+            SweetAlert.swal('Error', 'Please select at least one order before take an action', 'error');
+            return false;
+        }
+    }
+
+    /**
+     * Show set price modals
+     * 
+     * @return {void}
+    */
+    $scope.showSetPrice = function() {
+        var checked = $scope.selectedOrderExists();
+        if (!checked) {
+            SweetAlert.swal('Error', 'Please select at least one order before set price', 'error');
+            return false;
+        }
+        ngDialog.close()
+        return ngDialog.open({
+            template: 'setPriceModal',
+            scope: $scope,
+            className: 'ngdialog-theme-default set-price'
+        });
+    }
+
+    /**
+     * Show reassign fleet modals
+     * 
+     * @return {void}
+    */
+    $scope.showReassignFleet = function() {
+        var checked = $scope.selectedOrderExists();
+        if (!checked) {
+            SweetAlert.swal('Error', 'Please select at least one order before reassign fleet', 'error');
+            return false;
+        }
+        $scope.fleets = [{
+            User: {
+                UserID: '0'
+            },
+            CompanyName: 'All'
+        }];
+        getCompanies()
+        .then(function () {
+            ngDialog.close();
+            return ngDialog.open({
+                template: 'reassignFleetModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default reassign-fleet'
+            });
+        });
+    }
+
+    /**
+     * Bulk set price
+     * 
+     * @return {void}
+     */
+    $scope.setPrice = function() {
+        var regexNumber = /^[0-9]+$/;
+        if ((!regexNumber.test($scope.newPrice)) || ($scope.newPrice < 0)) {
+            SweetAlert.swal('Error', 'Price must be a positive number', 'error');
+            return false;
+        }
+        var orderIDs = []
+        $scope.selectedOrders.forEach(function(order) {
+            orderIDs.push(order.UserOrderID);
+        });
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Set price of these orders?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.bulkSetPrice({
+                    orderIDs: orderIDs,
+                    price: $scope.newPrice
+                }).$promise.then(function (result) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal(result.data.length + ' orders updated');
+                    ngDialog.closeAll();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Failed in setting price', e.data.error.message);
+                    $state.reload();
+                });
+            }
+        });
+    }
+
+    /**
+     * Bulk reassign fleet
+     * 
+     * @return {void}
+     */
+    $scope.reassignFleet = function() {
+        var orderIDs = []
+        $scope.selectedOrders.forEach(function(order) {
+            orderIDs.push(order.UserOrderID);
+        });
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Reassign fleet of these orders?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.bulkReassignFleet({
+                    orderIDs: orderIDs,
+                    fleetManagerID: $scope.fleet.User.UserID
+                }).$promise.then(function (result) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal(result.data[0] + ' orders updated');
+                    ngDialog.closeAll();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Failed in reassigning fleet', e.data.error.message);
+                    $state.reload();
+                });
+            }
+        });
+    }
+
+    /**
+     * Set limit page
+     * 
+     * @return {void}
+     */
+    $scope.setLimit = function(item) {
+        $scope.itemsByPage = item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getOrder(); 
+    }
 
 });
