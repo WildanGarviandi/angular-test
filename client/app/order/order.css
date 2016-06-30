@@ -431,3 +431,7 @@
 a {
     cursor: pointer;
 }
+
+.alert-big {
+    width: 600px;
+}

@@ -1130,15 +1130,34 @@ angular.module('adminApp')
                     Services2.bulkSetDeliveredStatus({
                         orderIDs: orderIDs
                     }).$promise.then(function (result) {
+                        if (result.data.error) {
+                            var messages = '<table align="center">';
+                            result.data.error.forEach(function (e) {
+                                messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
+                                            ' : </td><td class="text-left"> ' + e.error.message + '</td></tr>';
+                            })
+                            messages += '</table>';
+                            console.log(messages);
+                            throw {
+                                data: {
+                                    message: result.data.message,
+                                    error: {
+                                        message: messages
+                                    }
+                                }
+                            }
+                        }
                         $rootScope.$emit('stopSpin');
                         SweetAlert.swal('Orders status changed');
                         $state.reload();
                     }).catch(function (e) {
                         $rootScope.$emit('stopSpin');
                         SweetAlert.swal({
-                            title: 'Failed in marking status as DELIVERED', 
+                            title: (e.data.message) ? e.data.message : 'Failed in marking status as DELIVERED', 
                             text: e.data.error.message, 
-                            type: "error"
+                            type: "error",
+                            html: true,
+                            customClass: 'alert-big'
                         }, function (isConfirm) {
                             if (isConfirm) {
                                 $state.reload();
