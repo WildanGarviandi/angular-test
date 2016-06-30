@@ -99,6 +99,26 @@
                 <div class="clearfix"></div>
                 <div class="row-fluid">
                     <div class="col-sm-4">
+                        Fleet Manager
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.FleetManager.CompanyDetail.CompanyName}}
+                    </div>
+                    <div class="col-sm-4"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        Driver
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.Driver.FirstName}} {{order.Driver.LastName}}
+                    </div>
+                    <div class="col-sm-4"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
                         Pickup Type
                     </div>
                     <div class="col-sm-8 summary-from">
@@ -325,7 +345,7 @@
                             Status: {{route.OrderStatus.OrderStatus}}
                         </div>
                         <div class="order-status-container-body">
-                            Fleet Manager: {{route.FleetManager.FirstName}} {{route.FleetManager.LastName}} / 
+                            Fleet Manager: {{route.FleetManager.CompanyDetail.CompanyName}} / 
                             {{route.FleetManager.Email}} / {{route.FleetManager.PhoneNumber}}
                         </div>
                         <uib-accordion>

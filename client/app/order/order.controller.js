@@ -234,6 +234,7 @@ angular.module('adminApp')
             endPickup: $scope.pickupDatePicker.endDate,
             startDropoff: $scope.dropoffDatePicker.startDate,
             endDropoff: $scope.dropoffDatePicker.endDate,
+            fleet: $scope.queryFleet,
             sortBy: $scope.sortBy,
             sortCriteria: $scope.sortCriteria,
         }
@@ -369,6 +370,19 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.searchRecipient = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getOrder();
+        };
+    }
+
+    /**
+     * Add search fleet
+     * 
+     * @return {void}
+     */
+    $scope.searchFleet = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
