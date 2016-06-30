@@ -27,7 +27,7 @@
             </div>
             <div class="col-md-1">
                 <div class="dropdown">
-                    <button ng-click="checkSelectedOrders()"
+                    <button ng-disabled="!isOrderSelected"
                         class="order-buttons btn dropdown-toggle" 
                         type="button" 
                         data-toggle="dropdown">
@@ -35,7 +35,7 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a ng-click="showSetPrice()">Set Price</a></li>
+                        <li><a ng-click="showSetPrice()">Update Price</a></li>
                         <li><a ng-click="showReassignFleet()">Reassign Fleet</a></li>
                     </ul>
                 </div>
@@ -513,12 +513,12 @@
 
 <script type="text/ng-template" id="setPriceModal">
     <div class="header-wrapper">
-        <h1>Set Price Orders</h1>
+        <h1>Update Price</h1>
     </div>
     <div class="content-wrapper booking-popup notification-popup container-fluid">
         <div class="row-fluid">                    
             <div class="label-import">
-                Price :
+                New Price :
             </div> 
             <div class="input-import">
                 <input type="number" ng-model="$parent.newPrice" class="form-control" />

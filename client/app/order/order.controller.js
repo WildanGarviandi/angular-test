@@ -118,6 +118,7 @@ angular.module('adminApp')
     $scope.orders = [];
     $scope.newPrice = 0;
     $scope.limitPages = [$scope.itemsByPage, 25, 50,100]; 
+    $scope.isOrderSelected = false;
 
     /**
      * Get default values from config
@@ -1095,20 +1096,12 @@ angular.module('adminApp')
         });
  
         $scope.selectedOrders = selectedOrders;
-    };
 
-    /**
-     * Check selected orders.
-     * 
-     * @return {array}
-     */
-    $scope.checkSelectedOrders = function() {
-        var checked = $scope.selectedOrderExists();
-        if (!checked) {
-            SweetAlert.swal('Error', 'Please select at least one order before take an action', 'error');
-            return false;
+        $scope.isOrderSelected = false;
+        if ($scope.selectedOrderExists()) {
+            $scope.isOrderSelected = true;
         }
-    }
+    };
 
     /**
      * Show set price modals
