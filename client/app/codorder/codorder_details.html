@@ -143,7 +143,7 @@
                         Delivered Time
                     </div>
                     <div class="col-sm-8 summary-from" ng-class="order.UnpaidClass">
-                        {{order.DeliveredTime}}
+                        {{order.DeliveredTime | date:'MM/dd/yyyy HH:mm:ss a'}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>

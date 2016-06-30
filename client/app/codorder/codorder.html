@@ -160,7 +160,7 @@
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.WebstoreShare}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.EtobeeShare}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.OrderStatus.OrderStatus}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.DeliveredTime | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.DeliveredTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.CODPaymentUserOrder.CODPayment.Status || 'Unpaid'}}</td>
                     </tr>
                 </tbody>
