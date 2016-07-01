@@ -86,6 +86,8 @@ angular.module('adminApp')
     $scope.zipLength = config.zipLength;
     $scope.reassignableOrderStatus = config.reassignableOrderStatus;
     $scope.notCancellableOrderStatus = config.notCancellableOrderStatus;
+    $scope.reassignableFleet = config.reassignableFleet;
+    $scope.updatablePrice = config.updatablePrice;
 
     $scope.isFirstSort = true;
 
@@ -1104,14 +1106,47 @@ angular.module('adminApp')
     };
 
     /**
+     * Check whether there is one or more orders with non-updatable price selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedNonUpdatablePriceExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected && $scope.updatablePrice.indexOf(order.OrderStatus.OrderStatusID) === -1) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+
+    /**
+     * Check whether there is one or more non-reassignable orders selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedNonReassignableExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected && $scope.reassignableFleet.indexOf(order.OrderStatus.OrderStatusID) === -1) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+
+    /**
      * Show set price modals
      * 
      * @return {void}
     */
     $scope.showSetPrice = function() {
-        var checked = $scope.selectedOrderExists();
-        if (!checked) {
-            SweetAlert.swal('Error', 'Please select at least one order before set price', 'error');
+        if ($scope.selectedNonUpdatableExists()) {
+            SweetAlert.swal('Error', 'You have selected one or more orders which cannot be updated', 'error');
             return false;
         }
         ngDialog.close()
@@ -1128,9 +1163,8 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.showReassignFleet = function() {
-        var checked = $scope.selectedOrderExists();
-        if (!checked) {
-            SweetAlert.swal('Error', 'Please select at least one order before reassign fleet', 'error');
+        if ($scope.selectedNonReassignableExists()) {
+            SweetAlert.swal('Error', 'You have selected one or more orders which cannot be reassigned', 'error');
             return false;
         }
         $scope.fleets = [{

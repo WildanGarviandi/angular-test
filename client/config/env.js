@@ -54,8 +54,12 @@ function env() {
         defaultLocation: defaultLocation,
         notCancellableOrderStatus: [4, 5, 13, 16],
         // INTRANSIT, DELIVERED, CANCELLED, RETURNED_SENDER
-        reassignableOrderStatus: [2, 6, 10, 12, 15]
+        reassignableOrderStatus: [2, 6, 10, 12, 15],
         // ACCEPTED, NOTASSIGNED, NO-DRIVER, EXPIRED, RETURNED_WAREHOUSE
+        reassignableFleet: [1, 6, 9],
+        // BOOKED, NOTASSIGNED, PREBOOKED
+        updatablePrice: [1, 6, 9],
+        // BOOKED, NOTASSIGNED, PREBOOKED
     };
 }
 
