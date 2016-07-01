@@ -1145,7 +1145,7 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.showSetPrice = function() {
-        if ($scope.selectedNonUpdatableExists()) {
+        if ($scope.selectedNonUpdatablePriceExists()) {
             SweetAlert.swal('Error', 'You have selected one or more orders which cannot be updated', 'error');
             return false;
         }
