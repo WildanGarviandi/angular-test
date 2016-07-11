@@ -79,6 +79,17 @@
                 <div class="clearfix"></div>
                 <div class="row-fluid">
                     <div class="col-sm-3">
+                        Fleet Manager
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName}} / 
+                        {{order.Driver.Driver.FleetManager.Email}} / {{order.Driver.Driver.FleetManager.PhoneNumber}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-3">
                         Pickup Type
                     </div>
                     <div class="col-sm-8 summary-from">
@@ -102,7 +113,7 @@
                         Webstore Share
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.CODPayments[0].CODPaymentUserOrder.WebstoreShare}}
+                        {{order.CODPaymentUserOrder.WebstoreShare}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -112,7 +123,7 @@
                         Etobee Share
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.CODPayments[0].CODPaymentUserOrder.EtobeeShare}}
+                        {{order.CODPaymentUserOrder.EtobeeShare}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -121,7 +132,7 @@
                     <div class="col-sm-3">
                         Status
                     </div>
-                    <div class="col-sm-8 summary-from">
+                    <div class="col-sm-8 summary-from" ng-class="order.UnpaidClass">
                         {{order.OrderStatus.OrderStatus}}
                     </div>
                     <div class="col-sm-3"></div>
@@ -129,10 +140,20 @@
                 <div class="clearfix"></div>
                 <div class="row-fluid">
                     <div class="col-sm-3">
-                        Driver Transfer
+                        Delivered Time
                     </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.CODPayments[0].Status}}
+                    <div class="col-sm-8 summary-from" ng-class="order.UnpaidClass">
+                        {{order.DeliveredTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-3">
+                        Driver/Logistic Transfer
+                    </div>
+                    <div class="col-sm-8 summary-from" ng-class="order.UnpaidClass">
+                        {{order.CODPaymentUserOrder.CODPayment.Status || 'Unpaid'}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>
@@ -172,7 +193,7 @@
                         Dropoff Address
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.PickupAddress.Address1}}
+                        {{order.DropoffAddress.Address1}}
                     </div>
                     <div class="col-sm-3"></div>
                 </div>

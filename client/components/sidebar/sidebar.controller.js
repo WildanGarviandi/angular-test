@@ -38,6 +38,7 @@ angular.module('adminApp')
                 submenus: {
                     all: { routes: ['/orders'] },
                     cod: { routes: ['/codorders'] },
+                    codpayment: { routes: ['/codpayments'] },
                 }
             }
         };

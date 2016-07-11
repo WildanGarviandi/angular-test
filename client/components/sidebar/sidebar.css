@@ -334,6 +334,18 @@
     background-repeat: no-repeat;
 }
 
+.side-codpayments-image {
+    background-image: url('../../assets/images/nav-codpayment.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
+.side-codpayments-image.active {
+    background-image: url('../../assets/images/nav-codpayment-active.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
 /* Booking */
 
 .side-booking-image {
