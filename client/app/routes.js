@@ -309,5 +309,25 @@ angular.module('adminApp')
                 }
             },
             authenticate: true
+        })
+        .state('app.codpayment', {
+            url: 'codpayments',
+             views: {
+                'content@': {
+                    templateUrl: 'app/codpayment/codpayment.html',
+                    controller: 'CODPaymentCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.codpayment-details', {
+            url: 'codpayment/details/:paymentID',
+             views: {
+                'content@': {
+                    templateUrl: 'app/codpayment/codpayment_details.html',
+                    controller: 'CODPaymentCtrl',
+                }
+            },
+            authenticate: true
         });
     });

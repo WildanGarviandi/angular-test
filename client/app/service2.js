@@ -389,6 +389,19 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'check-exist'
             }
+        },
+        getCODPayment: {
+            method: 'GET',
+            params: {
+                module: 'codpayment'
+            },
+        },
+        getCODPaymentDetails: {
+            method: 'GET',
+            params: {
+                module: 'codpayment',
+                id: null
+            },
         }
     });
 });
