@@ -70,6 +70,7 @@ angular.module('adminApp')
     $scope.transactionDetails = '';
     $scope.isFetchingDrivers = false;
     $scope.isFetchingOrders = false;
+    $scope.formData = {};
 
     $scope.chooseStatus = function(item) {
         $scope.status = item;
@@ -278,18 +279,32 @@ angular.module('adminApp')
     };
 
     /**
-     * Get all cod orders by userID
+     * Get all cod orders with no payment + Unpaid cod payments by userID
      * 
      * @return void
      */
-    $scope.getCODOrdersNoPayment = function (userID) {
+    $scope.getCODOrdersNoPaymentAndUnpaid = function (userID) {
         $scope.selectedUserID = userID;
         $scope.isFetchingOrders = true;
+        $scope.resetSelectionParams();
         $rootScope.$emit('startSpin');
-        Services2.getCODOrdersNoPayment({
-            id: userID
-        }).$promise.then(function(result) {
-            $scope.codOrdersNoPayment = result.data.rows;
+        $q.all([
+            Services2.getCODOrdersNoPayment({
+                id: userID
+            }).$promise,
+            Services2.getCODPaymentsUnpaid({
+                id: userID
+            }).$promise
+        ])
+        .then(function(responses) {
+            $scope.codOrdersNoPayment = responses[0].data.rows;
+            $scope.codPaymentsUnpaid = responses[1].data.rows;
+            if ($scope.codOrdersNoPayment.length > 0){
+                $scope.formData.paymentType = 'manual';
+            } else {
+                $scope.formData.paymentType = 'auto';
+            }
+            $scope.prepareSelectedOrdersOrPayment();
             $rootScope.$emit('stopSpin');
         });
     };
@@ -323,24 +338,28 @@ angular.module('adminApp')
         return checked;
     };
 
-    /**
-     * Prepare selected orders.
-     * 
-     * @return {array}
-     */
-    $scope.prepareSelectedOrders = function() {            
-        var selectedOrders = [];
-        var amountPaid = 0;
+    $scope.onPaymentTypeChange = function(){
+        $scope.prepareSelectedOrdersOrPayment();
+    };
 
-        $scope.codOrdersNoPayment.forEach(function (order) {
-            if (order.Selected) {
-                selectedOrders.push(order);
-                amountPaid += order.TotalValue;
+    $scope.prepareSelectedOrdersOrPayment = function(){
+        if ($scope.formData.paymentType == 'manual'){        
+            var selectedOrders = [];
+            var amountPaid = 0;
+            $scope.codOrdersNoPayment.forEach(function (order) {
+                if (order.Selected) {
+                    selectedOrders.push(order);
+                    amountPaid += order.TotalValue;
+                }
+            });
+            $scope.amountPaid = amountPaid;
+            $scope.selectedOrders = selectedOrders;
+        } 
+        else if ($scope.formData.paymentType == 'auto'){
+            if ($scope.formData.selectedPayment){
+                $scope.amountPaid = $scope.formData.selectedPayment.TotalAmount;
             }
-        });
-
-        $scope.amountPaid = amountPaid;
-        $scope.selectedOrders = selectedOrders;
+        }
     };
 
     /**
@@ -359,12 +378,19 @@ angular.module('adminApp')
     */
     $scope.resetPaymentParams = function () {
         $scope.codOrdersNoPayment = [];
+        $scope.codPaymentsUnpaid = [];
         $scope.selectedUserID = 0;
-        $scope.selectedOrder = {};
-        $scope.amountPaid = 0;
-        $scope.transactionDetails = '';
+        $scope.resetSelectionParams();
         $scope.isFetchingOrders = false;
         $scope.isFetchingDrivers = false;
+    }
+
+    $scope.resetSelectionParams = function(){
+        $scope.selectedOrder = {};
+        $scope.selectedOrders = [];
+        $scope.formData.selectedPayment = null;
+        $scope.amountPaid = 0;
+        $scope.transactionDetails = '';
     }
 
     /**
@@ -372,6 +398,18 @@ angular.module('adminApp')
      * @return void
      */
     $scope.createCODPayment = function () {
+        if ($scope.formData.paymentType == 'manual'){
+            $scope.createCODPaymentManual();
+        } else if ($scope.formData.paymentType == 'auto'){
+            $scope.setCODPaymentManualPaid();
+        }
+    };
+
+    /**
+     * Create COD Payment with manual PaymentMethod
+     * @return void
+     */
+    $scope.createCODPaymentManual = function(){
         var checked = $scope.selectedOrderExists();
         if (!checked) {
             SweetAlert.swal('Error', 'Please select at least one order before confirm payment', 'error');
@@ -403,6 +441,49 @@ angular.module('adminApp')
                 $rootScope.$emit('startSpin');
                 Services2.createCODPayment(params).$promise.then(function(result) {
                     SweetAlert.swal('Success', 'Your COD Payment has been created', 'success');
+                    ngDialog.close();
+                    $rootScope.$emit('stopSpin');
+                })
+                .catch(function(err) {
+                    SweetAlert.swal('Error', err.data.error.message, 'error');
+                    $rootScope.$emit('stopSpin');
+                });
+            } else {
+                return false;
+            }
+        });
+    };
+    
+    /**
+     * Change COD Payment status from 'Unpaid' to 'Paid'
+     * @return void
+     */
+    $scope.setCODPaymentManualPaid = function(){
+        var selectedPayment = $scope.formData.selectedPayment;
+        if (!selectedPayment){
+            SweetAlert.swal('Error', 'Please select one transaction to confirm', 'error');
+            return false;
+        }
+        SweetAlert.swal({
+            title: "Are you sure?",
+            text: "You will confirm COD Payment with total amount: " + $scope.amountPaid,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, confirm it!",
+            closeOnConfirm: false
+        },
+        function(isConfirm){
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                var params = {
+                    codPaymentID: selectedPayment.CODPaymentID,
+                    paymentMethod: $scope.transactionType.value,
+                    transactionDetail: $scope.transactionDetails,
+                    paidDate: $scope.transactionDate
+                };
+                Services2.setCODPaymentManualPaid(params).$promise.then(function(result) {
+                    SweetAlert.swal('Success', 'Your COD Payment has been confirmed', 'success');
                     ngDialog.close();
                     $rootScope.$emit('stopSpin');
                 })
