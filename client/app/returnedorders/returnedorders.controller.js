@@ -370,7 +370,7 @@ angular.module('adminApp')
     };
 
     $scope.detailsPage = function(id) {
-        window.location = '/returned-orders/details/' + id;
+        window.open('/returned-orders/details/' + id);
     };
 
     /**
