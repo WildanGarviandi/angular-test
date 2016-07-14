@@ -118,7 +118,7 @@ angular.module('adminApp')
 
     $scope.orders = [];
     $scope.newPrice = 0;
-    $scope.limitPages = [$scope.itemsByPage, 25, 50,100]; 
+    $scope.limitPages = [$scope.itemsByPage, 25, 50, 100];
 
     /**
      * Get default values from config
@@ -1114,10 +1114,19 @@ angular.module('adminApp')
     $scope.bulkSetDeliveredStatus = function () {
         var totalSelected = 0;
         var orderIDs = [];
+        var prohibitedIDs = [];
         $scope.displayed.forEach(function (val) {
-            if (val.Selected) { totalSelected++; orderIDs.push(val.UserOrderID)}
+            if (val.Selected) { 
+                // Check if status can be mark as delivered
+                if ($scope.deliverableOrderStatus.indexOf(val.OrderStatus.OrderStatusID) >= 0) {
+                    totalSelected++; 
+                    orderIDs.push(val.UserOrderID);
+                } else {
+                    prohibitedIDs.push(val);
+                }
+            }
         });
-        if (totalSelected) {
+        if (prohibitedIDs.length === 0 && totalSelected) {
             SweetAlert.swal({
                 title: 'Are you sure?',
                 text: "Mark as DELIVERED for " + totalSelected + " orders ?",
@@ -1137,7 +1146,6 @@ angular.module('adminApp')
                                             ' : </td><td class="text-left"> ' + e.error.message + '</td></tr>';
                             })
                             messages += '</table>';
-                            console.log(messages);
                             throw {
                                 data: {
                                     message: result.data.message,
@@ -1165,6 +1173,24 @@ angular.module('adminApp')
                         });
                     });
                 }
+            });
+        } else if (prohibitedIDs.length > 0) {
+            var messages = '';
+            if (prohibitedIDs.length > 1) {
+                messages += 'These orders have status which are prohibited <table align="center">';
+            } else {
+                messages += 'This order has status which is prohibited <table align="center">';
+            }
+            prohibitedIDs.forEach(function (e) {
+                messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
+                            ' : </td><td class="text-left"> ' + e.OrderStatus.OrderStatus + '</td></tr>';
+            })
+            messages += '</table>';
+            SweetAlert.swal({
+                title: 'Can not mark as DELIVERED',
+                text: messages,
+                type: 'error',
+                html: true
             });
         } else {
             SweetAlert.swal('No orders selected');
