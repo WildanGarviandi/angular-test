@@ -26,12 +26,14 @@ angular.module('adminApp', [
     'ui.grid.pinning',
     'ui.grid.cellNav',
     'oitozero.ngSweetAlert',
-    'dynamicNumber'
+    'dynamicNumber',
+    'xeditable',
+    'ui-notification'
 ])
     .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
         $urlRouterProvider
-        .when('/', '/hub')
-        .otherwise('/hub');
+        .when('/', '/dashboard')
+        .otherwise('/dashboard');
 
         $locationProvider.html5Mode(true);
         $httpProvider.interceptors.push('authInterceptor');
@@ -96,7 +98,7 @@ angular.module('adminApp', [
         };
     })
 
-    .run(function ($rootScope, $location, Auth, localStorageService, usSpinnerService) {
+    .run(function ($rootScope, $location, Auth, localStorageService, usSpinnerService, editableOptions) {
 
         $rootScope.expanded = localStorageService.get('expanded');
 
@@ -126,6 +128,8 @@ angular.module('adminApp', [
             usSpinnerService.stop('spinner-1');
             $rootScope.spinnerShown = false;
         });
+
+        editableOptions.theme = 'bs3';
     })
 
     .filter('secondsToDateTime', function() {

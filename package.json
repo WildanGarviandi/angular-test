@@ -22,6 +22,7 @@
   "homepage": "https://gitlab.com/etobee-techgroup/etobee-admin#README",
   "dependencies": {
     "angular-bootstrap-datetimepicker": "^1.0.1",
+    "angular-chart.js": "^0.10.2",
     "aws-sdk": "^2.2.32",
     "basic-auth-connect": "^1.0.0",
     "body-parser": "^1.14.2",

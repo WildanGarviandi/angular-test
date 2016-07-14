@@ -41,6 +41,16 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.dashboard-details', {
+            url: 'dashboard-details/:merchantID/:pickupType/:date',
+            views: {
+                'content@': {
+                    templateUrl: 'app/dashboard/dashboard_details.html',
+                    controller: 'DashboardCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.hub', {
             url: 'hub',
             views: {

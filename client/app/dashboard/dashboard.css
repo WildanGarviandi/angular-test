@@ -1,0 +1,81 @@
+* {
+    font-family: Helvetica,serif;
+}
+
+.top-stat {
+    margin-top: 20px;
+}
+
+.top-stat-box-goal {
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    background-color: #a6a6a6;
+    color: white;
+}
+
+.top-stat-box-goal a {
+    color: white;
+}
+
+.top-stat-box-goal a:hover {
+    color: #5cb85c;
+}
+
+.top-stat-box-type {
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: white;
+}
+
+.title-chart {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.side-stat-box {
+    text-align: center;
+    font-size: 18px;
+    text-transform: uppercase;
+    background-color: #a6a6a6;
+    color: white;
+}
+
+.count-stat-box {
+    text-align: center;
+    font-size: 12px;
+    text-transform: uppercase;
+    background-color: #5cb85c;
+    color: white;
+    margin-bottom: 45px;
+    min-height: 75px;
+    cursor: pointer;
+}
+
+.merchant-box {
+    background-color: white; 
+    margin-top: 40px;
+    height: 100%;
+}
+
+.merchant-title {
+    margin-left: 20px; 
+    font-size: 24px;
+}
+
+.merchant-content {
+    background-color: white;
+}
+
+.graph-content {
+    background-color: white;
+}
+
+.box-red {
+    background-color: #ff5a60;
+}
+
+.box-green {
+    background-color: #5cb85c;
+}
