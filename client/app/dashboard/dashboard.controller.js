@@ -21,8 +21,7 @@ angular.module('adminApp')
     ) {
 
     $scope.totalDays = 4;
-    $scope.reloadTime = 60000;
-    $scope.series = ['Same Day', 'Next Day', 'On Demand', 'Regular'];
+    $scope.reloadTime = 900000;
     $scope.colours = ['#5cb85c','#d9534f','#f0ad4e','#68F000'];
     $scope.itemsByPage = 20;
     $scope.offset = 0;
@@ -85,6 +84,9 @@ angular.module('adminApp')
     var getDefaultValues = function() {
         $http.get('config/defaultValues.json').success(function(data) {
             $scope.pickupTypes = data.pickupTypes;
+            $scope.pickupTypes.forEach(function(pickupType) {
+                $scope.series.push(pickupType.key);
+            });
         });
     };
 
@@ -114,9 +116,9 @@ angular.module('adminApp')
                         value: merchant.webstore.FirstName + ' ' + merchant.webstore.LastName
                     });
                 });
-                resolve();
                 $scope.isLoading = false;
                 $rootScope.$emit('stopSpin');
+                resolve();
             });
         });
     }
@@ -174,7 +176,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.detailsPage = function(merchant, pickupType, date) {
-        window.location = '/dashboard-details/' + merchant + '/' + pickupType + '/' + date;        
+        $window.open('/dashboard-details/' + merchant + '/' + pickupType + '/' + date);        
     }
 
     /**
@@ -341,10 +343,10 @@ angular.module('adminApp')
                 $scope.chartData[merchantIndex].total[1][i+$scope.totalDays] = data.data.NDS.total;
                 $scope.chartData[merchantIndex].total[2][i+$scope.totalDays] = data.data.ODS.total;
                 $scope.chartData[merchantIndex].total[3][i+$scope.totalDays] = data.data.REG.total;
-                $scope.chartData[merchantIndex].remaining[0][i+$scope.totalDays] = data.data.SDS.total - data.data.SDS.ongoing;
-                $scope.chartData[merchantIndex].remaining[1][i+$scope.totalDays] = data.data.NDS.total - data.data.NDS.ongoing;
-                $scope.chartData[merchantIndex].remaining[2][i+$scope.totalDays] = data.data.ODS.total - data.data.ODS.ongoing;
-                $scope.chartData[merchantIndex].remaining[3][i+$scope.totalDays] = data.data.REG.total - data.data.REG.ongoing;
+                $scope.chartData[merchantIndex].remaining[0][i+$scope.totalDays] = data.data.SDS.ongoing;
+                $scope.chartData[merchantIndex].remaining[1][i+$scope.totalDays] = data.data.NDS.ongoing;
+                $scope.chartData[merchantIndex].remaining[2][i+$scope.totalDays] = data.data.ODS.ongoing;
+                $scope.chartData[merchantIndex].remaining[3][i+$scope.totalDays] = data.data.REG.ongoing;
                 $scope.isLoading = false;
                 $rootScope.$emit('stopSpin');
             });
@@ -380,7 +382,8 @@ angular.module('adminApp')
             var merchantSelected = lodash.find($scope.merchants, {key: $scope.activeMerchant[merchantIndex].key});  
             if ((data.data.summary.approaching + data.data.summary.over) > 0) {         
                 Notification.error({
-                    message: 'Warning: Merchant ' + merchantSelected.value + ' has approaching and over SLA order',
+                    message: 'Warning: Merchant ' + merchantSelected.value + ' has approaching SLA order: ' + 
+                    data.data.summary.approaching + ' and over SLA order: ' + data.data.summary.over,
                     delay: $scope.reloadTime - 10000
                 });
             }
@@ -415,11 +418,12 @@ angular.module('adminApp')
             $scope.chartData = [];
             $scope.daysRange = [];   
             $scope.labels = [];
+            $scope.series = [];
             $scope.merchants = [];
             $scope.pickupTypes = [];
+            getDefaultValues();
             $scope.initCookieValues();
             $scope.initDataValues();
-            getDefaultValues();
             $scope.getMerchants()
             .then(function () {
                 $scope.getMainSLA();
@@ -434,6 +438,7 @@ angular.module('adminApp')
     $scope.loadDashboardPage();
     setInterval(function () {
         $scope.$apply(function () {
+            Notification.clearAll();
             $scope.loadDashboardPage();
         });
     }, $scope.reloadTime);
