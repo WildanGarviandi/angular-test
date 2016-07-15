@@ -385,8 +385,7 @@ angular.module('adminApp')
             if ((data.data.summary.approaching + data.data.summary.over) > 0) {         
                 Notification.error({
                     message: 'Merchant ' + merchantSelected.value + ' has approaching SLA order: ' + 
-                        data.data.summary.approaching + ' and over SLA order: ' + data.data.summary.over +
-                        '<br><img class="warning-image" src="assets/images/valak.jpg">', 
+                        data.data.summary.approaching + ' and over SLA order: ' + data.data.summary.over, 
                     title: 'Warning',
                     delay: $scope.reloadTime - 10000
                 });
