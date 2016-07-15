@@ -334,6 +334,18 @@
     background-repeat: no-repeat;
 }
 
+.side-returnedorders-image {
+    background-image: url('../../assets/images/nav-return.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+ 
+.side-returnedorders-image.active {
+    background-image: url('../../assets/images/nav-return-active.png');
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
 /* Booking */
 
 .side-booking-image {

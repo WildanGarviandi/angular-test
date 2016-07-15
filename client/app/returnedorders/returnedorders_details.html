@@ -4,7 +4,7 @@
         <div>
             <div class="col-md-6 col-sm-7">
                 <div class="hub-title-box">
-                    Order Details
+                    Returned Order Details
                 </div>
             </div>
             <div class="col-md-3 col-sm-5 pull-right">
@@ -119,7 +119,7 @@
                 <div class="clearfix"></div>
                 <div class="row-fluid">
                     <div class="col-sm-4">
-                        Status
+                        Current Status
                     </div>
                     <div class="col-sm-8 summary-from">
                         {{order.OrderStatus.OrderStatus}}
@@ -200,7 +200,7 @@
                         Order Cost
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.OrderCost | awnum:2:decimalSeparator:'round':'false':'true'}}
+                        {{currency}}{{orderReturned.OrderCost | awnum:2:decimalSeparator:'round':'false':'true'}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -209,7 +209,7 @@
                         Final Cost
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.FinalCost | awnum:2:decimalSeparator:'round':'false':'true'}}
+                        {{currency}}{{orderReturned.FinalCost | awnum:2:decimalSeparator:'round':'false':'true'}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -218,7 +218,7 @@
                         VAT
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.VAT | awnum:2:decimalSeparator:'round':'false':'true'}}
+                        {{currency}}{{orderReturned.VAT | awnum:2:decimalSeparator:'round':'false':'true'}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -256,7 +256,7 @@
                         Etobee Share
                     </div>
                     <div class="col-sm-8 summary-from" >
-                        {{currency}}{{order.Share | awnum:2:decimalSeparator:'round':'false':'true'}}
+                        {{currency}}{{orderReturned.Share | awnum:2:decimalSeparator:'round':'false':'true'}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -265,7 +265,7 @@
                         Driver Share
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.DriverShare | awnum:2:decimalSeparator:'round':'false':'true'}}
+                        {{currency}}{{orderReturned.DriverShare | awnum:2:decimalSeparator:'round':'false':'true'}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -274,31 +274,46 @@
                         Logistic Share
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.LogisticShare | awnum:2:decimalSeparator:'round':'false':'true'}} 
+                        {{currency}}{{orderReturned.LogisticShare | awnum:2:decimalSeparator:'round':'false':'true'}} 
                     </div>
                 </div>
-                <div ng-repeat="attempt in order.UserOrderAttempts" class="row-fluid order-detail-from-address">
-                    <uib-accordion>
-                    <uib-accordion-group 
-                        heading="Failed attempt {{$index + 1}}:">
-                        <div class="order-status-container-body">
-                            Driver: {{attempt.Driver.FirstName}} {{attempt.Driver.LastName}}
-                        </div>
-                        <div class="order-status-container-body">
-                            Reason: {{attempt.ReasonReturn.ReasonName}}
-                        </div>
-                        <div class="order-status-container-body">
-                            Date: {{attempt.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}
-                        </div>
-                        <div class="order-status-container-body">
-                            Proof of Failed: 
-                            <div>
-                                <img class="failed-image" src="{{attempt.ProofOfAttemptURL}}"></img>
-                            </div>
-                        </div>
-                    </uib-accordion-group>   
-                    </uib-accordion>                        
-                </div> 
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        Reason Return
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{orderReturned.ReasonReturn.ReasonName}} 
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        Time of Return
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{orderReturned.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}} 
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        Proof of Return
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        <img class="return-image" src="{{orderReturned.ProofOfReturnURL}}"></img> 
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
+                        Signature Return
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        <img class="return-image" src="{{orderReturned.SignatureURL}}"></img> 
+                    </div>
+                </div>
+                <div class="clearfix"></div>
             </div>
         </div>
         <div class="col-md-6">

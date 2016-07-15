@@ -417,3 +417,8 @@
 .action-button {
     margin-left: -15px;
 }
+
+.failed-image {
+    width: 150px;
+    height: 200px;
+}
