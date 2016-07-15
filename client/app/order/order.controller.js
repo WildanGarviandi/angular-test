@@ -432,19 +432,7 @@ angular.module('adminApp')
             id: $scope.id,
         }).$promise.then(function(data) {
             $scope.order = data.data;
-            switch ($scope.order.PickupType) {
-                case 1:
-                    $scope.order.PickupType = 'Now';
-                    break;        
-                case 2:
-                    $scope.order.PickupType = 'Later';
-                    break;    
-                case 3:
-                    $scope.order.PickupType = 'On Demand';
-                    break;    
-                default:
-                    $scope.order.PickupType = '-';
-            }
+            $scope.order.PickupType = (lodash.find($scope.pickupTypes, {value: $scope.order.PickupType})).key;
             $scope.canBeReturned = ($scope.order.OrderStatus.OrderStatusID === 15);
             $scope.canBeCopied = ($scope.order.OrderStatus.OrderStatusID === 13);
             $scope.canBeReassigned = false;
