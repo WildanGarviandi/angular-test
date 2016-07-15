@@ -42,6 +42,10 @@
     color: white;
 }
 
+.container-status {
+    width:10%;
+}
+
 .count-stat-box {
     text-align: center;
     font-size: 12px;
@@ -78,4 +82,9 @@
 
 .box-green {
     background-color: #5cb85c;
+}
+
+.warning-image {
+    width: 280px;
+    height: 200px;
 }

@@ -315,11 +315,12 @@ angular.module('adminApp')
             $scope.nextdaySLA = (data.data.NDS.accepted / data.data.NDS.delivered * 100) || 0;
             $scope.ondemandSLA = (data.data.ODS.accepted / data.data.ODS.delivered * 100) || 0;
             $scope.regularSLA = (data.data.REG.accepted / data.data.REG.delivered * 100) || 0;
+            $scope.totalSLA = (data.data.summary.accepted / data.data.summary.delivered * 100) || 0;
             $scope.samedayColor = ($scope.samedaySLA > 90) ? 'green' : 'red';
             $scope.nextdayColor = ($scope.nextdaySLA > 90) ? 'green' : 'red';
             $scope.ondemandColor = ($scope.ondemandSLA > 90) ? 'green' : 'red';
             $scope.regularColor = ($scope.regularSLA > 90) ? 'green' : 'red';
-            $scope.totalSLA = (data.data.summary.accepted / data.data.summary.delivered * 100) || 0;
+            $scope.totalColor = ($scope.totalSLA > 90) ? 'green' : 'red';
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
@@ -379,11 +380,14 @@ angular.module('adminApp')
             $scope.activeMerchant[merchantIndex].nextdayColor = ($scope.activeMerchant[merchantIndex].nextdaySLA > 90) ? 'green' : 'red';
             $scope.activeMerchant[merchantIndex].ondemandColor = ($scope.activeMerchant[merchantIndex].ondemandSLA > 90) ? 'green' : 'red';
             $scope.activeMerchant[merchantIndex].regularColor = ($scope.activeMerchant[merchantIndex].regularSLA > 90) ? 'green' : 'red';
+            $scope.activeMerchant[merchantIndex].totalColor = ($scope.activeMerchant[merchantIndex].totalSLA > 90) ? 'green' : 'red';
             var merchantSelected = lodash.find($scope.merchants, {key: $scope.activeMerchant[merchantIndex].key});  
             if ((data.data.summary.approaching + data.data.summary.over) > 0) {         
                 Notification.error({
-                    message: 'Warning: Merchant ' + merchantSelected.value + ' has approaching SLA order: ' + 
-                    data.data.summary.approaching + ' and over SLA order: ' + data.data.summary.over,
+                    message: 'Merchant ' + merchantSelected.value + ' has approaching SLA order: ' + 
+                        data.data.summary.approaching + ' and over SLA order: ' + data.data.summary.over +
+                        '<br><img class="warning-image" src="assets/images/valak.jpg">', 
+                    title: 'Warning',
                     delay: $scope.reloadTime - 10000
                 });
             }
@@ -410,17 +414,18 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.loadDashboardPage = function() {
+        $scope.activeMerchant = [];
+        $scope.chartData = [];
+        $scope.daysRange = [];   
+        $scope.labels = [];
+        $scope.series = [];
+        $scope.merchants = [];
+        $scope.pickupTypes = [];
+        $scope.currentWeek = moment().week();
         if ($stateParams.merchantID !== undefined) {
             getDefaultValues();
             $scope.getMerchantDetails($stateParams.merchantID);
         } else {
-            $scope.activeMerchant = [];
-            $scope.chartData = [];
-            $scope.daysRange = [];   
-            $scope.labels = [];
-            $scope.series = [];
-            $scope.merchants = [];
-            $scope.pickupTypes = [];
             getDefaultValues();
             $scope.initCookieValues();
             $scope.initDataValues();

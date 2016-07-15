@@ -3,7 +3,7 @@
     <div class="row-fluid top-stat">
         <div class="col-md-3 col-sm-7 top-stat-box-goal well well-sm">
             <div>
-                Week 21 Goal
+                Week {{currentWeek}} Goal
             </div>
             <div>
                 {{ summaryTotal }} / <a href="#" onbeforesave="setGoal($data)" editable-text="activeGoal">{{ activeGoal || "0" }}</a>
@@ -49,7 +49,7 @@
                 {{ regularSLA | number:2 }} %
             </div>
         </div>
-        <div class="col-md-2 col-sm-7 top-stat-box-goal well well-sm">
+        <div class="col-md-2 col-sm-7 top-stat-box-goal well well-sm box-{{totalColor}}">
             <div>
                 Total
             </div>
@@ -127,6 +127,14 @@
                     </div>
                     <div>
                         {{ merchant.regularSLA | number:2 }} %
+                    </div>
+                </div>
+                <div class="side-stat-box well well-sm box-{{merchant.totalColor}}">
+                    <div>
+                        Total
+                    </div>
+                    <div>
+                        {{ merchant.totalSLA | number:2 }} %
                     </div>
                 </div>
             </div>
