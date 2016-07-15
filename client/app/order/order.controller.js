@@ -86,6 +86,8 @@ angular.module('adminApp')
     $scope.zipLength = config.zipLength;
     $scope.reassignableOrderStatus = config.reassignableOrderStatus;
     $scope.notCancellableOrderStatus = config.notCancellableOrderStatus;
+    $scope.reassignableFleet = config.reassignableFleet;
+    $scope.updatablePrice = config.updatablePrice;
 
     $scope.isFirstSort = true;
 
@@ -114,6 +116,11 @@ angular.module('adminApp')
             });
         }
     );
+
+    $scope.orders = [];
+    $scope.newPrice = 0;
+    $scope.limitPages = [$scope.itemsByPage, 25, 50,100]; 
+    $scope.isOrderSelected = false;
 
     /**
      * Get default values from config
@@ -240,6 +247,7 @@ angular.module('adminApp')
         Services2.getOrder(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
+            $scope.orders = data.data.rows;
             $scope.displayed.forEach(function (val, index, array) {
                 array[index].PickupType = (lodash.find($scope.pickupTypes, {value: val.PickupType})).key;
                 if (val.DeviceType && val.DeviceType.DeviceTypeID === 7) {
@@ -400,7 +408,6 @@ angular.module('adminApp')
         $scope.tableState = state;
         $scope.getStatus(); 
         $scope.getOrder();
-        $scope.getMerchants();
         $scope.isFirstLoaded = true;
     }
 
@@ -603,10 +610,21 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.showImportOrders = function() {
-        ngDialog.close()
-        return ngDialog.open({
-            template: 'importModal',
-            scope: $scope
+        $scope.fleets = [{
+            User: {
+                UserID: '0'
+            },
+            CompanyName: 'All'
+        }];
+        $scope.getMerchants();
+        getCompanies()
+        .then(function () {
+            ngDialog.close()
+            ngDialog.open({
+                template: 'importModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default import-orders'
+            });
         });
     }
 
@@ -651,6 +669,7 @@ angular.module('adminApp')
                             file: file,
                             merchantID : $scope.merchant.value,
                             pickupTime: $scope.importedDatePicker,
+                            fleetManagerID: $scope.fleet.User.UserID
                         }
                     }).then(function(response) {
                         $rootScope.$emit('stopSpin');
@@ -780,7 +799,9 @@ angular.module('adminApp')
                     return i.CompanyName.toLowerCase(); 
                 });
                 $scope.companies = $scope.companies.concat(companies);
-                $scope.company = $scope.companies[0];
+                $scope.company = $scope.companies[0];                
+                $scope.fleets = $scope.fleets.concat(companies);
+                $scope.fleet = $scope.fleets[0];   
                 $rootScope.$emit('stopSpin');
                 resolve();
             });
@@ -949,6 +970,15 @@ angular.module('adminApp')
     };
 
     /**
+     * Choose company on import orders
+     * @param  {[type]} company [description]
+     * @return {void}
+     */
+    $scope.chooseCompanyOnModals = function (company) {
+        $scope.fleet = company;
+    };
+
+    /**
      * Call getAllDrivers function when user searching it by name
      * @param  {[type]} event [description]
      * @return {[type]}       [description]
@@ -1024,5 +1054,225 @@ angular.module('adminApp')
         getExistOrder();
         $scope.getOrder();
     };
+
+    /**
+     * Select all or unselect all orders.
+     * 
+     * @return {void}
+     */
+    $scope.checkUncheckSelected = function() {
+        $scope.orders.forEach(function(order) {
+            order.Selected = $scope.status.selectedAll;
+        });
+        $scope.prepareSelectedOrders();
+    };
+ 
+    /**
+     * Check whether there is one or more orders selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedOrderExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+ 
+    /**
+     * Prepare selected orders.
+     * 
+     * @return {array}
+     */
+    $scope.prepareSelectedOrders = function() {            
+        var selectedOrders = [];
+        $scope.orders.forEach(function (order) {
+            if (order.Selected) {
+                selectedOrders.push(order);
+            }
+        });
+ 
+        $scope.selectedOrders = selectedOrders;
+
+        $scope.isOrderSelected = false;
+        if ($scope.selectedOrderExists()) {
+            $scope.isOrderSelected = true;
+        }
+    };
+
+    /**
+     * Check whether there is one or more orders with non-updatable price selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedNonUpdatablePriceExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected && $scope.updatablePrice.indexOf(order.OrderStatus.OrderStatusID) === -1) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+
+    /**
+     * Check whether there is one or more non-reassignable orders selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedNonReassignableExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected && $scope.reassignableFleet.indexOf(order.OrderStatus.OrderStatusID) === -1) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+
+    /**
+     * Show set price modals
+     * 
+     * @return {void}
+    */
+    $scope.showSetPrice = function() {
+        if ($scope.selectedNonUpdatablePriceExists()) {
+            SweetAlert.swal('Error', 'You have selected one or more orders which cannot be updated', 'error');
+            return false;
+        }
+        ngDialog.close()
+        return ngDialog.open({
+            template: 'setPriceModal',
+            scope: $scope,
+            className: 'ngdialog-theme-default set-price'
+        });
+    }
+
+    /**
+     * Show reassign fleet modals
+     * 
+     * @return {void}
+    */
+    $scope.showReassignFleet = function() {
+        if ($scope.selectedNonReassignableExists()) {
+            SweetAlert.swal('Error', 'You have selected one or more orders which cannot be reassigned', 'error');
+            return false;
+        }
+        $scope.fleets = [{
+            User: {
+                UserID: '0'
+            },
+            CompanyName: 'All'
+        }];
+        getCompanies()
+        .then(function () {
+            ngDialog.close();
+            return ngDialog.open({
+                template: 'reassignFleetModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default reassign-fleet'
+            });
+        });
+    }
+
+    /**
+     * Bulk set price
+     * 
+     * @return {void}
+     */
+    $scope.setPrice = function() {
+        var regexNumber = /^[0-9]+$/;
+        if ((!regexNumber.test($scope.newPrice)) || ($scope.newPrice < 0)) {
+            SweetAlert.swal('Error', 'Price must be a positive number', 'error');
+            return false;
+        }
+        var orderIDs = []
+        $scope.selectedOrders.forEach(function(order) {
+            orderIDs.push(order.UserOrderID);
+        });
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Set price of these orders?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.bulkSetPrice({
+                    orderIDs: orderIDs,
+                    price: $scope.newPrice
+                }).$promise.then(function (result) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal(result.data.length + ' orders updated');
+                    ngDialog.closeAll();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Failed in setting price', e.data.error.message);
+                    $state.reload();
+                });
+            }
+        });
+    }
+
+    /**
+     * Bulk reassign fleet
+     * 
+     * @return {void}
+     */
+    $scope.reassignFleet = function() {
+        var orderIDs = []
+        $scope.selectedOrders.forEach(function(order) {
+            orderIDs.push(order.UserOrderID);
+        });
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Reassign fleet of these orders?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.bulkReassignFleet({
+                    orderIDs: orderIDs,
+                    fleetManagerID: $scope.fleet.User.UserID
+                }).$promise.then(function (result) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal(result.data[0] + ' orders updated');
+                    ngDialog.closeAll();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Failed in reassigning fleet', e.data.error.message);
+                    $state.reload();
+                });
+            }
+        });
+    }
+
+    /**
+     * Set limit page
+     * 
+     * @return {void}
+     */
+    $scope.setLimit = function(item) {
+        $scope.itemsByPage = item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getOrder(); 
+    }
 
 });

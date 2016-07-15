@@ -390,6 +390,20 @@ angular.module('adminApp')
                 controller: 'check-exist'
             }
         },
+        bulkSetPrice: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-set-price'
+            }
+        },
+        bulkReassignFleet: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-reassign-fleet'
+            }
+        },
         getReturnedOrders: {
             method: 'GET',
             params: {
