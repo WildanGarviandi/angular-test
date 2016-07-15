@@ -12,7 +12,7 @@ function env() {
             var currency = 'Rp';
             var decimalSeparator = ',';
             var zipLength = 5;
-            var activeMerchant = [1433, 1433, 1433, 1433, 1433, 1433];
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
             break;        
         case 'admin2|com':
             var url = 'http://api2.etobee.com';
@@ -20,7 +20,7 @@ function env() {
             var currency = 'Rp';
             var decimalSeparator = ',';
             var zipLength = 5;
-            var activeMerchant = [1433, 1433, 1433, 1433, 1433, 1433];
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
             break;    
         case 'staging|ph':
             var url = 'http://staging.api2.etobee.com';
@@ -28,7 +28,7 @@ function env() {
             var currency = '₱';
             var decimalSeparator = '.';
             var zipLength = 4;
-            var activeMerchant = [1433, 1433, 1433, 1433, 1433, 1433];
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
             break;    
         case 'admin2|ph':
             var url = 'http://api2.etobee.com.ph';
@@ -36,7 +36,7 @@ function env() {
             var currency = '₱';
             var decimalSeparator = '.';
             var zipLength = 4;
-            var activeMerchant = [1433, 1433, 1433, 1433, 1433, 1433];
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
             break;
         default:
             var url = 'http://localhost:3001';
@@ -44,7 +44,7 @@ function env() {
             var currency = 'Rp';
             var decimalSeparator = ',';
             var zipLength = 5;
-            var activeMerchant = [1433, 1433, 1433, 1433, 1433, 1433];
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
             break;
     } 
 
