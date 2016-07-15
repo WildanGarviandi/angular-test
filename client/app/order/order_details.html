@@ -277,6 +277,28 @@
                         {{currency}}{{order.LogisticShare | awnum:2:decimalSeparator:'round':'false':'true'}} 
                     </div>
                 </div>
+                <div ng-repeat="attempt in order.UserOrderAttempts" class="row-fluid order-detail-from-address">
+                    <uib-accordion>
+                    <uib-accordion-group 
+                        heading="Failed attempt {{$index + 1}}:">
+                        <div class="order-status-container-body">
+                            Driver: {{attempt.Driver.FirstName}} {{attempt.Driver.LastName}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Reason: {{attempt.ReasonReturn.ReasonName}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Date: {{attempt.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Proof of Failed: 
+                            <div>
+                                <img class="failed-image" src="{{attempt.ProofOfAttemptURL}}"></img>
+                            </div>
+                        </div>
+                    </uib-accordion-group>   
+                    </uib-accordion>                        
+                </div> 
             </div>
         </div>
         <div class="col-md-6">
