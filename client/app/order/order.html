@@ -120,6 +120,7 @@
                             Pickup Time
                         </th>
                         <th>Dropoff Time</th>
+                        <th>Fleet Manager</th>
                         <th class="sortable-column"
                             ng-if="sortBy !== 'Driver.FirstName' || isFirstSort"
                             ng-click="sortColumn('Driver.FirstName', 'ASC')">
@@ -237,6 +238,16 @@
                                     type="search" 
                                     class="form-control input-table" 
                                     value="" 
+                                    ng-model="queryFleet" 
+                                    ng-keyup="searchFleet($event)">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    type="search" 
+                                    class="form-control input-table" 
+                                    value="" 
                                     ng-model="queryDriver" 
                                     ng-keyup="searchDriver($event)">
                             </div>
@@ -322,6 +333,7 @@
                         </td>
                         <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td>{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName}}</td>
                         <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                         <td>{{order.CustomerName}}</td>
                         <td>{{order.PickupType}}</td>
