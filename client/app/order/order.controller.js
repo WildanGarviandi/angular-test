@@ -197,30 +197,18 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getOrder = function() {
-        $rootScope.$emit('startSpin');
+        $rootScope.$emit('startSpin');               
         if ($scope.pickupDatePicker.startDate) {
             $scope.pickupDatePicker.startDate = new Date($scope.pickupDatePicker.startDate);
-            $scope.pickupDatePicker.startDate.setHours(
-                $scope.pickupDatePicker.startDate.getHours() - $scope.pickupDatePicker.startDate.getTimezoneOffset() / 60
-            );
         }
         if ($scope.pickupDatePicker.endDate) {
-            $scope.pickupDatePicker.endDate = new Date($scope.pickupDatePicker.endDate)
-            $scope.pickupDatePicker.endDate.setHours(
-                $scope.pickupDatePicker.endDate.getHours() - $scope.pickupDatePicker.endDate.getTimezoneOffset() / 60
-            );
+            $scope.pickupDatePicker.endDate = new Date($scope.pickupDatePicker.endDate);
         }
         if ($scope.dropoffDatePicker.startDate) {
-            $scope.dropoffDatePicker.startDate = new Date($scope.dropoffDatePicker.startDate);
-            $scope.dropoffDatePicker.startDate.setHours(
-                $scope.dropoffDatePicker.startDate.getHours() - $scope.dropoffDatePicker.startDate.getTimezoneOffset() / 60
-            );           
+            $scope.dropoffDatePicker.startDate = new Date($scope.dropoffDatePicker.startDate);     
         }
         if ($scope.dropoffDatePicker.endDate) {
             $scope.dropoffDatePicker.endDate = new Date($scope.dropoffDatePicker.endDate);
-            $scope.dropoffDatePicker.endDate.setHours(
-                $scope.dropoffDatePicker.endDate.getHours() - $scope.dropoffDatePicker.endDate.getTimezoneOffset() / 60
-            );
         }
         $scope.isLoading = true;
         var params = {

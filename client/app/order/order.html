@@ -98,10 +98,6 @@
                             <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
                         </th>
                         <th>AWB / Web Order ID</th>
-                        <th>Pickup Address</th>
-                        <th>Sender</th>
-                        <th>Dropoff Address</th>
-                        <th>Recipient</th>
                         <th class="sortable-column"
                             ng-if="sortBy !== 'PickupTime' || isFirstSort"
                             ng-click="sortColumn('PickupTime', 'ASC')">
@@ -120,6 +116,10 @@
                             Pickup Time
                         </th>
                         <th>Dropoff Time</th>
+                        <th>Pickup Address</th>
+                        <th>Sender</th>
+                        <th>Dropoff Address</th>
+                        <th>Recipient</th>
                         <th>Fleet Manager</th>
                         <th class="sortable-column"
                             ng-if="sortBy !== 'Driver.FirstName' || isFirstSort"
@@ -174,6 +174,28 @@
                         <th>
                             <div class="filter-table">
                                 <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    date-range-picker 
+                                    ng-model="pickupDatePicker" 
+                                    options="optionsDatepicker" />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    date-range-picker 
+                                    ng-model="dropoffDatePicker" 
+                                    options="optionsDatepicker" />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
                                     type="search" 
                                     class="form-control input-table" 
                                     value="" 
@@ -208,28 +230,6 @@
                                     value="" 
                                     ng-model="queryRecipient" 
                                     ng-keyup="searchRecipient($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    date-range-picker 
-                                    ng-model="pickupDatePicker" 
-                                    options="optionsDatepicker" />
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    date-range-picker 
-                                    ng-model="dropoffDatePicker" 
-                                    options="optionsDatepicker" />
                             </div>
                         </th>
                         <th>
@@ -321,6 +321,8 @@
                             <input type="checkbox" ng-change="prepareSelectedOrders()" ng-model="order.Selected" />
                         </td>
                         <td><a ng-href="/order/details/{{order.UserOrderID}}">{{order.UserOrderNumber}} / {{order.WebOrderID}}</a></td>
+                        <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{order.PickupAddress.Address1}}</td>
                         <td>{{order.PickupAddress.FirstName}} {{order.PickupAddress.LastName}} /
                             {{order.PickupAddress.CountryCode}}-{{order.PickupAddress.MobileNumber}} /
@@ -331,8 +333,6 @@
                             {{order.DropoffAddress.CountryCode}}-{{order.DropoffAddress.MobileNumber}} /
                             {{order.DropoffAddress.EmailID}}
                         </td>
-                        <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
-                        <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName}}</td>
                         <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                         <td>{{order.CustomerName}}</td>

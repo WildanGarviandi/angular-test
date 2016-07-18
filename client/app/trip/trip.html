@@ -23,8 +23,6 @@
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
                         <th>Trip Number</th>
-                        <th>Pickup Address</th>
-                        <th>Dropoff Address</th>
                         <th class="sortable-column"
                             ng-if="sortBy !== 'PickupTime' || isFirstSort"
                             ng-click="sortColumn('PickupTime', 'ASC')">
@@ -43,6 +41,8 @@
                             Pickup Time
                         </th>
                         <th>Dropoff Time</th>
+                        <th>Pickup Address</th>
+                        <th>Dropoff Address</th>
                         <th class="sortable-column"
                             ng-if="sortBy !== 'Driver.FirstName' || isFirstSort"
                             ng-click="sortColumn('Driver.FirstName', 'ASC')">
@@ -124,25 +124,6 @@
                         <th>
                             <div class="filter-table">
                                 <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryPickup" 
-                                    ng-keyup="searchPickup($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" ng-model="queryDropoff" 
-                                    ng-keyup="searchDropoff($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
                                     id="date-picker" 
                                     type="text" 
                                     class="form-control input-table" 
@@ -160,6 +141,25 @@
                                     date-range-picker 
                                     ng-model="dropoffDatePicker" 
                                     options="optionsDatepicker" />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    type="search" 
+                                    class="form-control input-table" 
+                                    value="" 
+                                    ng-model="queryPickup" 
+                                    ng-keyup="searchPickup($event)">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    type="search" 
+                                    class="form-control input-table" 
+                                    value="" ng-model="queryDropoff" 
+                                    ng-keyup="searchDropoff($event)">
                             </div>
                         </th>
                         <th>
@@ -211,10 +211,10 @@
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="trip in displayed">
                         <td ng-click="detailsPage(trip.TripID)">{{trip.TripNumber}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.PickupAddress.Address1}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffAddress.Address1}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.PickupAddress.Address1}}</td>
+                        <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffAddress.Address1}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.Driver.FirstName}} {{trip.Driver.LastName}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.ContainerNumber}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.District.Name}}</td>
