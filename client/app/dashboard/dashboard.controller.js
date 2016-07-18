@@ -15,6 +15,7 @@ angular.module('adminApp')
         lodash,
         $cookieStore,
         config,
+        $state,
         $stateParams,
         Notification,
         $q
@@ -22,7 +23,7 @@ angular.module('adminApp')
 
     $scope.totalDays = 4;
     $scope.reloadTime = 900000;
-    $scope.colours = ['#5cb85c','#d9534f','#f0ad4e','#68F000'];
+    $scope.colours = ['#5cb85c','#d9534f','#f0ad4e','#66b3ff'];
     $scope.itemsByPage = 20;
     $scope.offset = 0;
 
@@ -59,7 +60,11 @@ angular.module('adminApp')
     $scope.initDataValues = function() {   
         for (var i = ($scope.totalDays * -1); i <= ($scope.totalDays); i++) {
             $scope.daysRange.push(i);
-            $scope.labels.push(moment().add(i, 'days').format('dddd')); 
+            if (i === 0) {
+                $scope.labels.push(moment().add(i, 'days').format('dddd') + ' (Today)'); 
+            } else {
+                $scope.labels.push(moment().add(i, 'days').format('dddd')); 
+            }
         }
 
         $scope.activeMerchant.forEach(function(val, index) {
@@ -133,7 +138,8 @@ angular.module('adminApp')
         $cookieStore.put('merchants', _.map($scope.activeMerchant, function(n) { return n.key; }));
         var merchantSelected = lodash.find($scope.activeMerchant, {key: data}); 
         $scope.getSummaryMerchantSLA(merchantSelected, index);
-        $scope.getMerchantSLA(merchantSelected, index);
+        $scope.getMerchantSLATotal(merchantSelected, index);
+        $scope.getMerchantSLARemaining(merchantSelected, index);
     }
 
     /**
@@ -151,8 +157,9 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.onMerchantHover = function($index) {
+    $scope.onMerchantHover = function($index, orderCriteria) {
         $scope.merchantSelected = $scope.activeMerchant[$index].key; 
+        $scope.chartSelected = orderCriteria; 
     }
 
     /**
@@ -166,8 +173,8 @@ angular.module('adminApp')
         var dataset = activePoint[0]._datasetIndex;
         var serie = $scope.series[dataset];
         var clickedElementindex = activePoint[0]['_index'];
-        var pickupTypeSelected = lodash.find($scope.pickupTypes, {key: serie});   
-        $scope.detailsPage($scope.merchantSelected, pickupTypeSelected.value, indexToDate(clickedElementindex));      
+        var pickupTypeSelected = lodash.find($scope.pickupTypes, {key: serie}); 
+        $scope.detailsPage($scope.merchantSelected, $scope.chartSelected, pickupTypeSelected.value, indexToDate(clickedElementindex));      
     }
 
     /**
@@ -175,8 +182,12 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.detailsPage = function(merchant, pickupType, date) {
-        $window.open('/dashboard-details/' + merchant + '/' + pickupType + '/' + date);        
+    $scope.detailsPage = function(merchant, chartSelected, pickupType, date) {
+        if (chartSelected === 'total') {
+            $window.open('/dashboard-details-total/' + merchant + '/' + pickupType + '/' + date); 
+        } else if (chartSelected === 'remaining') {
+            $window.open('/dashboard-details-remaining/' + merchant + '/' + pickupType + '/' + date);             
+        }    
     }
 
     /**
@@ -250,6 +261,11 @@ angular.module('adminApp')
             pickupType: $stateParams.pickupType,
             date: $stateParams.date,
         }
+        if ($state.current.name === 'app.dashboard-details-total') {
+            params.param = 'CutOffTime';
+        } else if ($state.current.name === 'app.dashboard-details-remaining') {
+            params.param = 'DueTime';    
+        }    
         Services2.getMerchantStatusCount(params).$promise.then(function(data) {
             $scope.statuses = []; 
             var countAll = data.data['BOOKED'] + data.data['ACCEPTED'] + data.data['PICKUP'] + data.data['IN-TRANSIT'] + 
@@ -274,16 +290,20 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getOrder = function() {
-        $rootScope.$emit('startSpin');
-        $scope.isLoading = true;
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
             merchant: $scope.webstoreName,
             pickupType: $stateParams.pickupType,
-            cutOffTime: $stateParams.date,
             status: $scope.status.value 
         }
+        if ($state.current.name === 'app.dashboard-details-total') {
+            params.cutOffTime = $stateParams.date;
+        } else if ($state.current.name === 'app.dashboard-details-remaining') {
+            params.dueTime = $stateParams.date;            
+        }    
+        $rootScope.$emit('startSpin');
+        $scope.isLoading = true;
         Services2.getOrder(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
@@ -311,10 +331,28 @@ angular.module('adminApp')
         }).$promise.then(function(data) {
             $scope.summaryTotal = data.data.summary.total;
             $scope.summaryDelivered = data.data.summary.delivered;
-            $scope.samedaySLA = (data.data.SDS.accepted / data.data.SDS.delivered * 100) || 0;
-            $scope.nextdaySLA = (data.data.NDS.accepted / data.data.NDS.delivered * 100) || 0;
-            $scope.ondemandSLA = (data.data.ODS.accepted / data.data.ODS.delivered * 100) || 0;
-            $scope.regularSLA = (data.data.REG.accepted / data.data.REG.delivered * 100) || 0;
+            var acceptedSDS = 0
+              , deliveredSDS = 0
+              , acceptedNDS = 0
+              , deliveredNDS = 0
+              , acceptedODS = 0
+              , deliveredODS = 0
+              , acceptedREG = 0
+              , deliveredREG = 0;
+            data.data.SLA.forEach(function(day) {
+                acceptedSDS += day.SDS.accepted;
+                deliveredSDS += day.SDS.delivered;
+                acceptedNDS += day.NDS.accepted;
+                deliveredNDS += day.NDS.delivered;
+                acceptedODS += day.ODS.accepted;
+                deliveredODS += day.ODS.delivered;
+                acceptedREG += day.REG.accepted;
+                deliveredREG += day.REG.delivered;
+            });
+            $scope.samedaySLA = (acceptedSDS / deliveredSDS * 100) || 0;
+            $scope.nextdaySLA = (acceptedNDS / deliveredNDS * 100) || 0;
+            $scope.ondemandSLA = (acceptedODS / deliveredODS * 100) || 0;
+            $scope.regularSLA = (acceptedREG / deliveredREG * 100) || 0;
             $scope.totalSLA = (data.data.summary.accepted / data.data.summary.delivered * 100) || 0;
             $scope.samedayColor = ($scope.samedaySLA > 90) ? 'green' : 'red';
             $scope.nextdayColor = ($scope.nextdaySLA > 90) ? 'green' : 'red';
@@ -331,26 +369,48 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.getMerchantSLA = function(merchant, merchantIndex) {
+    $scope.getMerchantSLATotal = function(merchant, merchantIndex) {
         $rootScope.$emit('startSpin');
         $scope.isLoading = true;
-        $scope.daysRange.forEach(function(i) {
-            Services2.getMerchantSLA({
-                id: merchant.key,
-                start: moment().add(i, 'days').format('YYYY-MM-DD'),
-                end: moment().add(i, 'days').format('YYYY-MM-DD')
-            }).$promise.then(function(data) {
-                $scope.chartData[merchantIndex].total[0][i+$scope.totalDays] = data.data.SDS.total;
-                $scope.chartData[merchantIndex].total[1][i+$scope.totalDays] = data.data.NDS.total;
-                $scope.chartData[merchantIndex].total[2][i+$scope.totalDays] = data.data.ODS.total;
-                $scope.chartData[merchantIndex].total[3][i+$scope.totalDays] = data.data.REG.total;
-                $scope.chartData[merchantIndex].remaining[0][i+$scope.totalDays] = data.data.SDS.ongoing;
-                $scope.chartData[merchantIndex].remaining[1][i+$scope.totalDays] = data.data.NDS.ongoing;
-                $scope.chartData[merchantIndex].remaining[2][i+$scope.totalDays] = data.data.ODS.ongoing;
-                $scope.chartData[merchantIndex].remaining[3][i+$scope.totalDays] = data.data.REG.ongoing;
-                $scope.isLoading = false;
-                $rootScope.$emit('stopSpin');
+        Services2.getMerchantSLA({
+            id: merchant.key,
+            start: moment().add(($scope.totalDays * -1), 'days').format('YYYY-MM-DD'),
+            end: moment().add($scope.totalDays, 'days').format('YYYY-MM-DD'),
+            param: 'CutOffTime'
+        }).$promise.then(function(data) {
+            $scope.daysRange.forEach(function(i) {
+                $scope.chartData[merchantIndex].total[0][i+$scope.totalDays] = data.data.SLA[i+$scope.totalDays].SDS.total;
+                $scope.chartData[merchantIndex].total[1][i+$scope.totalDays] = data.data.SLA[i+$scope.totalDays].NDS.total;
+                $scope.chartData[merchantIndex].total[2][i+$scope.totalDays] = data.data.SLA[i+$scope.totalDays].ODS.total;
+                $scope.chartData[merchantIndex].total[3][i+$scope.totalDays] = data.data.SLA[i+$scope.totalDays].REG.total;
             });
+            $scope.isLoading = false;
+            $rootScope.$emit('stopSpin');
+        });
+    }
+
+    /**
+     * Get merchant SLA
+     * 
+     * @return {void}
+     */
+    $scope.getMerchantSLARemaining = function(merchant, merchantIndex) {
+        $rootScope.$emit('startSpin');
+        $scope.isLoading = true;
+        Services2.getMerchantSLA({
+            id: merchant.key,
+            start: moment().add(($scope.totalDays * -1), 'days').format('YYYY-MM-DD'),
+            end: moment().add($scope.totalDays, 'days').format('YYYY-MM-DD'),
+            param: 'DueTime'
+        }).$promise.then(function(data) {
+            $scope.daysRange.forEach(function(i) {
+                $scope.chartData[merchantIndex].remaining[0][i+$scope.totalDays] = data.data.SLA[i+$scope.totalDays].SDS.ongoing;
+                $scope.chartData[merchantIndex].remaining[1][i+$scope.totalDays] = data.data.SLA[i+$scope.totalDays].NDS.ongoing;
+                $scope.chartData[merchantIndex].remaining[2][i+$scope.totalDays] = data.data.SLA[i+$scope.totalDays].ODS.ongoing;
+                $scope.chartData[merchantIndex].remaining[3][i+$scope.totalDays] = data.data.SLA[i+$scope.totalDays].REG.ongoing;
+            });
+            $scope.isLoading = false;
+            $rootScope.$emit('stopSpin');
         });
     }
 
@@ -371,10 +431,28 @@ angular.module('adminApp')
             $scope.activeMerchant[merchantIndex].summaryDelivered = data.data.summary.delivered;
             $scope.activeMerchant[merchantIndex].summaryApproach = data.data.summary.approaching;
             $scope.activeMerchant[merchantIndex].over = data.data.summary.over;
-            $scope.activeMerchant[merchantIndex].samedaySLA = (data.data.SDS.accepted / data.data.SDS.delivered * 100) || 0;
-            $scope.activeMerchant[merchantIndex].nextdaySLA = (data.data.NDS.accepted / data.data.NDS.delivered * 100) || 0;
-            $scope.activeMerchant[merchantIndex].ondemandSLA = (data.data.ODS.accepted / data.data.ODS.delivered * 100) || 0;
-            $scope.activeMerchant[merchantIndex].regularSLA = (data.data.REG.accepted / data.data.REG.delivered * 100) || 0;
+            var acceptedSDS = 0
+              , deliveredSDS = 0
+              , acceptedNDS = 0
+              , deliveredNDS = 0
+              , acceptedODS = 0
+              , deliveredODS = 0
+              , acceptedREG = 0
+              , deliveredREG = 0;
+            data.data.SLA.forEach(function(day) {
+                acceptedSDS += day.SDS.accepted;
+                deliveredSDS += day.SDS.delivered;
+                acceptedNDS += day.NDS.accepted;
+                deliveredNDS += day.NDS.delivered;
+                acceptedODS += day.ODS.accepted;
+                deliveredODS += day.ODS.delivered;
+                acceptedREG += day.REG.accepted;
+                deliveredREG += day.REG.delivered;
+            });
+            $scope.activeMerchant[merchantIndex].samedaySLA = (acceptedSDS / deliveredSDS * 100) || 0;
+            $scope.activeMerchant[merchantIndex].nextdaySLA = (acceptedNDS / deliveredNDS * 100) || 0;
+            $scope.activeMerchant[merchantIndex].ondemandSLA = (acceptedODS / deliveredODS * 100) || 0;
+            $scope.activeMerchant[merchantIndex].regularSLA = (acceptedREG / deliveredREG * 100) || 0;
             $scope.activeMerchant[merchantIndex].totalSLA = (data.data.summary.accepted / data.data.summary.delivered * 100) || 0; 
             $scope.activeMerchant[merchantIndex].samedayColor = ($scope.activeMerchant[merchantIndex].samedaySLA > 90) ? 'green' : 'red';
             $scope.activeMerchant[merchantIndex].nextdayColor = ($scope.activeMerchant[merchantIndex].nextdaySLA > 90) ? 'green' : 'red';
@@ -421,6 +499,8 @@ angular.module('adminApp')
         $scope.merchants = [];
         $scope.pickupTypes = [];
         $scope.currentWeek = moment().week();
+        $scope.currentWeekStart = moment().startOf('isoWeek').format('YYYY-MM-DD');
+        $scope.currentWeekEnd = moment().endOf('isoWeek').format('YYYY-MM-DD');
         if ($stateParams.merchantID !== undefined) {
             getDefaultValues();
             $scope.getMerchantDetails($stateParams.merchantID);
@@ -433,7 +513,8 @@ angular.module('adminApp')
                 $scope.getMainSLA();
                 $scope.activeMerchant.forEach(function(merchant, index){
                     $scope.getSummaryMerchantSLA(merchant, index);
-                    $scope.getMerchantSLA(merchant, index);
+                    $scope.getMerchantSLATotal(merchant, index);
+                    $scope.getMerchantSLARemaining(merchant, index);
                 });
             });
         }

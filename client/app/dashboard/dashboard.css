@@ -12,6 +12,7 @@
     text-transform: uppercase;
     background-color: #a6a6a6;
     color: white;
+    min-height: 80px;
 }
 
 .top-stat-box-goal a {
@@ -27,11 +28,18 @@
     font-size: 14px;
     text-transform: uppercase;
     color: white;
+    min-height: 80px;
 }
 
 .title-chart {
     font-weight: bold;
     font-size: 16px;
+}
+
+.title-statistics {
+    font-weight: bold;
+    font-size: 12px;
+    text-align: center;
 }
 
 .side-stat-box {

@@ -55,7 +55,7 @@
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
-                    <tr class="clickableRow" ng-repeat="order in displayed">
+                    <tr ng-repeat="order in displayed">
                         <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
                         <td>{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName}}</td>
                         <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>

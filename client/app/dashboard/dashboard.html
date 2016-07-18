@@ -4,6 +4,7 @@
         <div class="col-md-3 col-sm-7 top-stat-box-goal well well-sm">
             <div>
                 Week {{currentWeek}} Goal
+                ({{currentWeekStart}} - {{currentWeekEnd}})
             </div>
             <div>
                 {{ summaryTotal }} / <a href="#" onbeforesave="setGoal($data)" editable-text="activeGoal">{{ activeGoal || "0" }}</a>
@@ -35,7 +36,7 @@
         </div>
         <div class="col-md-1 col-sm-7 top-stat-box-type well well-sm box-{{ondemandColor}}">
             <div>
-                On Demand
+                On-Demand
             </div>
             <div>
                 {{ ondemandSLA | number:2 }} %
@@ -65,8 +66,8 @@
                 {{ showMerchant($index) }}
             </a>
         </div>
-        <div ng-mouseover="onMerchantHover($index)" class="merchant-content">
-            <div class="graph-content col-md-5 col-sm-7">
+        <div class="merchant-content">
+            <div ng-mouseover="onMerchantHover($index, 'total')" class="graph-content col-md-5 col-sm-7">
                 <hr>
                 <p class="title-chart">
                     Total Order
@@ -74,10 +75,10 @@
                 <hr>
                 <canvas id="horizontal" class="chart chart-horizontal-bar"
                     chart-data="merchant.dataTotal" chart-labels="labels" chart-series="series"
-                    chart-colors="colours" height="260" chart-click="onBarClick"
+                    chart-options="options" chart-colors="colours" height="260" chart-click="onBarClick"
                 </canvas>
             </div>
-            <div class="graph-content col-md-5 col-sm-7">
+            <div ng-mouseover="onMerchantHover($index, 'remaining')" class="graph-content col-md-5 col-sm-7">
                 <hr>
                 <p class="title-chart">
                     Remaining Order
@@ -89,6 +90,9 @@
                 </canvas>
             </div>
             <div class="graph-content col-md-2 col-sm-7">
+                <p class="title-statistics">
+                    Week {{currentWeek}} Statistics ({{currentWeekStart}} - {{currentWeekEnd}})
+                </p>
                 <div class="side-stat-box well well-sm">
                     <div>
                         Delivered
@@ -115,7 +119,7 @@
                 </div>
                 <div class="side-stat-box well well-sm box-{{merchant.ondemandColor}}">
                     <div>
-                        On Demand
+                        On-Demand
                     </div>
                     <div>
                         {{ merchant.ondemandSLA | number:2 }} %
