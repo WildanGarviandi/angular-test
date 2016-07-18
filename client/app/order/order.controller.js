@@ -96,6 +96,13 @@ angular.module('adminApp')
         CompanyName: 'All (search by name)'
     }];
 
+    $scope.fleets = [{
+        User: {
+            UserID: '0'
+        },
+        CompanyName: 'All'
+    }];
+
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
     $scope.createdDatePicker = {
@@ -610,12 +617,6 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.showImportOrders = function() {
-        $scope.fleets = [{
-            User: {
-                UserID: '0'
-            },
-            CompanyName: 'All'
-        }];
         $scope.getMerchants();
         getCompanies()
         .then(function () {
@@ -1167,12 +1168,6 @@ angular.module('adminApp')
             SweetAlert.swal('Error', 'You have selected one or more orders which cannot be reassigned', 'error');
             return false;
         }
-        $scope.fleets = [{
-            User: {
-                UserID: '0'
-            },
-            CompanyName: 'All'
-        }];
         getCompanies()
         .then(function () {
             ngDialog.close();
