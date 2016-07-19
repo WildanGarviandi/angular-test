@@ -390,6 +390,29 @@ angular.module('adminApp')
                 controller: 'check-exist'
             }
         },
+        getMainSLA: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'sla'
+            }
+        },
+        getMerchantSLA: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'sla',
+                id: null
+            }
+        },
+        getMerchantStatusCount: {
+            method: 'GET',
+            url: config.url + ':module/:controller/:id/:pickupType',
+            params: {
+                module: 'dashboard',
+                controller: 'sla',
+            },
+        },
         bulkSetDeliveredStatus: {
             method: 'POST',
             params: {
