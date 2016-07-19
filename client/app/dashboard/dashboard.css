@@ -96,3 +96,25 @@
     width: 280px;
     height: 200px;
 }
+
+.status-list {
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+}
+
+.status-red {
+    background-color: #ff5a60;
+}
+
+.status-green {
+    background-color: #5cb85c;
+}
+
+.status-blue {
+    background-color: #66b3ff;
+}
+
+.status-yellow {
+    background-color: #f0ad4e;
+}

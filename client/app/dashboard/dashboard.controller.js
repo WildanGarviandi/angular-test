@@ -273,10 +273,10 @@ angular.module('adminApp')
                 data.data['RETURNED_SENDER'];
             $scope.statuses.push({key: 'ALL', value: 'All', count: countAll, color: '#a6a6a6' });
             $scope.statuses.push({key: 'BOOKED', value: 1, count: data.data['BOOKED'], color: '#f0ad4e' });
+            $scope.statuses.push({key: 'NOT ASSIGNED', value: 6, count: data.data['NOTASSIGNED'], color: '#f0ad4e' });
             $scope.statuses.push({key: 'ACCEPTED', value: 2, count: data.data['ACCEPTED'], color: '#f0ad4e' });
             $scope.statuses.push({key: 'PICKUP', value: 3, count: data.data['PICKUP'], color: '#f0ad4e' });
             $scope.statuses.push({key: 'IN-TRANSIT', value: 4, count: data.data['IN-TRANSIT'], color: '#f0ad4e' });
-            $scope.statuses.push({key: 'NOT ASSIGNED', value: 6, count: data.data['NOTASSIGNED'], color: '#f0ad4e' });
             $scope.statuses.push({key: 'RETURNED WAREHOUSE', value: 15, count: data.data['RETURNED_WAREHOUSE'], color: '#66b3ff' });
             $scope.statuses.push({key: 'RETURNED SENDER', value: 16, count: data.data['RETURNED_SENDER'], color: '#66b3ff' });
             $scope.statuses.push({key: 'CANCELLED', value: 13, count: data.data['CANCELLED'], color: '#ff5a60' });
@@ -309,6 +309,18 @@ angular.module('adminApp')
             $scope.displayed = data.data.rows;
             $scope.displayed.forEach(function (val, index, array) {
                 array[index].PickupType = (lodash.find($scope.pickupTypes, {value: val.PickupType})).key;
+                if ([1, 2, 3, 4, 6].indexOf(val.OrderStatus.OrderStatusID) > -1) {
+                    array[index].Color = 'yellow';
+                }
+                if ([5].indexOf(val.OrderStatus.OrderStatusID) > -1) {
+                    array[index].Color = 'green';
+                }
+                if ([15, 16].indexOf(val.OrderStatus.OrderStatusID) > -1) {
+                    array[index].Color = 'blue';
+                }
+                if ([13].indexOf(val.OrderStatus.OrderStatusID) > -1) {
+                    array[index].Color = 'red';
+                }
             });
             $rootScope.$emit('stopSpin');
             $scope.isLoading = false;
@@ -463,7 +475,8 @@ angular.module('adminApp')
             if ((data.data.summary.approaching + data.data.summary.over) > 0) {         
                 Notification.error({
                     message: 'Merchant ' + merchantSelected.value + ' has approaching SLA order: ' + 
-                        data.data.summary.approaching + ' and over SLA order: ' + data.data.summary.over, 
+                        data.data.summary.approaching + ' and over SLA order: ' + data.data.summary.over +
+                        ' (' + $scope.currentWeekStart + ' - ' + $scope.currentWeekEnd + ')', 
                     title: 'Warning',
                     delay: $scope.reloadTime - 10000
                 });
@@ -499,8 +512,8 @@ angular.module('adminApp')
         $scope.merchants = [];
         $scope.pickupTypes = [];
         $scope.currentWeek = moment().week();
-        $scope.currentWeekStart = moment().startOf('isoWeek').format('YYYY-MM-DD');
-        $scope.currentWeekEnd = moment().endOf('isoWeek').format('YYYY-MM-DD');
+        $scope.currentWeekStart = moment().startOf('isoWeek').format('MMM DD');
+        $scope.currentWeekEnd = moment().endOf('isoWeek').format('MMM DD');
         if ($stateParams.merchantID !== undefined) {
             getDefaultValues();
             $scope.getMerchantDetails($stateParams.merchantID);

@@ -61,7 +61,7 @@
                         <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                         <td>{{order.Driver.CountryCode}}{{order.Driver.PhoneNumber}}</td>
                         <td>{{order.PickupType}}</td>
-                        <td>{{order.OrderStatus.OrderStatus}}</td>
+                        <td class="status-{{order.Color}} status-list">{{order.OrderStatus.OrderStatus}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
