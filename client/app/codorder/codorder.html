@@ -32,8 +32,8 @@
                         <th>Driver</th>
                         <th>Fleet Manager</th>
                         <th>COD Value</th>
-                        <th>Webstore Share</th>
-                        <th>Etobee Share</th>
+                        <th ng-hide="true">Webstore Share</th>
+                        <th ng-hide="true">Etobee Share</th>
                         <th>Order Status</th>
                         <th>Delivered Time</th>
                         <th>Driver/Logistic Transfer</th>
@@ -104,8 +104,8 @@
                             </div>
                         </th>
                         <th></th>
-                        <th></th>
-                        <th></th>
+                        <th ng-hide="true"></th>
+                        <th ng-hide="true"></th>
                         <th>
                             <div class="filter-table">
                                 <ui-select ng-model="status" 
@@ -137,14 +137,14 @@
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length == 0">
                     <tr>
-                        <td colspan="9" class="text-center">
+                        <td colspan="10" class="text-center">
                             No data found
                         </td>
                     </tr>
                 </tbody>
                 <tbody ng-show="isLoading">
                     <tr>
-                        <td colspan="9" class="text-center">Loading ... </td>
+                        <td colspan="10" class="text-center">Loading ... </td>
                     </tr>
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
@@ -157,8 +157,8 @@
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.TotalValue}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.WebstoreShare}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.EtobeeShare}}</td>
+                        <td ng-hide="true" ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.WebstoreShare}}</td>
+                        <td ng-hide="true" ng-click="detailsPage(order.UserOrderID)">{{order.CODPaymentUserOrder.EtobeeShare}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.OrderStatus.OrderStatus}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.DeliveredTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.CODPaymentUserOrder.CODPayment.Status || 'Unpaid'}}</td>
@@ -166,7 +166,7 @@
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
                     <tr>
-                        <td colspan="9" 
+                        <td colspan="10" 
                             class="text-center" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 
