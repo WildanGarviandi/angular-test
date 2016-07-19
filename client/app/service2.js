@@ -390,6 +390,13 @@ angular.module('adminApp')
                 controller: 'check-exist'
             }
         },
+        bulkSetDeliveredStatus: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'mark-as-delivered'
+            }
+        },
         bulkSetPrice: {
             method: 'POST',
             params: {

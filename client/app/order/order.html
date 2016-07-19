@@ -37,6 +37,7 @@
                     <ul class="dropdown-menu">
                         <li><a ng-click="showSetPrice()">Update Price</a></li>
                         <li><a ng-click="showReassignFleet()">Reassign Fleet</a></li>
+                        <li><a ng-click="bulkSetDeliveredStatus()">Mark as Delivered</a></li>
                     </ul>
                 </div>
             </div>
@@ -159,7 +160,7 @@
                 </tbody>
                 <tbody>
                     <tr>
-                        <th>
+                        <th class="order-checkbox">
                         </th>
                         <th>
                             <div class="filter-table">
@@ -316,11 +317,11 @@
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
-                    <tr ng-repeat="order in displayed">
-                        <td class="">
+                    <tr ng-click="detailsPage(order.UserOrderID)" class="clickableRow" ng-repeat="order in displayed">
+                        <td ng-click="$event.stopPropagation()">
                             <input type="checkbox" ng-change="prepareSelectedOrders()" ng-model="order.Selected" />
                         </td>
-                        <td><a ng-href="/order/details/{{order.UserOrderID}}">{{order.UserOrderNumber}} / {{order.WebOrderID}}</a></td>
+                        <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
                         <td>{{order.PickupAddress.Address1}}</td>
                         <td>{{order.PickupAddress.FirstName}} {{order.PickupAddress.LastName}} /
                             {{order.PickupAddress.CountryCode}}-{{order.PickupAddress.MobileNumber}} /

@@ -86,6 +86,7 @@ angular.module('adminApp')
     $scope.zipLength = config.zipLength;
     $scope.reassignableOrderStatus = config.reassignableOrderStatus;
     $scope.notCancellableOrderStatus = config.notCancellableOrderStatus;
+    $scope.deliverableOrderStatus = config.deliverableOrderStatus;
     $scope.reassignableFleet = config.reassignableFleet;
     $scope.updatablePrice = config.updatablePrice;
 
@@ -126,7 +127,7 @@ angular.module('adminApp')
 
     $scope.orders = [];
     $scope.newPrice = 0;
-    $scope.limitPages = [$scope.itemsByPage, 25, 50,100]; 
+    $scope.limitPages = [$scope.itemsByPage, 25, 50, 100];
     $scope.isOrderSelected = false;
 
     /**
@@ -437,7 +438,7 @@ angular.module('adminApp')
     };
 
     $scope.detailsPage = function(id) {
-        window.location = '/order/details/' + id;
+        $window.open('/order/details/' + id);
     };
 
     /**
@@ -464,7 +465,14 @@ angular.module('adminApp')
             $scope.notCancellableOrderStatus.forEach(function (status) {
                 if ($scope.order.OrderStatus.OrderStatusID === status) { $scope.canBeCancelled = false; }
             });
-            if (!$scope.canBeCopied && !$scope.canBeReassigned && !$scope.canBeCancelled) {
+            $scope.canBeDelivered = false;
+            $scope.deliverableOrderStatus.forEach(function (status) {
+                if ($scope.order.OrderStatus.OrderStatusID === status) { $scope.canBeDelivered = true; }
+            })
+            if (!$scope.canBeCopied && 
+                !$scope.canBeReassigned && 
+                !$scope.canBeCancelled &&
+                !$scope.canBeDelivered) {
                 $scope.noAction = true;
             }
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
@@ -1057,6 +1065,143 @@ angular.module('adminApp')
         getExistOrder();
         $scope.getOrder();
     };
+
+    /**
+     * Set an order status to DELIVERED
+     *
+     * @return {void}
+     */
+    $scope.setDeliveredStatus = function () {
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Mark as DELIVERED?",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.bulkSetDeliveredStatus({
+                    orderIDs: [$scope.order.UserOrderID]
+                }).$promise.then(function (result) {
+                    if (result.data.error) {
+                        throw {
+                            data: {
+                                error: {
+                                    message: result.data.error[0].error.message
+                                }
+                            }
+                        }
+                    }
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Order status changed');
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                            title: 'Failed in marking status as DELIVERED', 
+                            text: e.data.error.message, 
+                            type: "error"
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            $state.reload();
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    /**
+     * Set multiple order status to DELIVERED
+     * @return {void}
+     */
+    $scope.bulkSetDeliveredStatus = function () {
+        var totalSelected = 0;
+        var orderIDs = [];
+        var prohibitedIDs = [];
+        $scope.displayed.forEach(function (val) {
+            if (val.Selected) { 
+                // Check if status can be mark as delivered
+                if ($scope.deliverableOrderStatus.indexOf(val.OrderStatus.OrderStatusID) >= 0) {
+                    totalSelected++; 
+                    orderIDs.push(val.UserOrderID);
+                } else {
+                    prohibitedIDs.push(val);
+                }
+            }
+        });
+        if (prohibitedIDs.length === 0 && totalSelected) {
+            SweetAlert.swal({
+                title: 'Are you sure?',
+                text: "Mark as DELIVERED for " + totalSelected + " orders ?",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: 'No'
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    $rootScope.$emit('startSpin');
+                    Services2.bulkSetDeliveredStatus({
+                        orderIDs: orderIDs
+                    }).$promise.then(function (result) {
+                        if (result.data.error) {
+                            var messages = '<table align="center">';
+                            result.data.error.forEach(function (e) {
+                                messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
+                                            ' : </td><td class="text-left"> ' + e.error.message + '</td></tr>';
+                            })
+                            messages += '</table>';
+                            throw {
+                                data: {
+                                    message: result.data.message,
+                                    error: {
+                                        message: messages
+                                    }
+                                }
+                            }
+                        }
+                        $rootScope.$emit('stopSpin');
+                        SweetAlert.swal('Orders status changed');
+                        $state.reload();
+                    }).catch(function (e) {
+                        $rootScope.$emit('stopSpin');
+                        SweetAlert.swal({
+                            title: (e.data.message) ? e.data.message : 'Failed in marking status as DELIVERED', 
+                            text: e.data.error.message, 
+                            type: "error",
+                            html: true,
+                            customClass: 'alert-big'
+                        }, function (isConfirm) {
+                            if (isConfirm) {
+                                $state.reload();
+                            }
+                        });
+                    });
+                }
+            });
+        } else if (prohibitedIDs.length > 0) {
+            var messages = '';
+            if (prohibitedIDs.length > 1) {
+                messages += 'These orders have status which are prohibited <table align="center">';
+            } else {
+                messages += 'This order has status which is prohibited <table align="center">';
+            }
+            prohibitedIDs.forEach(function (e) {
+                messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
+                            ' : </td><td class="text-left"> ' + e.OrderStatus.OrderStatus + '</td></tr>';
+            })
+            messages += '</table>';
+            SweetAlert.swal({
+                title: 'Can not mark as DELIVERED',
+                text: messages,
+                type: 'error',
+                html: true
+            });
+        } else {
+            SweetAlert.swal('No orders selected');
+        }
+    }
 
     /**
      * Select all or unselect all orders.

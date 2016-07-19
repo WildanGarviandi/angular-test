@@ -302,6 +302,16 @@
     width: 2000px;
 }
 
+#order-page table {
+    width: 100%;
+}
+
+#order-page .table > thead > tr > th.order-checkbox, td.order-checkbox {
+    min-width: 0px;
+    width: 20px;
+    text-align: center;
+}
+
 #order-page .table > thead > tr > th {
     min-width: 150px;
 }
@@ -416,6 +426,14 @@
 
 .action-button {
     margin-left: -15px;
+}
+
+a {
+    cursor: pointer;
+}
+
+.alert-big {
+    width: 600px;
 }
 
 .failed-image {

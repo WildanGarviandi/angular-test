@@ -56,6 +56,8 @@ function env() {
         // INTRANSIT, DELIVERED, CANCELLED, RETURNED_SENDER
         reassignableOrderStatus: [2, 6, 10, 12, 15],
         // ACCEPTED, NOTASSIGNED, NO-DRIVER, EXPIRED, RETURNED_WAREHOUSE
+        deliverableOrderStatus: [2, 3, 4],
+        // ACCEPTED, PICKUP, IN-TRANSIT
         reassignableFleet: [1, 6, 9],
         // BOOKED, NOTASSIGNED, PREBOOKED
         updatablePrice: [1, 6, 9],
