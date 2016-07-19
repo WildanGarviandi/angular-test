@@ -435,3 +435,8 @@ a {
 .alert-big {
     width: 600px;
 }
+
+.failed-image {
+    width: 150px;
+    height: 200px;
+}

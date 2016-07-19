@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('adminApp')
-    .controller('OrderCtrl', 
+    .controller('ReturnedOrdersCtrl', 
         function(
             $scope, 
             Auth, 
@@ -86,22 +86,12 @@ angular.module('adminApp')
     $scope.zipLength = config.zipLength;
     $scope.reassignableOrderStatus = config.reassignableOrderStatus;
     $scope.notCancellableOrderStatus = config.notCancellableOrderStatus;
-    $scope.deliverableOrderStatus = config.deliverableOrderStatus;
-    $scope.reassignableFleet = config.reassignableFleet;
-    $scope.updatablePrice = config.updatablePrice;
 
     $scope.isFirstSort = true;
 
     $scope.companies = [{
         CompanyDetailID: 'all',
         CompanyName: 'All (search by name)'
-    }];
-
-    $scope.fleets = [{
-        User: {
-            UserID: '0'
-        },
-        CompanyName: 'All'
     }];
 
     $scope.newDeliveryFee = 0;
@@ -115,20 +105,6 @@ angular.module('adminApp')
  
     $scope.isStartDatePicker = false;
     $scope.isEndDatePicker = false;
-    $scope.$watch(
-        'queryMultipleEDS',
-        function (newValue) {
-            // Filter empty line(s)
-            $scope.userOrderNumbers = newValue.split('\n').filter(function (val) {
-                return (val);
-            });
-        }
-    );
-
-    $scope.orders = [];
-    $scope.newPrice = 0;
-    $scope.limitPages = [$scope.itemsByPage, 25, 50, 100];
-    $scope.isOrderSelected = false;
 
     /**
      * Get default values from config
@@ -248,26 +224,24 @@ angular.module('adminApp')
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
             startDropoff: $scope.dropoffDatePicker.startDate,
-            endDropoff: $scope.dropoffDatePicker.endDate,
-            fleet: $scope.queryFleet,
-            sortBy: $scope.sortBy,
-            sortCriteria: $scope.sortCriteria,
+            endDropoff: $scope.dropoffDatePicker.endDate
         }
-        Services2.getOrder(params).$promise.then(function(data) {
+        Services2.getReturnedOrders(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
-            $scope.orders = data.data.rows;
             $scope.displayed.forEach(function (val, index, array) {
-                array[index].PickupType = (lodash.find($scope.pickupTypes, {value: val.PickupType})).key;
-                if (val.DeviceType && val.DeviceType.DeviceTypeID === 7) {
-                    array[index].OrderType = (lodash.find($scope.orderTypes, {value: 7})).key;
+                array[index].UserOrder.PickupType = (lodash.find($scope.pickupTypes, {value: val.UserOrder.PickupType})).key;
+                if (val.UserOrder.DeviceType && val.UserOrder.DeviceType.DeviceTypeID === 7) {
+                    array[index].UserOrder.OrderType = (lodash.find($scope.orderTypes, {value: 7})).key;
                 } else {
-                    array[index].OrderType = (lodash.find($scope.orderTypes, {value: 1})).key;
+                    array[index].UserOrder.OrderType = (lodash.find($scope.orderTypes, {value: 1})).key;
                 }
-                if (val.WebstoreUser) {
-                    array[index].CustomerName = val.WebstoreUser.FirstName + ' ' + val.WebstoreUser.LastName;
+                if (val.UserOrder.WebstoreUser) {
+                    array[index].UserOrder.CustomerName = val.UserOrder.WebstoreUser.FirstName + ' ' + val.UserOrder.WebstoreUser.LastName;
                 } else {
-                    array[index].CustomerName = val.User.FirstName + ' ' + val.User.LastName;
+                    if (val.UserOrder.User) {
+                        array[index].UserOrder.CustomerName = val.UserOrder.User.FirstName + ' ' + val.UserOrder.User.LastName;
+                    }
                 }
             });
             $rootScope.$emit('stopSpin');
@@ -276,23 +250,6 @@ angular.module('adminApp')
                 data.data.count / $scope.tableState.pagination.number);
         });
     }
-
-    /**
-     * Get all order that exist on multiple EDS / WebOrderID searching
-     * @return void
-     */
-    var getExistOrder = function () {
-        Services2.getExistOrder({
-            userOrderNumbers: JSON.stringify($scope.userOrderNumbers)
-        }).$promise.then(function (result) {
-            $scope.orderNotFound = [];
-            result.data.forEach(function (order) {
-                if (!order.exist) {
-                    $scope.orderNotFound.push(order.key);
-                }
-            });
-        });
-    };
 
     /**
      * Add search user order number
@@ -392,33 +349,6 @@ angular.module('adminApp')
             $scope.getOrder();
         };
     }
-
-    /**
-     * Add search fleet
-     * 
-     * @return {void}
-     */
-    $scope.searchFleet = function(event) {
-        if ((event && event.keyCode === 13) || !event) {
-            $scope.offset = 0;
-            $scope.tableState.pagination.start = 0;
-            $scope.getOrder();
-        };
-    }
-
-    /**
-     * Sort by column
-     * 
-     * @return {void}
-     */
-    $scope.sortColumn = function(sortBy, sortCriteria) {
-        $scope.sortBy = sortBy;
-        $scope.sortCriteria = sortCriteria;
-        $scope.isFirstSort = false;
-        $scope.offset = 0;
-        $scope.tableState.pagination.start = 0;
-        $scope.getOrder();
-    }
     
     /**
      * Init table state
@@ -430,6 +360,8 @@ angular.module('adminApp')
         $scope.tableState = state;
         $scope.getStatus(); 
         $scope.getOrder();
+        $scope.getMerchants();
+        $scope.getWebstores();
         $scope.isFirstLoaded = true;
     }
 
@@ -438,7 +370,7 @@ angular.module('adminApp')
     };
 
     $scope.detailsPage = function(id) {
-        $window.open('/order/details/' + id);
+        window.open('/returned-orders/details/' + id);
     };
 
     /**
@@ -450,10 +382,11 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         $scope.isLoading = true;
         $scope.id = $stateParams.orderID;
-        Services2.getOrderDetails({
+        Services2.getReturnedOrderDetails({
             id: $scope.id,
         }).$promise.then(function(data) {
-            $scope.order = data.data;
+            $scope.orderReturned = data.data;
+            $scope.order = data.data.UserOrder;
             $scope.order.PickupType = (lodash.find($scope.pickupTypes, {value: $scope.order.PickupType})).key;
             $scope.canBeReturned = ($scope.order.OrderStatus.OrderStatusID === 15);
             $scope.canBeCopied = ($scope.order.OrderStatus.OrderStatusID === 13);
@@ -465,14 +398,7 @@ angular.module('adminApp')
             $scope.notCancellableOrderStatus.forEach(function (status) {
                 if ($scope.order.OrderStatus.OrderStatusID === status) { $scope.canBeCancelled = false; }
             });
-            $scope.canBeDelivered = false;
-            $scope.deliverableOrderStatus.forEach(function (status) {
-                if ($scope.order.OrderStatus.OrderStatusID === status) { $scope.canBeDelivered = true; }
-            })
-            if (!$scope.canBeCopied && 
-                !$scope.canBeReassigned && 
-                !$scope.canBeCancelled &&
-                !$scope.canBeDelivered) {
+            if (!$scope.canBeCopied && !$scope.canBeReassigned && !$scope.canBeCancelled) {
                 $scope.noAction = true;
             }
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
@@ -605,110 +531,6 @@ angular.module('adminApp')
     };
 
     /**
-     * Get merchant selection
-     * 
-     * @return {void}
-     */
-    $scope.getMerchants = function() {
-        Webstores.getWebstore().$promise.then(function(data) {
-            $scope.merchants = []; 
-            data.data.webstores.forEach(function(merchant) {
-                $scope.merchants.push({
-                    key: merchant.webstore.FirstName + ' ' + merchant.webstore.LastName, 
-                    value: merchant.webstore.UserID
-                });
-            });
-        });
-    }
-
-    /**
-     * Show import orders modals
-     * 
-     * @return {void}
-    */
-    $scope.showImportOrders = function() {
-        $scope.getMerchants();
-        getCompanies()
-        .then(function () {
-            ngDialog.close()
-            ngDialog.open({
-                template: 'importModal',
-                scope: $scope,
-                className: 'ngdialog-theme-default import-orders'
-            });
-        });
-    }
-
-    /**
-     * Set imported date picker
-     * 
-     * @return {void}
-    */
-    $scope.onTimeSet = function (newDate, oldDate) {
-        $scope.importedDatePicker = newDate;
-    }
-
-    /**
-     * Clear message
-     * 
-     * @return {void}
-    */
-    $scope.clearMessage = function () {
-        $scope.uploaded = [];
-        $scope.updated = [];
-        $scope.error = [];
-    }
-
-    /**
-     * Upload orders
-     * 
-     * @return {void}
-    */
-    $scope.uploadOrders = function(files) {
-        if ($scope.merchant === undefined) {
-            alert('Please select merchant');
-            return;
-        }
-        if (files && files.length) {
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                if (!file.$error) {
-                    $rootScope.$emit('startSpin');
-                    Upload.upload({
-                        url: config.url + 'order/import/xlsx',
-                        data: {
-                            file: file,
-                            merchantID : $scope.merchant.value,
-                            pickupTime: $scope.importedDatePicker,
-                            fleetManagerID: $scope.fleet.User.UserID
-                        }
-                    }).then(function(response) {
-                        $rootScope.$emit('stopSpin');
-                        $scope.clearMessage();
-                        response.data.data.forEach(function(order, index){
-                            var row = index + 2;
-                            if (order.isCreated) {
-                                $scope.uploaded.push(order);
-                            } else if (order.isUpdated) {
-                                $scope.updated.push(order);
-                            } else {
-                                $scope.error.push({row: row, list: order.error});
-                            }
-                        });
-                    }).catch(function(error){
-                        $rootScope.$emit('stopSpin');
-                        $scope.clearMessage();
-                        var errorMessage = error.data.error.message;
-                        if (!(errorMessage instanceof Array)) {
-                            $scope.error.push({list: [error.data.error.message]});
-                        }
-                    });
-                }
-            }
-        }
-    };
-
-    /**
      * Change order status to RETURN_CUSTOMER
      * 
      */
@@ -765,6 +587,7 @@ angular.module('adminApp')
         });
     };
 
+
     /**
      * Cancel the order
      * @return void
@@ -798,6 +621,23 @@ angular.module('adminApp')
     };
 
     /**
+     * Get merchant selection
+     * 
+     * @return {void}
+     */
+    $scope.getMerchants = function() {
+        Webstores.getWebstore().$promise.then(function(data) {
+            $scope.merchants = []; 
+            data.data.webstores.forEach(function(merchant) {
+                $scope.merchants.push({
+                    key: merchant.webstore.FirstName + ' ' + merchant.webstore.LastName, 
+                    value: merchant.webstore.UserID
+                });
+            });
+        });
+    }
+
+    /**
      * Get all companies
      * 
      * @return {Object} Promise
@@ -810,9 +650,7 @@ angular.module('adminApp')
                     return i.CompanyName.toLowerCase(); 
                 });
                 $scope.companies = $scope.companies.concat(companies);
-                $scope.company = $scope.companies[0];                
-                $scope.fleets = $scope.fleets.concat(companies);
-                $scope.fleet = $scope.fleets[0];   
+                $scope.company = $scope.companies[0];
                 $rootScope.$emit('stopSpin');
                 resolve();
             });
@@ -858,93 +696,13 @@ angular.module('adminApp')
         });
     };
 
-    var getWebstores = function () {
+    $scope.getWebstores = function () {
         return Services2.getWebstores().$promise.then(function (result) {
             $scope.merchants = result.data.webstores.map(function (val) {
                 return val.webstore.FirstName + ' ' + val.webstore.LastName;
             });
         });
     };
-    getWebstores();
-
-    /**
-     * Show export orders modals
-     * 
-     * @return {void}
-     */
-    $scope.showExportOrders = function() {
-        ngDialog.close()
-        return ngDialog.open({
-            template: 'exportModal',
-            scope: $scope
-        });
-    }
- 
-    /**
-     * Export normal orders
-     * 
-     * @return {void}
-     */
-    $scope.exportNormalOrders = function() {
-        $rootScope.$emit('startSpin');
-        if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
-        }
-        Services2.exportNormalOrders({
-            startDate: $scope.createdDatePicker.startDate,
-            endDate: $scope.createdDatePicker.endDate,
-        }).$promise.then(function(result) {
-            ngDialog.closeAll();
-            $rootScope.$emit('stopSpin');
-            window.location = config.url + 'order/download/' + result.data.hash;
-        }).catch(function() {
-            $rootScope.$emit('stopSpin');
-        })
-    }
-
-    /**
-     * Export uploadable orders
-     * 
-     * @return {void}
-     */
-    $scope.exportUploadableOrders = function() {
-        $rootScope.$emit('startSpin');
-        if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
-        }
-        Services2.exportUploadableOrders({
-            startDate: $scope.createdDatePicker.startDate,
-            endDate: $scope.createdDatePicker.endDate,
-        }).$promise.then(function(result) {
-            ngDialog.closeAll();
-            $rootScope.$emit('stopSpin');
-            window.location = config.url + 'order/download/' + result.data.hash;
-        }).catch(function() {
-            $rootScope.$emit('stopSpin');
-        })
-    }
-
-    /**
-     * Export completed orders
-     * 
-     * @return {void}
-     */
-    $scope.exportCompletedOrders = function() {
-        $rootScope.$emit('startSpin');
-        if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
-        }
-        Services2.exportCompletedOrders({
-            startDate: $scope.createdDatePicker.startDate,
-            endDate: $scope.createdDatePicker.endDate,
-        }).$promise.then(function(result) {
-            ngDialog.closeAll();
-            $rootScope.$emit('stopSpin');
-            window.location = config.url + 'order/download/' + result.data.hash;
-        }).catch(function() {
-            $rootScope.$emit('stopSpin');
-        })
-    }
 
     /**
      * Get all zipcodes
@@ -978,15 +736,6 @@ angular.module('adminApp')
             };
             getAllDrivers(params);
         }
-    };
-
-    /**
-     * Choose company on import orders
-     * @param  {[type]} company [description]
-     * @return {void}
-     */
-    $scope.chooseCompanyOnModals = function (company) {
-        $scope.fleet = company;
     };
 
     /**
@@ -1051,370 +800,5 @@ angular.module('adminApp')
             });
         });
     };
-
-    $scope.clearTextArea = function () {
-        $scope.queryMultipleEDS = '';
-        $scope.orderNotFound = [];
-        if ($scope.userOrderNumbers.length > 0) {
-            $scope.userOrderNumbers = [];
-            $scope.getOrder();
-        }
-    };
-
-    $scope.filterMultipleEDS = function () {
-        getExistOrder();
-        $scope.getOrder();
-    };
-
-    /**
-     * Set an order status to DELIVERED
-     *
-     * @return {void}
-     */
-    $scope.setDeliveredStatus = function () {
-        SweetAlert.swal({
-            title: 'Are you sure?',
-            text: "Mark as DELIVERED?",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes",
-            cancelButtonText: 'No'
-        }, function (isConfirm) {
-            if (isConfirm) {
-                $rootScope.$emit('startSpin');
-                Services2.bulkSetDeliveredStatus({
-                    orderIDs: [$scope.order.UserOrderID]
-                }).$promise.then(function (result) {
-                    if (result.data.error) {
-                        throw {
-                            data: {
-                                error: {
-                                    message: result.data.error[0].error.message
-                                }
-                            }
-                        }
-                    }
-                    $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Order status changed');
-                    $state.reload();
-                }).catch(function (e) {
-                    $rootScope.$emit('stopSpin');
-                    SweetAlert.swal({
-                            title: 'Failed in marking status as DELIVERED', 
-                            text: e.data.error.message, 
-                            type: "error"
-                    }, function (isConfirm) {
-                        if (isConfirm) {
-                            $state.reload();
-                        }
-                    });
-                });
-            }
-        });
-    }
-
-    /**
-     * Set multiple order status to DELIVERED
-     * @return {void}
-     */
-    $scope.bulkSetDeliveredStatus = function () {
-        var totalSelected = 0;
-        var orderIDs = [];
-        var prohibitedIDs = [];
-        $scope.displayed.forEach(function (val) {
-            if (val.Selected) { 
-                // Check if status can be mark as delivered
-                if ($scope.deliverableOrderStatus.indexOf(val.OrderStatus.OrderStatusID) >= 0) {
-                    totalSelected++; 
-                    orderIDs.push(val.UserOrderID);
-                } else {
-                    prohibitedIDs.push(val);
-                }
-            }
-        });
-        if (prohibitedIDs.length === 0 && totalSelected) {
-            SweetAlert.swal({
-                title: 'Are you sure?',
-                text: "Mark as DELIVERED for " + totalSelected + " orders ?",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: 'No'
-            }, function (isConfirm) {
-                if (isConfirm) {
-                    $rootScope.$emit('startSpin');
-                    Services2.bulkSetDeliveredStatus({
-                        orderIDs: orderIDs
-                    }).$promise.then(function (result) {
-                        if (result.data.error) {
-                            var messages = '<table align="center">';
-                            result.data.error.forEach(function (e) {
-                                messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
-                                            ' : </td><td class="text-left"> ' + e.error.message + '</td></tr>';
-                            })
-                            messages += '</table>';
-                            throw {
-                                data: {
-                                    message: result.data.message,
-                                    error: {
-                                        message: messages
-                                    }
-                                }
-                            }
-                        }
-                        $rootScope.$emit('stopSpin');
-                        SweetAlert.swal('Orders status changed');
-                        $state.reload();
-                    }).catch(function (e) {
-                        $rootScope.$emit('stopSpin');
-                        SweetAlert.swal({
-                            title: (e.data.message) ? e.data.message : 'Failed in marking status as DELIVERED', 
-                            text: e.data.error.message, 
-                            type: "error",
-                            html: true,
-                            customClass: 'alert-big'
-                        }, function (isConfirm) {
-                            if (isConfirm) {
-                                $state.reload();
-                            }
-                        });
-                    });
-                }
-            });
-        } else if (prohibitedIDs.length > 0) {
-            var messages = '';
-            if (prohibitedIDs.length > 1) {
-                messages += 'These orders have status which are prohibited <table align="center">';
-            } else {
-                messages += 'This order has status which is prohibited <table align="center">';
-            }
-            prohibitedIDs.forEach(function (e) {
-                messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
-                            ' : </td><td class="text-left"> ' + e.OrderStatus.OrderStatus + '</td></tr>';
-            })
-            messages += '</table>';
-            SweetAlert.swal({
-                title: 'Can not mark as DELIVERED',
-                text: messages,
-                type: 'error',
-                html: true
-            });
-        } else {
-            SweetAlert.swal('No orders selected');
-        }
-    }
-
-    /**
-     * Select all or unselect all orders.
-     * 
-     * @return {void}
-     */
-    $scope.checkUncheckSelected = function() {
-        $scope.orders.forEach(function(order) {
-            order.Selected = $scope.status.selectedAll;
-        });
-        $scope.prepareSelectedOrders();
-    };
- 
-    /**
-     * Check whether there is one or more orders selected.
-     * 
-     * @return {boolean}
-     */
-    $scope.selectedOrderExists = function() {
-        var checked = false;
-        $scope.orders.some(function(order) {
-            if (order.Selected) {
-                checked = true;
-                return;
-            }
-        });
- 
-        return checked;
-    };
- 
-    /**
-     * Prepare selected orders.
-     * 
-     * @return {array}
-     */
-    $scope.prepareSelectedOrders = function() {            
-        var selectedOrders = [];
-        $scope.orders.forEach(function (order) {
-            if (order.Selected) {
-                selectedOrders.push(order);
-            }
-        });
- 
-        $scope.selectedOrders = selectedOrders;
-
-        $scope.isOrderSelected = false;
-        if ($scope.selectedOrderExists()) {
-            $scope.isOrderSelected = true;
-        }
-    };
-
-    /**
-     * Check whether there is one or more orders with non-updatable price selected.
-     * 
-     * @return {boolean}
-     */
-    $scope.selectedNonUpdatablePriceExists = function() {
-        var checked = false;
-        $scope.orders.some(function(order) {
-            if (order.Selected && $scope.updatablePrice.indexOf(order.OrderStatus.OrderStatusID) === -1) {
-                checked = true;
-                return;
-            }
-        });
- 
-        return checked;
-    };
-
-    /**
-     * Check whether there is one or more non-reassignable orders selected.
-     * 
-     * @return {boolean}
-     */
-    $scope.selectedNonReassignableExists = function() {
-        var checked = false;
-        $scope.orders.some(function(order) {
-            if (order.Selected && $scope.reassignableFleet.indexOf(order.OrderStatus.OrderStatusID) === -1) {
-                checked = true;
-                return;
-            }
-        });
- 
-        return checked;
-    };
-
-    /**
-     * Show set price modals
-     * 
-     * @return {void}
-    */
-    $scope.showSetPrice = function() {
-        if ($scope.selectedNonUpdatablePriceExists()) {
-            SweetAlert.swal('Error', 'You have selected one or more orders which cannot be updated', 'error');
-            return false;
-        }
-        ngDialog.close()
-        return ngDialog.open({
-            template: 'setPriceModal',
-            scope: $scope,
-            className: 'ngdialog-theme-default set-price'
-        });
-    }
-
-    /**
-     * Show reassign fleet modals
-     * 
-     * @return {void}
-    */
-    $scope.showReassignFleet = function() {
-        if ($scope.selectedNonReassignableExists()) {
-            SweetAlert.swal('Error', 'You have selected one or more orders which cannot be reassigned', 'error');
-            return false;
-        }
-        getCompanies()
-        .then(function () {
-            ngDialog.close();
-            return ngDialog.open({
-                template: 'reassignFleetModal',
-                scope: $scope,
-                className: 'ngdialog-theme-default reassign-fleet'
-            });
-        });
-    }
-
-    /**
-     * Bulk set price
-     * 
-     * @return {void}
-     */
-    $scope.setPrice = function() {
-        var regexNumber = /^[0-9]+$/;
-        if ((!regexNumber.test($scope.newPrice)) || ($scope.newPrice < 0)) {
-            SweetAlert.swal('Error', 'Price must be a positive number', 'error');
-            return false;
-        }
-        var orderIDs = []
-        $scope.selectedOrders.forEach(function(order) {
-            orderIDs.push(order.UserOrderID);
-        });
-        SweetAlert.swal({
-            title: 'Are you sure?',
-            text: "Set price of these orders?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes",
-            cancelButtonText: 'No'
-        }, function (isConfirm){ 
-            if (isConfirm) {
-                $rootScope.$emit('startSpin');
-                Services2.bulkSetPrice({
-                    orderIDs: orderIDs,
-                    price: $scope.newPrice
-                }).$promise.then(function (result) {
-                    $rootScope.$emit('stopSpin');
-                    SweetAlert.swal(result.data.length + ' orders updated');
-                    ngDialog.closeAll();
-                }).catch(function (e) {
-                    $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Failed in setting price', e.data.error.message);
-                    $state.reload();
-                });
-            }
-        });
-    }
-
-    /**
-     * Bulk reassign fleet
-     * 
-     * @return {void}
-     */
-    $scope.reassignFleet = function() {
-        var orderIDs = []
-        $scope.selectedOrders.forEach(function(order) {
-            orderIDs.push(order.UserOrderID);
-        });
-        SweetAlert.swal({
-            title: 'Are you sure?',
-            text: "Reassign fleet of these orders?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes",
-            cancelButtonText: 'No'
-        }, function (isConfirm){ 
-            if (isConfirm) {
-                $rootScope.$emit('startSpin');
-                Services2.bulkReassignFleet({
-                    orderIDs: orderIDs,
-                    fleetManagerID: $scope.fleet.User.UserID
-                }).$promise.then(function (result) {
-                    $rootScope.$emit('stopSpin');
-                    SweetAlert.swal(result.data[0] + ' orders updated');
-                    ngDialog.closeAll();
-                }).catch(function (e) {
-                    $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Failed in reassigning fleet', e.data.error.message);
-                    $state.reload();
-                });
-            }
-        });
-    }
-
-    /**
-     * Set limit page
-     * 
-     * @return {void}
-     */
-    $scope.setLimit = function(item) {
-        $scope.itemsByPage = item;
-        $scope.offset = 0;
-        $scope.tableState.pagination.start = 0;
-        $scope.getOrder(); 
-    }
 
 });

@@ -27,7 +27,7 @@
             </div>
             <div class="col-md-1">
                 <div class="dropdown">
-                    <button ng-click="checkSelectedOrders()"
+                    <button ng-disabled="!isOrderSelected"
                         class="order-buttons btn dropdown-toggle" 
                         type="button" 
                         data-toggle="dropdown">
@@ -35,7 +35,7 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a ng-click="showSetPrice()">Set Price</a></li>
+                        <li><a ng-click="showSetPrice()">Update Price</a></li>
                         <li><a ng-click="showReassignFleet()">Reassign Fleet</a></li>
                         <li><a ng-click="bulkSetDeliveredStatus()">Mark as Delivered</a></li>
                     </ul>
@@ -121,6 +121,7 @@
                             Pickup Time
                         </th>
                         <th>Dropoff Time</th>
+                        <th>Fleet Manager</th>
                         <th class="sortable-column"
                             ng-if="sortBy !== 'Driver.FirstName' || isFirstSort"
                             ng-click="sortColumn('Driver.FirstName', 'ASC')">
@@ -142,6 +143,7 @@
                         <th>Pickup Type</th>
                         <th>Order Type</th>
                         <th>Status</th>
+                        <th>Total Failed Attempts</th>
                     </tr>
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
@@ -237,6 +239,16 @@
                                     type="search" 
                                     class="form-control input-table" 
                                     value="" 
+                                    ng-model="queryFleet" 
+                                    ng-keyup="searchFleet($event)">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    type="search" 
+                                    class="form-control input-table" 
+                                    value="" 
                                     ng-model="queryDriver" 
                                     ng-keyup="searchDriver($event)">
                             </div>
@@ -299,6 +311,8 @@
                                 </ui-select>
                             </div>
                         </th>
+                        <th>
+                        </th>
                     </tr>
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
@@ -320,11 +334,13 @@
                         </td>
                         <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td>{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName}}</td>
                         <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                         <td>{{order.CustomerName}}</td>
                         <td>{{order.PickupType}}</td>
                         <td>{{order.OrderType}}</td>
                         <td>{{order.OrderStatus.OrderStatus}}</td>
+                        <td>{{order.UserOrderAttempts.length}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
@@ -514,12 +530,12 @@
 
 <script type="text/ng-template" id="setPriceModal">
     <div class="header-wrapper">
-        <h1>Set Price Orders</h1>
+        <h1>Update Price</h1>
     </div>
     <div class="content-wrapper booking-popup notification-popup container-fluid">
         <div class="row-fluid">                    
             <div class="label-import">
-                Price :
+                New Price :
             </div> 
             <div class="input-import">
                 <input type="number" ng-model="$parent.newPrice" class="form-control" />

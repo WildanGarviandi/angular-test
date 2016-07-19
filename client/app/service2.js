@@ -410,6 +410,19 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'bulk-reassign-fleet'
             }
+        },
+        getReturnedOrders: {
+            method: 'GET',
+            params: {
+                module: 'returnedorder'
+            },
+        },
+        getReturnedOrderDetails: {
+            method: 'GET',
+            params: {
+                module: 'returnedorder',
+                id: null
+            },
         }
     });
 });
