@@ -40,6 +40,7 @@ angular.module('adminApp')
             orders: {
                 submenus: {
                     all: { routes: ['/orders'] },
+                    returnedorders: { routes: ['/returned-orders'] },
                     cod: { routes: ['/codorders'] },
                 }
             }

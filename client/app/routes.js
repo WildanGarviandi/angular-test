@@ -339,5 +339,25 @@ angular.module('adminApp')
                 }
             },
             authenticate: true
+        })
+        .state('app.returnedorders', {
+            url: 'returned-orders',
+            views: {
+                'content@': {
+                    templateUrl: 'app/returnedorders/returnedorders.html',
+                    controller: 'ReturnedOrdersCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.returnedorders-details', {
+            url: 'returned-orders/details/:orderID',
+            views: {
+                'content@': {
+                    templateUrl: 'app/returnedorders/returnedorders_details.html',
+                    controller: 'ReturnedOrdersCtrl',
+                }
+            },
+            authenticate: true
         });
     });
