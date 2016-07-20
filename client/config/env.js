@@ -69,7 +69,6 @@ function env() {
         // BOOKED, NOTASSIGNED, PREBOOKED
         updatablePrice: [1, 6, 9],
         // BOOKED, NOTASSIGNED, PREBOOKED
->>>>>>> v2.4
     };
 }
 
