@@ -31,6 +31,36 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.dashboard', {
+            url: 'dashboard',
+            views: {
+                'content@': {
+                    templateUrl: 'app/dashboard/dashboard.html',
+                    controller: 'DashboardCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.dashboard-details-total', {
+            url: 'dashboard-details-total/:merchantID/:pickupType/:date',
+            views: {
+                'content@': {
+                    templateUrl: 'app/dashboard/dashboard_details.html',
+                    controller: 'DashboardCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.dashboard-details-remaining', {
+            url: 'dashboard-details-remaining/:merchantID/:pickupType/:date',
+            views: {
+                'content@': {
+                    templateUrl: 'app/dashboard/dashboard_details.html',
+                    controller: 'DashboardCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.hub', {
             url: 'hub',
             views: {
@@ -306,6 +336,26 @@ angular.module('adminApp')
                 'content@': {
                     templateUrl: 'app/codorder/codorder_details.html',
                     controller: 'CODOrderCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.returnedorders', {
+            url: 'returned-orders',
+            views: {
+                'content@': {
+                    templateUrl: 'app/returnedorders/returnedorders.html',
+                    controller: 'ReturnedOrdersCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.returnedorders-details', {
+            url: 'returned-orders/details/:orderID',
+            views: {
+                'content@': {
+                    templateUrl: 'app/returnedorders/returnedorders_details.html',
+                    controller: 'ReturnedOrdersCtrl',
                 }
             },
             authenticate: true

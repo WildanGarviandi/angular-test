@@ -1,0 +1,81 @@
+<div class="container-fluid">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    {{webstoreName}}
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <div class="hub-search">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="">
+        <div class="col-md-12">
+            <div ng-repeat="status in statuses" class="col-md-1 container-status">
+                <div ng-click="filterByStatus(status.value)" style="background:{{status.color}}" class="well well-sm count-stat-box">
+                    <div>
+                        {{status.count}}
+                    </div>
+                    <div>
+                        {{status.key}}
+                    </div>
+                </div>
+            </div>
+            
+            <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
+                <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
+                    <tr>
+                        <th>AWB / Web Order ID</th>
+                        <th>Fleet Manager</th>
+                        <th>Driver</th>
+                        <th>Phone Number</th>
+                        <th>Pickup Type</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody ng-show="!isLoading && displayed.length == 0">
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            No data found
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody ng-show="isLoading">
+                    <tr>
+                        <td colspan="6" class="text-center">Loading ... </td>
+                    </tr>
+                </tbody>
+                <tbody ng-show="!isLoading && displayed.length > 0">
+                    <tr ng-if="displayed"></tr>
+                    <tr ng-repeat="order in displayed">
+                        <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
+                        <td>{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName}}</td>
+                        <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
+                        <td>{{order.Driver.CountryCode}}{{order.Driver.PhoneNumber}}</td>
+                        <td>{{order.PickupType}}</td>
+                        <td class="status-{{order.Color}} status-list">{{order.OrderStatus.OrderStatus}}</td>
+                    </tr>
+                </tbody>
+                <tfoot ng-show="!isLoading && displayed.length > 0">
+                    <tr>
+                        <td colspan="6"
+                            class="text-center" 
+                            st-pagination="" 
+                            st-items-by-page="itemsByPage" 
+                            st-displayed-pages='6' st-template='components/table/pagination.html'>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+

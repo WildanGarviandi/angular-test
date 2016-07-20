@@ -31,6 +31,8 @@
     <link rel="stylesheet" type="text/css" href="bower_components/angular-ui-grid/ui-grid.min.css">
     <link rel="stylesheet" href="bower_components/angular-bootstrap-datetimepicker/src/css/datetimepicker.css"/>
     <link rel="stylesheet" href="bower_components/sweetalert/dist/sweetalert.css" />
+    <link rel="stylesheet" href="bower_components/angular-xeditable/dist/css/xeditable.css">
+    <link rel="stylesheet" href="bower_components/angular-ui-notification/dist/angular-ui-notification.min.css">
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,client}) app/app.css -->
@@ -49,6 +51,7 @@
     <link rel="stylesheet" href="app/order/order.css">
     <link rel="stylesheet" href="app/codorder/codorder.css">
     <link rel="stylesheet" href="app/codpayment/codpayment.css">
+    <link rel="stylesheet" href="app/returnedorders/returnedorders.css">
     <link rel="stylesheet" href="app/main/main.css">
     <link rel="stylesheet" href="app/orders/labels/labels.css">
     <link rel="stylesheet" href="app/hub/orders.css">
@@ -58,6 +61,7 @@
     <link rel="stylesheet" href="app/driver/driver.css">
     <link rel="stylesheet" href="app/webstore/webstore.css">
     <link rel="stylesheet" href="app/logistic/logistic.css">
+    <link rel="stylesheet" href="app/dashboard/dashboard.css">
     <link rel="stylesheet" href="components/modal/modal.css">
     <link rel="stylesheet" href="components/sidebar/sidebar.css">
     <link rel="stylesheet" href="components/user/user.css">
@@ -151,7 +155,7 @@
     <script src="bower_components/angular-daterangepicker/js/angular-daterangepicker.js"></script>
     <script src="bower_components/ng-map-autocomplete/src/ng-map-autocomplete.js"></script>
     <script src="bower_components/bootstrap-ui-datetime-picker/dist/datetime-picker.min.js"></script>
-    <script src="bower_components/Chart.js/Chart.js"></script>
+    <script src="bower_components/Chart.js/dist/Chart.js"></script>
     <script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
     <script src="bower_components/angular-moment/angular-moment.js"></script>
     <script src="bower_components/ng-lodash/build/ng-lodash.js"></script>
@@ -164,6 +168,8 @@
     <script src="bower_components/ngSweetAlert/SweetAlert.min.js"></script>
     <script src="bower_components/sweetalert/dist/sweetalert.min.js"></script>
     <script src="bower_components/angular-dynamic-number/release/dynamic-number.min.js"></script>
+    <script src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+    <script src="bower_components/angular-ui-notification/dist/angular-ui-notification.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:js({.tmp,client}) app/app.js -->
@@ -177,6 +183,7 @@
     <script src="app/account/login/login.controller.js"></script>
     <script src="app/account/profile/profile.controller.js"></script>
     <script src="app/hub/hub.controller.js"></script>
+    <script src="app/dashboard/dashboard.controller.js"></script>
     <script src="app/district/district.controller.js"></script>
     <script src="app/operational-district/district.controller.js"></script>
     <script src="app/ecommerce/ecommerce.controller.js"></script>
@@ -189,6 +196,7 @@
     <script src="app/order/order.controller.js"></script>
     <script src="app/codorder/codorder.controller.js"></script>
     <script src="app/codpayment/codpayment.controller.js"></script>
+    <script src="app/returnedorders/returnedorders.controller.js"></script>
     <script src="app/driver/driver.controller.js"></script>
     <script src="app/ecommercePrice/ecommercePrice.controller.js"></script>
     <script src="components/auth/auth.service.js"></script>

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('adminApp')
-    .controller('SidebarCtrl', function($scope, $location, $rootScope, usSpinnerService, localStorageService) {
+    .controller('SidebarCtrl', function($scope, $location, $rootScope, usSpinnerService, localStorageService, Notification) {
 
         $scope.currentPath = $location.path();
         $scope.menus = {
@@ -34,9 +34,13 @@ angular.module('adminApp')
             map: {
                 routes: ['/map']
             },
+            dashboard: {
+                routes: ['/dashboard']
+            },
             orders: {
                 submenus: {
                     all: { routes: ['/orders'] },
+                    returnedorders: { routes: ['/returned-orders'] },
                     cod: { routes: ['/codorders'] },
                     codpayment: { routes: ['/codpayments'] },
                 }
@@ -83,6 +87,7 @@ angular.module('adminApp')
             $scope.currentPath = '/' + toState.url;
             console.log($scope.currentPath);
             console.log('sidebar');
+            Notification.clearAll();
             $scope.refreshSidebar();
         });
 

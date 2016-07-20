@@ -416,6 +416,63 @@ angular.module('adminApp')
                 controller: 'nopayment',
                 id: null
             }
+        },
+        getMainSLA: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'sla'
+            }
+        },
+        getMerchantSLA: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'sla',
+                id: null
+            }
+        },
+        getMerchantStatusCount: {
+            method: 'GET',
+            url: config.url + ':module/:controller/:id/:pickupType',
+            params: {
+                module: 'dashboard',
+                controller: 'sla',
+            },
+        },
+        bulkSetDeliveredStatus: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'mark-as-delivered'
+            }
+        },
+        bulkSetPrice: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-set-price'
+            }
+        },
+        bulkReassignFleet: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-reassign-fleet'
+            }
+        },
+        getReturnedOrders: {
+            method: 'GET',
+            params: {
+                module: 'returnedorder'
+            },
+        },
+        getReturnedOrderDetails: {
+            method: 'GET',
+            params: {
+                module: 'returnedorder',
+                id: null
+            },
         }
     });
 });

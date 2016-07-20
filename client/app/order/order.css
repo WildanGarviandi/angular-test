@@ -302,6 +302,16 @@
     width: 2000px;
 }
 
+#order-page table {
+    width: 100%;
+}
+
+#order-page .table > thead > tr > th.order-checkbox, td.order-checkbox {
+    min-width: 0px;
+    width: 20px;
+    text-align: center;
+}
+
 #order-page .table > thead > tr > th {
     min-width: 150px;
 }
@@ -337,4 +347,96 @@
 #eds-textarea {
     height: 100px;
     width: 100%;
+}
+
+.checkbox-header {
+    min-width: 20px !important;
+}
+
+.order-buttons {
+    text-decoration: none;
+    text-transform: uppercase;
+    text-align: center;
+    background: #ff5c61;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    padding-top: 10px;
+    font-size: 13px;
+    border-radius: 3px;
+    height: 35px;
+}
+
+.order-buttons > img {
+    margin-right: 5px;
+    position: relative;
+    bottom: 3px;
+}
+
+.order-buttons:hover, .order-buttons:focus {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.ngdialog.ngdialog-theme-default.import-orders .ngdialog-content {
+    width: 650px;
+}
+
+.label-import {
+    float: left;
+    width: 170px;
+}
+
+.input-import {
+    float: left;
+    width: 300px;
+    margin-left: 10px;
+}
+
+.dateinput-import {
+    margin-top: -15px;
+    margin-bottom: 15px;
+}
+
+.label-notes {
+    font-size: 11px;
+}
+
+.ngdialog.ngdialog-theme-default.reassign-fleet .ngdialog-content {
+    width: 650px;
+}
+
+.ngdialog.ngdialog-theme-default.set-price .ngdialog-content {
+    width: 650px;
+}
+
+.content-set-limit {
+    margin-top: 10px;
+}
+
+.content-choose-limit {
+    width: 70px;
+    float: left;
+}
+
+.label-limit {
+    padding: 8px;
+    float: left;
+}
+
+.action-button {
+    margin-left: -15px;
+}
+
+a {
+    cursor: pointer;
+}
+
+.alert-big {
+    width: 600px;
+}
+
+.failed-image {
+    width: 150px;
+    height: 200px;
 }
