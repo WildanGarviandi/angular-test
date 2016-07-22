@@ -318,7 +318,7 @@ angular.module('adminApp')
         $scope.codOrdersNoPayment.forEach(function(order) {
             order.Selected = $scope.status.selectedAll;
         });
-        $scope.prepareSelectedOrders();
+        $scope.prepareSelectedOrdersOrPayment();
     };
 
     /**
