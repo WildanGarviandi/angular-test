@@ -52,6 +52,25 @@ angular.module('adminApp')
     ];
     $scope.paymentMethod = $scope.paymentMethods[0];
 
+
+    $scope.createdDatePicker = {
+        startDate: null,
+        endDate: null
+    };
+    $scope.paidDatePicker = {
+        startDate: null,
+        endDate: null
+    };
+    $scope.optionsDatepicker = {
+        separator: ':',
+        eventHandlers: {
+            'apply.daterangepicker': function(ev, picker) {
+                $scope.offset = 0;
+                $scope.tableState.pagination.start = 0;
+                $scope.getPayment();
+            }
+        }
+    };
     $scope.currency = config.currency + " ";
     $scope.isFirstSort = true;
 
@@ -122,6 +141,30 @@ angular.module('adminApp')
     $scope.getPayment = function() {
         $rootScope.$emit('startSpin');
         $scope.isLoading = true;
+        if ($scope.createdDatePicker.startDate) {
+            $scope.createdDatePicker.startDate = new Date($scope.createdDatePicker.startDate);
+            $scope.createdDatePicker.startDate.setHours(
+                $scope.createdDatePicker.startDate.getHours() - $scope.createdDatePicker.startDate.getTimezoneOffset() / 60
+            );
+        }
+        if ($scope.createdDatePicker.endDate) {
+            $scope.createdDatePicker.endDate = new Date($scope.createdDatePicker.endDate)
+            $scope.createdDatePicker.endDate.setHours(
+                $scope.createdDatePicker.endDate.getHours() - $scope.createdDatePicker.endDate.getTimezoneOffset() / 60
+            );
+        }
+        if ($scope.paidDatePicker.startDate) {
+            $scope.paidDatePicker.startDate = new Date($scope.paidDatePicker.startDate);
+            $scope.paidDatePicker.startDate.setHours(
+                $scope.paidDatePicker.startDate.getHours() - $scope.paidDatePicker.startDate.getTimezoneOffset() / 60
+            );
+        }
+        if ($scope.paidDatePicker.endDate) {
+            $scope.paidDatePicker.endDate = new Date($scope.paidDatePicker.endDate)
+            $scope.paidDatePicker.endDate.setHours(
+                $scope.paidDatePicker.endDate.getHours() - $scope.paidDatePicker.endDate.getTimezoneOffset() / 60
+            );
+        }
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
@@ -129,7 +172,11 @@ angular.module('adminApp')
             user: $scope.queryUser,
             status: $scope.status.value,
             paymentMethod: $scope.paymentMethod.value,
-            userType: $scope.userType.value
+            userType: $scope.userType.value,
+            startCreated: $scope.createdDatePicker.startDate,
+            endCreated: $scope.createdDatePicker.endDate,
+            startPaid: $scope.paidDatePicker.startDate,
+            endPaid: $scope.paidDatePicker.endDate,
         }
         Services2.getCODPayment(params).$promise.then(function(data) {
             _.each(data.data.rows, processPayment);
