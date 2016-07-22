@@ -415,6 +415,10 @@ angular.module('adminApp')
             SweetAlert.swal('Error', 'Please select at least one order before confirm payment', 'error');
             return false;
         }
+        if (!$scope.transactionDetails){
+            SweetAlert.swal('Error', 'Please input Transaction Details', 'error');
+            return false;
+        }
         var orderIDs = [];
         var userID = $scope.selectedUserID;
         $scope.selectedOrders.forEach(function(order) {
@@ -462,6 +466,10 @@ angular.module('adminApp')
         var selectedPayment = $scope.formData.selectedPayment;
         if (!selectedPayment){
             SweetAlert.swal('Error', 'Please select one transaction to confirm', 'error');
+            return false;
+        }
+        if (!$scope.transactionDetails){
+            SweetAlert.swal('Error', 'Please input Transaction Details', 'error');
             return false;
         }
         SweetAlert.swal({
