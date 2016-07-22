@@ -262,6 +262,26 @@
                             class="first form-control">
                     </div>
                 </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Post Paid Payment :
+                    </div> 
+                    <ui-select class="hub-field select-field" 
+                        ng-model="payment" 
+                        theme="selectize" 
+                        ng-disabled="disabled"
+                        required
+                        on-select="choosePayment($item)">
+                        <ui-select-match placeholder="Choose payment">
+                            {{ $select.selected.key }}
+                        </ui-select-match>
+                        <ui-select-choices repeat="m in payments" selected>
+                            <span ng-bind-html="m.key"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="clearfix"></div>
                 <div class="row-fluid">                    
                     <div class="label-input">
                         Allow COD :

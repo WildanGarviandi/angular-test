@@ -93,6 +93,7 @@ angular.module('adminApp')
 
     var createWebstore = function(callback) {
         var webstore = {
+            PostPaidPayment: $scope.webstore.PostPaidPayment,
             AllowCOD: $scope.webstore.AllowCOD,
             HubID: $scope.webstore.HubID,
             FirstName: $scope.webstore.FirstName,
@@ -138,6 +139,7 @@ angular.module('adminApp')
 
     var updateWebstore = function(callback) {
         var webstore = {
+            PostPaidPayment: $scope.webstore.PostPaidPayment,
             AllowCOD: $scope.webstore.AllowCOD,
             HubID: $scope.webstore.HubID,
             UserID: $stateParams.webstoreID,
@@ -261,6 +263,27 @@ angular.module('adminApp')
     }
 
     /**
+     * Get postPaidPayment selection
+     * 
+     * @return {void}
+     */
+    $scope.getPayments = function() {
+        $http.get('config/defaultValues.json').success(function(data) {
+            $scope.payments = data.postPaidPayment;
+        });
+    }
+
+    /**
+     * Assign postPaidPayment to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.choosePayment = function(item) {
+        $scope.webstore.PostPaidPayment = item.value;
+        $scope.payment = item;
+    }
+
+    /**
      * Get single webstore
      * 
      * @return {void}
@@ -274,6 +297,8 @@ angular.module('adminApp')
         }).$promise.then(function(result) {
             var data = result.data;
             $scope.webstore = data.User;
+            $scope.webstore.PostPaidPayment = data.User.WebstoreCompany.PostPaidPayment;
+            $scope.payment = $scope.payments[~~data.User.WebstoreCompany.PostPaidPayment];
             $scope.webstore.AllowCOD = data.User.WebstoreCompany.AllowCOD;
             if (data.hasHub) {
                 $scope.hub = {key: data.User.WebstoreCompany.Hub.Name, value: data.User.WebstoreCompany.Hub.HubID};
@@ -441,6 +466,7 @@ angular.module('adminApp')
     $scope.loadManagePage = function() {
         $scope.getCountries();
         $scope.getHubs();
+        $scope.getPayments();
         if ($state.current.name === 'app.update-webstore') {
             $scope.getWebstoreDetails();
             setTimeout(function() {

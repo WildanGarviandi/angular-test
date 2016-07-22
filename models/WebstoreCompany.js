@@ -14,6 +14,7 @@ module.exports = function(sequelize, DataTypes) {
         Categories: DataTypes.STRING,
         PickupOptions: DataTypes.STRING,
         AverageWeights: DataTypes.STRING,
+        PostPaidPayment: DataTypes.BOOLEAN,
     }, {
         tableName: 'WebstoreCompany',
         timestamps: false
