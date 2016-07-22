@@ -12,6 +12,7 @@ function env() {
             var currency = 'Rp';
             var decimalSeparator = ',';
             var zipLength = 5;
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
             break;        
         case 'admin2|com':
             var url = 'http://api2.etobee.com';
@@ -19,6 +20,7 @@ function env() {
             var currency = 'Rp';
             var decimalSeparator = ',';
             var zipLength = 5;
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
             break;    
         case 'staging|ph':
             var url = 'http://staging.api2.etobee.com';
@@ -26,6 +28,7 @@ function env() {
             var currency = '₱';
             var decimalSeparator = '.';
             var zipLength = 4;
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
             break;    
         case 'admin2|ph':
             var url = 'http://api2.etobee.com.ph';
@@ -33,6 +36,7 @@ function env() {
             var currency = '₱';
             var decimalSeparator = '.';
             var zipLength = 4;
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
             break;
         default:
             var url = 'http://localhost:3001';
@@ -40,6 +44,7 @@ function env() {
             var currency = 'Rp';
             var decimalSeparator = ',';
             var zipLength = 5;
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
             break;
     } 
 
@@ -54,8 +59,16 @@ function env() {
         defaultLocation: defaultLocation,
         notCancellableOrderStatus: [4, 5, 13, 16],
         // INTRANSIT, DELIVERED, CANCELLED, RETURNED_SENDER
-        reassignableOrderStatus: [2, 6, 10, 12, 15]
+        reassignableOrderStatus: [2, 6, 10, 12, 15],
         // ACCEPTED, NOTASSIGNED, NO-DRIVER, EXPIRED, RETURNED_WAREHOUSE
+        activeGoal: 1500,
+        activeMerchant: activeMerchant,
+        deliverableOrderStatus: [2, 3, 4],
+        // ACCEPTED, PICKUP, IN-TRANSIT
+        reassignableFleet: [1, 6, 9],
+        // BOOKED, NOTASSIGNED, PREBOOKED
+        updatablePrice: [1, 6, 9],
+        // BOOKED, NOTASSIGNED, PREBOOKED
     };
 }
 
