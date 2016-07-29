@@ -175,7 +175,6 @@ module.exports = function(di) {
                                     HubID: req.body.HubID,
                                     UserAddressID: address.UserAddressID,
                                     AllowCOD: req.body.AllowCOD,
-                                    PostPaidPayment: req.body.PostPaidPayment,
                                 }).then(function(webstore) {
                                     return res.status(200).json({
                                         data:user,

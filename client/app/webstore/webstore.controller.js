@@ -267,7 +267,7 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.getPayments = function() {
+    $scope.getDefaultValues = function() {
         $http.get('config/defaultValues.json').success(function(data) {
             $scope.payments = data.postPaidPayment;
         });
@@ -466,7 +466,7 @@ angular.module('adminApp')
     $scope.loadManagePage = function() {
         $scope.getCountries();
         $scope.getHubs();
-        $scope.getPayments();
+        $scope.getDefaultValues();
         if ($state.current.name === 'app.update-webstore') {
             $scope.getWebstoreDetails();
             setTimeout(function() {
