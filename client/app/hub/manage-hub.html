@@ -136,53 +136,54 @@
                     <div class="label-input">
                         Country :
                     </div> 
-                    <div class="hub-field">
-                        <input type="text" 
-                            ng-model="hub.Country" 
-                            placeholder="Country" 
-                            uib-typeahead="address for address in getCountries($viewValue)" 
-                            typeahead-loading="loadingLocationsCountry" 
-                            typeahead-no-results="noResultsCountry" 
-                            class="form-control" />
-                        <i ng-show="loadingLocationsCountry" class="glyphicon glyphicon-refresh"></i>
-                        <div ng-show="noResultsCountry">
-                            <i class="glyphicon glyphicon-remove"></i> No Results Found
-                        </div>
-                    </div>
+                    <ui-select class="hub-field select-field" 
+                        ng-model="form.country" 
+                        theme="selectize" 
+                        ng-disabled="disabled"
+                        on-select="chooseCountry($item)">
+                        <ui-select-match placeholder="Choose country">
+                            {{ $select.selected.Name }}
+                        </ui-select-match>
+                        <ui-select-choices repeat="m in countries" selected>
+                            <span ng-bind-html="m.Name"></span>
+                        </ui-select-choices>
+                    </ui-select>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">
                     <div class="label-input">
                         State :
                     </div> 
-                    <div class="hub-field">
-                        <input type="text" 
-                            ng-model="hub.State" 
-                            placeholder="State" 
-                            uib-typeahead="address for address in getStates($viewValue)" 
-                            typeahead-loading="loadingLocationsState" 
-                            typeahead-no-results="noResultsState" 
-                            class="form-control" />
-                        <i ng-show="loadingLocationsState" class="glyphicon glyphicon-refresh"></i>
-                        <div ng-show="noResultsState">
-                            <i class="glyphicon glyphicon-remove"></i> No Results Found
-                        </div>
-                    </div>
+                    <ui-select class="hub-field select-field" 
+                        ng-model="form.state" 
+                        theme="selectize" 
+                        ng-disabled="disabled"
+                        on-select="chooseState($item)">
+                        <ui-select-match placeholder="Choose state">
+                            {{ $select.selected.Name }}
+                        </ui-select-match>
+                        <ui-select-choices repeat="m in states" selected>
+                            <span ng-bind-html="m.Name"></span>
+                        </ui-select-choices>
+                    </ui-select>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">                    
                     <div class="label-input">
                         City :
                     </div> 
-                    <div class="hub-field">
-                        <input ng-model="hub.City"
-                            type="text"
-                            name="city"
-                            value=""
-                            placeholder="City"
-                            required
-                            class="first form-control" />
-                    </div>
+                    <ui-select class="hub-field select-field" 
+                        ng-model="form.city" 
+                        theme="selectize" 
+                        ng-disabled="disabled"
+                        on-select="chooseCity($item)">
+                        <ui-select-match placeholder="Choose city">
+                            {{ $select.selected.Name }}
+                        </ui-select-match>
+                        <ui-select-choices repeat="m in cities" selected>
+                            <span ng-bind-html="m.Name"></span>
+                        </ui-select-choices>
+                    </ui-select>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">                    

@@ -48,6 +48,7 @@ angular.module('adminApp')
         key: 0,
         value: ''
     }];
+    $scope.form = {};
 
     $scope.sumZipField = 1;
 
@@ -55,6 +56,10 @@ angular.module('adminApp')
     $scope.offset = 0;
 
     var createHub = function(callback) {
+        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City)){
+            alert('Country, State, City must be filled');
+            return;
+        }
         var hub = {
             ParentHubID: $scope.hub.ParentHubID,
             Name: $scope.hub.Name,
@@ -68,10 +73,10 @@ angular.module('adminApp')
             Country: $scope.hub.Country,
             ZipCode: $scope.hub.ZipCode,
             FleetManagerID: $scope.fleetManager.User.UserID,
-            CountryCode: null,
-            CityID: null,
-            StateID: null,
-            CountryID: null,
+            CountryCode: $scope.hub.CountryCode,
+            CityID: $scope.hub.CityID,
+            StateID: $scope.hub.StateID,
+            CountryID: $scope.hub.CountryID,
         };
         $rootScope.$emit('startSpin');
         Services2.createHub(hub).$promise.then(function(response, error) {
@@ -89,6 +94,10 @@ angular.module('adminApp')
     }
 
     var updateHub = function(callback) {
+        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City)){
+            alert('Country, State, City must be filled');
+            return;
+        }
         var hub = {
             ParentHubID: $scope.hub.ParentHubID,
             Name: $scope.hub.Name,
@@ -97,15 +106,15 @@ angular.module('adminApp')
             Longitude: $scope.hub.Longitude,
             Address1: $scope.hub.Address1,
             Address2: $scope.hub.Address2,
-            City: $scope.hub.City,
-            State: $scope.hub.State,
-            Country: $scope.hub.Country,
-            ZipCode: $scope.hub.ZipCode,
             FleetManagerID: $scope.fleetManager.User.UserID,
-            CountryCode: null,
-            CityID: null,
-            StateID: null,
-            CountryID: null,
+            CountryID: $scope.hub.CountryID,
+            CountryCode: $scope.hub.CountryCode,
+            Country: $scope.hub.Country,
+            StateID: $scope.hub.StateID,
+            State: $scope.hub.State,
+            CityID: $scope.hub.CityID,
+            City: $scope.hub.City,
+            ZipCode: $scope.hub.ZipCode,
         }
         $rootScope.$emit('startSpin');
         Services2.updateHub({
@@ -147,6 +156,44 @@ angular.module('adminApp')
     $scope.chooseFleetManager = function(item) {
         $scope.hub.FleetManagerID = item.FleetManagerID;
         $scope.fleetManager = item;
+    };
+
+    $scope.chooseCountry = function(item){
+        var prevCountryID = $scope.hub.CountryID;
+        $scope.form.country = item;
+        $scope.hub.CountryID = item.CountryID;
+        $scope.hub.Country = item.Name;
+        $scope.hub.CountryCode = item.CountryCode;
+        if (!prevCountryID || prevCountryID != item.CountryID){
+            // reset state and city
+            $scope.hub.StateID = null;
+            $scope.hub.State = null;
+            $scope.form.state = null;
+            $scope.hub.CityID = null;
+            $scope.hub.City = null;
+            $scope.form.city = null;
+            $scope.getStates();
+        }
+    };
+
+    $scope.chooseState = function(item){
+        var prevStateID = $scope.hub.StateID;
+        $scope.form.state = item;
+        $scope.hub.StateID = item.StateID;
+        $scope.hub.State = item.Name;
+        if (!prevStateID || prevStateID != item.StateID){
+            // reset city
+            $scope.hub.CityID = null;
+            $scope.hub.City = null;
+            $scope.form.city = null;
+            $scope.getCities();
+        }
+    };
+
+    $scope.chooseCity = function(item){
+        $scope.form.city = item;
+        $scope.hub.CityID = item.CityID;
+        $scope.hub.City = item.Name;
     };
 
     /**
@@ -265,7 +312,7 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         $scope.isLoading = true;
         $scope.id = $stateParams.hubID;
-        Services2.getOneHub({
+        return Services2.getOneHub({
             id: $scope.id,
         }).$promise.then(function(data) {
             $scope.hub = data.data.Hub;
@@ -284,6 +331,10 @@ angular.module('adminApp')
             $scope.locationPicker();
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
+
+            // in case StateID and CityID is set, load the options
+            $scope.getStates();
+            $scope.getCities();
         });
     }
 
@@ -423,24 +474,17 @@ angular.module('adminApp')
         return Services2.getCountries({
             search: val
         }).$promise.then(function(response){
-            return response.data.Countries.rows.map(function(item){
-                return item.Name;
+            // limit ID only for now
+            var countries = lodash.filter(response.data.Countries.rows, function(c){
+                return c.ShortCode == 'ID';
             });
-        });
-    };
+            countries = lodash.sortBy(countries, function (c) { 
+                return c.Name.toLowerCase(); 
+            });
+            $scope.countries = countries;
 
-    /**
-     * Get all cities
-     * 
-     * @return {void}
-     */
-    $scope.getCities = function(val) {
-        return Services2.getCities({
-            search: val,
-            status: 'all'
-        }).$promise.then(function(response){
-            return response.data.Cities.rows.map(function(item){
-                return item.Name;
+            $scope.form.country = lodash.find($scope.countries, {
+                CountryID: $scope.hub.CountryID
             });
         });
     };
@@ -451,11 +495,42 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getStates = function(val) {
+        if (!$scope.hub.CountryID) return;
         return Services2.getStates({
+            countryID: $scope.hub.CountryID,
             search: val
         }).$promise.then(function(response){
-            return response.data.States.rows.map(function(item){
-                return item.Name;
+            var states = lodash.sortBy(response.data.States.rows, function (s) { 
+                return s.Name.toLowerCase(); 
+            });
+            $scope.states = states;
+            
+            $scope.form.state = lodash.find($scope.states, {
+                StateID: $scope.hub.StateID
+            });
+        });
+    };
+
+    /**
+     * Get all cities
+     * 
+     * @return {void}
+     */
+    $scope.getCities = function(val) {
+        if (!$scope.hub.StateID) return;
+        return Services2.getCities({
+            stateID: $scope.hub.StateID,
+            limit: 'all',
+            search: val,
+            status: 'all'
+        }).$promise.then(function(response){
+            var cities = lodash.sortBy(response.data.Cities.rows, function (city) { 
+                return city.Name.toLowerCase(); 
+            });
+            $scope.cities = cities;
+
+            $scope.form.city = lodash.find($scope.cities, {
+                CityID: $scope.hub.CityID
             });
         });
     };
@@ -497,8 +572,6 @@ angular.module('adminApp')
     $scope.loadManagePage = function() {
         getCompanies();
         $scope.getCountries();
-        $scope.getStates();
-        $scope.getCities();
         $scope.getParents();
         if ($stateParams.hubID !== undefined) {
             $scope.getHubDetails();
