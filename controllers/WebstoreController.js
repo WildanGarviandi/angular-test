@@ -173,8 +173,7 @@ module.exports = function(di) {
                                 //Update webstore if found
                                 webstore.update({
                                     HubID: req.body.HubID,
-                                    UserAddressID: address.UserAddressID,
-                                    AllowCOD: req.body.AllowCOD,
+                                    UserAddressID: address.UserAddressID
                                 }).then(function(webstore) {
                                     return res.status(200).json({
                                         data:user,
