@@ -144,6 +144,9 @@
                         <th>Order Type</th>
                         <th>Status</th>
                         <th>Total Failed Attempts</th>
+                        <th>Failed Attempt</th>
+                        <th>First Attempt</th>
+                        <th>Second Attempt</th>
                     </tr>
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
@@ -313,6 +316,41 @@
                         </th>
                         <th>
                         </th>
+                        <th>
+                            <div class="filter-table">
+                                <ui-select ng-model="isAttempt" 
+                                    theme="selectize" 
+                                    on-select="chooseisAttempt($item)" 
+                                    class="booking-order-type">
+                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                                    <ui-select-choices repeat="ot in isAttempts | filter: $select.search" selected>
+                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    date-range-picker 
+                                    ng-model="firstAttemptDatePicker" 
+                                    options="optionsDatepicker" />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    date-range-picker 
+                                    ng-model="secondAttemptDatePicker" 
+                                    options="optionsDatepicker" />
+                            </div>
+                        </th>
                     </tr>
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
@@ -341,6 +379,9 @@
                         <td>{{order.OrderType}}</td>
                         <td>{{order.OrderStatus.OrderStatus}}</td>
                         <td>{{order.UserOrderAttempts.length}}</td>
+                        <td>{{order.IsAttempt}}</td>
+                        <td>{{order.Attempt[0] | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td>{{order.Attempt[1] | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
