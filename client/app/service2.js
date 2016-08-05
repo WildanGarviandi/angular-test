@@ -396,12 +396,27 @@ angular.module('adminApp')
                 module: 'codpayment'
             },
         },
+        getCODPaymentsUnpaid: {
+            method: 'GET',
+            params: {
+                module: 'codpayment',
+                controller: 'unpaid',
+                id: null
+            }
+        },
         getCODPaymentDetails: {
             method: 'GET',
             params: {
                 module: 'codpayment',
                 id: null
             },
+        },
+        setCODPaymentManualPaid: {
+            method: 'POST',
+            params: {
+                module: 'codpayment',
+                controller: 'manualpaid'
+            }
         },  
         createCODPayment: {
             method: 'POST',

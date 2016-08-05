@@ -45,7 +45,17 @@
                                     ng-keyup="searchPayment($event)">
                             </div>
                         </th>
-                        <th></th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    date-range-picker 
+                                    ng-model="createdDatePicker" 
+                                    options="optionsDatepicker" />
+                            </div>
+                        </th>
                         <th>
                             <div class="filter-table">
                                 <ui-select ng-model="userType" 
@@ -94,6 +104,17 @@
                                         <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
                                     </ui-select-choices>
                                 </ui-select>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    date-range-picker 
+                                    ng-model="paidDatePicker" 
+                                    options="optionsDatepicker" />
                             </div>
                         </th>
                     </tr>
@@ -147,9 +168,9 @@
                 Paid By :
             </div> 
             <div class="input-payment">
-                <input type="radio" ng-change="resetPaymentParams()" ng-model="paidBy" value="driver">
+                <input type="radio" name="paidBy" ng-change="resetPaymentParams()" ng-model="paidBy" value="driver">
                     Driver
-                <input type="radio" ng-change="resetPaymentParams()" ng-model="paidBy" value="company">
+                <input type="radio" name="paidBy" ng-change="resetPaymentParams()" ng-model="paidBy" value="company">
                     Company
             </div>
         </div>
@@ -180,7 +201,7 @@
                     <div ng-if="drivers.length > 0 && isFetchingDrivers" class="animate-if">
                         <ui-select ng-model="driver" 
                             theme="selectize" 
-                            on-select="getCODOrdersNoPayment($item.key)" 
+                            on-select="getCODOrdersNoPaymentAndUnpaid($item.key)" 
                             class="booking-order-type">
                             <ui-select-match class="input-table">{{$select.selected.value}}</ui-select-match>
                             <ui-select-choices repeat="d in drivers | filter: $select.search" selected>
@@ -203,7 +224,7 @@
                 <div class="input-payment"> 
                     <ui-select ng-model="company" 
                         theme="selectize" 
-                        on-select="getCODOrdersNoPayment($item.User.UserID)" 
+                        on-select="getCODOrdersNoPaymentAndUnpaid($item.User.UserID)" 
                         class="booking-order-type">
                         <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
                         <ui-select-choices repeat="c in companies | filter: $select.search" selected>
@@ -214,32 +235,75 @@
             </div>
             <div class="clearfix"></div>
         </div>
-        <div ng-show="isFetchingOrders && codOrdersNoPayment.length == 0">
+        <div ng-show="isFetchingOrders && codOrdersNoPayment.length == 0 && codPaymentsUnpaid.length == 0">
             No Unpaid COD Orders found
         </div>
-        <div class="content-payment" ng-show="isFetchingOrders && codOrdersNoPayment.length > 0" >
-            <table class="table table-hover table-main-trip">
-                <thead class="hubs-table-head">
-                    <tr>
-                        <th>
-                            <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
-                        </th>
-                        <th>AWB / WebOrderID</th>
-                        <th>Driver</th>
-                        <th>COD Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="order in codOrdersNoPayment">
-                        <td class="">
-                            <input type="checkbox" ng-change="prepareSelectedOrders()" ng-model="order.Selected" />
-                        </td>
-                        <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
-                        <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
-                        <td>{{order.TotalValue}}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="content-payment" ng-show="isFetchingOrders && (codOrdersNoPayment.length > 0 || codPaymentsUnpaid.length > 0)" >
+            <div class="row-fluid" ng-show="paidBy == 'driver'">                    
+                <div class="label-paymentType">
+                    Payment Type :
+                </div> 
+                <div class="input-paymentType">
+                    <input type="radio" name="paymentType" ng-change="onPaymentTypeChange()" ng-model="formData.paymentType" value="manual">
+                        Manual
+                    <input type="radio" name="paymentType" ng-change="onPaymentTypeChange()" ng-model="formData.paymentType" value="auto">
+                        Auto
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div ng-show="formData.paymentType == 'manual'">
+                <div ng-show="codOrdersNoPayment.length == 0">
+                    No Manual Payment found
+                </div>
+                <table class="table table-hover table-main-trip" ng-show="codOrdersNoPayment.length > 0">
+                    <thead class="hubs-table-head">
+                        <tr>
+                            <th>
+                                <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
+                            </th>
+                            <th>AWB / WebOrderID</th>
+                            <th>Driver</th>
+                            <th>COD Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="order in codOrdersNoPayment">
+                            <td class="">
+                                <input type="checkbox" ng-change="prepareSelectedOrdersOrPayment()" ng-model="order.Selected" />
+                            </td>
+                            <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
+                            <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
+                            <td>{{order.TotalValue}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="clearfix"></div>
+            <div ng-show="formData.paymentType == 'auto'">
+                <div ng-show="codPaymentsUnpaid.length == 0">
+                    No Automatic Payment found
+                </div>
+                <table class="table table-hover table-main-trip" ng-show="codPaymentsUnpaid.length > 0">
+                    <thead class="hubs-table-head">
+                        <tr>
+                            <th></th>
+                            <th>Transaction ID</th>
+                            <th>Driver</th>
+                            <th>Total COD Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="payment in codPaymentsUnpaid">
+                            <td class="">
+                                <input type="radio" name="selectedAutoPayment" ng-change="prepareSelectedOrdersOrPayment()" ng-model="formData.selectedPayment" ng-value="payment" />
+                            </td>
+                            <td>{{payment.TransactionId}}</td>
+                            <td>{{payment.User.FirstName}} {{payment.User.LastName}}</td>
+                            <td>{{payment.TotalAmount}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class="clearfix"></div>
             <div class="row-fluid">          
                 <div class="label-amount">
