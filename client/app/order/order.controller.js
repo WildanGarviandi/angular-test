@@ -58,11 +58,10 @@ angular.module('adminApp')
         {
             key: 'All',
             value: 'All'
-        },{
+        }, {
             key: 'Yes',
             value: 1,
-        },
-        {
+        }, {
             key: 'No',
             value: 0,
         }
@@ -341,7 +340,7 @@ angular.module('adminApp')
                 }
 
                 array[index].Attempt = [];
-                if (val.UserOrderAttempts.length) {
+                if (val.UserOrderAttempts.length > 0) {
                     array[index].IsAttempt = 'Yes';
                     for (var i=0; i <= 1; i++) {
                         if (val.UserOrderAttempts[i]) {
