@@ -15,6 +15,22 @@
     min-height: 80px;
 }
 
+.top-stat-total-orders {
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    background-color: #a6a6a6;
+    color: white;
+    min-height: 80px;
+    width: 11.11%;
+}
+
+.title-total-orders {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+
 .top-stat-box-goal a {
     color: white;
 }

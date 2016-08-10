@@ -60,6 +60,21 @@
         </div>
     </div>
     <div class="clearfix"></div>
+    <div class="row-fluid top-stat">
+        <div class="title-total-orders">
+            Total Orders
+        </div>
+        <div ng-repeat="orders in ordersPerDay" class="col-md-1 col-sm-8 top-stat-total-orders well well-sm">
+            <div>
+                {{orders.day}}
+            </div>
+            <div>
+                {{orders.total}} orders
+            </div>
+        </div>
+        
+    </div>
+    <div class="clearfix"></div>
     <div class="merchant-box" ng-repeat="merchant in activeMerchant">
         <div class="merchant-title">
             <a href="#" onbeforesave="chooseMerchant($data, $index)" editable-select="merchant1" e-ng-options="m.key as m.value for m in merchants">
