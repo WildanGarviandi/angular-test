@@ -82,7 +82,8 @@
                         Fleet Manager
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName}} / 
+                        {{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName ||
+                                order.FleetManager.CompanyDetail.CompanyName}} / 
                         {{order.Driver.Driver.FleetManager.Email}} / {{order.Driver.Driver.FleetManager.PhoneNumber}}
                     </div>
                     <div class="col-sm-3"></div>
