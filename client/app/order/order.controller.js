@@ -92,18 +92,6 @@ angular.module('adminApp')
 
     $scope.isFirstSort = true;
 
-    $scope.companies = [{
-        CompanyDetailID: 'all',
-        CompanyName: 'All (search by name)'
-    }];
-
-    $scope.fleets = [{
-        User: {
-            UserID: '0'
-        },
-        CompanyName: 'All'
-    }];
-
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
     $scope.createdDatePicker = {
@@ -791,6 +779,17 @@ angular.module('adminApp')
      * @return {Object} Promise
      */
     var getCompanies = function () {
+        $scope.companies = [{
+            CompanyDetailID: 'all',
+            CompanyName: 'All (search by name)'
+        }];
+
+        $scope.fleets = [{
+            User: {
+                UserID: '0'
+            },
+            CompanyName: 'All'
+        }];
         return $q(function (resolve) {
             $rootScope.$emit('startSpin');
             Services2.getAllCompanies().$promise.then(function(result) {
