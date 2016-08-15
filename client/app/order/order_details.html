@@ -324,14 +324,37 @@
                     </uib-accordion-group>   
                     </uib-accordion>                        
                 </div> 
+                <div ng-show="order.UserOrderReturneds" ng-repeat="userOrderReturned in order.UserOrderReturneds" class="row-fluid order-detail-from-address">
+                    <uib-accordion>
+                        <uib-accordion-group heading="POD - {{order.OrderStatus.OrderStatus}} {{$index + 1}}:">
+                            <div class="order-status-container-body">
+                                <span>Staff Name</span> : {{userOrderReturned.RecipientName}}
+                            </div>
+                            <div class="order-status-container-body">
+                                <span>Date</span> : {{userOrderReturned.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}
+                            </div>
+                            <div class="order-status-container-body col-sm-6 text-center">
+                                Signature :
+                                <div>
+                                    <img class="failed-image" src="{{userOrderReturned.SignatureURL}}">
+                                </div>
+                            </div> 
+                            <div class="order-status-container-body col-sm-6 text-center">
+                                Photo :
+                                <div>
+                                    <img class="failed-image" src="{{userOrderReturned.ProofOfReturnURL}}">
+                                </div>
+                            </div>
+                        </uib-accordion-group>
+                    </uib-accordion>
+                </div>
                 <div ng-show="order.RecipientName.trim()" class="row-fluid order-detail-from-address">
                     <uib-accordion>
                         <uib-accordion-group heading="POD - {{order.OrderStatus.OrderStatus}}">
                             <div class="order-status-container-body">
-                                <span ng-if="order.OrderStatus.OrderStatusID === 5">Recipient Name</span>
-                                <span ng-if="order.OrderStatus.OrderStatusID === 15">Staff Name</span> : {{order.RecipientName}}
+                                <span>Recipient Name</span> : {{order.RecipientName}}
                             </div>
-                            <div ng-if="order.OrderStatus.OrderStatusID === 5">
+                            <div>
                                 <div class="order-status-container-body">
                                     Recipient Phone : {{order.RecipientPhone}}
                                 </div> 
