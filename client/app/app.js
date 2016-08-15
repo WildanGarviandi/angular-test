@@ -37,6 +37,7 @@ angular.module('adminApp', [
 
         $locationProvider.html5Mode(true);
         $httpProvider.interceptors.push('authInterceptor');
+        $httpProvider.interceptors.push('errorInterceptor');
     })
 
     .config(function(uiGmapGoogleMapApiProvider) {
@@ -94,6 +95,20 @@ angular.module('adminApp', [
                 } else {
                     return $q.reject(response);
                 }
+            }
+        };
+    })
+
+    .factory('errorInterceptor', function ($rootScope) {
+        return {
+          responseError: function(rejection) {
+                console.log(rejection);
+                if(rejection.status <= 0) {
+                    alert('No connection to the API, please check your internet connection or contact Tech Support.' +
+                            '\n' + '\n' + 'Please refresh this page when the problem has been resolved.');
+                    return;
+                }
+                return $q.reject(rejection);
             }
         };
     })
