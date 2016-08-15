@@ -98,6 +98,7 @@
                         <th class="checkbox-header">
                             <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
                         </th>
+                        <th class="checkbox-header"></th>
                         <th>AWB / Web Order ID</th>
                         <th class="sortable-column"
                             ng-if="sortBy !== 'PickupTime' || isFirstSort"
@@ -162,6 +163,7 @@
                     <tr>
                         <th class="order-checkbox">
                         </th>
+                        <th></th>
                         <th>
                             <div class="filter-table">
                                 <input 
@@ -317,10 +319,14 @@
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
-                    <tr ng-click="detailsPage(order.UserOrderID)" class="clickableRow" ng-repeat="order in displayed">
+                    <tr ng-repeat="order in displayed">
                         <td ng-click="$event.stopPropagation()">
                             <input type="checkbox" ng-change="prepareSelectedOrders()" ng-model="order.Selected" />
                         </td>
+                        <td><a href=""><i class="fa fa-eye fa-2x" 
+                                ng-click="detailsPage(order.UserOrderID)"
+                                tooltip-placement="top" 
+                                uib-tooltip="View Details"></i></a></td>
                         <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
                         <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
