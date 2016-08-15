@@ -488,6 +488,14 @@ angular.module('adminApp')
                 module: 'returnedorder',
                 id: null
             },
+        },
+        updateCod: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'cod',
+                id: null
+            }
         }
     });
 });

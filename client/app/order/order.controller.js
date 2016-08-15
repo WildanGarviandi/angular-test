@@ -59,6 +59,8 @@ angular.module('adminApp')
         endDate: null
     };
 
+    $scope.form = {};
+
     $scope.importedDatePicker = new Date();
 
     $scope.optionsDatepicker = {
@@ -510,6 +512,21 @@ angular.module('adminApp')
     };
 
     /**
+     * Show edit COD
+     */
+    $scope.editCod = function(){
+        $scope.form.cod = {
+            IsCOD: $scope.order.IsCOD,
+            TotalValue: $scope.order.TotalValue
+        }
+        var editCodDialog = ngDialog.open({
+            template: 'editCodTemplate',
+            scope: $scope,
+            className: 'ngdialog-theme-default edit-dropoff-address-popup'
+        });
+    };
+
+    /**
      * Update address
      * 
      * @return {void}
@@ -545,6 +562,30 @@ angular.module('adminApp')
             alert('Update address failed');
         });
     }
+
+    /**
+     * Update IsCOD and TotalValue
+     */
+    $scope.updateCod = function(){
+        $rootScope.$emit('startSpin');
+        var params = {
+            IsCOD: $scope.form.cod.IsCOD ? true : false,
+            TotalValue: $scope.form.cod.TotalValue
+        };
+        Services2.updateCod({
+            id: $scope.order.UserOrderID
+        }, params).$promise
+        .then(function(response, error){
+            $rootScope.$emit('stopSpin');
+            alert('Update COD success');
+            ngDialog.closeAll();
+            $scope.loadDetails();
+        })
+        .catch(function(error){
+            $rootScope.$emit('stopSpin');
+            alert('Update COD failed: '+error.data.error.message);
+        });
+    };
 
     /**
      * Get all countries
