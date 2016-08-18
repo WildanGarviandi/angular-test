@@ -72,6 +72,6 @@ function env() {
     };
 }
 
-var app = angular.module('config', ['ui.router']);
-app.constant('config', (env)());
+var app = angular.module('env', ['ui.router']);
+app.constant('env', (env)());
 
