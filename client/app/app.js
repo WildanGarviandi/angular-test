@@ -99,14 +99,13 @@ angular.module('adminApp', [
         };
     })
 
-    .factory('errorInterceptor', function ($rootScope) {
+    .factory('errorInterceptor', function ($rootScope, $window) {
         return {
           responseError: function(rejection) {
-                console.log(rejection);
                 if(rejection.status <= 0) {
                     alert('No connection to the API, please check your internet connection or contact Tech Support.' +
-                            '\n' + '\n' + 'Please refresh this page when the problem has been resolved.');
-                    return;
+                            '\n' + '\n' + 'Click OK to reload this page.');
+                    $window.location.reload();
                 }
                 return $q.reject(rejection);
             }
