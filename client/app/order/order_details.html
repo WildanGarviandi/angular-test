@@ -342,10 +342,10 @@
                 <div class="clearfix"></div>
                 <div ng-repeat="route in order.UserOrderRoutes" class="row-fluid order-detail-from-address">
                     <uib-accordion>
-                    <uib-accordion-group 
-                        heading="Route {{$index + 1}} | Status: {{route.OrderStatus.OrderStatus}} | 
-                            Fleet: {{route.Trip.FleetManager.CompanyDetail.CompanyName || '-'}} | 
-                            Driver: {{route.Trip.Driver.FirstName || '-'}} {{route.Trip.Driver.LastName || '-'}}">
+                    <uib-accordion-group
+                        heading="Route {{$index + 1}} | Status: {{route.OrderStatus.OrderStatus}} 
+                            {{ route.Trip !== null ? ' | Fleet: ' + route.Trip.FleetManager.CompanyDetail.CompanyName : ''}} 
+                            {{ route.Trip !== null ? ' | Driver: ' + route.Trip.Driver.FirstName + ' ' + route.Trip.Driver.LastName : ''}}">
                         <div class="order-status-container-body">
                             Origin Hub: {{route.OriginHub.Name || '-'}} / {{route.OriginHub.Address1 || '-'}}
                         </div>
@@ -379,12 +379,8 @@
                         <div class="order-status-container-body">
                             Status: {{route.OrderStatus.OrderStatus}}
                         </div>
-                        <div class="order-status-container-body">
-                            Fleet Manager: {{route.Trip.FleetManager.CompanyDetail.CompanyName || '-'}} / 
-                            {{route.Trip.FleetManager.Email || '-'}} / {{route.Trip.FleetManager.PhoneNumber || '-'}}
-                        </div>
                         <uib-accordion>
-                        <uib-accordion-group heading="Trip">
+                        <uib-accordion-group ng-if="route.Trip !== null" heading="Trip">
                             <div class="order-status-container-body">
                                 Driver: {{route.Trip.Driver.FirstName || '-'}} {{route.Trip.Driver.LastName || '-'}}
                             </div>
@@ -399,6 +395,10 @@
                             </div>
                             <div class="order-status-container-body">
                                 Dropoff Time: {{route.Trip.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                            </div>   
+                            <div class="order-status-container-body">
+                                Fleet Manager: {{route.Trip.FleetManager.CompanyDetail.CompanyName || '-'}} / 
+                                {{route.Trip.FleetManager.Email || '-'}} / {{route.Trip.FleetManager.PhoneNumber || '-'}}
                             </div>                            
                         </uib-accordion-group>   
                         </uib-accordion>
