@@ -31,6 +31,20 @@
     font-weight: bold;
 }
 
+.date-total-orders {
+    font-size: 16px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.sum-total-orders {
+    font-size: 40px;
+    position: absolute;
+    top: 0px;
+    right: 10px;
+}
+
 .top-stat-box-goal a {
     color: white;
 }
