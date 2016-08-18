@@ -324,7 +324,7 @@
                     </uib-accordion-group>   
                     </uib-accordion>                        
                 </div> 
-                <div ng-show="order.UserOrderReturneds" ng-repeat="userOrderReturned in order.UserOrderReturneds" class="row-fluid order-detail-from-address">
+                <div ng-show="order.UserOrderReturneds.length > 0" ng-repeat="userOrderReturned in order.UserOrderReturneds" class="row-fluid order-detail-from-address">
                     <uib-accordion>
                         <uib-accordion-group heading="POD - {{order.OrderStatus.OrderStatus}} {{$index + 1}}:">
                             <div class="order-status-container-body">
