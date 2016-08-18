@@ -560,5 +560,13 @@ angular.module('adminApp')
         ngDialog.close();
     }
 
-
+    /**
+     * Clear Filter
+     * 
+     * @return {void}
+     */
+    $scope.clearFilter = function(item) {
+        $state.reload();
+    }
+    
 });

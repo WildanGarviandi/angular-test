@@ -789,4 +789,13 @@ angular.module('adminApp')
         });
     };
 
+    /**
+     * Clear Filter
+     * 
+     * @return {void}
+     */
+    $scope.clearFilter = function(item) {
+        $state.reload();
+    }
+
 });
