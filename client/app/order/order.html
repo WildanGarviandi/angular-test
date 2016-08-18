@@ -321,7 +321,7 @@
                         <td ng-click="$event.stopPropagation()">
                             <input type="checkbox" ng-change="prepareSelectedOrders()" ng-model="order.Selected" />
                         </td>
-                        <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
+                        <td><a ng-href="/order/details/{{order.UserOrderID}}">{{order.UserOrderNumber}} / {{order.WebOrderID}}</a></td>
                         <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{order.PickupAddress.Address1}}</td>
