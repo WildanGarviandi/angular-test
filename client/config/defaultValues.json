@@ -216,5 +216,15 @@
     "country": {
         "id": "95",
         "name": "Indonesia"
-    }
+    },
+    "postPaidPayment": [
+        {
+            "value": 0,
+            "key": "pre-paid (wallet)"
+        },
+        {
+            "value": 1,
+            "key": "post-paid (invoice)"
+        }
+    ]
 }
