@@ -48,6 +48,7 @@
                         <th>Last Login</th>
                         <th>Mobile</th>
                         <th width="465">Address</th>
+                        <th>Payment</th>
                         <th>Allow COD</th>
                         <th>Status</th>
                         <th></th>
@@ -61,6 +62,20 @@
                         <td></td>
                         <td></td>
                         <td><input type="text" ng-model="searchFilter.address" class="webstore-filter" ng-keyup="$event.keyCode == 13 && filterWebstores()"/></td>
+                        <td class="webstore-postpaidpayment-cell">
+                            <ui-select class="webstore-postpaidpayment-field" 
+                                ng-model="postPaidPaymentFilter" 
+                                theme="selectize" 
+                                ng-disabled="disabled"
+                                on-select="choosePostPaidPayment($item)">
+                                <ui-select-match>
+                                    {{ postPaidPaymentFilter.text }}
+                                </ui-select-match>
+                                <ui-select-choices repeat="m in postPaidPaymentList" selected>
+                                    <span ng-bind-html="m.text"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </td>
                         <td></td>
                         <td class="webstore-status-cell">
                             <ui-select class="webstore-status-field" 
@@ -102,6 +117,7 @@
                             {{webstore.WebstoreCompany.UserAddress.City}}
                             {{webstore.WebstoreCompany.UserAddress.Country}}
                         </td>
+                        <td class="webstore-cell">{{webstore.WebstoreCompany.PostPaidPayment ? "Postpaid" : "Prepaid"}}</td>
                         <td class="webstore-cell">{{webstore.WebstoreCompany.AllowCOD ? "Yes" : "No"}}</td>
                         <td class="webstore-cell">{{webstore.RegistrationStatus}}</td>
                         <td>

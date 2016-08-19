@@ -27,11 +27,18 @@ angular.module('adminApp')
     });
 
     $scope.statusList = [
-        { key: '', text: 'SHOW ALL'}, 
+        { key: '', text: 'ALL'}, 
         { key: 1, text: 'PENDING'}, 
         { key: 2, text: 'ACTIVATED'}
     ];
     $scope.statusFilter = $scope.statusList[0];
+
+    $scope.postPaidPaymentList = [
+        { key: 'all', text: 'ALL'},
+        { key: 1, text: 'Postpaid'},
+        { key: 0, text: 'Prepaid'},
+    ];
+    $scope.postPaidPaymentFilter = $scope.postPaidPaymentList[0];
 
     $scope.webstore = {
         HubID: null,
@@ -336,6 +343,7 @@ angular.module('adminApp')
             email: $scope.searchFilter.email,
             address: $scope.searchFilter.address,
             status: $scope.statusFilter.key,
+            postPaidPayment: $scope.postPaidPaymentFilter.key,
             offset: $scope.offset,
             limit: $scope.itemsByPage
         };
@@ -489,6 +497,11 @@ angular.module('adminApp')
         $scope.tableState.pagination.start = 0;
         $scope.searchFilter = {};
         $scope.getWebstores();
+    }
+
+    $scope.choosePostPaidPayment = function(item){
+        $scope.postPaidPaymentFilter = item;
+        $scope.filterWebstores();
     }
 
     $scope.showUnverified = function() {
