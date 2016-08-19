@@ -143,27 +143,15 @@ angular.module('adminApp')
         $scope.isLoading = true;
         if ($scope.createdDatePicker.startDate) {
             $scope.createdDatePicker.startDate = new Date($scope.createdDatePicker.startDate);
-            $scope.createdDatePicker.startDate.setHours(
-                $scope.createdDatePicker.startDate.getHours() - $scope.createdDatePicker.startDate.getTimezoneOffset() / 60
-            );
         }
         if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate = new Date($scope.createdDatePicker.endDate)
-            $scope.createdDatePicker.endDate.setHours(
-                $scope.createdDatePicker.endDate.getHours() - $scope.createdDatePicker.endDate.getTimezoneOffset() / 60
-            );
+            $scope.createdDatePicker.endDate = new Date($scope.createdDatePicker.endDate);
         }
         if ($scope.paidDatePicker.startDate) {
             $scope.paidDatePicker.startDate = new Date($scope.paidDatePicker.startDate);
-            $scope.paidDatePicker.startDate.setHours(
-                $scope.paidDatePicker.startDate.getHours() - $scope.paidDatePicker.startDate.getTimezoneOffset() / 60
-            );
         }
         if ($scope.paidDatePicker.endDate) {
-            $scope.paidDatePicker.endDate = new Date($scope.paidDatePicker.endDate)
-            $scope.paidDatePicker.endDate.setHours(
-                $scope.paidDatePicker.endDate.getHours() - $scope.paidDatePicker.endDate.getTimezoneOffset() / 60
-            );
+            $scope.paidDatePicker.endDate = new Date($scope.paidDatePicker.endDate);
         }
         var params = {
             offset: $scope.offset,
