@@ -35,9 +35,9 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a ng-click="showSetPrice()">Update Price</a></li>
-                        <li><a ng-click="showReassignFleet()">Reassign Fleet</a></li>
-                        <li><a ng-click="bulkSetDeliveredStatus()">Mark as Delivered</a></li>
+                        <li><a ng-show="features.order.set_price" ng-click="showSetPrice()">Update Price</a></li>
+                        <li><a ng-show="features.order.reassign_fleet" ng-click="showReassignFleet()">Reassign Fleet</a></li>
+                        <li><a ng-show="features.order.bulk_mark_delivered" ng-click="bulkSetDeliveredStatus()">Mark as Delivered</a></li>
                     </ul>
                 </div>
             </div>
