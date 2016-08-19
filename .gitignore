@@ -5,4 +5,4 @@ node_modules
 build
 client/bower_components
 config/env.json
-client/config/config.js
+client/config/env.js
