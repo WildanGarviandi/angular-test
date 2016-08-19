@@ -23,7 +23,7 @@ angular.module('adminApp')
             })
             .catch( function(err) {
                 console.log(err)
-                $scope.errors.other = err.message;
+                $scope.errors.other = err.error.message;
             });
         }
     };
