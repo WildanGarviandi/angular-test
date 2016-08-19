@@ -324,6 +324,59 @@
                     </uib-accordion-group>   
                     </uib-accordion>                        
                 </div> 
+                <div ng-show="order.UserOrderReturneds.length > 0" ng-repeat="userOrderReturned in order.UserOrderReturneds" class="row-fluid order-detail-from-address">
+                    <uib-accordion>
+                        <uib-accordion-group heading="POD - {{order.OrderStatus.OrderStatus}} {{$index + 1}}:">
+                            <div class="order-status-container-body">
+                                <span>Staff Name</span> : {{userOrderReturned.RecipientName}}
+                            </div>
+                            <div class="order-status-container-body">
+                                <span>Date</span> : {{userOrderReturned.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}
+                            </div>
+                            <div class="order-status-container-body col-sm-6 text-center">
+                                Signature :
+                                <div>
+                                    <img class="failed-image" src="{{userOrderReturned.SignatureURL}}">
+                                </div>
+                            </div> 
+                            <div class="order-status-container-body col-sm-6 text-center">
+                                Photo :
+                                <div>
+                                    <img class="failed-image" src="{{userOrderReturned.ProofOfReturnURL}}">
+                                </div>
+                            </div>
+                        </uib-accordion-group>
+                    </uib-accordion>
+                </div>
+                <div ng-show="order.RecipientName.trim()" class="row-fluid order-detail-from-address">
+                    <uib-accordion>
+                        <uib-accordion-group heading="POD - {{order.OrderStatus.OrderStatus}}">
+                            <div class="order-status-container-body">
+                                <span>Recipient Name</span> : {{order.RecipientName}}
+                            </div>
+                            <div>
+                                <div class="order-status-container-body">
+                                    Recipient Phone : {{order.RecipientPhone}}
+                                </div> 
+                                <div ng-show="order.RecipientRelation" class="order-status-container-body">
+                                    Recipient Relation : {{order.RecipientRelation}}
+                                </div>
+                            </div>
+                            <div class="order-status-container-body col-sm-6 text-center">
+                                Signature :
+                                <div>
+                                    <img class="failed-image" src="{{order.RecipientSignature}}">
+                                </div>
+                            </div> 
+                            <div class="order-status-container-body col-sm-6 text-center">
+                                Photo :
+                                <div>
+                                    <img class="failed-image" src="{{order.RecipientPhoto}}">
+                                </div>
+                            </div>
+                        </uib-accordion-group>
+                    </uib-accordion>
+                </div>
             </div>
         </div>
         <div class="col-md-6">
