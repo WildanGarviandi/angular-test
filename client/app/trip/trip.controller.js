@@ -300,5 +300,13 @@ angular.module('adminApp')
     $scope.loadDetails();
     $scope.isCollapsed = true;
 
-
+    /**
+     * Clear Filter
+     * 
+     * @return {void}
+     */
+    $scope.clearFilter = function(item) {
+        $state.reload();
+    }
+    
   });

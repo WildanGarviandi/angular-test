@@ -357,4 +357,13 @@ angular.module('adminApp')
 
     $scope.loadManagePage();
 
+    /**
+     * Clear Filter
+     * 
+     * @return {void}
+     */
+    $scope.clearFilter = function(item) {
+        $state.reload();
+    }
+    
   });
