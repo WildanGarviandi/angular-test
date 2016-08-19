@@ -37,7 +37,6 @@ angular.module('adminApp', [
 
         $locationProvider.html5Mode(true);
         $httpProvider.interceptors.push('authInterceptor');
-        $httpProvider.interceptors.push('errorInterceptor');
     })
 
     .config(function(uiGmapGoogleMapApiProvider) {
@@ -74,7 +73,7 @@ angular.module('adminApp', [
         .setPrefix('etobee');
     })
 
-    .factory('authInterceptor', function ($rootScope, $q, $cookies, $location) {
+    .factory('authInterceptor', function ($rootScope, $q, $cookies, $location, $window) {
         return {
             // Add authorization token to headers
             request: function (config) {
@@ -92,22 +91,14 @@ angular.module('adminApp', [
                     // remove any stale tokens
                     $cookies.remove('token');
                     return $q.reject(response);
-                } else {
-                    return $q.reject(response);
-                }
-            }
-        };
-    })
-
-    .factory('errorInterceptor', function ($rootScope, $window) {
-        return {
-          responseError: function(rejection) {
-                if(rejection.status <= 0) {
+                } else if(response.status <= 0) {
                     alert('No connection to the API, please check your internet connection or contact Tech Support.' +
                             '\n' + '\n' + 'Click OK to reload this page.');
                     $window.location.reload();
+                    return $q.reject(response);
+                } else {
+                    return $q.reject(response);
                 }
-                return $q.reject(rejection);
             }
         };
     })
