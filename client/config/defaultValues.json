@@ -216,5 +216,19 @@
     "country": {
         "id": "95",
         "name": "Indonesia"
-    }
+    },
+    "tripSteps": [
+        {
+            "key": "First Leg",
+            "value": 1
+        },
+        {
+            "key": "Interhub",
+            "value": 2
+        },
+        {
+            "key": "Last Leg",
+            "value": 3
+        }
+    ]
 }
