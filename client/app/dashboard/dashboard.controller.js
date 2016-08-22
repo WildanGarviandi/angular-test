@@ -391,7 +391,7 @@ angular.module('adminApp')
         }).$promise.then(function(data) {
             data.data.SLA.forEach(function(sla, index) {
                 $scope.ordersPerDay.push({
-                    day: moment().add(index - $scope.totalDays, 'days').format('MMM DD'),
+                    day: moment().add(index - $scope.totalDays, 'days').format('ddd MMM DD'),
                     total: sla.summary.total
                 })
             });
