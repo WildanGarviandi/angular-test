@@ -387,7 +387,7 @@ angular.module('adminApp')
         Services2.getMainSLA({
             start: moment().add(($scope.totalDays * -1), 'days').format('YYYY-MM-DD'),
             end: moment().add($scope.totalDays, 'days').format('YYYY-MM-DD'),
-            param: 'PickupTime'
+            param: 'CutOffTime'
         }).$promise.then(function(data) {
             data.data.SLA.forEach(function(sla, index) {
                 $scope.ordersPerDay.push({
