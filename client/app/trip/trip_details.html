@@ -46,6 +46,66 @@
                 <div class="clearfix"></div>
                 <div class="row-fluid">
                     <div class="col-sm-3">
+                        Pickup Address
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{trip.PickupAddress.Address1}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-3">
+                        Dropoff Address
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{trip.DropoffAddress.Address1}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-3">
+                        Origin Hub
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{trip.OriginHub.Name}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-3">
+                        Destination Hub
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{trip.DestinationHub.Name}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-3">
+                        Fleet
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{trip.Driver.Driver.FleetManager.CompanyDetail.CompanyName}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-3">
+                        Step
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{trip.Step}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-3">
                         Status
                     </div>
                     <div class="col-sm-8 summary-from">
@@ -79,7 +139,7 @@
     <div class="row box-order-details">
         <div class="col-md-12 order-details">
             <div class="row-fluid order-details-main-header">
-                History Routes
+                Order List
             </div>
             <div class="clearfix"></div>
             <div class="row-fluid order-details-body">
@@ -87,7 +147,7 @@
                 <div ng-repeat="route in trip.UserOrderRoutes" class="row-fluid order-detail-from-address">
                     <uib-accordion>
                     <uib-accordion-group 
-                        heading="Route {{$index + 1}}: {{route.UserOrder.UserOrderNumber}} / {{route.UserOrder.WebOrderID}}">
+                        heading="Order {{$index + 1}}: {{route.UserOrder.UserOrderNumber}} / {{route.UserOrder.WebOrderID}}">
                         <div class="order-status-container-body">
                             Pickup Address: {{route.PickupAddress.Address1}}
                         </div>
