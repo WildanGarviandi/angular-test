@@ -127,7 +127,7 @@ angular.module('adminApp')
 
     $scope.orders = [];
     $scope.newPrice = 0;
-    $scope.limitPages = [$scope.itemsByPage, 25, 50, 100];
+    $scope.limitPages = [$scope.itemsByPage, 25, 50, 100, 200];
     $scope.isOrderSelected = false;
 
     /**
