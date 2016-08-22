@@ -114,7 +114,7 @@ angular.module('adminApp')
     var getDefaultValues = function() {
         $http.get('config/defaultValues.json').success(function(data) {
             $scope.pickupTypes = $scope.pickupTypes.concat(data.pickupTypes);
-            $scope.orderTypes = $scope.orderTypes.concat(data.orderTypes);
+            $scope.orderTypes = $scope.orderTypes.concat(data.userTypes);
             $scope.marketplaceType = (lodash.find($scope.orderTypes, {key: 'Marketplace'}));
             $scope.ecommerceType = (lodash.find($scope.orderTypes, {key: 'Ecommerce'}));
         });
@@ -208,7 +208,7 @@ angular.module('adminApp')
             sender: $scope.querySender,
             dropoff: $scope.queryDropoff,
             pickupType: $scope.pickupType.value,
-            deviceType: $scope.orderType.key,
+            userType: $scope.orderType.key,
             recipient: $scope.queryRecipient,
             status: $scope.status.value,
             startPickup: $scope.pickupDatePicker.startDate,
@@ -221,7 +221,8 @@ angular.module('adminApp')
             $scope.displayed = data.data.rows;
             $scope.displayed.forEach(function (val, index, array) {
                 array[index].UserOrder.PickupType = (lodash.find($scope.pickupTypes, {value: val.UserOrder.PickupType})).key;
-                if (val.UserOrder.DeviceType && $scope.marketplaceType.value.indexOf(val.UserOrder.DeviceType.DeviceTypeID) > -1) {
+                if (val.UserOrder.User && val.UserOrder.User.UserType && 
+                    $scope.marketplaceType.value.indexOf(val.UserOrder.User.UserType.UserTypeID) > -1) {
                     array[index].UserOrder.OrderType = $scope.marketplaceType.key;
                 } else {
                     array[index].UserOrder.OrderType = $scope.ecommerceType.key;
