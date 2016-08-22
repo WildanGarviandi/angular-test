@@ -386,5 +386,15 @@ angular.module('adminApp')
         });
     };
 
+    /**
+     * Refresh list with user input request
+     * 
+     * @return {void}
+     */
+    $scope.refresh = function(item) {
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getOrder(); 
+    }
 
   });

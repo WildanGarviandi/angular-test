@@ -300,5 +300,15 @@ angular.module('adminApp')
     $scope.loadDetails();
     $scope.isCollapsed = true;
 
+    /**
+     * Refresh list with user input request
+     * 
+     * @return {void}
+     */
+    $scope.refresh = function(item) {
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getTrip(); 
+    }
 
   });
