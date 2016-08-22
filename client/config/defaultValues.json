@@ -213,6 +213,15 @@
             "value": [7, 8]
         }
     ],
+    "userTypes": [
+        {
+            "key": "Marketplace",
+            "value": [1, 2, 3, 4]
+        }, {
+            "key": "Ecommerce",
+            "value": [5]
+        }
+    ],
     "country": {
         "id": "95",
         "name": "Indonesia"
