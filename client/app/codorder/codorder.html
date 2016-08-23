@@ -152,7 +152,7 @@
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.TotalValue}}</td>
+                        <td class="text-right" ng-click="detailsPage(order.UserOrderID)">{{order.TotalValue | number}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.OrderStatus.OrderStatus}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.DeliveredTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.CODPaymentUserOrder.CODPayment.Status || 'Unpaid'}}</td>

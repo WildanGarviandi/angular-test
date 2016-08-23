@@ -138,7 +138,7 @@
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.CreatedDate | date:'dd-MM-yyyy HH:mm:ss'}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.User.UserType.Name}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.User.FullName}}</td>
-                        <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.TotalAmount}}</td>
+                        <td class="text-right" ng-click="detailsPage(payment.CODPaymentID)">{{payment.TotalAmount | number}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.Status}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.PaymentMethod}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.PaidDate | date:'dd-MM-yyyy HH:mm:ss'}}</td>
@@ -273,7 +273,7 @@
                             </td>
                             <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
                             <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
-                            <td>{{order.TotalValue}}</td>
+                            <td class="text-right">{{order.TotalValue | number}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -299,7 +299,7 @@
                             </td>
                             <td>{{payment.TransactionId}}</td>
                             <td>{{payment.User.FirstName}} {{payment.User.LastName}}</td>
-                            <td>{{payment.TotalAmount}}</td>
+                            <td class="text-right">{{payment.TotalAmount | number}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -309,8 +309,8 @@
                 <div class="label-amount">
                     Amount Paid
                 </div> 
-                <div class="text-amount">
-                    {{amountPaid}}
+                <div class="text-amount text-right">
+                    {{amountPaid | number}}
                 </div>
             </div>
             <div class="clearfix"></div>
