@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('mainConfig', ['ui.router']);
+var app = angular.module('config', ['ui.router', 'envConfig']);
 
 function mainConfig() {
     var location = window.location.host;
@@ -74,4 +74,8 @@ function mainConfig() {
     };
 }
 
-app.constant('mainConfig', (mainConfig)());
+function config() {
+    return _.extend({}, mainConfig(), envConfig());
+}
+
+app.constant('config', (config)());
