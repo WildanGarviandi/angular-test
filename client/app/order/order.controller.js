@@ -1413,7 +1413,16 @@ angular.module('adminApp')
     $scope.refresh = function(item) {
         $scope.offset = 0;
         $scope.tableState.pagination.start = 0;
-        $scope.getOrder(); 
+        $scope.getOrder();
+    }
+
+    /**
+     * Clear Filter
+     * 
+     * @return {void}
+     */
+    $scope.clearFilter = function(item) {
+        $state.reload();
     }
     
 });

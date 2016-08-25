@@ -599,5 +599,14 @@ angular.module('adminApp')
         $scope.tableState.pagination.start = 0;
         $scope.getWebstores(); 
     }
+
+    /**
+     * Clear Filter
+     * 
+     * @return {void}
+     */
+    $scope.clearFilter = function(item) {
+        $state.reload();
+    }
     
   });

@@ -311,4 +311,13 @@ angular.module('adminApp')
         $scope.getTrip(); 
     }
 
+    /**
+     * Clear Filter
+     * 
+     * @return {void}
+     */
+    $scope.clearFilter = function(item) {
+        $state.reload();
+    }
+    
   });

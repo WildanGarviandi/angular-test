@@ -800,4 +800,13 @@ angular.module('adminApp')
         $scope.getOrder(); 
     }
     
+    /**
+     * Clear Filter
+     * 
+     * @return {void}
+     */
+    $scope.clearFilter = function(item) {
+        $state.reload();
+    }
+
 });

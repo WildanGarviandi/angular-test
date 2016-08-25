@@ -367,5 +367,14 @@ angular.module('adminApp')
         $scope.tableState.pagination.start = 0;
         $scope.getDrivers(); 
     }
+
+    /**
+     * Clear Filter
+     * 
+     * @return {void}
+     */
+    $scope.clearFilter = function(item) {
+        $state.reload();
+    }
     
   });
