@@ -86,7 +86,7 @@
                     </div>
                     <div class="col-sm-8 summary-from">
                         {{order.User.FirstName}} {{order.User.LastName}} / 
-                        {{order.User.Email}} / {{order.User.PhoneNumber}}
+                        {{order.User.Email}} / {{order.User.CountryCode}} {{order.User.PhoneNumber}}
                     </div>
                     <div class="col-sm-4"></div>
                 </div>
@@ -97,7 +97,7 @@
                     </div>
                     <div class="col-sm-8 summary-from">
                         {{order.WebstoreUser.FirstName}} {{order.WebstoreUser.LastName}} / 
-                        {{order.WebstoreUser.Email}} / {{order.WebstoreUser.PhoneNumber}}
+                        {{order.WebstoreUser.Email}} / {{order.WebstoreUser.CountryCode}} {{order.WebstoreUser.PhoneNumber}}
                     </div>
                     <div class="col-sm-4"></div>
                 </div>
@@ -118,7 +118,8 @@
                         Driver
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.Driver.FirstName}} {{order.Driver.LastName}}
+                        {{order.Driver.FirstName}} {{order.Driver.LastName}} / 
+                        {{order.Driver.CountryCode}} {{order.Driver.PhoneNumber}}
                     </div>
                     <div class="col-sm-4"></div>
                 </div>
