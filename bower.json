@@ -45,7 +45,7 @@
     "angular-dynamic-number": "1.9.4",
     "angular-xeditable": "~0.2.0",
     "angular-ui-notification": "~0.2.0",
-    "angular-i18n": "^1.5.8"
+    "angular-i18n": "1.5.8"
   },
   "devDependencies": {
     "angular-mocks": ">=1.2.*",
