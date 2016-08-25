@@ -24,7 +24,7 @@
             "ref" : "origin/master",
             "repo": "git@gitlab.com:etobee-techgroup/etobee-admin.git",
             "path" : "/home/ubuntu/etobee-admin",
-            "post-deploy" : "npm install && bower install -F && PORT=3000 pm2 startOrRestart ecosystem.production.json --env production"
+            "post-deploy" : "cp /home/ubuntu/config/etobee-admin/env.js client/config/. && npm install && bower install -F && PORT=3000 pm2 startOrRestart ecosystem.production.json --env production"
         }
     }
 }
