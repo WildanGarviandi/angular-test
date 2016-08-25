@@ -58,7 +58,7 @@ angular.module('adminApp')
     var createHub = function(callback) {
         $scope.submitted = true;
 
-        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City && $scope.hub.Type && $scope.fleetManager && $scope.fleetManager.User)){
+        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City && $scope.hub.Type && $scope.fleetManager && $scope.fleetManager.User)) {
             return;
         }
         var hub = {
@@ -98,7 +98,7 @@ angular.module('adminApp')
     var updateHub = function(callback) {
         $scope.submitted = true;
 
-        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City && $scope.hub.Type && $scope.fleetManager && $scope.fleetManager.User)){
+        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City && $scope.hub.Type && $scope.fleetManager && $scope.fleetManager.User)) {
             return;
         }
         var hub = {
