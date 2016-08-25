@@ -269,7 +269,13 @@
                         <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.PickupAddress.Address1}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffAddress.Address1}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.UserOrderRoutes.length}} Orders</td>
+                        <td ng-click="detailsPage(trip.TripID)">
+                            <ng-pluralize count="trip.UserOrderRoutes.length"
+                                 when="{'0': '-',
+                                     '1': '1 Order',
+                                     'other': '{{trip.UserOrderRoutes.length}} Orders'}">
+                            </ng-pluralize>
+                        </td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.Driver.Driver.FleetManager.CompanyDetail.CompanyName}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.OriginHub.Name}}</td>
                         <td ng-click="detailsPage(trip.TripID)">{{trip.DestinationHub.Name}}</td>

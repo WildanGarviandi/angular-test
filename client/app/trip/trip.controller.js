@@ -86,7 +86,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.showExportTrips = function() {
-        ngDialog.close()
+        ngDialog.close();
         return ngDialog.open({
             template: 'exportModal',
             scope: $scope
