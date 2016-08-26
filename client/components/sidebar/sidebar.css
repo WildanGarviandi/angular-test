@@ -306,22 +306,22 @@
 
 .side-orders-image {
     background-image: url('../../assets/images/nav-order.png');
-    background-size: 30px;
+    background-size: 30px 30px;
 }
 
 .side-orders-image.active {
     background-image: url('../../assets/images/nav-order-active.png');
-    background-size: 30px;
+    background-size: 30px 30px;
 }
 
 .side-codorders-image {
     background-image: url('../../assets/images/nav-codorder.png');
-    background-size: 30px;
+    background-size: 30px 30px;
 }
 
 .side-codorders-image.active {
     background-image: url('../../assets/images/nav-codorder-active.png');
-    background-size: 30px;
+    background-size: 30px 30px;
 }
 
 .side-codpayments-image {
