@@ -59,6 +59,10 @@ angular.module('adminApp')
         endDate: null
     };
 
+    $scope.cutOffTime = null;
+
+    $scope.dueTime = null;
+
     $scope.importedDatePicker = new Date();
 
     $scope.optionsDatepicker = {
@@ -225,6 +229,8 @@ angular.module('adminApp')
             endPickup: $scope.pickupDatePicker.endDate,
             startDropoff: $scope.dropoffDatePicker.startDate,
             endDropoff: $scope.dropoffDatePicker.endDate,
+            cutOffTime: $scope.cutOffTime,
+            dueTime: $scope.dueTime,
             fleet: $scope.queryFleet,
             sortBy: $scope.sortBy,
             sortCriteria: $scope.sortCriteria,
@@ -375,6 +381,32 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.searchFleet = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getOrder();
+        };
+    }
+
+    /**
+     * Add search CuttOffTime
+     * 
+     * @return {void}
+     */
+    $scope.searchCutOffTime = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getOrder();
+        };
+    }
+
+    /**
+     * Add search DueTime
+     * 
+     * @return {void}
+     */
+    $scope.searchDueTime = function(event) {
         if ((event && event.keyCode === 13) || !event) {
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
