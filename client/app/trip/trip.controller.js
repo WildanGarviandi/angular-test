@@ -60,9 +60,11 @@ angular.module('adminApp')
     $scope.currency = config.currency + " ";
     $scope.isFirstSort = true;
 
+    $scope.today = new Date();
+
     $scope.createdDatePicker = {
-        startDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 7),
-        endDate: new Date()
+        startDate: new Date($scope.today.getFullYear(), $scope.today.getMonth(), $scope.today.getDate() - 7),
+        endDate: $scope.today
     };
     
     /**
@@ -101,7 +103,7 @@ angular.module('adminApp')
     $scope.exportTrips = function() {
         $rootScope.$emit('startSpin');
         if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
+            $scope.createdDatePicker.endDate.setHours(23, 59, 59, 0);
         }
         Services2.exportTrips({
             startDate: $scope.createdDatePicker.startDate,
