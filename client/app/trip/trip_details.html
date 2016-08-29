@@ -148,76 +148,176 @@
                     <uib-accordion>
                     <uib-accordion-group 
                         heading="Order {{$index + 1}}: {{route.UserOrder.UserOrderNumber}} / {{route.UserOrder.WebOrderID}}">
-                        <div class="order-status-container-body">
-                            Pickup Address: {{route.PickupAddress.Address1}}
+                        <div class="col-md-12 order-status-container-body">
+                            <div class="col-md-2">
+                                Pickup Address 
+                            </div>
+                            <div class="col-md-10">
+                                {{route.PickupAddress.Address1}}
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Pickup Time: {{route.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                        <div class="col-md-12 order-status-container-body">
+                            <div class="col-md-2">
+                                Pickup Time
+                            </div>
+                            <div class="col-md-10">
+                                {{route.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                            </div>    
                         </div>
-                        <div class="order-status-container-body">
-                            Dropoff Address: {{route.DropoffAddress.Address1}}
+                        <div class="col-md-12 order-status-container-body">
+                            <div class="col-md-2">
+                                Dropoff Address
+                            </div>
+                            <div class="col-md-10">
+                                {{route.DropoffAddress.Address1}}
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Dropoff Time: {{route.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                        <div class="col-md-12 order-status-container-body">
+                            <div class="col-md-2">
+                                Dropoff Time
+                            </div>
+                            <div class="col-md-10">
+                                {{route.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                            </div>    
                         </div>
-                        <div class="order-status-container-body">
-                            Distance: {{route.Distance / 1000 | number : 3 }} km
+                        <div class="col-md-12 order-status-container-body">
+                            <div class="col-md-2">
+                                Distance
+                            </div>
+                            <div class="col-md-10">
+                                {{route.Distance / 1000 | number : 3 }} km
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            ETA Delivery: {{route.ETADelivery | secondsToDateTime | date:'HH:mm:ss'}}
+                        <div class="col-md-12 order-status-container-body">
+                            <div class="col-md-2">
+                                ETA Delivery
+                            </div>
+                            <div class="col-md-10">
+                                {{route.ETADelivery | secondsToDateTime | date:'HH:mm:ss'}}
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Delivery Fee: {{route.DeliveryFee | currency: currency}}
+                        <div class="col-md-12 order-status-container-body">
+                            <div class="col-md-2">
+                                Delivery Fee
+                            </div>
+                            <div class="col-md-10">
+                                {{route.DeliveryFee | currency: currency}}
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Net Margin: {{route.NetMargin}}
+                        <div class="col-md-12 order-status-container-body">
+                            <div class="col-md-2">
+                                Net Margin
+                            </div>
+                            <div class="col-md-10">
+                                {{route.NetMargin}}
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Status: {{route.OrderStatus.OrderStatus}}
+                        <div class="col-md-12 order-status-container-body">
+                            <div class="col-md-2">
+                                Status
+                            </div>
+                            <div class="col-md-10">
+                                {{route.OrderStatus.OrderStatus}}
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Fleet Manager: {{route.FleetManager.FirstName}} {{route.FleetManager.LastName}} / 
-                            {{route.FleetManager.Email}} / {{route.FleetManager.PhoneNumber}}
+                        <div class="col-md-12 order-status-container-body">
+                            <div class="col-md-2">
+                                Fleet Manager
+                            </div>
+                            <div class="col-md-10">
+                                {{route.FleetManager.FirstName}} {{route.FleetManager.LastName}} / 
+                                {{route.FleetManager.Email}} / {{route.FleetManager.PhoneNumber}}
+                            </div>
                         </div>
                         <uib-accordion>
                         <uib-accordion-group heading="Order">
-                            <div class="order-status-container-body">
-                                UserOrderNumber: {{route.UserOrder.UserOrderNumber}}
+                            <div class="col-md-12 order-status-container-body">
+                                <div class="col-md-2">
+                                    UserOrderNumber
+                                </div>
+                                <div class="col-md-10">
+                                    {{route.UserOrder.UserOrderNumber}}
+                                </div>
                             </div>
-                            <div class="order-status-container-body">
-                                WebOrderID: {{route.UserOrder.WebOrderID}}
+                            <div class="col-md-12 order-status-container-body">
+                                <div class="col-md-2">
+                                    WebOrderID
+                                </div>
+                                <div class="col-md-10">
+                                    {{route.UserOrder.WebOrderID}}
+                                </div>
                             </div>
-                            <div class="order-status-container-body">
-                                User: {{route.UserOrder.User.FirstName}} {{route.UserOrder.User.LastName}} / 
-                                {{route.UserOrder.User.Email}} / {{route.UserOrder.User.PhoneNumber}}
+                            <div class="col-md-12 order-status-container-body">
+                                <div class="col-md-2">
+                                    User
+                                </div>
+                                <div class="col-md-10">
+                                    {{route.UserOrder.User.FirstName}} {{route.UserOrder.User.LastName}} / 
+                                    {{route.UserOrder.User.Email}} / {{route.UserOrder.User.PhoneNumber}}
+                                </div>
                             </div>
-                            <div class="order-status-container-body">
-                                Webstore: {{route.UserOrder.WebstoreUser.FirstName}} {{route.UserOrder.WebstoreUser.LastName}} / 
-                                {{route.UserOrder.WebstoreUser.Email}} / {{route.UserOrder.WebstoreUser.PhoneNumber}}
+                            <div class="col-md-12 order-status-container-body">
+                                <div class="col-md-2">
+                                    Webstore
+                                </div>
+                                <div class="col-md-10">
+                                    {{route.UserOrder.WebstoreUser.FirstName}} {{route.UserOrder.WebstoreUser.LastName}} / 
+                                    {{route.UserOrder.WebstoreUser.Email}} / {{route.UserOrder.WebstoreUser.PhoneNumber}}
+                                </div>
                             </div>
-                            <div class="order-status-container-body">
-                                PickupType: {{route.UserOrder.PickupType}}
+                            <div class="col-md-12 order-status-container-body">
+                                <div class="col-md-2">
+                                    PickupType
+                                </div>
+                                <div class="col-md-10">
+                                    {{route.UserOrder.PickupType}}
+                                </div>
                             </div>
-                            <div class="order-status-container-body">
-                                PaymentType: {{route.UserOrder.PaymentType}}
+                            <div class="col-md-12 order-status-container-body">
+                                <div class="col-md-2">
+                                    PaymentType
+                                </div>
+                                <div class="col-md-10">
+                                    {{route.UserOrder.PaymentType}}
+                                </div>
                             </div>
-                            <div class="order-status-container-body">
-                                Pickup: {{route.UserOrder.PickupAddress.Address1}} 
+                            <div class="col-md-12 order-status-container-body">
+                                <div class="col-md-2">
+                                    Pickup
+                                </div>
+                                <div class="col-md-10">
+                                    {{route.UserOrder.PickupAddress.Address1}} 
+                                </div>
                             </div>
-                            <div class="order-status-container-body">
-                                Dropoff: {{route.UserOrder.DropoffAddress.Address1}} 
+                            <div class="col-md-12 order-status-container-body">
+                                <div class="col-md-2">
+                                    Dropoff
+                                </div>
+                                <div class="col-md-10">
+                                    {{route.UserOrder.DropoffAddress.Address1}}
+                                </div>
                             </div>
-                            <div class="order-status-container-body">
-                                Status: {{route.UserOrder.OrderStatus.OrderStatus}}
+                            <div class="col-md-12 order-status-container-body">
+                                <div class="col-md-2">
+                                    Status
+                                </div>
+                                <div class="col-md-10">
+                                    {{route.UserOrder.OrderStatus.OrderStatus}}
+                                </div>
                             </div>
-                            <div class="order-status-container-body">
-                                PaidByParent: {{route.UserOrder.PaidByParent}} 
-                                <span ng-if="route.UserOrder.PaidByParent">
-                                    (by {{route.UserOrder.User.FirstName}} {{route.UserOrder.User.LastName}})
-                                </span>
-                                <span ng-if="!route.UserOrder.PaidByParent">
-                                    (by {{route.UserOrder.WebstoreUser.FirstName}} {{route.UserOrder.WebstoreUser.LastName}})
-                                </span>
+                            <div class="col-md-12 order-status-container-body">
+                                <div class="col-md-2">
+                                    PaidByParent
+                                </div>
+                                <div class="col-md-10">
+                                    {{route.UserOrder.PaidByParent}} 
+                                    <span ng-if="route.UserOrder.PaidByParent">
+                                        (by {{route.UserOrder.User.FirstName}} {{route.UserOrder.User.LastName}})
+                                    </span>
+                                    <span ng-if="!route.UserOrder.PaidByParent">
+                                        (by {{route.UserOrder.WebstoreUser.FirstName}} {{route.UserOrder.WebstoreUser.LastName}})
+                                    </span>
+                                </div>
                             </div>
                         </uib-accordion-group>   
                         </uib-accordion>
