@@ -210,6 +210,12 @@ angular.module('adminApp')
         if ($scope.dropoffDatePicker.endDate) {
             $scope.dropoffDatePicker.endDate = new Date($scope.dropoffDatePicker.endDate);
         }
+        if ($scope.cutOffTime) {
+            $scope.cutOffTime = moment($scope.cutOffTime).format('YYYY-MM-DD'); 
+        }
+        if ($scope.dueTime) {
+            $scope.dueTime = moment($scope.dueTime).format('YYYY-MM-DD'); 
+        }
         $scope.isLoading = true;
         var params = {
             offset: $scope.offset,
