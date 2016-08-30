@@ -244,7 +244,9 @@
                 <uib-accordion-group is-open="areaFilter.open">
                     <uib-accordion-heading>
                         Multiple Filter by EDS / AWB / WebOrderID
-                        <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': areaFilter.open, 'glyphicon-chevron-right': !areaFilter.open}"></i>
+                        <i class="pull-right glyphicon" 
+                            ng-class="{'glyphicon-chevron-down': areaFilter.open, 'glyphicon-chevron-right': !areaFilter.open}">
+                        </i>
                     </uib-accordion-heading>
                     <textarea ng-model="$parent.$parent.$parent.$parent.queryMultipleEDS"
                         id="eds-textarea"
@@ -275,7 +277,7 @@
                         Auto
                 </div>
             </div>
-            <div class="clearfix"></div>            
+            <div class="clearfix"></div>
             <div ng-show="formData.paymentType == 'manual'">
                 <div ng-show="codOrdersNoPayment.length == 0">
                     No Manual Payment found
