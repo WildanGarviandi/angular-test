@@ -220,15 +220,6 @@
                                 {{route.OrderStatus.OrderStatus}}
                             </div>
                         </div>
-                        <div class="col-md-12 order-status-container-body">
-                            <div class="col-md-2">
-                                Fleet Manager
-                            </div>
-                            <div class="col-md-10">
-                                {{route.FleetManager.FirstName}} {{route.FleetManager.LastName}} / 
-                                {{route.FleetManager.Email}} / {{route.FleetManager.PhoneNumber}}
-                            </div>
-                        </div>
                         <uib-accordion>
                         <uib-accordion-group heading="Order">
                             <div class="col-md-12 order-status-container-body">
@@ -261,8 +252,7 @@
                                     Webstore
                                 </div>
                                 <div class="col-md-10">
-                                    {{route.UserOrder.WebstoreUser.FirstName}} {{route.UserOrder.WebstoreUser.LastName}} / 
-                                    {{route.UserOrder.WebstoreUser.Email}} / {{route.UserOrder.WebstoreUser.PhoneNumber}}
+                                    {{route.UserOrder.User.FirstName}} {{route.UserOrder.User.LastName}}
                                 </div>
                             </div>
                             <div class="col-md-12 order-status-container-body">
