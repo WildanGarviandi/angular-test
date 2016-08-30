@@ -1,6 +1,7 @@
 'use strict';
 
 var app = angular.module('config', ['ui.router', 'envConfig']);
+var dynamicScript = {};
 
 function mainConfig() {
     var location = window.location.host;
@@ -84,3 +85,5 @@ function config() {
 }
 
 app.constant('config', (config)());
+
+document.write('<script src="bower_components/angular-i18n/angular-locale_' + dynamicScript.locale + '.js"><\/script>');
