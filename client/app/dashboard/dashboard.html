@@ -6,9 +6,18 @@
                 Week {{currentWeek}} Goal
                 ({{currentWeekStart}} - {{currentWeekEnd}})
             </div>
-            <div>
-                {{ summaryTotal }} / <a href="#" onbeforesave="setGoal($data)" editable-text="activeGoal">{{ activeGoal || "0" }}</a>
+            <div ng-show="activeGoal > 0">
+                {{ summaryTotal }} / <a href="#" onbeforesave="setGoal($data)" editable-text="activeGoal">{{ activeGoal }}</a>
             </div>
+            <div ng-show="activeGoal === 0">
+                {{ summaryTotal }} / 
+                <a href="#" onbeforesave="setGoal($data)" editable-text="0">
+                    <span ng-hide="isEditing" class="">
+                        Not Set
+                    </span>
+                </a>
+            </div>
+        </span>
         </div>
         <div class="col-md-3 col-sm-7 top-stat-box-goal well well-sm">
             <div>
