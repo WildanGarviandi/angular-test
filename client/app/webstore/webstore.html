@@ -38,6 +38,8 @@
             <div class="addButton">
                 <button class="btn btn-primary" type="button" ng-click="addWebstore()">Add Webstore</button>
                 <button class="btn btn-danger" type="button" ng-show="unverifiedCount > 0" ng-click="showUnverified()">Unverified Webstore <span class="badge">{{unverifiedCount}}</span></button>
+                <button class="btn order-buttons" ng-click="refresh()">Refresh</button>
+                <button class="btn order-buttons" ng-click="clearFilter()"><i class="fa fa-refresh"></i> Reset Filter</button>
             </div>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover webstore-table">
                 <thead class="hubs-table-head">
