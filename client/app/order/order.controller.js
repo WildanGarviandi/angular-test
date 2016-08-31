@@ -454,7 +454,7 @@ angular.module('adminApp')
             });
             $scope.canBeCancelled = true;
             $scope.notCancellableOrderStatus.forEach(function (status) {
-                if ($scope.order.OrderStatus.OrderStatusID === status && $scope.features.order.cancel) { 
+                if ($scope.order.OrderStatus.OrderStatusID === status || !$scope.features.order.cancel) { 
                     $scope.canBeCancelled = false; 
                 }
             });

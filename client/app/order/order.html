@@ -27,7 +27,10 @@
             </div>
             <div class="col-md-1">
                 <div class="dropdown">
-                    <button ng-disabled="!isOrderSelected"
+                    <button ng-show="features.order.set_price || 
+                        features.order.reassign_fleet || 
+                        features.order.bulk_mark_delivered"
+                        ng-disabled="!isOrderSelected"
                         class="order-buttons btn dropdown-toggle" 
                         type="button" 
                         data-toggle="dropdown">
