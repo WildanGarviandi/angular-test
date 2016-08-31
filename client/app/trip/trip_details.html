@@ -240,19 +240,26 @@
                             </div>
                             <div class="col-md-12 order-status-container-body">
                                 <div class="col-md-2">
-                                    User
+                                    Created by
                                 </div>
-                                <div class="col-md-10">
+                                <div class="col-md-10" ng-show="route.UserOrder.User">
                                     {{route.UserOrder.User.FirstName}} {{route.UserOrder.User.LastName}} / 
                                     {{route.UserOrder.User.Email}} / {{route.UserOrder.User.PhoneNumber}}
+                                </div>
+                                <div class="col-md-10" ng-hide="route.UserOrder.User">
+                                    -
                                 </div>
                             </div>
                             <div class="col-md-12 order-status-container-body">
                                 <div class="col-md-2">
                                     Webstore
                                 </div>
-                                <div class="col-md-10">
-                                    {{route.UserOrder.User.FirstName}} {{route.UserOrder.User.LastName}}
+                                <div class="col-md-10" ng-show="route.UserOrder.WebstoreUser">
+                                    {{route.UserOrder.WebstoreUser.FirstName}} {{route.UserOrder.WebstoreUser.LastName}} / 
+                                    {{route.UserOrder.WebstoreUser.Email}} / {{route.UserOrder.WebstoreUser.PhoneNumber}}
+                                </div>
+                                <div class="col-md-10" ng-hide="route.UserOrder.WebstoreUser">
+                                    -
                                 </div>
                             </div>
                             <div class="col-md-12 order-status-container-body">
