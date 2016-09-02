@@ -14,6 +14,9 @@ angular.module('adminApp')
     $rootScope.$emit('startSpin');
     Auth.getCurrentUser().then(function(data) {
         $scope.user = data.profile;
+        $scope.user.oldPassword = '';
+        $scope.user.newPassword = '';
+        $scope.user.confirmPassword = '';
         $rootScope.$emit('stopSpin');
     });
 
@@ -49,17 +52,45 @@ angular.module('adminApp')
 
     $scope.updateProfile = function () {
         $rootScope.$emit('startSpin');
+        var messages = '';
         var params = {
             ProfilePicture: $scope.user.ProfilePicture
         };
+
+        if ($scope.changePass) {
+            $scope.submitted = true;
+
+            if (!$scope.user.oldPassword || !$scope.user.newPassword || !$scope.user.confirmPassword || $scope.user.newPassword !== $scope.user.confirmPassword) {
+                $rootScope.$emit('stopSpin');
+                return;
+            }
+
+            var password = {
+                newPassword: $scope.user.newPassword,
+                oldPassword: $scope.user.oldPassword
+            };
+
+            Services2.updateUserPassword(password)
+            .$promise.then(function (result) { 
+                if (result) {
+                    messages = 'Your password has been successfully changed';
+                } else {
+                    messages = 'Change password failed. Please try again';
+                }
+            })
+            .catch(function(err) {
+                messages = 'Change password failed. Please try again';
+            });
+        }
+
         Services2.updateUserProfile(params)
         .$promise.then(function (result) { 
             $rootScope.$emit('stopSpin');
             if (result.data.RowUpdated > 0) {
-                alert('Update profile success!');
+                alert('Update profile success!' + '\n' + messages);
                 $state.reload();
             } else {
-                alert('Update profile failed. Please try again');
+                alert('Update profile failed. Please try again' + '\n' + messages);
             }
         });
     };
