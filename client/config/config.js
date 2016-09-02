@@ -1,7 +1,6 @@
 'use strict';
 
 var app = angular.module('config', ['ui.router', 'envConfig']);
-var dynamicScript = {};
 
 function mainConfig() {
     var location = window.location.host;
@@ -16,7 +15,6 @@ function mainConfig() {
             var decimalSeparator = ',';
             var zipLength = 5;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
-            dynamicScript.locale = 'id-id';
             break;        
         case 'admin2|com':
             var url = 'http://api2.etobee.com';
@@ -25,7 +23,6 @@ function mainConfig() {
             var decimalSeparator = ',';
             var zipLength = 5;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
-            dynamicScript.locale = 'id-id';
             break;    
         case 'staging|ph':
             var url = 'http://staging.api2.etobee.com';
@@ -34,7 +31,6 @@ function mainConfig() {
             var decimalSeparator = '.';
             var zipLength = 4;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
-            dynamicScript.locale = 'fil-ph';
             break;    
         case 'admin2|ph':
             var url = 'http://api2.etobee.com.ph';
@@ -43,7 +39,6 @@ function mainConfig() {
             var decimalSeparator = '.';
             var zipLength = 4;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
-            dynamicScript.locale = 'fil-ph';
             break;
         default:
             var url = 'http://localhost:3001';
@@ -52,7 +47,6 @@ function mainConfig() {
             var decimalSeparator = ',';
             var zipLength = 5;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
-            dynamicScript.locale = 'id-id';
             break;
     } 
 
@@ -85,5 +79,3 @@ function config() {
 }
 
 app.constant('config', (config)());
-
-document.write('<script src="bower_components/angular-i18n/angular-locale_' + dynamicScript.locale + '.js"><\/script>');

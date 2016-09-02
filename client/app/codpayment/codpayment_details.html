@@ -66,7 +66,7 @@
                         Total Amount
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{payment.TotalAmount | number}}
+                        {{payment.TotalAmount | number | localizenumber}}
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -116,7 +116,7 @@
                         {{order.UserOrderNumber}} / {{order.WebOrderID}}
                     </div>
                     <div class="col-sm-4 summary-from">
-                        {{order.TotalValue | number}}
+                        {{order.TotalValue | number | localizenumber}}
                     </div>
                     <div class="clearfix"></div>
                 </div>

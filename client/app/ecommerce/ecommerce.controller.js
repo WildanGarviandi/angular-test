@@ -310,9 +310,9 @@ angular.module('adminApp')
                     '<div class="ui-grid-cell-contents" title="TOOLTIP" ' +
                         'ng-if="COL_FIELD CUSTOM_FILTERS.source !== ' + "'nosource'" + '">' +
                         '<div class="text-right" ng-if="COL_FIELD CUSTOM_FILTERS.source === ' + "'webstore'" + '">' +
-                            '{{COL_FIELD CUSTOM_FILTERS.price | number}}' + '</div>' +
+                            '{{COL_FIELD CUSTOM_FILTERS.price | number | localizenumber}}' + '</div>' +
                         '<div class="red text-right" ng-if="COL_FIELD CUSTOM_FILTERS.source === ' + "'master'" + '">' +
-                            '{{COL_FIELD CUSTOM_FILTERS.price | number}}' + '</div>' +
+                            '{{COL_FIELD CUSTOM_FILTERS.price | number | localizenumber}}' + '</div>' +
                     '</div>',
                 editableCellTemplate: 
                     '<div>' +
