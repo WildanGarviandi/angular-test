@@ -36,7 +36,7 @@ angular.module('adminApp', [
         .otherwise('/dashboard');
 
         $locationProvider.html5Mode(true);
-        $httpProvider.interceptors.push('authInterceptor');
+        $httpProvider.interceptors.push('errorInterceptor');
     })
 
     .config(function(uiGmapGoogleMapApiProvider) {
@@ -73,7 +73,7 @@ angular.module('adminApp', [
         .setPrefix('etobee');
     })
 
-    .factory('authInterceptor', function ($rootScope, $q, $cookies, $location, $window) {
+    .factory('errorInterceptor', function ($rootScope, $q, $cookies, $location, $window, SweetAlert) {
         return {
             // Add authorization token to headers
             request: function (config) {
@@ -84,18 +84,24 @@ angular.module('adminApp', [
                 return config;
             },
 
-            // Intercept 403s and redirect you to login
             responseError: function(response) {
                 if(response.status === 403) {
+                    // Intercept 403s and redirect you to login
                     $location.path('/login');
                     // remove any stale tokens
                     $cookies.remove('token');
                     return $q.reject(response);
                 } else if(response.status <= 0) {
-                    alert('No connection to the API, please check your internet connection or contact Tech Support.' +
-                            '\n' + '\n' + 'Click OK to reload this page.');
-                    $window.location.reload();
-                    return $q.reject(response);
+                    // Intercept connection error
+                    SweetAlert.swal({
+                        title: 'Error',
+                        text :'No connection to the API, please check your internet connection.' + 
+                                'If the problem still persists, please contact tech support (tech@etobee.com).' +
+                            '\n' + '\n' + 'Click OK to reload this page.'
+                    }, function () {
+                        $window.location.reload();
+                        return $q.reject(response);
+                    });
                 } else {
                     return $q.reject(response);
                 }
