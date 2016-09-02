@@ -146,6 +146,40 @@
                         <th>Customer</th>
                         <th>Pickup Type</th>
                         <th>Order Type</th>
+                        <th class="sortable-column"
+                            ng-if="sortBy !== 'CutOffTime' || isFirstSort"
+                            ng-click="sortColumn('CutOffTime', 'ASC')">
+                            Cutoff Time
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'CutOffTime' && sortCriteria == 'ASC'" 
+                            ng-click="sortColumn('CutOffTime', 'DESC')">
+                            <span class="caret caret-reversed" ></span>
+                            Cutoff Time
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'CutOffTime' && sortCriteria == 'DESC'" 
+                            ng-click="sortColumn('CutOffTime', 'ASC')">
+                            <span class="caret" ></span>
+                            Cutoff Time
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy !== 'DueTime' || isFirstSort"
+                            ng-click="sortColumn('DueTime', 'ASC')">
+                            Due Time
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'DueTime' && sortCriteria == 'ASC'" 
+                            ng-click="sortColumn('DueTime', 'DESC')">
+                            <span class="caret caret-reversed" ></span>
+                            Due Time
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'DueTime' && sortCriteria == 'DESC'" 
+                            ng-click="sortColumn('DueTime', 'ASC')">
+                            <span class="caret" ></span>
+                            Due Time
+                        </th>
                         <th>Status</th>
                         <th>Total Failed Attempts</th>
                     </tr>
@@ -305,6 +339,34 @@
                         </th>
                         <th>
                             <div class="filter-table">
+                                <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    ng-model="cutOffTime" 
+                                    uib-datepicker-popup
+                                    date:'yyyy-MM-dd'
+                                    is-open="isCutOffTimeDatePickerOpen"
+                                    ng-click="isCutOffTimeDatePickerOpen = !isCutOffTimeDatePickerOpen"
+                                    ng-change="searchCutOffTime($event)" />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    ng-model="dueTime" 
+                                    uib-datepicker-popup
+                                    date:'yyyy-MM-dd'
+                                    is-open="isDueTimeDatePickerOpen"
+                                    ng-click="isDueTimeDatePickerOpen = !isDueTimeDatePickerOpen" 
+                                    ng-change="searchDueTime($event)" />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
                                 <ui-select ng-model="status" 
                                     theme="selectize" 
                                     on-select="chooseStatus($item)" 
@@ -349,6 +411,8 @@
                         <td>{{order.CustomerName}}</td>
                         <td>{{order.PickupType}}</td>
                         <td>{{order.OrderType}}</td>
+                        <td>{{order.CutOffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td>{{order.DueTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{order.OrderStatus.OrderStatus}}</td>
                         <td>{{order.UserOrderAttempts.length}}</td>
                     </tr>
