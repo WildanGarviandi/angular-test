@@ -69,8 +69,9 @@ angular.module('adminApp')
     };
 
     $scope.searchFilter = {};
-    $scope.itemsByPage = 10;
-    $scope.offset = 0;
+    $scope.itemsByPage = $location.search().limit || 10;
+    $scope.offset = $location.search().offset || 0;
+    $scope.isFirstLoaded = true;
     $scope.uploadError = false;
 
     $scope.cutoffTimes = [];
@@ -334,9 +335,25 @@ angular.module('adminApp')
      */
     $scope.getWebstores = function() {
         $rootScope.$emit('startSpin');
-        if ($stateParams.query) {
-            $scope.reqSearchString = $stateParams.query;
-        }
+        var paramsQuery = {
+            'name': 'name',
+            'email': 'email',
+            'address': 'address'
+        };
+        lodash.each(paramsQuery, function (val, key) {
+            $scope.searchFilter[val] = $location.search()[key] || $scope.searchFilter[val];
+        });
+
+        var paramsValue = {
+            'statusFilter': 'statusList',
+            'postPaidPaymentFilter': 'postPaidPaymentList',
+        };
+        lodash.each(paramsValue, function (val, key) {
+            var text = $location.search()[key] || $scope[key].text;
+            $scope[key] = lodash.find($scope[val], { 'text': text });
+        });
+
+        $location.search('offset', $scope.offset);
         $scope.isLoading = true;
         var params = {
             name: $scope.searchFilter.name,
@@ -429,11 +446,15 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.callServer = function(state) {
-        $scope.offset = state.pagination.start;
         $scope.tableState = state;
+        if ($scope.isFirstLoaded) {
+            $scope.tableState.pagination.start = $scope.offset;
+            $scope.isFirstLoaded = false;
+        } else {
+            $scope.offset = state.pagination.start;
+        }
         $scope.getUnverifiedNumber();
         $scope.getWebstores();
-        $scope.isFirstLoaded = true;
     }
 
     /**
@@ -491,6 +512,7 @@ angular.module('adminApp')
     }
 
     $scope.chooseRegistrationStatus = function(item) {
+        $location.search('statusFilter', item.text);
         $scope.statusFilter = item;
         $scope.offset = 0;
         $scope.itemsByPage = 10;
@@ -500,6 +522,7 @@ angular.module('adminApp')
     }
 
     $scope.choosePostPaidPayment = function(item){
+        $location.search('postPaidPaymentFilter', item.text);
         $scope.postPaidPaymentFilter = item;
         $scope.filterWebstores();
     }
@@ -589,6 +612,9 @@ angular.module('adminApp')
     };
 
     $scope.filterWebstores = function () {
+        $location.search('name', $scope.searchFilter.name);
+        $location.search('email', $scope.searchFilter.email);
+        $location.search('address', $scope.searchFilter.address);
         $scope.offset = 0;
         $scope.tableState.pagination.start = 0;
         $scope.getWebstores();

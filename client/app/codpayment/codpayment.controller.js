@@ -27,8 +27,9 @@ angular.module('adminApp')
         $scope.user = data.profile;
     });
 
-    $scope.itemsByPage = 10;
-    $scope.offset = 0;
+    $scope.itemsByPage = $location.search().limit || 10;
+    $scope.offset = $location.search().offset || 0;
+    $scope.isFirstLoaded = true;
 
     $scope.statuses = [
         {key: 'All', value: ''},
@@ -39,8 +40,8 @@ angular.module('adminApp')
 
     $scope.userTypes = [
         {key: 'All', value: ''},
-        {key: 'Driver', value: '3'},
-        {key: 'Fleet Manager', value: '4'}
+        {key: 'Driver', value: 3},
+        {key: 'Fleet Manager', value: 4}
     ];
     $scope.userType = $scope.userTypes[0];
 
@@ -54,12 +55,13 @@ angular.module('adminApp')
 
 
     $scope.createdDatePicker = {
-        startDate: null,
-        endDate: null
+        startDate: $location.search().startCreated || null,
+        endDate: $location.search().endCreated || null
     };
+
     $scope.paidDatePicker = {
-        startDate: null,
-        endDate: null
+        startDate: $location.search().startPaid || null,
+        endDate: $location.search().endPaid || null
     };
     $scope.optionsDatepicker = {
         separator: ':',
@@ -71,6 +73,20 @@ angular.module('adminApp')
             }
         }
     };
+
+    // Generated scope:
+    // CreatedDatePicker, PaidDatePicker
+    // startDate, endDate
+    ['Created', 'Paid'].forEach(function (val) {
+        $scope.$watch(
+            (val.toLowerCase() + 'DatePicker'),
+            function (date) {
+                if (date.startDate) { $location.search('start' + val, (new Date(date.startDate)).toISOString()); }
+                if (date.endDate) { $location.search('end' + val, (new Date(date.endDate)).toISOString()); }
+            }
+        );
+    });
+    
     $scope.currency = config.currency + " ";
     $scope.isFirstSort = true;
 
@@ -91,26 +107,33 @@ angular.module('adminApp')
     $scope.isFetchingOrders = false;
     $scope.formData = {};
 
-    $scope.chooseStatus = function(item) {
-        $scope.status = item;
-        $scope.offset = 0;
-        $scope.tableState.pagination.start = 0;
-        $scope.getPayment(); 
-    }
+    // Here, model and param have same naming format
+    var pickedVariables = {
+        'Status': {
+            model: 'status',
+            pick: 'value',
+        },
+        'PaymentMethod': {
+            model: 'paymentMethod',
+            pick: 'value'
+        },
+        'UserType': {
+            model: 'userType',
+            pick: 'value'
+        },
+    };
 
-    $scope.choosePaymentMethod = function(item) {
-        $scope.paymentMethod = item;
-        $scope.offset = 0;
-        $scope.tableState.pagination.start = 0;
-        $scope.getPayment(); 
-    }
-
-    $scope.chooseUserType = function(item) {
-        $scope.userType = item;
-        $scope.offset = 0;
-        $scope.tableState.pagination.start = 0;
-        $scope.getPayment(); 
-    }
+    // Generates
+    // chooseStatus, choosePaymentMethod, chooseUsertype
+    lodash.each(pickedVariables, function (val, key) {
+        $scope['choose' + key] = function(item) {
+            $location.search(val.model, item[val.pick]);
+            $scope[val.model] = item;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getPayment(); 
+        };
+    });
 
     $scope.chooseTransactionType = function(item) {
         $scope.transactionType = item;
@@ -153,6 +176,40 @@ angular.module('adminApp')
         if ($scope.paidDatePicker.endDate) {
             $scope.paidDatePicker.endDate = new Date($scope.paidDatePicker.endDate);
         }
+
+        var paramsQuery = {
+            'id': 'queryTransactionId',
+            'user': 'queryUser'
+        };
+        lodash.each(paramsQuery, function (val, key) {
+            $scope[val] = $location.search()[key] || $scope[val];
+        });
+
+        var paramsValue = {
+            'status': 'statuses',
+            'userType': 'userTypes',
+            'paymentMethod': 'paymentMethods'
+        };
+        lodash.each(paramsValue, function (val, key) {
+            var value = $location.search()[key] || $scope[key].value;
+            $scope[key] = lodash.find($scope[val], { 'value': (parseInt(value)) ? parseInt(value) : value });
+        });
+
+        ['Created', 'Paid'].forEach(function (data) {
+            $scope[data.toLowerCase() + 'DatePicker'].startDate = 
+                    ($location.search()['start' + data]) ?
+                    new Date($location.search()['start' + data]) :
+                    $scope[data.toLowerCase() + 'DatePicker'].startDate;
+            $scope[data.toLowerCase() + 'DatePicker'].endDate = 
+                    ($location.search()['end' + data]) ?
+                    new Date($location.search()['end' + data]) :
+                    $scope[data.toLowerCase() + 'DatePicker'].endDate;
+        });
+
+        $scope.isFirstSort = ($location.search().sortBy) ? false : true;
+        // exception for offset
+        $location.search('offset', $scope.offset);
+
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
@@ -176,13 +233,29 @@ angular.module('adminApp')
         });
     }
 
-    $scope.searchPayment = function(event){
-        if ((event && event.keyCode === 13) || !event) {
-            $scope.offset = 0;
-            $scope.tableState.pagination.start = 0;
-            $scope.getPayment();
-        };
+    var variables = {
+        'Payment': {
+            model: 'queryTransactionId',
+            param: 'id'
+        },
+        'User': {
+            model: 'queryUser',
+            param: 'user'
+        }
     };
+
+    // Generate :
+    // searchPayment, searchUser
+    lodash.each(variables, function (val, key) {
+        $scope['search' + key] = function(event){
+            if ((event && event.keyCode === 13) || !event) {
+                $location.search(val.param, $scope[val.model]);
+                $scope.offset = 0;
+                $scope.tableState.pagination.start = 0;
+                $scope.getPayment();
+            }
+        };
+    });
     
     /**
      * Init table state
@@ -190,10 +263,14 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.callServer = function(state) {        
-        $scope.offset = state.pagination.start;
         $scope.tableState = state;
+        if ($scope.isFirstLoaded) {
+            $scope.tableState.pagination.start = $scope.offset;
+            $scope.isFirstLoaded = false;
+        } else {
+            $scope.offset = state.pagination.start;
+        }
         $scope.getPayment();
-        $scope.isFirstLoaded = true;
     }
 
     $scope.detailsPage = function(id) {

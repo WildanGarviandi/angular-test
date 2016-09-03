@@ -52,14 +52,15 @@ angular.module('adminApp')
 
     $scope.codStatuses = [$scope.codStatus,  {
         key: 'No',
-        value: '0'
+        value: 0
     }, {
         key: 'Yes',
-        value: '1'
+        value: 1
     }];
 
-    $scope.itemsByPage = 10;
-    $scope.offset = 0;
+    $scope.itemsByPage = $location.search().limit || 10;
+    $scope.offset = $location.search().offset || 0;
+    $scope.isFirstLoaded = true;
 
 
     var updateDriver = function(callback) {
@@ -104,14 +105,17 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getStatus = function() {
-        Services2.getUserStatus().$promise.then(function(data) {
-            $scope.statuses = []; 
-            if ($stateParams.driverID === undefined) {
-                $scope.statuses.push($scope.status);
-            }
-            data.data.Statuses.rows.forEach(function(status) {
-                $scope.statuses.push({key: status.StatusName, value: status.StatusId});
-            }); 
+        return $q(function (resolve) {
+            Services2.getUserStatus().$promise.then(function(data) {
+                $scope.statuses = []; 
+                if ($stateParams.driverID === undefined) {
+                    $scope.statuses.push($scope.status);
+                }
+                data.data.Statuses.rows.forEach(function(status) {
+                    $scope.statuses.push({key: status.StatusName, value: status.StatusId});
+                });
+                resolve();
+            });
         });
     }
 
@@ -134,43 +138,36 @@ angular.module('adminApp')
         });
     };
 
-    /**
-     * Assign status to the chosen item
-     * 
-     * @return {void}
-     */
-    $scope.chooseStatus = function(item) {
-        $scope.status = item;
-        $scope.offset = 0;
-        $scope.tableState.pagination.start = 0;
-        $scope.getDrivers(); 
-    }
-
-    /**
-     * Assign fleet company to the chosen item
-     * @param  {Object} item
-     * 
-     */
-    $scope.chooseCompany = function(item) {
-        $scope.company = item;
-        $scope.offset = 0;
-        $scope.tableState.pagination.start = 0;
-        $scope.getDrivers(); 
+    // Here, model and param have same naming format
+    var pickedVariables = {
+        'Status': {
+            model: 'status',
+            pick: 'value',
+            collection: 'statuses'
+        },
+        'Company': {
+            model: 'company',
+            pick: 'CompanyDetailID',
+            collection: 'companies'
+        },
+        'CodStatus': {
+            model: 'codStatus',
+            pick: 'value',
+            collection: 'codStatuses'
+        },
     };
 
-    /**
-     * Choose status COD
-     * 
-     * @return {void}
-     */
-    $scope.chooseCodStatus = function(item) {
-        $scope.codStatus = item;
-        $scope.offset = 0;
-        $scope.tableState.pagination.start = 0;
-        if (!$stateParams.query) {
-            $scope.getDrivers();
-        }
-    };
+    // Generates
+    // chooseStatus, chooseCompany, chooseCodStatus
+    lodash.each(pickedVariables, function (val, key) {
+        $scope['choose' + key] = function(item) {
+            $location.search(val.model, item[val.pick]);
+            $scope[val.model] = item;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getDrivers(); 
+        };
+    });
 
     /**
      * Assign status to the chosen item on edit page
@@ -257,6 +254,23 @@ angular.module('adminApp')
         if ($stateParams.query) {
             $scope.reqSearchString = $stateParams.query;
         }
+        var paramsQuery = {
+            'name': 'queryName',
+            'email': 'queryEmail',
+            'phone': 'queryPhone',
+        };
+        lodash.each(paramsQuery, function (val, key) {
+            $scope[val] = $location.search()[key] || $scope[val];
+        });
+
+        lodash.each(pickedVariables, function (val, key) {
+            var value = $location.search()[val.model] || $scope[val.model][val.pick];
+            var findObject = {};
+            findObject[val.pick] = (parseInt(value)) ? parseInt(value) : value;
+            $scope[val.model] = lodash.find($scope[val.collection], findObject);
+        });
+
+        $location.search('offset', $scope.offset);
         $scope.isLoading = true;
         var params = {
             offset: $scope.offset,
@@ -280,50 +294,33 @@ angular.module('adminApp')
         });
     }
 
-    /**
-     * Add search name
-     * 
-     * @return {void}
-     */
-    $scope.reqSearchName = '';
-    $scope.searchName = function(event) {
-        if ((event && event.keyCode === 13) || !event) {
-            $scope.reqSearchName = $scope.queryName;
-            $scope.offset = 0;
-            $scope.tableState.pagination.start = 0;
-            $scope.getDrivers();
-        };
-    }
+    var variables = {
+        'Name': {
+            model: 'queryName',
+            param: 'name'
+        },
+        'Phone': {
+            model: 'queryPhone',
+            param: 'phone'
+        },
+        'Email': {
+            model: 'queryEmail',
+            param: 'email'
+        }
+    };
 
-    /**
-     * Add search phone
-     * 
-     * @return {void}
-     */
-    $scope.reqSearchPhone = '';
-    $scope.searchPhone = function(event) {
-        if ((event && event.keyCode === 13) || !event) {
-            $scope.reqSearchPhone = $scope.queryPhone;
-            $scope.offset = 0;
-            $scope.tableState.pagination.start = 0;
-            $scope.getDrivers();
+    // Generates:
+    // searchName, searchPhone, searchEmail
+    lodash.each(variables, function (val, key) {
+        $scope['search' + key] = function(event){
+            if ((event && event.keyCode === 13) || !event) {
+                $location.search(val.param, $scope[val.model]);
+                $scope.offset = 0;
+                $scope.tableState.pagination.start = 0;
+                $scope.getDrivers();
+            }
         };
-    }
-
-    /**
-     * Add search email
-     * 
-     * @return {void}
-     */
-    $scope.reqSearchEmail = '';
-    $scope.searchEmail = function(event) {
-        if ((event && event.keyCode === 13) || !event) {
-            $scope.reqSearchEmail = $scope.queryEmail;
-            $scope.offset = 0;
-            $scope.tableState.pagination.start = 0;
-            $scope.getDrivers();
-        };
-    }
+    });
 
     /**
      * Init table state
@@ -331,11 +328,14 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.callServer = function(state) {
-        $scope.offset = state.pagination.start;
         $scope.tableState = state;
-        $scope.getStatus(); 
-        $scope.getDrivers();
-        $scope.isFirstLoaded = true;
+        if ($scope.isFirstLoaded) {
+            $scope.tableState.pagination.start = $scope.offset;
+            $scope.isFirstLoaded = false;
+        } else {
+            $scope.offset = state.pagination.start;
+        }
+        $scope.getStatus().then($scope.getDrivers);
     }
 
     /**

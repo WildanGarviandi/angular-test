@@ -17,15 +17,14 @@
         </div>
     </div>
     
-    <div class="col-md-1 content-set-limit">
-        <button class="btn order-buttons" ng-click="clearFilter()"><i class="fa fa-refresh"></i> Reset Filter</button>
+    <div class="col-md-12 content-set-limit">
+        <button class="btn btn-primary" type="button" ng-click="exportCsv()">Export CSV</button>
+        <button class="btn order-buttons" ng-click="clearFilter()">
+            <i class="fa fa-refresh"></i> Reset Filter</button>
     </div>
 
     <div class="container-content">
         <div class="col-md-12">
-            <div>
-                <button class="btn btn-primary" type="button" ng-click="exportCsv()">Export CSV</button>
-            </div>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
                 <thead class="hubs-table-head">
                     <tr>

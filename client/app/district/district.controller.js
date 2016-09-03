@@ -35,24 +35,28 @@ angular.module('adminApp')
 
     $scope.sumZipField = 1;
 
-    $scope.itemsByPage = 10;
-    $scope.offset = 0;
-
+    $scope.itemsByPage = $location.search().limit || 10;
+    $scope.itemsByPageNumber = $scope.itemsByPage;
+    $scope.offset = $location.search().offset || 0;
+    $scope.isFirstLoaded = true;
     // APP FLOW PART
 
-       /**
+    /**
      * Change items by page
      * @param  {Number / String} number 
      * 
      */
     $scope.changeItemsByPage = function (number) {
+        $scope.itemsByPageNumber = number;
+        $location.search('limit', $scope.itemsByPageNumber);
         if (number !== 'All') {
             $scope.itemsByPage = number;
         } else {
             $scope.itemsByPage = null;
         }
         // this will trigger callServer()
-        $scope.displayed = [];
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
     };
 
     // REQUEST PART
@@ -61,7 +65,14 @@ angular.module('adminApp')
      * Get multiple district from API
      * @param  {Object} params - options
      */
-    var getMultipleDistricts = function (params) {
+    var getMultipleDistricts = function () {
+        var params = {
+            offset: $scope.offset,
+            limit: $scope.itemsByPage,
+            search: $scope.reqSearchString
+        };
+        params.search = $scope.searchQuery = $location.search().q || params.search;
+        $rootScope.$emit('startSpin');
         Services2.getMultipleDistrictsMaster(params).$promise.then(function(result) {
             $scope.districts = []; 
             result.data.districts.forEach(function(district) {
@@ -97,13 +108,9 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getDistricts = function() {
-        $rootScope.$emit('startSpin');
+        $location.search('offset', $scope.offset);
         $scope.isLoading = true;
-        var params = {
-            offset: $scope.offset,
-            limit: $scope.itemsByPage
-        };
-        getMultipleDistricts(params);
+        getMultipleDistricts();
     };
 
     /**
@@ -117,12 +124,7 @@ angular.module('adminApp')
             $scope.reqSearchString = $stateParams.query;
         }
         $scope.isLoading = true;
-        var params = {
-            offset: $scope.offset,
-            limit: $scope.itemsByPage,
-            search: $scope.reqSearchString
-        };
-        getMultipleDistricts(params);
+        getMultipleDistricts();
     };
 
     /**
@@ -133,6 +135,7 @@ angular.module('adminApp')
     $scope.reqSearchString = '';
     $scope.search = function(event) {
         if ((event && event.keyCode === 13) || !event) {
+            $location.search('q', $scope.searchQuery);
             $scope.reqSearchString = $scope.searchQuery;
             $scope.searchDistricts();
         }
@@ -166,14 +169,21 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.callServer = function(state) {
-        $scope.offset = state.pagination.start;
         $scope.tableState = state;
+        if ($scope.isFirstLoaded) {
+            $scope.tableState.pagination.start = $scope.offset;
+            $scope.isFirstLoaded = false;
+            if ($location.search().limit) {
+                $scope.changeItemsByPage($location.search().limit);
+            }
+        } else {
+            $scope.offset = state.pagination.start;
+        }
         if ($scope.reqSearchString) {
             $scope.searchDistricts();
         } else {
             $scope.getDistricts();
         }
-        $scope.isFirstLoaded = true;
     };
 
     if ($state.includes('app.detail-district')) {

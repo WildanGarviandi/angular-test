@@ -17,13 +17,13 @@
         </div>
     </div>
     
-    <div class="col-md-1 content-set-limit">
+    <div class="col-md-12 content-set-limit">
+        <button class="btn btn-primary" type="button" ng-click="openCreateCODPaymentModal()">Confirm Manual COD Payment</button>
         <button class="btn order-buttons" ng-click="clearFilter()"><i class="fa fa-refresh"></i> Reset Filter</button>
     </div>
 
     <div class="container-content">
         <div class="col-md-12">
-            <button class="btn btn-primary" type="button" ng-click="openCreateCODPaymentModal()">Confirm Manual COD Payment</button>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
                 <thead class="hubs-table-head">
                     <tr>
@@ -80,7 +80,7 @@
                                     class="form-control input-table" 
                                     value="" 
                                     ng-model="queryUser" 
-                                    ng-keyup="searchPayment($event)">
+                                    ng-keyup="searchUser($event)">
                             </div>
                         </th>
                         <th></th>
