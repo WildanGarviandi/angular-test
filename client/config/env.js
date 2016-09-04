@@ -13,6 +13,7 @@ function env() {
             var decimalSeparator = ',';
             var zipLength = 5;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
+            var countryCode = '+62';
             break;        
         case 'admin2|com':
             var url = 'http://api2.etobee.com';
@@ -21,6 +22,7 @@ function env() {
             var decimalSeparator = ',';
             var zipLength = 5;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
+            var countryCode = '+62';
             break;    
         case 'staging|ph':
             var url = 'http://staging.api2.etobee.com';
@@ -29,6 +31,7 @@ function env() {
             var decimalSeparator = '.';
             var zipLength = 4;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
+            var countryCode = '+63';
             break;    
         case 'admin2|ph':
             var url = 'http://api2.etobee.com.ph';
@@ -37,6 +40,7 @@ function env() {
             var decimalSeparator = '.';
             var zipLength = 4;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
+            var countryCode = '+63';
             break;
         default:
             var url = 'http://localhost:3001';
@@ -45,6 +49,7 @@ function env() {
             var decimalSeparator = ',';
             var zipLength = 5;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
+            var countryCode = '+62';    
             break;
     } 
 
@@ -63,6 +68,7 @@ function env() {
         // ACCEPTED, NOTASSIGNED, NO-DRIVER, EXPIRED, RETURNED_WAREHOUSE
         activeGoal: 1500,
         activeMerchant: activeMerchant,
+        countryCode: countryCode,
         deliverableOrderStatus: [2, 3, 4],
         // ACCEPTED, PICKUP, IN-TRANSIT
         reassignableFleet: [1, 6, 9],

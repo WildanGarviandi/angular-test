@@ -1,0 +1,370 @@
+<div class="container-fluid container-hubs">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    Fleet Management
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <div class="hub-search">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div>
+        <form class="form" name="fleetForm">
+            <div class="container-fluid manage-fleet-container">
+                <div class="row-fluid">
+                    <div class="label-input">
+                        Profile picture :
+                    </div>
+                    <div class="input-component col-md-8">
+                        <img    class="picture-circle" 
+                            ng-src="{{fleet.ProfilePicture}}" 
+                            alt="Profile Picture"/>
+                        <button class="btn btn-default" ngf-select="uploadPic($file)" ng-model="file" ngf-model-invalid="errorFile"
+                                type="file" accept="image/*" ngf-max-size="2MB">Upload
+                        </button>
+                        <div style="font:smaller">
+                            <div class="report-upload">
+                                {{f.name}} {{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}
+                            </div>
+                            <div class="progress" ng-show="f.progress >= 0 && !uploadError">
+                                <div style="width:{{f.progress}}%"  
+                                     ng-bind="f.progress + '%'"></div>
+                            </div>
+                        </div>     
+                        {{errorMsg}}
+                    </div>
+                </div>
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Company Name :
+                    </div>  
+                    <div class="hub-field"
+                        ng-class="{'has-error':  fleetForm.companyName.$invalid &&
+                                                fleetForm.companyName.$dirty}">
+                        <input ng-model="fleet.CompanyDetail.CompanyName"
+                            type="text"
+                            name="companyName"
+                            value=""
+                            placeholder="Company Name"
+                            required
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div> 
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Email :
+                    </div>  
+                    <div class="hub-field"
+                        ng-class="{'has-error':  fleetForm.email.$invalid &&
+                                                fleetForm.email.$dirty}">
+                        <input ng-model="fleet.Email"
+                            type="text"
+                            name="email"
+                            placeholder="Email"
+                            required
+                            ng-pattern="emailFormat"
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div>   
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Phone Number :
+                    </div>  
+                    <div class="hub-field input-group"
+                        ng-class="{'has-error':  fleetForm.phone.$invalid &&
+                                                fleetForm.phone.$dirty}">
+                        <span class="input-group-addon" id="basic-addon1">
+                            {{fleet.CountryCode}}
+                        </span>
+                        <input ng-model="fleet.PhoneNumber"
+                            type="text"
+                            name="phone"
+                            placeholder="Phone"
+                            required
+                            class="first form-control"
+                            ng-pattern="phoneFormat"
+                            numbers-only />
+                    </div>
+                </div>
+                <div class="clearfix"></div> 
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Company Description :
+                    </div>  
+                    <div class="hub-field">
+                        <textarea ng-model="fleet.CompanyDetail.CompanyDescription"
+                            type="text"
+                            name="companyDescription"
+                            value=""
+                            placeholder="Company Description"
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div> 
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Website URL :
+                    </div>  
+                    <div class="hub-field">
+                        <input ng-model="fleet.CompanyDetail.WebsiteURL"
+                            type="text"
+                            name="websiteurl"
+                            value=""
+                            placeholder="Website URL"
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div> 
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        VAT Number :
+                    </div>  
+                    <div class="hub-field">
+                        <input ng-model="fleet.CompanyDetail.VatNumber"
+                            type="text"
+                            name="vatnumber"
+                            value=""
+                            placeholder="VAT Number"
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div> 
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        CCN Number :
+                    </div>  
+                    <div class="hub-field">
+                        <input ng-model="fleet.CompanyDetail.CCNNumber"
+                            type="text"
+                            name="ccnnumber"
+                            value=""
+                            placeholder="CCN Number"
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div> 
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        User First Name :
+                    </div>  
+                    <div class="hub-field"
+                        ng-class="{'has-error':  fleetForm.firstName.$invalid &&
+                                                fleetForm.firstName.$dirty}">
+                        <input ng-model="fleet.FirstName"
+                            type="text"
+                            name="firstName"
+                            value=""
+                            placeholder="FirstName"
+                            required
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div> 
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        User Last Name :
+                    </div>  
+                    <div class="hub-field"
+                        ng-class="{'has-error':  fleetForm.lastName.$invalid &&
+                                                fleetForm.lastName.$dirty}">
+                        <input ng-model="fleet.LastName"
+                            type="text"
+                            name="lastName"
+                            value=""
+                            placeholder="LastName"
+                            required
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div ng-if="addPage" class="row-fluid">                    
+                    <div class="label-input">
+                        Password* :
+                    </div>  
+                    <div class="hub-field">
+                        <input ng-model="fleet.Password"
+                            type="password"
+                            name="Password"
+                            value=""
+                            placeholder="Password"
+                            required
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div ng-show="updatePage" class="row-fluid">                    
+                    <div class="label-input">
+                        Password* :
+                    </div>  
+                    <div class="hub-field">
+                        <input value="Change Password"
+                            class="first form-control" 
+                            type="button" 
+                            ng-hide="changePass" 
+                            ng-click="changePass = true" />
+                        <input ng-show="changePass" ng-model="fleet.Password"
+                            type="password"
+                            name="Password"
+                            value=""
+                            placeholder="Password"
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Address* :
+                    </div> 
+                    <div class="hub-field">
+                        <input id="us2-address" 
+                            ng-model="fleet.UserAddress.Address1" 
+                            type="text" 
+                            name="address1" 
+                            value="" 
+                            placeholder="Address" 
+                            required
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div id="maps" class="maps-fleet"></div> 
+                <div class="row-fluid">
+                    <div class="label-input">
+                        Latitude* :
+                    </div>    
+                    <div class="hub-field">
+                        <input id="us2-lat" 
+                            ng-model="fleet.UserAddress.Latitude" 
+                            type="text" 
+                            name="latitude" 
+                            value="" 
+                            placeholder="Latitude" 
+                            required
+                            class="first form-control" />
+                    </div>         
+                    <div class="label-input">
+                        Longitude* :
+                    </div>     
+                    <div class="hub-field"> 
+                        <input id="us2-lon" 
+                            ng-model="fleet.UserAddress.Longitude" 
+                            type="text" 
+                            name="longitude" 
+                            value="" 
+                            placeholder="Longitude" 
+                            required
+                            class="first form-control" /> 
+                    </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Country* :
+                    </div> 
+                    <div class="hub-field">
+                        <input type="text" 
+                            required
+                            ng-model="fleet.UserAddress.Country" 
+                            placeholder="Country" 
+                            uib-typeahead="address for address in getCountries($viewValue)" 
+                            typeahead-loading="loadingLocationsCountry" 
+                            typeahead-no-results="noResultsCountry" 
+                            class="form-control" />
+                        <i ng-show="loadingLocationsCountry" class="glyphicon glyphicon-refresh"></i>
+                        <div ng-show="noResultsCountry">
+                            <i class="glyphicon glyphicon-remove"></i> No Results Found
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="label-input">
+                        State* :
+                    </div> 
+                    <div class="hub-field">
+                        <input type="text" 
+                            required
+                            ng-model="fleet.UserAddress.State" 
+                            placeholder="State" 
+                            uib-typeahead="address for address in getStates($viewValue)" 
+                            typeahead-loading="loadingLocationsState" 
+                            typeahead-no-results="noResultsState" 
+                            class="form-control" />
+                        <i ng-show="loadingLocationsState" class="glyphicon glyphicon-refresh"></i>
+                        <div ng-show="noResultsState">
+                            <i class="glyphicon glyphicon-remove"></i> No Results Found
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        City* :
+                    </div> 
+                    <div class="hub-field">
+                        <input ng-model="fleet.UserAddress.City"
+                            type="text"
+                            name="city"
+                            value=""
+                            placeholder="City"
+                            required
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Zip Code* :
+                    </div> 
+                    <div class="hub-field">
+                        <input ng-model="fleet.UserAddress.ZipCode"
+                            type="text"
+                            name="zipcode"
+                            value=""
+                            placeholder="Zipcode"
+                            required
+                            class="first form-control">
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">                    
+                    <div class="label-input">
+                        Address Details :
+                    </div> 
+                    <div class="hub-field">
+                        <input ng-model="fleet.UserAddress.Address2"
+                            type="text"
+                            name="details"
+                            value=""
+                            placeholder="Put your address details"
+                            required
+                            class="first form-control">
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div ng-if="updatePage" class="row-fluid">
+                    <button class="btn hub-buttons" ng-click="updateFleet()"
+                        ng-disabled="fleetForm.$invalid">Update Fleet</button>
+                </div>
+                <div ng-if="addPage" class="row-fluid">
+                    <button class="btn hub-buttons" ng-click="createFleet()"
+                        ng-disabled="fleetForm.$invalid">Add New Fleet</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+
+</script>
+

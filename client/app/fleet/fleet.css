@@ -1,0 +1,38 @@
+.row-fluid-fleet {
+    width: 400px;
+}
+
+.label-input-fleet {
+    width: 50%;
+    float: left;
+    margin-top: 10px;
+}
+
+.fleet-field {
+    width: 50%;
+    float: left;
+    margin-top: 10px;
+}
+
+.checkbox-fleet {
+    margin-left: -90px;
+    margin-top: -2px;
+}
+
+.maps-fleet {
+    width: 650px; 
+    height: 480px; 
+    background-color: rgb(229, 227, 223); 
+    overflow: hidden; 
+    position: absolute; 
+    margin-left: 450px; 
+    margin-top: -250px;
+}
+
+.manage-fleet-container {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    width: 450px;
+    padding: 0 !important;
+}
