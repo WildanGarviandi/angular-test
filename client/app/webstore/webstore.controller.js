@@ -629,6 +629,17 @@ angular.module('adminApp')
     $scope.loadManagePage();
 
     /**
+     * Refresh list with user input request
+     * 
+     * @return {void}
+     */
+    $scope.refresh = function(item) {
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getWebstores(); 
+    }
+
+    /**
      * Clear Filter
      * 
      * @return {void}
