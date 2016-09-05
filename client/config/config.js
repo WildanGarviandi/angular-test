@@ -1,6 +1,8 @@
 'use strict';
 
-function env() {
+var app = angular.module('config', ['ui.router', 'envConfig']);
+
+function mainConfig() {
     var location = window.location.host;
     var parts = location.split('.');
     var app = parts[0];
@@ -72,6 +74,8 @@ function env() {
     };
 }
 
-var app = angular.module('config', ['ui.router']);
-app.constant('config', (env)());
+function config() {
+    return _.extend({}, mainConfig(), envConfig());
+}
 
+app.constant('config', (config)());
