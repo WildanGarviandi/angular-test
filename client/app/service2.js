@@ -488,6 +488,20 @@ angular.module('adminApp')
                 module: 'returnedorder',
                 id: null
             },
+        },
+        getGoal: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'goal'
+            }
+        },
+        setGoal: {
+            method: 'POST',
+            params: {
+                module: 'dashboard',
+                controller: 'goal'
+            }
         }
     });
 });
