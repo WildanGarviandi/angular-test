@@ -101,6 +101,16 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.hubMonitor', {
+            url: 'hub-monitor',
+            views: {
+                'content@': {
+                    templateUrl: 'app/hub-monitor/hub-monitor.html',
+                    controller: 'HubMonitorCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.district', {
             url: 'district',
             views: {
