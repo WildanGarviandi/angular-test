@@ -91,6 +91,18 @@ angular.module('adminApp')
     $scope.isFetchingOrders = false;
     $scope.formData = {};
 
+    $scope.queryMultipleEDS = '';
+
+    $scope.$watch(
+        'queryMultipleEDS',
+        function (newValue) {
+            // Filter empty line(s)
+            $scope.userOrderNumbers = newValue.split('\n').filter(function (val) {
+                return val;
+            });
+        }
+    );
+
     $scope.chooseStatus = function(item) {
         $scope.status = item;
         $scope.offset = 0;
@@ -325,7 +337,8 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         $q.all([
             Services2.getCODOrdersNoPayment({
-                id: userID
+                id: userID,
+                userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
             }).$promise,
             Services2.getCODPaymentsUnpaid({
                 id: userID
@@ -412,6 +425,7 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.resetPaymentParams = function () {
+        $scope.clearTextArea();
         $scope.codOrdersNoPayment = [];
         $scope.codPaymentsUnpaid = [];
         $scope.selectedUserID = 0;
@@ -567,5 +581,18 @@ angular.module('adminApp')
     $scope.clearFilter = function(item) {
         $state.reload();
     }
+
+    /**
+     * Clear Multiple EDS Filter
+     * 
+     * @return {void}
+     */
+    $scope.clearTextArea = function () {
+        $scope.queryMultipleEDS = '';
+        if ($scope.userOrderNumbers.length > 0) {
+            $scope.userOrderNumbers = [];
+            $scope.getCODOrdersNoPaymentAndUnpaid($scope.selectedUserID);
+        }
+    };
     
 });
