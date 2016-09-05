@@ -70,9 +70,9 @@ angular.module('adminApp')
         .$promise.then(function (result) {
             $rootScope.$emit('stopSpin');
             if (result.data.RowUpdated > 0) {
-                messages += 'Update profile success!';
+                messages = 'Update profile success!';
             } else {
-                messages += 'Update profile failed. Please try again';
+                messages = 'Update profile failed. Please try again';
             }
 
             if ($scope.changePass) {
@@ -81,11 +81,11 @@ angular.module('adminApp')
                     oldPassword: $scope.user.oldPassword
                 })
                 .$promise.then(function (changedPass) { 
-                    messages += '\n' + 'Your password has been successfully changed';
+                    messages = 'Update profile success!';
                     alert(messages);
                 })
                 .catch(function(err) {
-                    messages += '\n' + 'Old password wrong. Please try again';
+                    messages = 'Update profile failed. Old password wrong. Please try again';
                     alert(messages);
                 });
             } else {
