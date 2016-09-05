@@ -281,6 +281,13 @@ angular.module('adminApp')
                     route.UserOrder.PaymentType = (route.UserOrder.PaymentType === 2) ? 'Wallet' : 'Cash';
                 })
             }
+            if ($scope.trip.OriginHub && $scope.trip.DestinationHub) {
+                $scope.trip.Step = 'Interhub';
+            } else if ($scope.trip.OriginHub) {
+                $scope.trip.Step = 'First Leg';
+            } else if ($scope.trip.DestinationHub) {
+                $scope.trip.Step = 'Last Leg';
+            }
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
