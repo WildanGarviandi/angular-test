@@ -27,7 +27,10 @@
             </div>
             <div class="col-md-1">
                 <div class="dropdown">
-                    <button ng-disabled="!isOrderSelected"
+                    <button ng-show="features.order.set_price || 
+                        features.order.reassign_fleet || 
+                        features.order.bulk_mark_delivered"
+                        ng-disabled="!isOrderSelected"
                         class="order-buttons btn dropdown-toggle" 
                         type="button" 
                         data-toggle="dropdown">
@@ -35,9 +38,9 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a ng-click="showSetPrice()">Update Price</a></li>
-                        <li><a ng-click="showReassignFleet()">Reassign Fleet</a></li>
-                        <li><a ng-click="bulkSetDeliveredStatus()">Mark as Delivered</a></li>
+                        <li><a ng-show="features.order.set_price" ng-click="showSetPrice()">Update Price</a></li>
+                        <li><a ng-show="features.order.reassign_fleet" ng-click="showReassignFleet()">Reassign Fleet</a></li>
+                        <li><a ng-show="features.order.bulk_mark_delivered" ng-click="bulkSetDeliveredStatus()">Mark as Delivered</a></li>
                     </ul>
                 </div>
             </div>

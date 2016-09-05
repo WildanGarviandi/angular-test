@@ -93,6 +93,7 @@ angular.module('adminApp')
     $scope.deliverableOrderStatus = config.deliverableOrderStatus;
     $scope.reassignableFleet = config.reassignableFleet;
     $scope.updatablePrice = config.updatablePrice;
+    $scope.features = config.features;
 
     $scope.isFirstSort = true;
 
@@ -471,19 +472,25 @@ angular.module('adminApp')
         }).$promise.then(function(data) {
             $scope.order = data.data;
             $scope.order.PickupType = (lodash.find($scope.pickupTypes, {value: $scope.order.PickupType})).key;
-            $scope.canBeReturned = ($scope.order.OrderStatus.OrderStatusID === 15);
-            $scope.canBeCopied = ($scope.order.OrderStatus.OrderStatusID === 13);
+            $scope.canBeReturned = ($scope.order.OrderStatus.OrderStatusID === 15 && $scope.features.order.return_sender);
+            $scope.canBeCopied = ($scope.order.OrderStatus.OrderStatusID === 13 && $scope.features.order.copy_cancelled);
             $scope.canBeReassigned = false;
             $scope.reassignableOrderStatus.forEach(function (status) {
-                if ($scope.order.OrderStatus.OrderStatusID === status) { $scope.canBeReassigned = true; }
+                if ($scope.order.OrderStatus.OrderStatusID === status && $scope.features.order.reassign_driver) { 
+                    $scope.canBeReassigned = true; 
+                }
             });
             $scope.canBeCancelled = true;
             $scope.notCancellableOrderStatus.forEach(function (status) {
-                if ($scope.order.OrderStatus.OrderStatusID === status) { $scope.canBeCancelled = false; }
+                if ($scope.order.OrderStatus.OrderStatusID === status || !$scope.features.order.cancel) { 
+                    $scope.canBeCancelled = false; 
+                }
             });
             $scope.canBeDelivered = false;
             $scope.deliverableOrderStatus.forEach(function (status) {
-                if ($scope.order.OrderStatus.OrderStatusID === status) { $scope.canBeDelivered = true; }
+                if ($scope.order.OrderStatus.OrderStatusID === status && $scope.features.order.mark_delivered) {
+                    $scope.canBeDelivered = true; 
+                }
             })
             if (!$scope.canBeCopied && 
                 !$scope.canBeReassigned && 
