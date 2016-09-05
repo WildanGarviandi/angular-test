@@ -64,34 +64,37 @@ angular.module('adminApp')
                 $rootScope.$emit('stopSpin');
                 return;
             }
-
-            var password = {
-                newPassword: $scope.user.newPassword,
-                oldPassword: $scope.user.oldPassword
-            };
-
-            Services2.updateUserPassword(password)
-            .$promise.then(function (result) { 
-                if (result) {
-                    messages = 'Your password has been successfully changed';
-                } else {
-                    messages = 'Change password failed. Please try again';
-                }
-            })
-            .catch(function(err) {
-                messages = 'Change password failed. Please try again';
-            });
         }
 
         Services2.updateUserProfile(params)
-        .$promise.then(function (result) { 
+        .$promise.then(function (result) {
             $rootScope.$emit('stopSpin');
             if (result.data.RowUpdated > 0) {
-                alert('Update profile success!' + '\n' + messages);
-                $state.reload();
+                messages += 'Update profile success!';
             } else {
-                alert('Update profile failed. Please try again' + '\n' + messages);
+                messages += 'Update profile failed. Please try again';
             }
+
+            if ($scope.changePass) {
+                Services2.updateUserPassword({
+                    newPassword: $scope.user.newPassword,
+                    oldPassword: $scope.user.oldPassword
+                })
+                .$promise.then(function (changedPass) { 
+                    messages += '\n' + 'Your password has been successfully changed';
+                    alert(messages);
+                })
+                .catch(function(err) {
+                    messages += '\n' + 'Old password wrong. Please try again';
+                    alert(messages);
+                });
+            } else {
+                alert(messages);
+            }
+
+            $state.reload();
+        }).catch(function(err) {
+            alert('Update profile failed. Please try again');
         });
     };
 
