@@ -235,5 +235,19 @@
             "value": 1,
             "key": "post-paid (invoice)"
         }
+    ],
+    "tripSteps": [
+        {
+            "key": "First Leg",
+            "value": 1
+        },
+        {
+            "key": "Interhub",
+            "value": 2
+        },
+        {
+            "key": "Last Leg",
+            "value": 3
+        }
     ]
 }
