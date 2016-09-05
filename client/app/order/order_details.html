@@ -85,8 +85,8 @@
                         User
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.User.FirstName}} {{order.User.LastName}} / 
-                        {{order.User.Email}} / {{order.User.CountryCode}} {{order.User.PhoneNumber}}
+                        {{order.User.FirstName || '-'}} {{order.User.LastName || '-'}} / 
+                        {{order.User.Email || '-'}} / {{order.User.CountryCode}} {{order.User.PhoneNumber || '-'}}
                     </div>
                     <div class="col-sm-4"></div>
                 </div>
@@ -96,8 +96,8 @@
                         Webstore
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.WebstoreUser.FirstName}} {{order.WebstoreUser.LastName}} / 
-                        {{order.WebstoreUser.Email}} / {{order.WebstoreUser.CountryCode}} {{order.WebstoreUser.PhoneNumber}}
+                        {{order.WebstoreUser.FirstName || '-'}} {{order.WebstoreUser.LastName || '-'}} / 
+                        {{order.WebstoreUser.Email || '-'}} / {{order.WebstoreUser.CountryCode}} {{order.WebstoreUser.PhoneNumber || '-'}}
                     </div>
                     <div class="col-sm-4"></div>
                 </div>
@@ -397,8 +397,16 @@
                 <div class="clearfix"></div>
                 <div ng-repeat="route in order.UserOrderRoutes" class="row-fluid order-detail-from-address">
                     <uib-accordion>
-                    <uib-accordion-group 
-                        heading="Route {{$index + 1}}: {{route.Trip.TripNumber}}">
+                    <uib-accordion-group
+                        heading="Route {{$index + 1}} | Status: {{route.OrderStatus.OrderStatus}} 
+                            {{ route.Trip !== null ? ' | Fleet: ' + route.Trip.FleetManager.CompanyDetail.CompanyName : ''}} 
+                            {{ route.Trip !== null ? ' | Driver: ' + route.Trip.Driver.FirstName + ' ' + route.Trip.Driver.LastName : ''}}">
+                        <div class="order-status-container-body">
+                            Origin Hub: {{route.OriginHub.Name || '-'}} / {{route.OriginHub.Address1 || '-'}}
+                        </div>
+                        <div class="order-status-container-body">
+                            Destination Hub: {{route.DestinationHub.Name || '-'}} / {{route.DestinationHub.Address1 || '-'}}
+                        </div>
                         <div class="order-status-container-body">
                             Pickup Address: {{route.PickupAddress.Address1}}
                         </div>
@@ -426,14 +434,10 @@
                         <div class="order-status-container-body">
                             Status: {{route.OrderStatus.OrderStatus}}
                         </div>
-                        <div class="order-status-container-body">
-                            Fleet Manager: {{route.FleetManager.CompanyDetail.CompanyName}} / 
-                            {{route.FleetManager.Email}} / {{route.FleetManager.PhoneNumber}}
-                        </div>
                         <uib-accordion>
-                        <uib-accordion-group heading="Trip">
+                        <uib-accordion-group ng-if="route.Trip !== null" heading="Trip">
                             <div class="order-status-container-body">
-                                Driver: {{route.Trip.Driver.FirstName}} {{route.Trip.Driver.LastName}}
+                                Driver: {{route.Trip.Driver.FirstName || '-'}} {{route.Trip.Driver.LastName || '-'}}
                             </div>
                             <div class="order-status-container-body">
                                 Container: {{route.Trip.ContainerNumber}}
@@ -446,6 +450,10 @@
                             </div>
                             <div class="order-status-container-body">
                                 Dropoff Time: {{route.Trip.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                            </div>   
+                            <div class="order-status-container-body">
+                                Fleet Manager: {{route.Trip.FleetManager.CompanyDetail.CompanyName || '-'}} / 
+                                {{route.Trip.FleetManager.Email || '-'}} / {{route.Trip.FleetManager.PhoneNumber || '-'}}
                             </div>                            
                         </uib-accordion-group>   
                         </uib-accordion>
