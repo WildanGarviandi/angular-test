@@ -15,6 +15,36 @@
     min-height: 80px;
 }
 
+.top-stat-total-orders {
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    background-color: #a6a6a6;
+    color: white;
+    min-height: 80px;
+    width: 11.11%;
+}
+
+.title-total-orders {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.date-total-orders {
+    font-size: 16px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.sum-total-orders {
+    font-size: 40px;
+    position: absolute;
+    top: 0px;
+    right: 10px;
+}
+
 .top-stat-box-goal a {
     color: white;
 }
