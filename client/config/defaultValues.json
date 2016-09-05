@@ -207,10 +207,19 @@
     "orderTypes": [
         {
             "key": "Marketplace",
-            "value": 1
-        },{
+            "value": [1, 2, 3, 4, 5, 6]
+        }, {
             "key": "Ecommerce",
-            "value": 7
+            "value": [7, 8]
+        }
+    ],
+    "userTypes": [
+        {
+            "key": "Marketplace",
+            "value": [1, 2, 3, 4]
+        }, {
+            "key": "Ecommerce",
+            "value": [5]
         }
     ],
     "country": {
