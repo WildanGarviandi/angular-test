@@ -45,7 +45,7 @@
                 </div>
                 <div class="row-fluid">                    
                     <div class="label-input">
-                        Company Name :
+                        Company Name* :
                     </div>  
                     <div class="hub-field"
                         ng-class="{'has-error':  fleetForm.companyName.$invalid &&
@@ -62,7 +62,7 @@
                 <div class="clearfix"></div> 
                 <div class="row-fluid">                    
                     <div class="label-input">
-                        Email :
+                        Email* :
                     </div>  
                     <div class="hub-field"
                         ng-class="{'has-error':  fleetForm.email.$invalid &&
@@ -79,7 +79,7 @@
                 <div class="clearfix"></div>   
                 <div class="row-fluid">                    
                     <div class="label-input">
-                        Phone Number :
+                        Phone Number* :
                     </div>  
                     <div class="hub-field input-group"
                         ng-class="{'has-error':  fleetForm.phone.$invalid &&
@@ -156,7 +156,7 @@
                 <div class="clearfix"></div> 
                 <div class="row-fluid">                    
                     <div class="label-input">
-                        User First Name :
+                        User First Name* :
                     </div>  
                     <div class="hub-field"
                         ng-class="{'has-error':  fleetForm.firstName.$invalid &&
@@ -173,7 +173,7 @@
                 <div class="clearfix"></div> 
                 <div class="row-fluid">                    
                     <div class="label-input">
-                        User Last Name :
+                        User Last Name* :
                     </div>  
                     <div class="hub-field"
                         ng-class="{'has-error':  fleetForm.lastName.$invalid &&
@@ -223,7 +223,7 @@
                 </div>
                 <div class="row-fluid">                    
                     <div class="label-input">
-                        Address* :
+                        Address :
                     </div> 
                     <div class="hub-field">
                         <input id="us2-address" 
@@ -232,7 +232,6 @@
                             name="address1" 
                             value="" 
                             placeholder="Address" 
-                            required
                             class="first form-control" />
                     </div>
                 </div>
@@ -240,7 +239,7 @@
                 <div id="maps" class="maps-fleet"></div> 
                 <div class="row-fluid">
                     <div class="label-input">
-                        Latitude* :
+                        Latitude :
                     </div>    
                     <div class="hub-field">
                         <input id="us2-lat" 
@@ -249,11 +248,10 @@
                             name="latitude" 
                             value="" 
                             placeholder="Latitude" 
-                            required
                             class="first form-control" />
                     </div>         
                     <div class="label-input">
-                        Longitude* :
+                        Longitude :
                     </div>     
                     <div class="hub-field"> 
                         <input id="us2-lon" 
@@ -262,17 +260,15 @@
                             name="longitude" 
                             value="" 
                             placeholder="Longitude" 
-                            required
                             class="first form-control" /> 
                     </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">                    
                     <div class="label-input">
-                        Country* :
+                        Country :
                     </div> 
                     <div class="hub-field">
                         <input type="text" 
-                            required
                             ng-model="fleet.UserAddress.Country" 
                             placeholder="Country" 
                             uib-typeahead="address for address in getCountries($viewValue)" 
@@ -288,11 +284,10 @@
                 <div class="clearfix"></div>
                 <div class="row-fluid">
                     <div class="label-input">
-                        State* :
+                        State :
                     </div> 
                     <div class="hub-field">
                         <input type="text" 
-                            required
                             ng-model="fleet.UserAddress.State" 
                             placeholder="State" 
                             uib-typeahead="address for address in getStates($viewValue)" 
@@ -308,7 +303,7 @@
                 <div class="clearfix"></div>
                 <div class="row-fluid">                    
                     <div class="label-input">
-                        City* :
+                        City :
                     </div> 
                     <div class="hub-field">
                         <input ng-model="fleet.UserAddress.City"
@@ -316,14 +311,13 @@
                             name="city"
                             value=""
                             placeholder="City"
-                            required
                             class="first form-control" />
                     </div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="row-fluid">                    
                     <div class="label-input">
-                        Zip Code* :
+                        Zip Code :
                     </div> 
                     <div class="hub-field">
                         <input ng-model="fleet.UserAddress.ZipCode"
@@ -331,7 +325,6 @@
                             name="zipcode"
                             value=""
                             placeholder="Zipcode"
-                            required
                             class="first form-control">
                     </div>
                 </div>
@@ -346,7 +339,6 @@
                             name="details"
                             value=""
                             placeholder="Put your address details"
-                            required
                             class="first form-control">
                     </div>
                 </div>

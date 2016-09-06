@@ -61,11 +61,38 @@ angular.module('adminApp')
     $scope.offset = $location.search().offset || 0;
     $scope.isFirstLoaded = true;
 
-    $scope.emailFormat = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/igm;
-    $scope.phoneFormat = /^[+]?(\d{3}(-| )?\d{3}(-| )?\d{4}|\d{5,12}|}|[(]\d{3}[)](-| )?\d{3}(-| )?\d{4})$/;
+    $scope.emailFormat = new RegExp('^(([^<>()[\\]\\\\.,;:\\s@\\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\\"]+)*)' + 
+                                    '|(\\".+\\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.' + 
+                                    '[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$', 'i');
+    $scope.phoneFormat = new RegExp('^[+]?(\\d{3}(-| )?\\d{3}(-| )?\\d{4}|\\d{5,12}|}|[(]\\d{3}[)](-| )?' + 
+                                    '\\d{3}(-| )?\\d{4})$');
+
+    // Here, model and param have same naming format
+    var pickedVariables = {
+        'Status': {
+            model: 'status',
+            pick: 'value',
+            collection: 'statuses'
+        }
+    };
+
+    var variables = {
+        'Name': {
+            model: 'queryName',
+            param: 'name'
+        },
+        'Phone': {
+            model: 'queryPhone',
+            param: 'phone'
+        },
+        'Email': {
+            model: 'queryEmail',
+            param: 'email'
+        }
+    };
 
     /**
-     * Get status
+     * Get status of a User
      * 
      * @return {void}
      */
@@ -86,112 +113,124 @@ angular.module('adminApp')
 
     // FLEET CRUD
 
-    var createFleet = function (callback) {
-        var fleet = {
-            CompanyName: $scope.fleet.CompanyDetail.CompanyName,
-            CompanyDescription: $scope.fleet.CompanyDetail.CompanyDescription,
-            VatNumber: $scope.fleet.CompanyDetail.VatNumber,
-            CCNNumber: $scope.fleet.CompanyDetail.CCNNumber,
-            WebsiteURL: $scope.fleet.CompanyDetail.WebsiteURL,
+    /**
+     * Calls creating fleet endpoint
+     * 
+     * @return {Object} - Promise of Fleet Data
+     */
+    function createFleet () {
+        return $q(function (resolve, reject) {
+            var fleet = {
+                CompanyName: $scope.fleet.CompanyDetail.CompanyName,
+                CompanyDescription: $scope.fleet.CompanyDetail.CompanyDescription,
+                VatNumber: $scope.fleet.CompanyDetail.VatNumber,
+                CCNNumber: $scope.fleet.CompanyDetail.CCNNumber,
+                WebsiteURL: $scope.fleet.CompanyDetail.WebsiteURL,
 
-            FirstName: $scope.fleet.FirstName,
-            LastName: $scope.fleet.LastName,
-            PhoneNumber: $scope.fleet.PhoneNumber,
-            Email: $scope.fleet.Email,
-            ProfilePicture: $scope.fleet.ProfilePicture,
-            Password: $scope.fleet.Password,
+                FirstName: $scope.fleet.FirstName,
+                LastName: $scope.fleet.LastName,
+                PhoneNumber: $scope.fleet.PhoneNumber,
+                Email: $scope.fleet.Email,
+                ProfilePicture: $scope.fleet.ProfilePicture,
+                Password: $scope.fleet.Password,
 
-            Latitude: $scope.webstore.UserAddress.Latitude,
-            Longitude: $scope.webstore.UserAddress.Longitude,
-            Address1: $scope.webstore.UserAddress.Address1,
-            Address2: $scope.webstore.UserAddress.Address2,
-            City: $scope.webstore.UserAddress.City,
-            State: $scope.webstore.UserAddress.State,
-            Country: $scope.webstore.UserAddress.Country,
-            ZipCode: $scope.webstore.UserAddress.ZipCode,
-        };
-        $rootScope.$emit('startSpin');
-        Services2.createFleet({
-            id: $stateParams.fleetID
-        }, fleet).$promise.then(function (response) {
-            $rootScope.$emit('stopSpin');
-            callback(null, response);
-        })
-        .catch(function (err) {
-            $rootScope.$emit('stopSpin');
-            callback(err);
+                Latitude: $scope.fleet.UserAddress.Latitude,
+                Longitude: $scope.fleet.UserAddress.Longitude,
+                Address1: $scope.fleet.UserAddress.Address1,
+                Address2: $scope.fleet.UserAddress.Address2,
+                City: $scope.fleet.UserAddress.City,
+                State: $scope.fleet.UserAddress.State,
+                Country: $scope.fleet.UserAddress.Country,
+                ZipCode: $scope.fleet.UserAddress.ZipCode,
+            };
+            $rootScope.$emit('startSpin');
+            Services2.createFleet({
+                id: $stateParams.fleetID
+            }, fleet).$promise.then(function (response) {
+                $rootScope.$emit('stopSpin');
+                resolve(response);
+            })
+            .catch(function (err) {
+                $rootScope.$emit('stopSpin');
+                reject(err);
+            });
         });
-    };
-
-    var updateFleet = function (callback) {
-        var fleet = {
-            CompanyName: $scope.fleet.CompanyDetail.CompanyName,
-            CompanyDescription: $scope.fleet.CompanyDetail.CompanyDescription,
-            VatNumber: $scope.fleet.CompanyDetail.VatNumber,
-            CCNNumber: $scope.fleet.CompanyDetail.CCNNumber,
-            WebsiteURL: $scope.fleet.CompanyDetail.WebsiteURL,
-
-            FirstName: $scope.fleet.FirstName,
-            LastName: $scope.fleet.LastName,
-            PhoneNumber: $scope.fleet.PhoneNumber,
-            Email: $scope.fleet.Email,
-            ProfilePicture: $scope.fleet.ProfilePicture,
-            Password: $scope.fleet.Password,
-
-            Latitude: $scope.webstore.UserAddress.Latitude,
-            Longitude: $scope.webstore.UserAddress.Longitude,
-            Address1: $scope.webstore.UserAddress.Address1,
-            Address2: $scope.webstore.UserAddress.Address2,
-            City: $scope.webstore.UserAddress.City,
-            State: $scope.webstore.UserAddress.State,
-            Country: $scope.webstore.UserAddress.Country,
-            ZipCode: $scope.webstore.UserAddress.ZipCode,
-        };
-        $rootScope.$emit('startSpin');
-        Services2.updateFleet({
-            id: $stateParams.fleetID
-        }, fleet).$promise.then(function (response) {
-            $rootScope.$emit('stopSpin');
-            callback(null, response);
-        })
-        .catch(function (err) {
-            $rootScope.$emit('stopSpin');
-            callback(err);
-        });
-    };
+    }
 
     /**
-     * Update single fleet
+     * Calls updating fleet endpoint
+     * 
+     * @return {Object} Promise of fleet data
+     */
+    function updateFleet () {
+        return $q(function (resolve, reject) {
+            var fleet = {
+                CompanyName: $scope.fleet.CompanyDetail.CompanyName,
+                CompanyDescription: $scope.fleet.CompanyDetail.CompanyDescription,
+                VatNumber: $scope.fleet.CompanyDetail.VatNumber,
+                CCNNumber: $scope.fleet.CompanyDetail.CCNNumber,
+                WebsiteURL: $scope.fleet.CompanyDetail.WebsiteURL,
+
+                FirstName: $scope.fleet.FirstName,
+                LastName: $scope.fleet.LastName,
+                PhoneNumber: $scope.fleet.PhoneNumber,
+                Email: $scope.fleet.Email,
+                ProfilePicture: $scope.fleet.ProfilePicture,
+                Password: $scope.fleet.Password,
+
+                Latitude: $scope.fleet.UserAddress.Latitude,
+                Longitude: $scope.fleet.UserAddress.Longitude,
+                Address1: $scope.fleet.UserAddress.Address1,
+                Address2: $scope.fleet.UserAddress.Address2,
+                City: $scope.fleet.UserAddress.City,
+                State: $scope.fleet.UserAddress.State,
+                Country: $scope.fleet.UserAddress.Country,
+                ZipCode: $scope.fleet.UserAddress.ZipCode,
+            };
+            $rootScope.$emit('startSpin');
+            Services2.updateFleet({
+                id: $stateParams.fleetID
+            }, fleet).$promise.then(function (response) {
+                $rootScope.$emit('stopSpin');
+                resolve(response);
+            })
+            .catch(function (err) {
+                $rootScope.$emit('stopSpin');
+                reject(err);
+            });
+        });   
+    }
+
+    /**
+     * Create single fleet
      * 
      * @return {void}
      */
     $scope.createFleet = function() {
-        createFleet(function(err, fleet) {
-            if (err) {
-                alert('Error: '+ err.data.error.message );
-            } else {
-                alert(fleet.data.Fleet.UserID + ' has been successfully created.');
-                $location.path('/fleets');
-            } 
+        createFleet().then(function (fleet) {
+            alert(fleet.data.Fleet.UserID + ' has been successfully created.');
+            $location.path('/fleets');
+        }).catch(function (err) {
+            alert('Error: '+ err.data.error.message );
         });
-    };/**
+    };
+
+    /**
      * Update single fleet
      * 
      * @return {void}
      */
     $scope.updateFleet = function() {
-        updateFleet(function (err, fleet) {
-            if (err) {
-                alert('Error: '+ err.data.error.message );
-            } else {
-                alert('Your fleet ID:' + fleet.data.Fleet.UserID + ' has been successfully updated.');
-                $location.path('/fleets');
-            } 
+        updateFleet().then(function (fleet) {
+            alert('Your fleet ID:' + fleet.data.Fleet.UserID + ' has been successfully updated.');
+            $location.path('/fleets');
+        }).catch(function (err) {
+            alert('Error: '+ err.data.error.message );
         });
     };
 
     /**
-     * Get single fleet
+     * Get single fleet data
      * 
      * @return {void}
      */
@@ -206,10 +245,10 @@ angular.module('adminApp')
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
-    };
+    }
 
     /**
-     * Get all fleets
+     * Get all fleets data
      * 
      * @return {void}
      */
@@ -245,18 +284,9 @@ angular.module('adminApp')
                 data.data.Fleets.count / $scope.tableState.pagination.number);
             $rootScope.$emit('stopSpin');
         });
-    };
+    }
 
     // FILTERING
-
-    // Here, model and param have same naming format
-    var pickedVariables = {
-        'Status': {
-            model: 'status',
-            pick: 'value',
-            collection: 'statuses'
-        }
-    };
 
     // Generates
     // chooseStatus, choosePickupType, chooseOrderType
@@ -269,21 +299,6 @@ angular.module('adminApp')
             getFleets();  
         };
     });
-
-    var variables = {
-        'Name': {
-            model: 'queryName',
-            param: 'name'
-        },
-        'Phone': {
-            model: 'queryPhone',
-            param: 'phone'
-        },
-        'Email': {
-            model: 'queryEmail',
-            param: 'email'
-        }
-    };
 
     // Generates:
     // searchOrder, searchDriver, searchMerchant, searchPickup, searchDropoff,
@@ -342,7 +357,7 @@ angular.module('adminApp')
 
     // MISCELLANEOUS
 
-    $scope.uploadPic = function (file) {
+    function uploadImage (file) {
         $rootScope.$emit('startSpin');
         if (file) {
             $scope.f = file;
@@ -372,6 +387,10 @@ angular.module('adminApp')
                 file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
             });
         }
+    }
+
+    $scope.uploadPic = function (file) {
+        uploadImage(file);
     };
 
     /**
@@ -383,7 +402,7 @@ angular.module('adminApp')
         $scope.fleet.UserAddress.Address1 = addressComponents.addressLine1;
         $scope.fleet.UserAddress.State = addressComponents.stateOrProvince;
         $scope.fleet.UserAddress.ZipCode = addressComponents.postalCode;
-    }
+    };
 
     /**
      * Pick location from maps
@@ -405,7 +424,7 @@ angular.module('adminApp')
                 $scope.updateLocation(addressComponents);
             },
         });
-    }
+    };
 
     // INITIATION
 
