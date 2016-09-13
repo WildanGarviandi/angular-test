@@ -17,7 +17,7 @@ function mainConfig() {
             var activeMerchant = [0, 0, 0, 0, 0, 0];
             break;        
         case 'admin2|com':
-            var url = 'http://api2.etobee.com';
+            var url = 'https://api2.etobee.com';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
             var decimalSeparator = ',';
