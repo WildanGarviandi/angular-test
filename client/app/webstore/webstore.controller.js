@@ -329,6 +329,10 @@ angular.module('adminApp')
         });
     }
 
+    $scope.paginationChildWebstore = function(value) {
+        $scope.offset = Math.ceil(value);
+    }
+
     /**
      * Get all webstores
      * 
