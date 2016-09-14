@@ -17,13 +17,18 @@
         </div>
     </div>
     
-    <div class="col-md-12 content-set-limit">
-        <button class="btn btn-primary" type="button" ng-click="openCreateCODPaymentModal()">Confirm Manual COD Payment</button>
+    <div class="col-md-1 content-set-limit">
+        <button class="col-md-12 btn order-buttons" ng-click="refresh()">Refresh</button>
+    </div>
+    <div class="col-md-1 content-set-limit">
         <button class="btn order-buttons" ng-click="clearFilter()"><i class="fa fa-refresh"></i> Reset Filter</button>
     </div>
 
+    <div class="clearfix"></div>
+
     <div class="container-content">
         <div class="col-md-12">
+            <button class="btn btn-primary" type="button" ng-click="openCreateCODPaymentModal()">Confirm Manual COD Payment</button>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
                 <thead class="hubs-table-head">
                     <tr>
@@ -142,7 +147,7 @@
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.CreatedDate | date:'dd-MM-yyyy HH:mm:ss'}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.User.UserType.Name}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.User.FullName}}</td>
-                        <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.TotalAmount}}</td>
+                        <td class="text-right" ng-click="detailsPage(payment.CODPaymentID)">{{payment.TotalAmount | number | localizenumber}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.Status}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.PaymentMethod}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.PaidDate | date:'dd-MM-yyyy HH:mm:ss'}}</td>
@@ -238,6 +243,29 @@
                 </div>
             </div>
             <div class="clearfix"></div>
+        </div>        
+        <div ng-show="isFetchingOrders" class="row">
+            <uib-accordion>
+                <uib-accordion-group is-open="areaFilter.open">
+                    <uib-accordion-heading>
+                        Multiple Filter by EDS / AWB / WebOrderID
+                        <i class="pull-right glyphicon" 
+                            ng-class="{'glyphicon-chevron-down': areaFilter.open, 'glyphicon-chevron-right': !areaFilter.open}">
+                        </i>
+                    </uib-accordion-heading>
+                    <textarea ng-model="$parent.$parent.$parent.$parent.queryMultipleEDS"
+                        id="eds-textarea"
+                        placeholder="Write/Paste EDS Number or Order ID here, separated with newline">
+                    </textarea>
+                    
+                    <div class="pull-right">
+                        <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
+                        <a class="btn btn-default" 
+                            ng-click="areaFilter.open = false; clearTextArea()">Cancel</a>
+                        <a ng-click="getCODOrdersNoPaymentAndUnpaid(selectedUserID)" class="btn btn-success">Filter</a>
+                    </div>
+                </uib-accordion-group>
+            </uib-accordion>
         </div>
         <div ng-show="isFetchingOrders && codOrdersNoPayment.length == 0 && codPaymentsUnpaid.length == 0">
             No Unpaid COD Orders found
@@ -277,7 +305,7 @@
                             </td>
                             <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
                             <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
-                            <td>{{order.TotalValue}}</td>
+                            <td class="text-right">{{order.TotalValue | number | localizenumber}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -303,7 +331,7 @@
                             </td>
                             <td>{{payment.TransactionId}}</td>
                             <td>{{payment.User.FirstName}} {{payment.User.LastName}}</td>
-                            <td>{{payment.TotalAmount}}</td>
+                            <td class="text-right">{{payment.TotalAmount | number | localizenumber}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -313,8 +341,8 @@
                 <div class="label-amount">
                     Amount Paid
                 </div> 
-                <div class="text-amount">
-                    {{amountPaid}}
+                <div class="text-amount text-right">
+                    {{amountPaid | number | localizenumber}}
                 </div>
             </div>
             <div class="clearfix"></div>

@@ -17,14 +17,20 @@
         </div>
     </div>
     
-    <div class="col-md-12 content-set-limit">
-        <button class="btn btn-primary" type="button" ng-click="exportCsv()">Export CSV</button>
-        <button class="btn order-buttons" ng-click="clearFilter()">
-            <i class="fa fa-refresh"></i> Reset Filter</button>
+    <div class="col-md-1 content-set-limit">
+        <button class="col-md-12 btn order-buttons" ng-click="refresh()">Refresh</button>
     </div>
+    <div class="col-md-1 content-set-limit">    
+        <button class="btn order-buttons" ng-click="clearFilter()"><i class="fa fa-refresh"></i> Reset Filter</button>
+    </div>
+    
+    <div class="clearfix"></div>
 
     <div class="container-content">
         <div class="col-md-12">
+            <div>
+                <button class="btn btn-primary" type="button" ng-click="exportCsv()">Export CSV</button>
+            </div>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
                 <thead class="hubs-table-head">
                     <tr>
@@ -155,7 +161,7 @@
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName || order.FleetManager.CompanyDetail.CompanyName}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)">{{order.TotalValue}}</td>
+                        <td class="text-right" ng-click="detailsPage(order.UserOrderID)">{{order.TotalValue | number | localizenumber}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.OrderStatus.OrderStatus}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.DeliveredTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.CODPaymentUserOrder.CODPayment.Status || 'Unpaid'}}</td>

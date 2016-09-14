@@ -62,6 +62,10 @@ angular.module('adminApp')
         endDate: $location.search().endDropoff || null
     };
 
+    $scope.cutOffTime = null;
+
+    $scope.dueTime = null;
+
     $scope.importedDatePicker = new Date();
 
     $scope.optionsDatepicker = {
@@ -92,6 +96,7 @@ angular.module('adminApp')
     $scope.deliverableOrderStatus = config.deliverableOrderStatus;
     $scope.reassignableFleet = config.reassignableFleet;
     $scope.updatablePrice = config.updatablePrice;
+    $scope.features = config.features;
 
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
@@ -129,7 +134,7 @@ angular.module('adminApp')
 
     $scope.orders = [];
     $scope.newPrice = 0;
-    $scope.limitPages = [$scope.itemsByPage, 25, 50, 100];
+    $scope.limitPages = [$scope.itemsByPage, 25, 50, 100, 200];
     $scope.isOrderSelected = false;
 
     /**
@@ -140,7 +145,9 @@ angular.module('adminApp')
     var getDefaultValues = function() {
         $http.get('config/defaultValues.json').success(function(data) {
             $scope.pickupTypes = $scope.pickupTypes.concat(data.pickupTypes);
-            $scope.orderTypes = $scope.orderTypes.concat(data.orderTypes);
+            $scope.orderTypes = $scope.orderTypes.concat(data.userTypes);
+            $scope.marketplaceType = (lodash.find($scope.orderTypes, {key: 'Marketplace'}));
+            $scope.ecommerceType = (lodash.find($scope.orderTypes, {key: 'Ecommerce'}));
         });
     };
 
@@ -223,6 +230,12 @@ angular.module('adminApp')
         if ($scope.dropoffDatePicker.endDate) {
             $scope.dropoffDatePicker.endDate = new Date($scope.dropoffDatePicker.endDate);
         }
+        if ($scope.cutOffTime) {
+            $scope.cutOffTime = moment($scope.cutOffTime).format('YYYY-MM-DD'); 
+        }
+        if ($scope.dueTime) {
+            $scope.dueTime = moment($scope.dueTime).format('YYYY-MM-DD'); 
+        }
 
         var paramsQuery = {
             'id': 'queryUserOrderNumber',
@@ -274,13 +287,15 @@ angular.module('adminApp')
             sender: $scope.querySender,
             dropoff: $scope.queryDropoff,
             pickupType: $scope.pickupType.value,
-            deviceType: $scope.orderType.value,
+            userType: $scope.orderType.key,
             recipient: $scope.queryRecipient,
             status: $scope.status.value,
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
             startDropoff: $scope.dropoffDatePicker.startDate,
             endDropoff: $scope.dropoffDatePicker.endDate,
+            cutOffTime: $scope.cutOffTime,
+            dueTime: $scope.dueTime,
             fleet: $scope.queryFleet,
             sortBy: $scope.sortBy,
             sortCriteria: $scope.sortCriteria,
@@ -291,10 +306,10 @@ angular.module('adminApp')
             $scope.orders = data.data.rows;
             $scope.displayed.forEach(function (val, index, array) {
                 array[index].PickupType = (lodash.find($scope.pickupTypes, {value: val.PickupType})).key;
-                if (val.DeviceType && val.DeviceType.DeviceTypeID === 7) {
-                    array[index].OrderType = (lodash.find($scope.orderTypes, {value: 7})).key;
+                if (val.User && val.User.UserType && $scope.marketplaceType.value.indexOf(val.User.UserType.UserTypeID) > -1) {
+                    array[index].OrderType = $scope.marketplaceType.key;
                 } else {
-                    array[index].OrderType = (lodash.find($scope.orderTypes, {value: 1})).key;
+                    array[index].OrderType = $scope.ecommerceType.key;
                 }
                 if (val.WebstoreUser) {
                     array[index].CustomerName = val.WebstoreUser.FirstName + ' ' + val.WebstoreUser.LastName;
@@ -376,6 +391,32 @@ angular.module('adminApp')
     });
 
     /**
+     * Add search CuttOffTime
+     * 
+     * @return {void}
+     */
+    $scope.searchCutOffTime = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getOrder();
+        };
+    }
+
+    /**
+     * Add search DueTime
+     * 
+     * @return {void}
+     */
+    $scope.searchDueTime = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getOrder();
+        };
+    }
+
+    /**
      * Sort by column
      * 
      * @return {void}
@@ -429,19 +470,25 @@ angular.module('adminApp')
         }).$promise.then(function(data) {
             $scope.order = data.data;
             $scope.order.PickupType = (lodash.find($scope.pickupTypes, {value: $scope.order.PickupType})).key;
-            $scope.canBeReturned = ($scope.order.OrderStatus.OrderStatusID === 15);
-            $scope.canBeCopied = ($scope.order.OrderStatus.OrderStatusID === 13);
+            $scope.canBeReturned = ($scope.order.OrderStatus.OrderStatusID === 15 && $scope.features.order.return_sender);
+            $scope.canBeCopied = ($scope.order.OrderStatus.OrderStatusID === 13 && $scope.features.order.copy_cancelled);
             $scope.canBeReassigned = false;
             $scope.reassignableOrderStatus.forEach(function (status) {
-                if ($scope.order.OrderStatus.OrderStatusID === status) { $scope.canBeReassigned = true; }
+                if ($scope.order.OrderStatus.OrderStatusID === status && $scope.features.order.reassign_driver) { 
+                    $scope.canBeReassigned = true; 
+                }
             });
             $scope.canBeCancelled = true;
             $scope.notCancellableOrderStatus.forEach(function (status) {
-                if ($scope.order.OrderStatus.OrderStatusID === status) { $scope.canBeCancelled = false; }
+                if ($scope.order.OrderStatus.OrderStatusID === status || !$scope.features.order.cancel) { 
+                    $scope.canBeCancelled = false; 
+                }
             });
             $scope.canBeDelivered = false;
             $scope.deliverableOrderStatus.forEach(function (status) {
-                if ($scope.order.OrderStatus.OrderStatusID === status) { $scope.canBeDelivered = true; }
+                if ($scope.order.OrderStatus.OrderStatusID === status && $scope.features.order.mark_delivered) {
+                    $scope.canBeDelivered = true; 
+                }
             })
             if (!$scope.canBeCopied && 
                 !$scope.canBeReassigned && 
@@ -1401,6 +1448,17 @@ angular.module('adminApp')
         $scope.offset = 0;
         $scope.tableState.pagination.start = 0;
         $scope.getOrder(); 
+    }
+
+    /**
+     * Refresh list with user input request
+     * 
+     * @return {void}
+     */
+    $scope.refresh = function(item) {
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getOrder();
     }
 
     /**

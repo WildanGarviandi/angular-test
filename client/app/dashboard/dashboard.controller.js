@@ -39,7 +39,6 @@ angular.module('adminApp')
      * @return {void}
      */
      $scope.initCookieValues = function() {
-        $scope.activeGoal = $cookieStore.get('goal') || config.activeGoal;
         var activeMerchants = $cookieStore.get('merchants');
         if (typeof activeMerchants !== 'undefined') {
             activeMerchants.forEach(function(id, index) {
@@ -96,13 +95,44 @@ angular.module('adminApp')
     };
 
     /**
+     * Get goal
+     *
+     * @return {void}
+     */
+    $scope.getGoal = function() {
+        Services2.getGoal({
+            date: moment().format('YYYY-MM-DD')
+        }).$promise.then(function(data) {
+            $scope.activeGoal = data.data.goal;
+        }).catch(function(err) {
+            $scope.activeGoal = '0';
+        });
+    }
+
+    /**
      * Set goal to the chosen item
      * 
      * @return {void}
      */
     $scope.setGoal = function(data) {
-        $scope.activeGoal = data;
-        $cookieStore.put('goal', $scope.activeGoal);
+        if (/\D/.test(data)) {
+            throw alert('please insert number for the goal');
+        }
+        if (!(data > 0)) {
+            throw alert('goal must be more then 0');
+        }
+
+        $rootScope.$emit('startSpin');
+        Services2.setGoal({
+            date: moment().format('YYYY-MM-DD'),
+            goal: data
+        }).$promise.then(function(data) {
+            $scope.activeGoal = data.data.goal;
+            $rootScope.$emit('stopSpin');
+        }).catch(function(err) {
+            alert(err.data.error.message);
+            $rootScope.$emit('stopSpin');
+        });
     }
 
     /**
@@ -377,6 +407,28 @@ angular.module('adminApp')
     }
 
     /**
+     * Get orders per day
+     * 
+     * @return {void}
+     */
+    $scope.getOrdersPerDay = function() {
+        $rootScope.$emit('startSpin');
+        $scope.isLoading = true;
+        Services2.getMainSLA({
+            start: moment().add(($scope.totalDays * -1), 'days').format('YYYY-MM-DD'),
+            end: moment().add($scope.totalDays, 'days').format('YYYY-MM-DD'),
+            param: 'CutOffTime'
+        }).$promise.then(function(data) {
+            data.data.SLA.forEach(function(sla, index) {
+                $scope.ordersPerDay.push({
+                    day: moment().add(index - $scope.totalDays, 'days').format('ddd MMM DD'),
+                    total: sla.summary.total
+                })
+            });
+        });
+    }
+
+    /**
      * Get merchant SLA
      * 
      * @return {void}
@@ -514,16 +566,20 @@ angular.module('adminApp')
         $scope.currentWeek = moment().week();
         $scope.currentWeekStart = moment().startOf('isoWeek').format('MMM DD');
         $scope.currentWeekEnd = moment().endOf('isoWeek').format('MMM DD');
+        $scope.ordersPerDay = [];
         if ($stateParams.merchantID !== undefined) {
             getDefaultValues();
+            $scope.getGoal();
             $scope.getMerchantDetails($stateParams.merchantID);
         } else {
             getDefaultValues();
+            $scope.getGoal();
             $scope.initCookieValues();
             $scope.initDataValues();
             $scope.getMerchants()
             .then(function () {
                 $scope.getMainSLA();
+                $scope.getOrdersPerDay();
                 $scope.activeMerchant.forEach(function(merchant, index){
                     $scope.getSummaryMerchantSLA(merchant, index);
                     $scope.getMerchantSLATotal(merchant, index);

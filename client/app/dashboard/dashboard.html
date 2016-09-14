@@ -1,14 +1,40 @@
 <div class="container-fluid container-hubs">
     <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    Dashboard
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <div class="hub-search">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
     <div class="row-fluid top-stat">
         <div class="col-md-3 col-sm-7 top-stat-box-goal well well-sm">
             <div>
                 Week {{currentWeek}} Goal
                 ({{currentWeekStart}} - {{currentWeekEnd}})
             </div>
-            <div>
-                {{ summaryTotal }} / <a href="#" onbeforesave="setGoal($data)" editable-text="activeGoal">{{ activeGoal || "0" }}</a>
+            <div ng-show="activeGoal > 0">
+                {{ summaryTotal }} / <a href="#" onbeforesave="setGoal($data)" editable-text="activeGoal">{{ activeGoal }}</a>
             </div>
+            <div ng-show="activeGoal === 0">
+                {{ summaryTotal }} / 
+                <a href="#" onbeforesave="setGoal($data)" editable-text="0">
+                    <span ng-hide="isEditing" class="">
+                        Not Set
+                    </span>
+                </a>
+            </div>
+        </span>
         </div>
         <div class="col-md-3 col-sm-7 top-stat-box-goal well well-sm">
             <div>
@@ -58,6 +84,21 @@
                 {{ totalSLA | number:2 }} %
             </div>
         </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row-fluid top-stat">
+        <div class="title-total-orders">
+            Total Orders
+        </div>
+        <div ng-repeat="orders in ordersPerDay" class="col-md-1 col-sm-8 top-stat-total-orders well well-sm">
+            <div class="date-total-orders">
+                {{orders.day}}
+            </div>
+            <div class="sum-total-orders">
+                {{orders.total}}
+            </div>
+        </div>
+        
     </div>
     <div class="clearfix"></div>
     <div class="merchant-box" ng-repeat="merchant in activeMerchant">

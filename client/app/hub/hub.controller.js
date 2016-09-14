@@ -57,8 +57,9 @@ angular.module('adminApp')
     $scope.isFirstLoaded = true;
 
     var createHub = function(callback) {
-        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City)){
-            alert('Country, State, City must be filled');
+        $scope.submitted = true;
+
+        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City && $scope.hub.Type && $scope.fleetManager && $scope.fleetManager.User)) {
             return;
         }
         var hub = {
@@ -83,7 +84,8 @@ angular.module('adminApp')
         Services2.createHub(hub).$promise.then(function(response, error) {
             $rootScope.$emit('stopSpin');
             if (response) {
-                return callback(null, response);
+                callback(null, response);
+                return $window.location = '/hub';
             } else {
                 return callback(error);
             }
@@ -95,8 +97,9 @@ angular.module('adminApp')
     }
 
     var updateHub = function(callback) {
-        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City)){
-            alert('Country, State, City must be filled');
+        $scope.submitted = true;
+
+        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City && $scope.hub.Type && $scope.fleetManager && $scope.fleetManager.User)) {
             return;
         }
         var hub = {
@@ -123,7 +126,8 @@ angular.module('adminApp')
         }, hub).$promise.then(function(response, error) {
             $rootScope.$emit('stopSpin');
             if (response) {
-                return callback(null, response);
+                callback(null, response);
+                return $window.location = '/hub';
             } else {
                 return callback(error);
             }

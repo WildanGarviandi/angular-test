@@ -27,7 +27,10 @@
             </div>
             <div class="col-md-1">
                 <div class="dropdown">
-                    <button ng-disabled="!isOrderSelected"
+                    <button ng-show="features.order.set_price || 
+                        features.order.reassign_fleet || 
+                        features.order.bulk_mark_delivered"
+                        ng-disabled="!isOrderSelected"
                         class="order-buttons btn dropdown-toggle" 
                         type="button" 
                         data-toggle="dropdown">
@@ -35,11 +38,14 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a ng-click="showSetPrice()">Update Price</a></li>
-                        <li><a ng-click="showReassignFleet()">Reassign Fleet</a></li>
-                        <li><a ng-click="bulkSetDeliveredStatus()">Mark as Delivered</a></li>
+                        <li><a ng-show="features.order.set_price" ng-click="showSetPrice()">Update Price</a></li>
+                        <li><a ng-show="features.order.reassign_fleet" ng-click="showReassignFleet()">Reassign Fleet</a></li>
+                        <li><a ng-show="features.order.bulk_mark_delivered" ng-click="bulkSetDeliveredStatus()">Mark as Delivered</a></li>
                     </ul>
                 </div>
+            </div>
+            <div class="col-md-1 content-set-limit">
+              <button class="col-md-12 btn order-buttons" ng-click="refresh()">Refresh</button>
             </div>
             <div class="col-md-1">
                 <button class="btn order-buttons" ng-click="clearFilter()"><i class="fa fa-refresh"></i> Reset Filter</button>
@@ -93,6 +99,7 @@
                 </uib-accordion>
             </div>
         </div>
+
         <div class="clearfix"></div>
         <div class="col-md-12">
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
@@ -146,6 +153,40 @@
                         <th>Customer</th>
                         <th>Pickup Type</th>
                         <th>Order Type</th>
+                        <th class="sortable-column"
+                            ng-if="sortBy !== 'CutOffTime' || isFirstSort"
+                            ng-click="sortColumn('CutOffTime', 'ASC')">
+                            Cutoff Time
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'CutOffTime' && sortCriteria == 'ASC'" 
+                            ng-click="sortColumn('CutOffTime', 'DESC')">
+                            <span class="caret caret-reversed" ></span>
+                            Cutoff Time
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'CutOffTime' && sortCriteria == 'DESC'" 
+                            ng-click="sortColumn('CutOffTime', 'ASC')">
+                            <span class="caret" ></span>
+                            Cutoff Time
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy !== 'DueTime' || isFirstSort"
+                            ng-click="sortColumn('DueTime', 'ASC')">
+                            Due Time
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'DueTime' && sortCriteria == 'ASC'" 
+                            ng-click="sortColumn('DueTime', 'DESC')">
+                            <span class="caret caret-reversed" ></span>
+                            Due Time
+                        </th>
+                        <th class="sortable-column"
+                            ng-if="sortBy == 'DueTime' && sortCriteria == 'DESC'" 
+                            ng-click="sortColumn('DueTime', 'ASC')">
+                            <span class="caret" ></span>
+                            Due Time
+                        </th>
                         <th>Status</th>
                         <th>Total Failed Attempts</th>
                     </tr>
@@ -305,6 +346,34 @@
                         </th>
                         <th>
                             <div class="filter-table">
+                                <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    ng-model="cutOffTime" 
+                                    uib-datepicker-popup
+                                    date:'yyyy-MM-dd'
+                                    is-open="isCutOffTimeDatePickerOpen"
+                                    ng-click="isCutOffTimeDatePickerOpen = !isCutOffTimeDatePickerOpen"
+                                    ng-change="searchCutOffTime($event)" />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    ng-model="dueTime" 
+                                    uib-datepicker-popup
+                                    date:'yyyy-MM-dd'
+                                    is-open="isDueTimeDatePickerOpen"
+                                    ng-click="isDueTimeDatePickerOpen = !isDueTimeDatePickerOpen" 
+                                    ng-change="searchDueTime($event)" />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
                                 <ui-select ng-model="status" 
                                     theme="selectize" 
                                     on-select="chooseStatus($item)" 
@@ -349,6 +418,8 @@
                         <td>{{order.CustomerName}}</td>
                         <td>{{order.PickupType}}</td>
                         <td>{{order.OrderType}}</td>
+                        <td>{{order.CutOffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td>{{order.DueTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td>{{order.OrderStatus.OrderStatus}}</td>
                         <td>{{order.UserOrderAttempts.length}}</td>
                     </tr>
