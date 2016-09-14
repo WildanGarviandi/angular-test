@@ -32,16 +32,6 @@ angular.module('adminApp')
         Email: '',
         Password: '',
         CountryCode: config.countryCode,
-        UserAddress : {
-            Address1: '',
-            Address2: '',
-            Latitude: config.defaultLocation.Latitude,
-            Longitude: config.defaultLocation.Longitude,
-            City: '',
-            State: '',
-            Country: '',
-            ZipCode: ''
-        },
         StatusID: 2,
         CompanyDetail: {
             CompanyName: '',
@@ -109,7 +99,7 @@ angular.module('adminApp')
                 resolve();
             });
         });
-    };
+    }
 
     // FLEET CRUD
 
@@ -132,16 +122,7 @@ angular.module('adminApp')
                 PhoneNumber: $scope.fleet.PhoneNumber,
                 Email: $scope.fleet.Email,
                 ProfilePicture: $scope.fleet.ProfilePicture,
-                Password: $scope.fleet.Password,
-
-                Latitude: $scope.fleet.UserAddress.Latitude,
-                Longitude: $scope.fleet.UserAddress.Longitude,
-                Address1: $scope.fleet.UserAddress.Address1,
-                Address2: $scope.fleet.UserAddress.Address2,
-                City: $scope.fleet.UserAddress.City,
-                State: $scope.fleet.UserAddress.State,
-                Country: $scope.fleet.UserAddress.Country,
-                ZipCode: $scope.fleet.UserAddress.ZipCode,
+                Password: $scope.fleet.Password
             };
             $rootScope.$emit('startSpin');
             Services2.createFleet({
@@ -176,16 +157,7 @@ angular.module('adminApp')
                 PhoneNumber: $scope.fleet.PhoneNumber,
                 Email: $scope.fleet.Email,
                 ProfilePicture: $scope.fleet.ProfilePicture,
-                Password: $scope.fleet.Password,
-
-                Latitude: $scope.fleet.UserAddress.Latitude,
-                Longitude: $scope.fleet.UserAddress.Longitude,
-                Address1: $scope.fleet.UserAddress.Address1,
-                Address2: $scope.fleet.UserAddress.Address2,
-                City: $scope.fleet.UserAddress.City,
-                State: $scope.fleet.UserAddress.State,
-                Country: $scope.fleet.UserAddress.Country,
-                ZipCode: $scope.fleet.UserAddress.ZipCode,
+                Password: $scope.fleet.Password
             };
             $rootScope.$emit('startSpin');
             Services2.updateFleet({
@@ -208,10 +180,11 @@ angular.module('adminApp')
      */
     $scope.createFleet = function() {
         createFleet().then(function (fleet) {
-            alert(fleet.data.Fleet.UserID + ' has been successfully created.');
+            $window.alert(fleet.data.Fleet.FirstName + ' ' + fleet.data.Fleet.LastName + 
+                ' has been successfully created.');
             $location.path('/fleets');
         }).catch(function (err) {
-            alert('Error: '+ err.data.error.message );
+            $window.alert('Error: '+ err.data.error.message );
         });
     };
 
@@ -222,10 +195,10 @@ angular.module('adminApp')
      */
     $scope.updateFleet = function() {
         updateFleet().then(function (fleet) {
-            alert('Your fleet ID:' + fleet.data.Fleet.UserID + ' has been successfully updated.');
+            $window.alert('Your fleet ID:' + fleet.data.Fleet.UserID + ' has been successfully updated.');
             $location.path('/fleets');
         }).catch(function (err) {
-            alert('Error: '+ err.data.error.message );
+            $window.alert('Error: '+ err.data.error.message );
         });
     };
 
@@ -259,7 +232,7 @@ angular.module('adminApp')
             $scope[val.model] = $location.search()[val.param] || $scope[val.model];
         });
 
-        lodash.each(pickedVariables, function (val, key) {
+        lodash.each(pickedVariables, function (val) {
             var value = $location.search()[val.model] || $scope[val.model][val.pick];
             var findObject = {};
             findObject[val.pick] = (parseInt(value)) ? parseInt(value) : value;
@@ -373,7 +346,7 @@ angular.module('adminApp')
                         $scope.fleet.ProfilePicture = response.data.data.Location;
                     } else {
                         $scope.uploadError = true;
-                        alert('Uploading picture failed. Please try again');
+                        $window.alert('Uploading picture failed. Please try again');
                         $scope.errorMsg = 'Uploading picture failed. Please try again';
                     }
                     $rootScope.$emit('stopSpin');
@@ -419,7 +392,7 @@ angular.module('adminApp')
                 locationNameInput: $('#us2-address') 
             },
             enableAutocomplete: true,
-            onchanged: function (currentLocation, radius, isMarkerDropped) {
+            onchanged: function (currentLocation, radius) {
                 var addressComponents = $(this).locationpicker('map').location.addressComponents;
                 $scope.updateLocation(addressComponents);
             },
