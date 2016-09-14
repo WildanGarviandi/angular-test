@@ -513,10 +513,10 @@
                                 <div class="col-md-2">
                                     Driver
                                 </div>
-                                <div ng-show="route.Trip.Driver.FirstName || route.Trip.Driver.FirstName" class="col-md-10 summary-from">
+                                <div ng-show="route.Trip.Driver.FirstName || route.Trip.Driver.LastName" class="col-md-10 summary-from">
                                     {{route.Trip.Driver.FirstName}} {{route.Trip.Driver.LastName}}
                                 </div>
-                                <div ng-hide="route.Trip.Driver.FirstName && route.Trip.Driver.FirstName" class="col-md-10 summary-from">
+                                <div ng-hide="route.Trip.Driver.FirstName && route.Trip.Driver.LastName" class="col-md-10 summary-from">
                                     -
                                 </div>
                             </div>
