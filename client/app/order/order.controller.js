@@ -94,6 +94,7 @@ angular.module('adminApp')
     $scope.reassignableFleet = config.reassignableFleet;
     $scope.updatablePrice = config.updatablePrice;
     $scope.features = config.features;
+    $scope.returnableWarehouse = config.returnableWarehouse;
 
     $scope.isFirstSort = true;
 
@@ -491,7 +492,7 @@ angular.module('adminApp')
                 if ($scope.order.OrderStatus.OrderStatusID === status && $scope.features.order.mark_delivered) {
                     $scope.canBeDelivered = true; 
                 }
-            })
+            });           
             if (!$scope.canBeCopied && 
                 !$scope.canBeReassigned && 
                 !$scope.canBeCancelled &&
@@ -847,6 +848,26 @@ angular.module('adminApp')
                 $scope.company = $scope.companies[0];                
                 $scope.fleets = $scope.fleets.concat(companies);
                 $scope.fleet = $scope.fleets[0];   
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
+        });
+    };
+
+    /**
+     * Get all reason return
+     * 
+     * @return {Object} Promise
+     */
+    var getReasons = function () {
+        $scope.reasons = [];
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            Services2.getReasonReturns().$promise.then(function(result) {
+                var reasons = lodash.sortBy(result.data, function (i) { 
+                    return i.ReasonName.toLowerCase(); 
+                });
+                $scope.reasons = $scope.reasons.concat(reasons);  
                 $rootScope.$emit('stopSpin');
                 resolve();
             });
@@ -1322,6 +1343,23 @@ angular.module('adminApp')
     };
 
     /**
+     * Check whether there is one or more orders with cannot be returned to warehouse selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedNonReturnWarehouseExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected && $scope.returnableWarehouse.indexOf(order.OrderStatus.OrderStatusID) === -1) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+
+    /**
      * Show set price modals
      * 
      * @return {void}
@@ -1354,6 +1392,78 @@ angular.module('adminApp')
             ngDialog.close();
             return ngDialog.open({
                 template: 'reassignFleetModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default reassign-fleet'
+            });
+        });
+    }
+
+    /**
+     * Show set return warehouse modals
+     * 
+     * @return {void}
+    */
+    $scope.showReturnWarehouse = function() {
+        if ($scope.selectedNonReturnWarehouseExists()) {
+            SweetAlert.swal('Error', 'You have selected one or more orders which cannot be returned to warehouse', 'error');
+            return false;
+        }
+
+        $scope.returnedOrders = [];
+        $scope.chooseReasonOnModals = function (reason, orderID) {
+            if (!lodash.find($scope.returnedOrders, { 'OrderID': orderID })) {
+                $scope.returnedOrders.push({OrderID: orderID, ReasonID: reason.ReasonID});
+            }
+        };
+
+        $scope.bulkReturnWarehouse = function() {
+            if (lodash.filter($scope.orders, { 'Selected': true }).length !== $scope.returnedOrders.length) {
+                SweetAlert.swal('Error', 'You must select all the reasons', 'error');
+                return false;
+            }
+            Services2.bulkSetReturnWarehouse({
+                orders: $scope.returnedOrders
+            }).$promise.then(function (result) {
+                if (result.data.error) {
+                    var messages = '<table align="center">';
+                    result.data.error.forEach(function (e) {
+                        messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
+                                    ' : </td><td class="text-left"> ' + e.error.message + '</td></tr>';
+                    })
+                    messages += '</table>';
+                    throw {
+                        data: {
+                            message: result.data.message,
+                            error: {
+                                message: messages
+                            }
+                        }
+                    }
+                }
+                $rootScope.$emit('stopSpin');
+                SweetAlert.swal('Orders status changed');
+                $state.reload();
+            }).catch(function (e) {
+                $rootScope.$emit('stopSpin');
+                SweetAlert.swal({
+                    title: (e.data.message) ? e.data.message : 'Failed in marking status as RETURN WAREHOUSE', 
+                    text: e.data.error.message, 
+                    type: "error",
+                    html: true,
+                    customClass: 'alert-big'
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        $state.reload();
+                    }
+                });
+            });
+        }
+
+        getReasons()
+        .then(function () {
+            ngDialog.close();
+            return ngDialog.open({
+                template: 'setReturnWarehouseModal',
                 scope: $scope,
                 className: 'ngdialog-theme-default reassign-fleet'
             });

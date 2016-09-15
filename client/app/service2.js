@@ -502,6 +502,19 @@ angular.module('adminApp')
                 module: 'dashboard',
                 controller: 'goal'
             }
+        },
+        getReasonReturns: {
+            method: 'GET',
+            params: {
+                module: 'reasonReturn'
+            },
+        },
+        bulkSetReturnWarehouse: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'mark-as-return-warehouse'
+            }
         }
     });
 });
