@@ -860,6 +860,10 @@ angular.module('adminApp')
      * @return {Object} Promise
      */
     var getReasons = function () {
+        $scope.reason = {
+            ReasonID: 11,
+            ReasonName: 'MANUAL_PROCESS'
+        };
         $scope.reasons = [];
         return $q(function (resolve) {
             $rootScope.$emit('startSpin');
@@ -1410,17 +1414,18 @@ angular.module('adminApp')
         }
 
         $scope.returnedOrders = [];
+        var selectedOrders = lodash.filter($scope.orders, { 'Selected': true });
+        selectedOrders.forEach(function(order) {
+            $scope.returnedOrders.push({OrderID: order.UserOrderID, ReasonID: 14});
+        });
+        
         $scope.chooseReasonOnModals = function (reason, orderID) {
-            if (!lodash.find($scope.returnedOrders, { 'OrderID': orderID })) {
-                $scope.returnedOrders.push({OrderID: orderID, ReasonID: reason.ReasonID});
+            if (lodash.find($scope.returnedOrders, { 'OrderID': orderID })) {
+                lodash.find($scope.returnedOrders, { 'OrderID': orderID }).ReasonID = reason.ReasonID;
             }
         };
 
         $scope.bulkReturnWarehouse = function() {
-            if (lodash.filter($scope.orders, { 'Selected': true }).length !== $scope.returnedOrders.length) {
-                SweetAlert.swal('Error', 'You must select all the reasons', 'error');
-                return false;
-            }
             Services2.bulkSetReturnWarehouse({
                 orders: $scope.returnedOrders
             }).$promise.then(function (result) {
