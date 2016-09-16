@@ -1423,36 +1423,6 @@ angular.module('adminApp')
             }
         };
 
-        $scope.bulkReturnWarehouse = function() {
-            Services2.bulkSetReturnWarehouse({
-                orders: $scope.returnedOrders
-            }).$promise.then(function (result) {
-                var messages = '<table align="center">';
-                result.data.forEach(function (o) {
-                    messages += '<tr><td class="text-right">' + o.UserOrderNumber + 
-                                ' : </td><td class="text-left"> ' + o.message + '</td></tr>';
-                })
-                messages += '</table>';
-                $rootScope.$emit('stopSpin');
-                SweetAlert.swal({
-                    title: 'Mark as Returned Warehouse', 
-                    text: messages,
-                    html: true,
-                    customClass: 'alert-big'
-                });
-                $state.reload();
-            })
-            .catch(function(error) {
-                SweetAlert.swal({
-                    title: 'Failed', 
-                    text: error.data.error.message, 
-                    type: "error",
-                    html: true,
-                    customClass: 'alert-big'
-                });
-            });
-        }
-
         getReasons()
         .then(function () {
             ngDialog.close();
@@ -1461,6 +1431,46 @@ angular.module('adminApp')
                 scope: $scope,
                 className: 'ngdialog-theme-default reassign-fleet'
             });
+        });
+    }
+
+    /**
+     * Bulk set return warehouse
+     * 
+     * @return {void}
+     */
+    $scope.bulkReturnWarehouse = function() {
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Set status to return warehouse for these orders?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                ngDialog.closeAll();
+                Services2.bulkSetReturnWarehouse({
+                    orders: $scope.returnedOrders
+                }).$promise.then(function (result) {
+                    var messages = '<table align="center" style="font-size: 12px;">';
+                    result.data.forEach(function (o) {
+                        messages += '<tr><td class="text-right">' + o.UserOrderNumber + 
+                                    ' : </td><td class="text-left"> ' + o.message + '</td></tr>';
+                    })
+                    messages += '</table>';
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: 'Mark as Returned Warehouse', 
+                        text: messages,
+                        html: true,
+                        customClass: 'alert-big'
+                    });
+                    $state.reload();
+                });
+            }
         });
     }
 
