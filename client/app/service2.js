@@ -305,6 +305,12 @@ angular.module('adminApp')
                 module: 'user'
             }
         },
+        updateUserPassword: {
+            method: 'POST',
+            params: {
+                module: 'change-password'
+            }
+        },
         getCODOrder: {
             method: 'GET',
             params: {
