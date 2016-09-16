@@ -95,6 +95,7 @@ angular.module('adminApp')
     $scope.updatablePrice = config.updatablePrice;
     $scope.features = config.features;
     $scope.returnableWarehouse = config.returnableWarehouse;
+    $scope.defaultReturnReason = config.defaultReturnReason;
 
     $scope.isFirstSort = true;
 
@@ -860,10 +861,7 @@ angular.module('adminApp')
      * @return {Object} Promise
      */
     var getReasons = function () {
-        $scope.reason = {
-            ReasonID: 11,
-            ReasonName: 'MANUAL_PROCESS'
-        };
+        $scope.reason = $scope.defaultReturnReason;
         $scope.reasons = [];
         return $q(function (resolve) {
             $rootScope.$emit('startSpin');
@@ -1416,9 +1414,9 @@ angular.module('adminApp')
         $scope.returnedOrders = [];
         var selectedOrders = lodash.filter($scope.orders, { 'Selected': true });
         selectedOrders.forEach(function(order) {
-            $scope.returnedOrders.push({OrderID: order.UserOrderID, ReasonID: 14});
+            $scope.returnedOrders.push({OrderID: order.UserOrderID, ReasonID: $scope.defaultReturnReason.ReasonID});
         });
-        
+
         $scope.chooseReasonOnModals = function (reason, orderID) {
             if (lodash.find($scope.returnedOrders, { 'OrderID': orderID })) {
                 lodash.find($scope.returnedOrders, { 'OrderID': orderID }).ReasonID = reason.ReasonID;
@@ -1429,37 +1427,28 @@ angular.module('adminApp')
             Services2.bulkSetReturnWarehouse({
                 orders: $scope.returnedOrders
             }).$promise.then(function (result) {
-                if (result.data.error) {
-                    var messages = '<table align="center">';
-                    result.data.error.forEach(function (e) {
-                        messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
-                                    ' : </td><td class="text-left"> ' + e.error.message + '</td></tr>';
-                    })
-                    messages += '</table>';
-                    throw {
-                        data: {
-                            message: result.data.message,
-                            error: {
-                                message: messages
-                            }
-                        }
-                    }
-                }
-                $rootScope.$emit('stopSpin');
-                SweetAlert.swal('Orders status changed');
-                $state.reload();
-            }).catch(function (e) {
+                var messages = '<table align="center">';
+                result.data.forEach(function (o) {
+                    messages += '<tr><td class="text-right">' + o.UserOrderNumber + 
+                                ' : </td><td class="text-left"> ' + o.message + '</td></tr>';
+                })
+                messages += '</table>';
                 $rootScope.$emit('stopSpin');
                 SweetAlert.swal({
-                    title: (e.data.message) ? e.data.message : 'Failed in marking status as RETURN WAREHOUSE', 
-                    text: e.data.error.message, 
+                    title: 'Mark as Returned Warehouse', 
+                    text: messages,
+                    html: true,
+                    customClass: 'alert-big'
+                });
+                $state.reload();
+            })
+            .catch(function(error) {
+                SweetAlert.swal({
+                    title: 'Failed', 
+                    text: error.data.error.message, 
                     type: "error",
                     html: true,
                     customClass: 'alert-big'
-                }, function (isConfirm) {
-                    if (isConfirm) {
-                        $state.reload();
-                    }
                 });
             });
         }

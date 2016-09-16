@@ -513,7 +513,7 @@ angular.module('adminApp')
             method: 'POST',
             params: {
                 module: 'order',
-                controller: 'mark-as-return-warehouse'
+                controller: 'bulk-return-warehouse'
             }
         }
     });
