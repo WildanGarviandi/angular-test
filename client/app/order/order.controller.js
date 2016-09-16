@@ -1418,8 +1418,9 @@ angular.module('adminApp')
         });
 
         $scope.chooseReasonOnModals = function (reason, orderID) {
-            if (lodash.find($scope.returnedOrders, { 'OrderID': orderID })) {
-                lodash.find($scope.returnedOrders, { 'OrderID': orderID }).ReasonID = reason.ReasonID;
+            var matchedOrder = lodash.find($scope.returnedOrders, { 'OrderID': orderID });
+            if (matchedOrder) {
+                matchedOrder.ReasonID = reason.ReasonID;
             }
         };
 
