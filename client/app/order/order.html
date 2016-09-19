@@ -29,7 +29,8 @@
                 <div class="dropdown">
                     <button ng-show="features.order.set_price || 
                         features.order.reassign_fleet || 
-                        features.order.bulk_mark_delivered"
+                        features.order.bulk_mark_delivered || 
+                        features.order.bulk_return_warehouse"
                         ng-disabled="!isOrderSelected"
                         class="order-buttons btn dropdown-toggle" 
                         type="button" 
@@ -41,6 +42,9 @@
                         <li><a ng-show="features.order.set_price" ng-click="showSetPrice()">Update Price</a></li>
                         <li><a ng-show="features.order.reassign_fleet" ng-click="showReassignFleet()">Reassign Fleet</a></li>
                         <li><a ng-show="features.order.bulk_mark_delivered" ng-click="bulkSetDeliveredStatus()">Mark as Delivered</a></li>
+                        <li>
+                            <a ng-show="features.order.bulk_return_warehouse" ng-click="showReturnWarehouse()">Mark as Return Warehouse</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -658,6 +662,36 @@
         <div class="clearfix"></div>
         <div class="row-fluid">
             <button class="btn btn-primary" ng-click="reassignFleet()">Reassign Fleet</button>              
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="setReturnWarehouseModal">
+    <div class="header-wrapper">
+        <h1>Return to Warehouse</h1>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid">
+        <div ng-repeat="order in orders">
+            <div ng-if="order.Selected" class="row-fluid">                
+                <div class="label-import">
+                    Reason {{order.UserOrderNumber}}:
+                </div>  
+                <p class="input-group input-import">
+                    <ui-select ng-model="reason" 
+                        theme="selectize" 
+                        on-select="chooseReasonOnModals($item, order.UserOrderID)" 
+                        class="booking-order-type">
+                        <ui-select-match class="input-table">{{$select.selected.ReasonName}}</ui-select-match>
+                        <ui-select-choices repeat="r in reasons | filter: $select.search track by $index" selected>
+                            <span class="input-table" ng-bind-html="r.ReasonName | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </p>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <button class="btn btn-primary" ng-click="bulkReturnWarehouse()">Mark as Return Warehouse</button>              
         </div>
     </div>
 </script>
