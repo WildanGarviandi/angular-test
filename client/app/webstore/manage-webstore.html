@@ -18,8 +18,8 @@
     </div>
     
     <div class="webstore-details">
-        <form class="form" name="hubForm" novalidate>
-            <div class="container-fluid hub-container">
+        <div class="container-fluid hub-container pull-left">
+            <form class="form" name="hubForm" novalidate>
                 <div class="row-fluid">
                     <div class="label-input">
                         Profile picture :
@@ -164,7 +164,6 @@
                     </div>
                 </div>
                 <div class="clearfix"></div>
-                <div id="maps" class="maps-webstore"></div> 
                 <div class="row-fluid">
                     <div class="label-input">
                         Latitude* :
@@ -366,8 +365,73 @@
                 <div ng-if="updatePage && webstore.StatusID == 1" class="row-fluid">
                     <input type="submit" class="hub-buttons webstore-verify btn-primary" value="Verify Webstore" ng-click="verifyWebstore(hubForm)"></input>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-4 hub-container pull-left" style="margin-left:10px">
+        <h5 ng-show="parentWebstore">
+            Webstore Parent :
+        </h5>
+        <table ng-show="parentWebstore" t-table="parentWebstore" class="table table-hover webstore-table">
+            <thead class="hubs-table-head">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Payment</th>
+                    <th>Allow COD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{parentWebstore.FirstName}} {{parentWebstore.LastName}}</td>
+                    <td>{{parentWebstore.Email}}</td>
+                    <td>{{parentWebstore.PhoneNumber}}</td>
+                    <td class="webstore-cell">{{parentWebstore.WebstoreCompany.PostPaidPayment ? "Postpaid" : "Prepaid"}}</td>
+                    <td class="webstore-cell">{{parentWebstore.WebstoreCompany.AllowCOD ? "Yes" : "No"}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h5 ng-show="childrenWebstore.length > 0">
+            Webstore Children : 
+            <span>{{childrenWebstore.length}} Children 
+                <button ng-hide="showChildren" ng-click="showChildren = true" class="btn btn-xs btn-default"><i class="fa fa-chevron-down"></i></button>
+                <button ng-show="showChildren" ng-click="showChildren = false" class="btn btn-xs btn-default"><i class="fa fa-chevron-up"></i></button>
+            </span>
+        </h5>
+        <table ng-show="showChildren && childrenWebstore.length > 0" t-table="childrenWebstore" class="table table-hover webstore-table">
+            <thead class="hubs-table-head">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Payment</th>
+                    <th>Allow COD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="children in childrenWebstore | limitTo: offset - childrenWebstore.length | limitTo: 5">
+                    <td>{{children.FirstName}} {{children.LastName}}</td>
+                    <td>{{children.Email}}</td>
+                    <td>{{children.PhoneNumber}}</td>
+                    <td class="webstore-cell">{{children.WebstoreCompany.PostPaidPayment ? "Postpaid" : "Prepaid"}}</td>
+                    <td class="webstore-cell">{{children.WebstoreCompany.AllowCOD ? "Yes" : "No"}}</td>
+                </tr>
+            </tbody>
+            <tfoot ng-show="childrenWebstore.length > 5">
+                <tr class="paginationBar">
+                    <td colspan="5">
+                        <button ng-click="paginationChildWebstore(0)" class="btn btn-sm btn-default">First</button>
+                        <button ng-click="paginationChildWebstore(offset-5)" ng-class="{disabled: offset == 0}" class="btn btn-sm btn-default"><</button>
+                        <button ng-repeat="n in childrenWebstore" ng-if="$index % 5 == 0" ng-class="{active: $index == offset}" class="btn btn-sm btn-default" ng-click="paginationChildWebstore($index)" ng-bind="($index/5) + 1">1</button>
+                        <button ng-click="paginationChildWebstore(offset+5)" ng-class="{disabled: offset >= (childrenWebstore.length - (childrenWebstore.length % 5))}" class="btn btn-sm btn-default">></button>
+                        <button ng-click="paginationChildWebstore(childrenWebstore.length - (childrenWebstore.length % 5))" class="btn btn-sm btn-default">Last</button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <div id="maps" class="maps-webstore" style="margin:0 !important"></div>
     </div>
 </div>
 
