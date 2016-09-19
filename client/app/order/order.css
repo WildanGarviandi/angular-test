@@ -53,6 +53,11 @@
     padding-bottom: 30px;
 }
 
+.order-details-body a:hover {
+    color: #777777;
+    text-decoration: none;
+}
+
 .order-detail-location-fix {
     margin-top: 20px;
 }
