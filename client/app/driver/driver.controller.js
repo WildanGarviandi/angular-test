@@ -63,7 +63,7 @@ angular.module('adminApp')
 
 
     var updateDriver = function(callback) {
-        if ($scope.driver.DriverDetail.CanTakeCOD === undefined) {
+        if (typeof $scope.driver.DriverDetail.CanTakeCOD === 'undefined') {
             $scope.driver.DriverDetail.CanTakeCOD = false;
         }
         var driver = {
