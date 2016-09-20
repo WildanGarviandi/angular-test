@@ -16,58 +16,51 @@
             </div>
         </div>
     </div>
-    
+    <div class="first-row">
+        <button class="btn order-buttons first-row-element" ng-click="showImportOrders()">Import Orders</button>
+        <button class="btn order-buttons first-row-element" ng-click="showExportOrders()">Export Orders</button>
+        <div class="dropdown first-row-element">
+            <button ng-show="features.order.set_price || 
+                features.order.reassign_fleet || 
+                features.order.bulk_mark_delivered || 
+                features.order.bulk_return_warehouse"
+                ng-disabled="!isOrderSelected"
+                class="order-buttons btn dropdown-toggle" 
+                type="button" 
+                data-toggle="dropdown">
+                Action
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a ng-show="features.order.set_price" ng-click="showSetPrice()">Update Price</a></li>
+                <li><a ng-show="features.order.reassign_fleet" ng-click="showReassignFleet()">Reassign Fleet</a></li>
+                <li><a ng-show="features.order.bulk_mark_delivered" ng-click="bulkSetDeliveredStatus()">Mark as Delivered</a></li>
+                <li>
+                    <a ng-show="features.order.bulk_return_warehouse" ng-click="showReturnWarehouse()">Mark as Return Warehouse</a>
+                </li>
+            </ul>
+        </div>
+        <div class="first-row-separator first-row-element"></div>
+        <button class="btn order-buttons first-row-element" ng-click="refresh()">Refresh</button>
+        <button class="btn order-buttons first-row-element" ng-click="clearFilter()">
+            <i class="fa fa-refresh"></i> Reset Filter</button>
+        <span style="position:absolute" class="first-row-element">
+            <ui-select ng-model="itemsByPage" 
+                theme="selectize" 
+                on-select="setLimit($item)" 
+                class="content-choose-limit">
+                <ui-select-match>{{$select.selected}}</ui-select-match>
+                <ui-select-choices repeat="ot in limitPages" selected>
+                    <span ng-bind-html="ot"></span>
+                </ui-select-choices>
+            </ui-select>
+            <p class="label-limit">
+                records per page
+            </p>
+        </span>
+    </div>
     <div class="row">
         <div class="col-md-11 action-button">
-            <div class="col-md-1">
-                <button class="btn order-buttons" ng-click="showImportOrders()">Import Orders</button>
-            </div>
-            <div class="col-md-1">
-                <button class="btn order-buttons" ng-click="showExportOrders()">Export Orders</button>
-            </div>
-            <div class="col-md-1">
-                <div class="dropdown">
-                    <button ng-show="features.order.set_price || 
-                        features.order.reassign_fleet || 
-                        features.order.bulk_mark_delivered || 
-                        features.order.bulk_return_warehouse"
-                        ng-disabled="!isOrderSelected"
-                        class="order-buttons btn dropdown-toggle" 
-                        type="button" 
-                        data-toggle="dropdown">
-                        Action
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a ng-show="features.order.set_price" ng-click="showSetPrice()">Update Price</a></li>
-                        <li><a ng-show="features.order.reassign_fleet" ng-click="showReassignFleet()">Reassign Fleet</a></li>
-                        <li><a ng-show="features.order.bulk_mark_delivered" ng-click="bulkSetDeliveredStatus()">Mark as Delivered</a></li>
-                        <li>
-                            <a ng-show="features.order.bulk_return_warehouse" ng-click="showReturnWarehouse()">Mark as Return Warehouse</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-1 content-set-limit">
-              <button class="col-md-12 btn order-buttons" ng-click="refresh()">Refresh</button>
-            </div>
-            <div class="col-md-1">
-                <button class="btn order-buttons" ng-click="clearFilter()"><i class="fa fa-refresh"></i> Reset Filter</button>
-            </div>
-            <div class="col-md-4">
-                <ui-select ng-model="itemsByPage" 
-                    theme="selectize" 
-                    on-select="setLimit($item)" 
-                    class="content-choose-limit">
-                    <ui-select-match>{{$select.selected}}</ui-select-match>
-                    <ui-select-choices repeat="ot in limitPages" selected>
-                        <span ng-bind-html="ot"></span>
-                    </ui-select-choices>
-                </ui-select>
-                <p class="label-limit">
-                    records per page
-                </p>
-            </div>
         </div>        
         <div class="col-md-4">
             <div class="row">

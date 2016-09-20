@@ -7,6 +7,24 @@
     width: 1500px;
 }
 
+.container-order .first-row {
+    margin-top: 10px;
+    margin-left: 15px;
+}
+
+.container-order .first-row button.first-row-element {
+    margin-right: 10px;
+}
+
+.container-order .first-row div.first-row-element {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.container-order .first-row div.first-row-separator {
+    width: 40px;
+}
+
 .table-main-trip {
     font-size: 12px;
 }
