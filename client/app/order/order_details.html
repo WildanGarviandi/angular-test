@@ -261,10 +261,24 @@
                 <div class="clearfix"></div>
                 <div class="row-fluid">
                     <div class="col-sm-4">
+                        Is COD
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.IsCOD}}
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-4">
                         Total Value
                     </div>
                     <div class="col-sm-8 summary-from">
                         {{currency}}{{order.TotalValue | awnum:2:decimalSeparator:'round':'false':'true'}}
+                        <div>
+                        <a class="address-buttons" type="" ng-click="editCod()"> 
+                            Edit
+                        </a>
+                        </div>
                     </div>
                 </div>
                 <div class="clearfix"></div>
@@ -733,6 +747,44 @@
                     </tr>
                 </table>
             </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="editCodTemplate">
+    <h3>Edit COD</h3>
+    <div class="container-fluid">
+        <div class="row-fluid">                    
+            <div class="label-input">
+                Is COD :
+            </div>
+            <div class="hub-field">
+                <input type="checkbox" 
+                    id="editcod-iscod" 
+                    name="isCod"
+                    ng-model="form.cod.IsCOD"
+                    required>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">                    
+            <div class="label-input">
+                Total Value :
+            </div> 
+            <div class="hub-field">
+                <input id="editcod-totalvalue" 
+                    ng-model="form.cod.TotalValue" 
+                    type="text" 
+                    name="totalValue" 
+                    value="" 
+                    placeholder="Total Value" 
+                    required
+                    class="first form-control" />
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <a class="address-buttons" ng-click="updateCod()">Update</a>
         </div>
     </div>
 </script>
