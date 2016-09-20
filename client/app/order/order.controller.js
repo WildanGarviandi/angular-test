@@ -97,6 +97,7 @@ angular.module('adminApp')
     $scope.updatablePrice = config.updatablePrice;
     $scope.features = config.features;
     $scope.returnableWarehouse = config.returnableWarehouse;
+    $scope.returnableSender = config.returnableSender;
     $scope.defaultReturnReason = config.defaultReturnReason;
 
     $scope.isFirstSort = true;
@@ -1403,6 +1404,23 @@ angular.module('adminApp')
     };
 
     /**
+     * Check whether there is one or more orders with cannot be returned to sender selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedNonReturnSenderExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected && $scope.returnableSender.indexOf(order.OrderStatus.OrderStatusID) === -1) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+
+    /**
      * Show set price modals
      * 
      * @return {void}
@@ -1506,6 +1524,71 @@ angular.module('adminApp')
                     $rootScope.$emit('stopSpin');
                     SweetAlert.swal({
                         title: 'Mark as Returned Warehouse', 
+                        text: messages,
+                        html: true,
+                        customClass: 'alert-big'
+                    });
+                    $state.reload();
+                });
+            }
+        });
+    }
+
+    /**
+     * Show set return sender modals
+     * 
+     * @return {void}
+    */
+    $scope.showReturnSender = function() {
+        if ($scope.selectedNonReturnSenderExists()) {
+            SweetAlert.swal('Error', 'You have selected one or more orders which cannot be returned to sender', 'error');
+            return false;
+        }
+
+        $scope.returnedSenderOrders = [];
+        var selectedOrders = lodash.filter($scope.orders, { 'Selected': true });
+        selectedOrders.forEach(function(order) {
+            $scope.returnedSenderOrders.push(order.UserOrderID);
+        });
+
+        ngDialog.close();
+        return ngDialog.open({
+            template: 'setReturnSenderModal',
+            scope: $scope,
+            className: 'ngdialog-theme-default reassign-fleet'
+        });
+    }
+
+    /**
+     * Bulk set return sender
+     * 
+     * @return {void}
+     */
+    $scope.bulkReturnSender = function() {
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Set status to return sender for these orders?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                ngDialog.closeAll();
+                Services2.bulkSetReturnSender({
+                    orderIDs: $scope.returnedSenderOrders
+                }).$promise.then(function (result) {
+                    var messages = '<table align="center" style="font-size: 12px;">';
+                    result.data.forEach(function (o) {
+                        messages += '<tr><td class="text-right">' + o.UserOrderNumber + 
+                                    ' : </td><td class="text-left"> ' + o.message + '</td></tr>';
+                    })
+                    messages += '</table>';
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: 'Mark as Returned Sender', 
                         text: messages,
                         html: true,
                         customClass: 'alert-big'
