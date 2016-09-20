@@ -38,6 +38,47 @@
                     </div>     
                     {{errorMsg}}
                 </div>
+                <div class="form-group no-margin row">
+                    <div class="col-md-3 no-padding">
+                        <label>
+                            Password
+                        </label>
+                    </div>
+                    <div class="col-md-4 no-padding">
+                        <input value="Change Password"
+                            class="first form-control" 
+                            type="button" 
+                            ng-hide="changePass" 
+                            ng-click="changePass = true" />
+
+                        <input ng-show="changePass" ng-model="user.oldPassword" class="form-control" type="password" placeholder="Old Password" />
+                        <div ng-show="changePass && submitted && !user.oldPassword" class="form-group has-error">
+                            <span class="help-block" ng-show="submitted && !user.oldPassword">
+                                Please fill in old password
+                            </span>
+                        </div>
+                        <br ng-show="changePass" />
+                        <div ng-show="changePass && submitted && user.oldPassword && !user.newPassword && !user.confirmPassword" class="form-group has-error">
+                            <span class="help-block" ng-show="submitted && user.oldPassword && !user.newPassword && !user.confirmPassword">
+                                Please fill in new password and confirm the password below 
+                            </span>
+                        </div>
+                        <input ng-show="changePass" ng-model="user.newPassword" class="form-control" type="password" placeholder="New Password" />
+                        <br ng-show="changePass" />
+                        <input ng-show="changePass" ng-model="user.confirmPassword" class="form-control" type="password" placeholder="Confirm Password" />
+                        <div ng-show="changePass && submitted && user.oldPassword && user.newPassword !== user.confirmPassword" class="form-group has-error">
+                            <span class="help-block" ng-show="submitted && user.oldPassword && user.newPassword !== user.confirmPassword">
+                                Password does not match the confirm password
+                            </span>
+                        </div>
+                        <br ng-show="changePass" />
+                        <input value="Cancel Change Password"
+                            class="first form-control" 
+                            type="button" 
+                            ng-show="changePass" 
+                            ng-click="changePass = false" />
+                    </div>
+                </div>
             </div>
             <br>
             <div class="row-fluid">

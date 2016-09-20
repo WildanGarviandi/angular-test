@@ -303,6 +303,8 @@ angular.module('adminApp')
             id: $scope.id,
         }).$promise.then(function(result) {
             var data = result.data;
+            $scope.parentWebstore = data.Parent;
+            $scope.childrenWebstore = data.Children;
             $scope.webstore = data.User;
             $scope.webstore.PostPaidPayment = data.User.WebstoreCompany.PostPaidPayment;
             $scope.payment = $scope.payments[~~data.User.WebstoreCompany.PostPaidPayment];
@@ -325,6 +327,10 @@ angular.module('adminApp')
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
+    }
+
+    $scope.paginationChildWebstore = function(value) {
+        $scope.offset = Math.ceil(value);
     }
 
     /**
