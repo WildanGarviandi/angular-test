@@ -31,7 +31,7 @@
                         features.order.reassign_fleet || 
                         features.order.bulk_mark_delivered || 
                         features.order.bulk_return_warehouse ||
-                        features.order.return_sender"
+                        features.order.bulk_return_sender"
                         ng-disabled="!isOrderSelected"
                         class="order-buttons btn dropdown-toggle" 
                         type="button" 
@@ -47,7 +47,7 @@
                             <a ng-show="features.order.bulk_return_warehouse" ng-click="showReturnWarehouse()">Mark as Return Warehouse</a>
                         </li>
                         <li>
-                            <a ng-show="features.order.return_sender" ng-click="showReturnSender()">Mark as Return Sender</a>
+                            <a ng-show="features.order.bulk_return_sender" ng-click="showReturnSender()">Mark as Return Sender</a>
                         </li>
                     </ul>
                 </div>
