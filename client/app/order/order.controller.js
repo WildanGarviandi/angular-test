@@ -82,11 +82,6 @@ angular.module('adminApp')
         endDate: null
     };
 
-    $scope.secondAttemptDatePicker = {
-        startDate: null,
-        endDate: null
-    };
-
     $scope.importedDatePicker = new Date();
 
     $scope.optionsDatepicker = {
@@ -282,18 +277,6 @@ angular.module('adminApp')
                 $scope.firstAttemptDatePicker.endDate.getHours() - $scope.firstAttemptDatePicker.endDate.getTimezoneOffset() / 60
             );
         }
-        if ($scope.secondAttemptDatePicker.startDate) {
-            $scope.secondAttemptDatePicker.startDate = new Date($scope.secondAttemptDatePicker.startDate);
-            $scope.secondAttemptDatePicker.startDate.setHours(
-                $scope.secondAttemptDatePicker.startDate.getHours() - $scope.secondAttemptDatePicker.startDate.getTimezoneOffset() / 60
-            );           
-        }
-        if ($scope.secondAttemptDatePicker.endDate) {
-            $scope.secondAttemptDatePicker.endDate = new Date($scope.secondAttemptDatePicker.endDate);
-            $scope.secondAttemptDatePicker.endDate.setHours(
-                $scope.secondAttemptDatePicker.endDate.getHours() - $scope.secondAttemptDatePicker.endDate.getTimezoneOffset() / 60
-            );
-        }
         $scope.isLoading = true;
         var params = {
             offset: $scope.offset,
@@ -316,8 +299,6 @@ angular.module('adminApp')
             isAttempt: $scope.isAttempt.value,
             startFirstAttempt: $scope.firstAttemptDatePicker.startDate, 
             endFirstAttempt: $scope.firstAttemptDatePicker.endDate, 
-            startSecondAttempt: $scope.secondAttemptDatePicker.startDate, 
-            endSecondAttempt: $scope.secondAttemptDatePicker.endDate, 
             fleet: $scope.queryFleet,
             sortBy: $scope.sortBy,
             sortCriteria: $scope.sortCriteria,
