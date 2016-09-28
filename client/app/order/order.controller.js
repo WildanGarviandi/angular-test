@@ -977,20 +977,9 @@ angular.module('adminApp')
             scope: $scope
         });
     }
- 
-    /**
-     * Export normal orders
-     * 
-     * @return {void}
-     */
-    $scope.exportNormalOrders = function() {
-        $rootScope.$emit('startSpin');
-        if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
-        }
-        Services2.exportNormalOrders({
-            startDate: $scope.createdDatePicker.startDate,
-            endDate: $scope.createdDatePicker.endDate,
+
+    $scope.getFilterParam = function(data) {
+        $scope.filter = {
             userOrderNumber: $scope.queryUserOrderNumber,
             userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
             driver: $scope.queryDriver,
@@ -1011,7 +1000,25 @@ angular.module('adminApp')
             fleet: $scope.queryFleet,
             sortBy: $scope.sortBy,
             sortCriteria: $scope.sortCriteria,
-        }).$promise.then(function(result) {
+        };
+        
+        return angular.extend($scope.filter, data);
+    }
+ 
+    /**
+     * Export normal orders
+     * 
+     * @return {void}
+     */
+    $scope.exportNormalOrders = function() {
+        $rootScope.$emit('startSpin');
+        if ($scope.createdDatePicker.endDate) {
+            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
+        }
+        Services2.exportNormalOrders($scope.getFilterParam({
+            startDate: $scope.createdDatePicker.startDate,
+            endDate: $scope.createdDatePicker.endDate,
+        })).$promise.then(function(result) {
             ngDialog.closeAll();
             $rootScope.$emit('stopSpin');
             window.location = config.url + 'order/download/' + result.data.hash;
@@ -1030,30 +1037,10 @@ angular.module('adminApp')
         if ($scope.createdDatePicker.endDate) {
             $scope.createdDatePicker.endDate.setHours(23,59,59,0);
         }
-        Services2.exportUploadableOrders({
+        Services2.exportUploadableOrders($scope.getFilterParam({
             startDate: $scope.createdDatePicker.startDate,
             endDate: $scope.createdDatePicker.endDate,
-            userOrderNumber: $scope.queryUserOrderNumber,
-            userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
-            driver: $scope.queryDriver,
-            merchant: $scope.queryMerchant,
-            pickup: $scope.queryPickup,
-            sender: $scope.querySender,
-            dropoff: $scope.queryDropoff,
-            pickupType: $scope.pickupType.value,
-            userType: $scope.orderType.key,
-            recipient: $scope.queryRecipient,
-            status: $scope.status.value,
-            startPickup: $scope.pickupDatePicker.startDate,
-            endPickup: $scope.pickupDatePicker.endDate,
-            startDropoff: $scope.dropoffDatePicker.startDate,
-            endDropoff: $scope.dropoffDatePicker.endDate,
-            cutOffTime: $scope.cutOffTime,
-            dueTime: $scope.dueTime,
-            fleet: $scope.queryFleet,
-            sortBy: $scope.sortBy,
-            sortCriteria: $scope.sortCriteria,
-        }).$promise.then(function(result) {
+        })).$promise.then(function(result) {
             ngDialog.closeAll();
             $rootScope.$emit('stopSpin');
             window.location = config.url + 'order/download/' + result.data.hash;
@@ -1072,30 +1059,10 @@ angular.module('adminApp')
         if ($scope.createdDatePicker.endDate) {
             $scope.createdDatePicker.endDate.setHours(23,59,59,0);
         }
-        Services2.exportCompletedOrders({
+        Services2.exportCompletedOrders($scope.getFilterParam({
             startDate: $scope.createdDatePicker.startDate,
             endDate: $scope.createdDatePicker.endDate,
-            userOrderNumber: $scope.queryUserOrderNumber,
-            userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
-            driver: $scope.queryDriver,
-            merchant: $scope.queryMerchant,
-            pickup: $scope.queryPickup,
-            sender: $scope.querySender,
-            dropoff: $scope.queryDropoff,
-            pickupType: $scope.pickupType.value,
-            userType: $scope.orderType.key,
-            recipient: $scope.queryRecipient,
-            status: $scope.status.value,
-            startPickup: $scope.pickupDatePicker.startDate,
-            endPickup: $scope.pickupDatePicker.endDate,
-            startDropoff: $scope.dropoffDatePicker.startDate,
-            endDropoff: $scope.dropoffDatePicker.endDate,
-            cutOffTime: $scope.cutOffTime,
-            dueTime: $scope.dueTime,
-            fleet: $scope.queryFleet,
-            sortBy: $scope.sortBy,
-            sortCriteria: $scope.sortCriteria,
-        }).$promise.then(function(result) {
+        })).$promise.then(function(result) {
             ngDialog.closeAll();
             $rootScope.$emit('stopSpin');
             window.location = config.url + 'order/download/' + result.data.hash;
