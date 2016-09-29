@@ -103,10 +103,6 @@ angular.module('adminApp')
 
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
-    $scope.createdDatePicker = {
-        startDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 7),
-        endDate: new Date()
-    };
 
     $scope.maxExportDate = new Date();
  
@@ -224,30 +220,7 @@ angular.module('adminApp')
             $scope.dueTime = moment($scope.dueTime).format('YYYY-MM-DD'); 
         }
         $scope.isLoading = true;
-        var params = {
-            offset: $scope.offset,
-            limit: $scope.itemsByPage,
-            userOrderNumber: $scope.queryUserOrderNumber,
-            userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
-            driver: $scope.queryDriver,
-            merchant: $scope.queryMerchant,
-            pickup: $scope.queryPickup,
-            sender: $scope.querySender,
-            dropoff: $scope.queryDropoff,
-            pickupType: $scope.pickupType.value,
-            userType: $scope.orderType.key,
-            recipient: $scope.queryRecipient,
-            status: $scope.status.value,
-            startPickup: $scope.pickupDatePicker.startDate,
-            endPickup: $scope.pickupDatePicker.endDate,
-            startDropoff: $scope.dropoffDatePicker.startDate,
-            endDropoff: $scope.dropoffDatePicker.endDate,
-            cutOffTime: $scope.cutOffTime,
-            dueTime: $scope.dueTime,
-            fleet: $scope.queryFleet,
-            sortBy: $scope.sortBy,
-            sortCriteria: $scope.sortCriteria,
-        }
+        var params = $scope.getFilterParam();
         Services2.getOrder(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
@@ -978,8 +951,15 @@ angular.module('adminApp')
         });
     }
 
-    $scope.getFilterParam = function(data) {
-        $scope.filter = {
+    /**
+     * Get Filter Param
+     * 
+     * @return {void}
+     */
+    $scope.getFilterParam = function() {
+        var params = {
+            offset: $scope.offset,
+            limit: $scope.itemsByPage,
             userOrderNumber: $scope.queryUserOrderNumber,
             userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
             driver: $scope.queryDriver,
@@ -1001,8 +981,39 @@ angular.module('adminApp')
             sortBy: $scope.sortBy,
             sortCriteria: $scope.sortCriteria,
         };
-        
-        return angular.extend($scope.filter, data);
+
+        return params;
+    }
+
+    /**
+     * Get Export Filter Param
+     * 
+     * @return {void}
+     */
+    $scope.getExportParam = function() {
+        var params = {
+            userOrderNumber: $scope.queryUserOrderNumber,
+            userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
+            driver: $scope.queryDriver,
+            merchant: $scope.queryMerchant,
+            pickup: $scope.queryPickup,
+            sender: $scope.querySender,
+            dropoff: $scope.queryDropoff,
+            pickupType: $scope.pickupType.value,
+            userType: $scope.orderType.key,
+            recipient: $scope.queryRecipient,
+            status: $scope.status.value,
+            startPickup: $scope.pickupDatePicker.startDate,
+            endPickup: $scope.pickupDatePicker.endDate,
+            startDropoff: $scope.dropoffDatePicker.startDate,
+            endDropoff: $scope.dropoffDatePicker.endDate,
+            cutOffTime: $scope.cutOffTime,
+            dueTime: $scope.dueTime,
+            fleet: $scope.queryFleet,
+            sortBy: $scope.sortBy,
+            sortCriteria: $scope.sortCriteria,
+        };
+        return params;
     }
  
     /**
@@ -1012,16 +1023,10 @@ angular.module('adminApp')
      */
     $scope.exportNormalOrders = function() {
         $rootScope.$emit('startSpin');
-        if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
-        }
-        Services2.exportNormalOrders($scope.getFilterParam({
-            startDate: $scope.createdDatePicker.startDate,
-            endDate: $scope.createdDatePicker.endDate,
-        })).$promise.then(function(result) {
+        Services2.exportNormalOrders($scope.getExportParam())
+        .$promise.then(function(result) {
             ngDialog.closeAll();
             $rootScope.$emit('stopSpin');
-            window.location = config.url + 'order/download/' + result.data.hash;
         }).catch(function() {
             $rootScope.$emit('stopSpin');
         })
@@ -1034,16 +1039,10 @@ angular.module('adminApp')
      */
     $scope.exportUploadableOrders = function() {
         $rootScope.$emit('startSpin');
-        if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
-        }
-        Services2.exportUploadableOrders($scope.getFilterParam({
-            startDate: $scope.createdDatePicker.startDate,
-            endDate: $scope.createdDatePicker.endDate,
-        })).$promise.then(function(result) {
+        Services2.exportUploadableOrders($scope.getExportParam())
+        .$promise.then(function(result) {
             ngDialog.closeAll();
             $rootScope.$emit('stopSpin');
-            window.location = config.url + 'order/download/' + result.data.hash;
         }).catch(function() {
             $rootScope.$emit('stopSpin');
         })
@@ -1056,16 +1055,10 @@ angular.module('adminApp')
      */
     $scope.exportCompletedOrders = function() {
         $rootScope.$emit('startSpin');
-        if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
-        }
-        Services2.exportCompletedOrders($scope.getFilterParam({
-            startDate: $scope.createdDatePicker.startDate,
-            endDate: $scope.createdDatePicker.endDate,
-        })).$promise.then(function(result) {
+        Services2.exportCompletedOrders($scope.getExportParam())
+        .$promise.then(function(result) {
             ngDialog.closeAll();
             $rootScope.$emit('stopSpin');
-            window.location = config.url + 'order/download/' + result.data.hash;
         }).catch(function() {
             $rootScope.$emit('stopSpin');
         })
