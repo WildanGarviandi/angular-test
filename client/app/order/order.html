@@ -30,7 +30,8 @@
                     <button ng-show="features.order.set_price || 
                         features.order.reassign_fleet || 
                         features.order.bulk_mark_delivered || 
-                        features.order.bulk_return_warehouse"
+                        features.order.bulk_return_warehouse ||
+                        features.order.bulk_return_sender"
                         ng-disabled="!isOrderSelected"
                         class="order-buttons btn dropdown-toggle" 
                         type="button" 
@@ -44,6 +45,9 @@
                         <li><a ng-show="features.order.bulk_mark_delivered" ng-click="bulkSetDeliveredStatus()">Mark as Delivered</a></li>
                         <li>
                             <a ng-show="features.order.bulk_return_warehouse" ng-click="showReturnWarehouse()">Mark as Return Warehouse</a>
+                        </li>
+                        <li>
+                            <a ng-show="features.order.bulk_return_sender" ng-click="showReturnSender()">Mark as Return Sender</a>
                         </li>
                     </ul>
                 </div>
@@ -692,6 +696,28 @@
         <div class="clearfix"></div>
         <div class="row-fluid">
             <button class="btn btn-primary" ng-click="bulkReturnWarehouse()">Mark as Return Warehouse</button>              
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="setReturnSenderModal">
+    <div class="header-wrapper">
+        <div class="col-md-12">
+            <h1>Return to Sender</h1>
+        </div>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid">
+        <h4><b>{{(orders | filter: {Selected: true}).length}}</b> orders that will be affected</h4>
+        <div ng-repeat="order in orders">
+            <div ng-if="order.Selected" class="row-fluid">                
+                <div class="col-md-12 text-center">
+                    {{order.UserOrderNumber}}
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <button class="btn btn-primary" ng-click="bulkReturnSender()">Mark as Return Sender</button>              
         </div>
     </div>
 </script>
