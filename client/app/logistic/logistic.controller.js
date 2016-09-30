@@ -64,6 +64,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.chooseCompany = function() {
+        $location.search('company', $scope.input.company.FleetManagerID);
         getFees();
     };
 
@@ -124,6 +125,13 @@ angular.module('adminApp')
         }
 
         $rootScope.$emit('startSpin');
+
+        var companyParam = parseInt($location.search().company) || 
+                                        $location.search().company || 
+                                        $scope.input.company.FleetManagerID;
+        $scope.input.company = lodash.find($scope.companies, 
+                            {'FleetManagerID': companyParam });
+
         var params = {
             id: $scope.input.company.FleetManagerID
         };

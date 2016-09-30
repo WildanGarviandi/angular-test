@@ -36,11 +36,11 @@
     
     <div class="container-content">
         <div class="col-md-12">
-            <div class="pull-right">
-                <button class="btn btn-primary" ng-click="changeItemsByPage(10)">10</button>
-                <button class="btn btn-primary" ng-click="changeItemsByPage(20)">20</button>
-                <button class="btn btn-primary" ng-click="changeItemsByPage('All')">All</button>
-            </div>
+            <div class="pull-right" ng-repeat=" number in ['All', 20, 10]">
+                    <button class="btn btn-primary" 
+                        ng-click="changeItemsByPage(number)"
+                        ng-disabled="itemsByPageNumber == number">{{number}}</button>
+                </div>
             <br>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover">
                 <thead class="hub-table-head" ng-show="!isLoading && displayed.length > 0">

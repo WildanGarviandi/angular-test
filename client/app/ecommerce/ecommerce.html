@@ -34,7 +34,7 @@
                 Select Pickup Type :
                 <ui-select ng-model="input.pickup"
                     theme="bootstrap"
-                    on-select="choosePickup()">
+                    on-select="choosePickup($item)">
                     <ui-select-match placeholder="Choose pickup type">
                         {{ $select.selected.key }}
                     </ui-select-match>
@@ -47,7 +47,7 @@
                 Select Vehicle Type :
                 <ui-select ng-model="input.vehicle"
                     theme="bootstrap"
-                    on-select="chooseVehicle()">
+                    on-select="chooseVehicle($item)">
                     <ui-select-match placeholder="Choose vehicle type">
                         {{ $select.selected.Name }}
                     </ui-select-match>
@@ -60,7 +60,7 @@
                 Select Weight :
                 <ui-select ng-model="input.weight"
                     theme="bootstrap"
-                    on-select="chooseWeight()">
+                    on-select="chooseWeight($item)">
                     <ui-select-match placeholder="Choose weight">
                         {{ $select.selected.description }}
                     </ui-select-match>
@@ -73,7 +73,7 @@
                 Select Discount :
                 <ui-select ng-model="input.discount"
                     theme="bootstrap"
-                    on-select="chooseDiscount()">
+                    on-select="chooseDiscount($item)">
                     <ui-select-match placeholder="Select discount">
                         {{ $select.selected.description }}
                     </ui-select-match>

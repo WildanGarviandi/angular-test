@@ -52,8 +52,9 @@ angular.module('adminApp')
 
     $scope.sumZipField = 1;
 
-    $scope.itemsByPage = 10;
-    $scope.offset = 0;
+    $scope.itemsByPage = $location.search().limit || 10;
+    $scope.offset = $location.search().offset || 0;
+    $scope.isFirstLoaded = true;
 
     var createHub = function(callback) {
         $scope.submitted = true;
@@ -349,9 +350,8 @@ angular.module('adminApp')
      */
     $scope.getHubs = function() {
         $rootScope.$emit('startSpin');
-        if ($stateParams.query) {
-            $scope.reqSearchString = $stateParams.query;
-        }
+        $scope.reqSearchString = $scope.searchQuery = $location.search().q || $scope.searchQuery;
+        $location.search('offset', $scope.offset);
         $scope.isLoading = true;
         var params = {
             offset: $scope.offset,
@@ -394,6 +394,7 @@ angular.module('adminApp')
     $scope.reqSearchString = '';
     $scope.search = function(event) {
         if ((event && event.keyCode === 13) || !event) {
+            $location.search('q', $scope.searchQuery);
             $scope.reqSearchString = $scope.searchQuery;
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
@@ -463,10 +464,14 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.callServer = function(state) {
-        $scope.offset = state.pagination.start;
         $scope.tableState = state;
+        if ($scope.isFirstLoaded) {
+            $scope.tableState.pagination.start = $scope.offset;
+            $scope.isFirstLoaded = false;
+        } else {
+            $scope.offset = state.pagination.start;
+        }
         $scope.getHubs();
-        $scope.isFirstLoaded = true;
     }
 
     /**
