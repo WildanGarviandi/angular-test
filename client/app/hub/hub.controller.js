@@ -102,6 +102,7 @@ angular.module('adminApp')
         if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City && $scope.hub.Type && $scope.fleetManager && $scope.fleetManager.User)) {
             return;
         }
+
         var hub = {
             ParentHubID: $scope.hub.ParentHubID,
             Name: $scope.hub.Name,
@@ -156,6 +157,10 @@ angular.module('adminApp')
     $scope.chooseType = function(item) {
         $scope.hub.Type = item.value;
         $scope.type = item;
+        if ($scope.hub.Type === 'CENTRAL') {
+            $scope.hub.ParentHubID = null;
+            $scope.parent = null;
+        }
     }
 
     $scope.chooseFleetManager = function(item) {

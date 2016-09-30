@@ -16,7 +16,8 @@ angular.module('adminApp')
             $http, 
             $window,
             config,
-            $q
+            $q,
+            ngDialog
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -42,6 +43,11 @@ angular.module('adminApp')
         endDate: $location.search().endDropoff || null
     };
 
+    $scope.step = {
+        key: 'All',
+        value: 'All'
+    };
+
     $scope.optionsDatepicker = {
         separator: ':',
         eventHandlers: {
@@ -56,6 +62,13 @@ angular.module('adminApp')
     $scope.currency = config.currency + " ";
     $scope.isFirstSort = true;
 
+    $scope.today = new Date();
+
+    $scope.createdDatePicker = {
+        startDate: new Date($scope.today.getFullYear(), $scope.today.getMonth(), $scope.today.getDate() - 7),
+        endDate: $scope.today
+    };
+    
     // Generated scope:
     // PickupDatePicker, DropoffDatePicker
     // startPickup, endPickup, startDropoff, endDropoff
@@ -88,6 +101,56 @@ angular.module('adminApp')
     }
 
     /**
+     * Show export orders modals
+     * 
+     * @return {void}
+     */
+    $scope.showExportTrips = function() {
+        ngDialog.close();
+        return ngDialog.open({
+            template: 'exportModal',
+            scope: $scope
+        });
+    }
+    
+    /**
+     * Export normal orders
+     * 
+     * @return {void}
+     */
+    $scope.exportTrips = function() {
+        $rootScope.$emit('startSpin');
+        if ($scope.createdDatePicker.endDate) {
+            $scope.createdDatePicker.endDate.setHours(23, 59, 59, 0);
+        }
+        Services2.exportTrips({
+            startDate: $scope.createdDatePicker.startDate,
+            endDate: $scope.createdDatePicker.endDate,
+        }).$promise.then(function(result) {
+            ngDialog.closeAll();
+            $rootScope.$emit('stopSpin');
+            window.location = config.url + 'trip/download/' + result.data.hash;
+        }).catch(function() {
+            $rootScope.$emit('stopSpin');
+        })
+    }
+
+    /**
+     * Get default values from config
+     * 
+     * @return {void}
+     */
+    var getDefaultValues = function() {
+        $http.get('config/defaultValues.json').success(function(data) {
+            $scope.steps = [];
+            $scope.steps.push($scope.step);
+            $scope.steps = $scope.steps.concat(data.tripSteps);
+        });
+    };
+
+    getDefaultValues();
+
+    /**
      * Assign status to the chosen item
      * 
      * @return {void}
@@ -95,6 +158,18 @@ angular.module('adminApp')
     $scope.chooseStatus = function(item) {
         $location.search('status', item.value);
         $scope.status = item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getTrip(); 
+    }
+
+    /**
+     * Assign status to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.chooseStep = function(item) {
+        $scope.step = item;
         $scope.offset = 0;
         $scope.tableState.pagination.start = 0;
         $scope.getTrip(); 
@@ -172,11 +247,26 @@ angular.module('adminApp')
             endPickup: $scope.pickupDatePicker.endDate,
             startDropoff: $scope.dropoffDatePicker.startDate,
             endDropoff: $scope.dropoffDatePicker.endDate,
+            userOrderNumber: $scope.queryUserOrderNumber,
+            fleet: $scope.queryFleet,
+            originHub: $scope.queryOriginHub,
+            destinationHub: $scope.queryDestinationHub,
+            step: $scope.step.value,
             sortBy: $scope.sortBy,
             sortCriteria: $scope.sortCriteria,
         }
         Services2.getTrip(params).$promise.then(function(data) {
             $scope.displayed = data.data.rows;
+            $scope.displayed.forEach(function (val, index, array) {
+                array[index].Step = '';
+                if (val.OriginHub && val.DestinationHub) {
+                    array[index].Step = $scope.steps[2].key;
+                } else if (val.DestinationHub) {
+                    array[index].Step = $scope.steps[3].key;
+                } else if (val.OriginHub) {
+                    array[index].Step = $scope.steps[1].key;
+                }
+            });
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.data.count / $scope.tableState.pagination.number);
@@ -224,6 +314,60 @@ angular.module('adminApp')
             }
         };
     });
+
+    /**
+     * Add search user order number
+     * 
+     * @return {void}
+     */
+    $scope.reqSearchUserOrderNumber = '';
+    $scope.searchOrder = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            $scope.reqSearchUserOrderNumber = $scope.queryUserOrderNumber;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getTrip();
+        };
+    }
+
+    /**
+     * Add search fleet
+     * 
+     * @return {void}
+     */
+    $scope.searchFleet = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getTrip();
+        };
+    }
+
+    /**
+     * Add search Origin Hub
+     * 
+     * @return {void}
+     */
+    $scope.searchOriginHub = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getTrip();
+        };
+    }
+
+    /**
+     * Add search Destination Hub
+     * 
+     * @return {void}
+     */
+    $scope.searchDestinationHub = function(event) {
+        if ((event && event.keyCode === 13) || !event) {
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getTrip();
+        };
+    }
 
     /**
      * Sort by column
@@ -293,6 +437,13 @@ angular.module('adminApp')
                     }
                     route.UserOrder.PaymentType = (route.UserOrder.PaymentType === 2) ? 'Wallet' : 'Cash';
                 })
+            }
+            if ($scope.trip.OriginHub && $scope.trip.DestinationHub) {
+                $scope.trip.Step = 'Interhub';
+            } else if ($scope.trip.OriginHub) {
+                $scope.trip.Step = 'First Leg';
+            } else if ($scope.trip.DestinationHub) {
+                $scope.trip.Step = 'Last Leg';
             }
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');

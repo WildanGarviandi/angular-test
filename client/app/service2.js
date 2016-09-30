@@ -377,6 +377,14 @@ angular.module('adminApp')
                 controller: 'completed'
             },
         },
+        exportTrips: {
+            method: 'GET',
+            params: {
+                module: 'trip',
+                submodule: 'export',
+                controller: 'normal'
+            }
+        },
         getZipcodes: {
             method: 'GET',
             params: {
