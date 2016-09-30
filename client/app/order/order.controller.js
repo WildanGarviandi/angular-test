@@ -1107,21 +1107,47 @@ angular.module('adminApp')
         };
         return params;
     }
- 
+    
+    var httpSaveBlob = function(url, params, type, fileName){
+        $rootScope.$emit('startSpin');
+
+        $http({
+            url: config.url + url,
+            method: "GET",
+            params: params,
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': type
+            },
+            responseType: 'arraybuffer'
+        }).then(function(response) {
+            var blob = new Blob([response.data], {type: type});
+            
+            var a = document.createElement('a');
+            a.href = window.URL.createObjectURL(blob);
+            a.download = fileName;
+            a.target = '_blank';
+            a.click();
+
+            $rootScope.$emit('stopSpin');
+        }).catch(function (e) {
+            $rootScope.$emit('stopSpin');
+            SweetAlert.swal('Download Failed ', e.statusText);
+        });
+    }
+
     /**
      * Export normal orders
      * 
      * @return {void}
      */
     $scope.exportNormalOrders = function() {
-        $rootScope.$emit('startSpin');
-        Services2.exportNormalOrders($scope.getExportParam())
-        .$promise.then(function(result) {
-            ngDialog.closeAll();
-            $rootScope.$emit('stopSpin');
-        }).catch(function() {
-            $rootScope.$emit('stopSpin');
-        })
+        var url = 'order/export/normal';
+        var params = $scope.getExportParam();
+        var fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
+        var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+        httpSaveBlob(url, params, type, fileName);
     }
 
     /**
@@ -1130,14 +1156,12 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.exportUploadableOrders = function() {
-        $rootScope.$emit('startSpin');
-        Services2.exportUploadableOrders($scope.getExportParam())
-        .$promise.then(function(result) {
-            ngDialog.closeAll();
-            $rootScope.$emit('stopSpin');
-        }).catch(function() {
-            $rootScope.$emit('stopSpin');
-        })
+        var url = 'order/export/uploadable';
+        var params = $scope.getExportParam();
+        var fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
+        var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        
+        httpSaveBlob(url, params, type, fileName);
     }
 
     /**
@@ -1146,14 +1170,12 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.exportCompletedOrders = function() {
-        $rootScope.$emit('startSpin');
-        Services2.exportCompletedOrders($scope.getExportParam())
-        .$promise.then(function(result) {
-            ngDialog.closeAll();
-            $rootScope.$emit('stopSpin');
-        }).catch(function() {
-            $rootScope.$emit('stopSpin');
-        })
+        var url = 'order/export/completed';
+        var params = $scope.getExportParam();
+        var fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
+        var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        
+        httpSaveBlob(url, params, type, fileName);
     }
 
     /**
