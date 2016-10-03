@@ -77,8 +77,9 @@
     margin-bottom: 8px;
 }
 
-.hub-field > input.first {
-    border-bottom: solid 1px #eee;
+.hub-field.has-error .form-control {
+    border: solid 1px #a94442;
+    color: #a94442;;
 }
 
 .maps {

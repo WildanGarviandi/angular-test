@@ -51,12 +51,6 @@ angular.module('adminApp')
     $scope.offset = $location.search().offset || 0;
     $scope.isFirstLoaded = true;
 
-    $scope.emailFormat = new RegExp('^(([^<>()[\\]\\\\.,;:\\s@\\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\\"]+)*)' + 
-                                    '|(\\".+\\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.' + 
-                                    '[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$', 'i');
-    $scope.phoneFormat = new RegExp('^[+]?(\\d{3}(-| )?\\d{3}(-| )?\\d{4}|\\d{5,12}|}|[(]\\d{3}[)](-| )?' + 
-                                    '\\d{3}(-| )?\\d{4})$');
-
     // Here, model and param have same naming format
     var pickedVariables = {
         'Status': {

@@ -3,6 +3,7 @@
 angular.module('adminApp')
 .directive('numbersOnly', function () {
     return {
+        restrict: 'A',
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
             if(!ngModelCtrl) {
@@ -11,7 +12,7 @@ angular.module('adminApp')
 
             ngModelCtrl.$parsers.push(function(val) {
                 if (angular.isUndefined(val) || val === null) {
-                    var val = '';
+                    val = '';
                 }
                 if (typeof val === 'number') {
                     val = val.toString();
