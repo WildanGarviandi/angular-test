@@ -52,6 +52,24 @@ angular.module('adminApp')
     };
     $scope.orderTypes = [$scope.orderType];
 
+    $scope.isAttempt = {
+        key: 'All',
+        value: 'All'
+    };
+
+    $scope.isAttempts = [
+        {
+            key: 'All',
+            value: 'All'
+        }, {
+            key: 'Yes',
+            value: 1,
+        }, {
+            key: 'No',
+            value: 0,
+        }
+    ];
+
     $scope.pickupDatePicker = {
         startDate: $location.search().startPickup || null,
         endDate: $location.search().endPickup || null
@@ -67,6 +85,16 @@ angular.module('adminApp')
     $scope.cutOffTime = null;
 
     $scope.dueTime = null;
+
+    $scope.firstAttemptDatePicker = {
+        startDate: null,
+        endDate: null
+    };
+
+    $scope.secondAttemptDatePicker = {
+        startDate: null,
+        endDate: null
+    };
 
     $scope.importedDatePicker = new Date();
 
@@ -217,6 +245,18 @@ angular.module('adminApp')
     }
 
     /**
+     * Assign Failed Attempt to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.chooseisAttempt = function ($item) {
+        $scope.isAttempt = $item;
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getOrder(); 
+    };
+
+    /**
      * Get all orders
      * 
      * @return {void}
@@ -240,6 +280,30 @@ angular.module('adminApp')
         }
         if ($scope.dueTime) {
             $scope.dueTime = moment($scope.dueTime).format('YYYY-MM-DD'); 
+        }
+        if ($scope.firstAttemptDatePicker.startDate) {
+            $scope.firstAttemptDatePicker.startDate = new Date($scope.firstAttemptDatePicker.startDate);
+            $scope.firstAttemptDatePicker.startDate.setHours(
+                $scope.firstAttemptDatePicker.startDate.getHours() - $scope.firstAttemptDatePicker.startDate.getTimezoneOffset() / 60
+            );           
+        }
+        if ($scope.firstAttemptDatePicker.endDate) {
+            $scope.firstAttemptDatePicker.endDate = new Date($scope.firstAttemptDatePicker.endDate);
+            $scope.firstAttemptDatePicker.endDate.setHours(
+                $scope.firstAttemptDatePicker.endDate.getHours() - $scope.firstAttemptDatePicker.endDate.getTimezoneOffset() / 60
+            );
+        }
+        if ($scope.secondAttemptDatePicker.startDate) {
+            $scope.secondAttemptDatePicker.startDate = new Date($scope.secondAttemptDatePicker.startDate);
+            $scope.secondAttemptDatePicker.startDate.setHours(
+                $scope.secondAttemptDatePicker.startDate.getHours() - $scope.secondAttemptDatePicker.startDate.getTimezoneOffset() / 60
+            );           
+        }
+        if ($scope.secondAttemptDatePicker.endDate) {
+            $scope.secondAttemptDatePicker.endDate = new Date($scope.secondAttemptDatePicker.endDate);
+            $scope.secondAttemptDatePicker.endDate.setHours(
+                $scope.secondAttemptDatePicker.endDate.getHours() - $scope.secondAttemptDatePicker.endDate.getTimezoneOffset() / 60
+            );
         }
 
         var paramsQuery = {
@@ -301,6 +365,11 @@ angular.module('adminApp')
             endDropoff: $scope.dropoffDatePicker.endDate,
             cutOffTime: $scope.cutOffTime,
             dueTime: $scope.dueTime,
+            isAttempt: $scope.isAttempt.value,
+            startFirstAttempt: $scope.firstAttemptDatePicker.startDate, 
+            endFirstAttempt: $scope.firstAttemptDatePicker.endDate, 
+            startSecondAttempt: $scope.secondAttemptDatePicker.startDate, 
+            endSecondAttempt: $scope.secondAttemptDatePicker.endDate, 
             fleet: $scope.queryFleet,
             sortBy: $scope.sortBy,
             sortCriteria: $scope.sortCriteria,
@@ -320,6 +389,23 @@ angular.module('adminApp')
                     array[index].CustomerName = val.WebstoreUser.FirstName + ' ' + val.WebstoreUser.LastName;
                 } else {
                     array[index].CustomerName = val.User.FirstName + ' ' + val.User.LastName;
+                }
+
+                array[index].Attempt = [];
+                if (val.UserOrderAttempts.length > 0) {
+                    array[index].IsAttempt = 'Yes';
+                    for (var i=0; i <= 1; i++) {
+                        if (val.UserOrderAttempts[i]) {
+                            array[index].Attempt[i] = val.UserOrderAttempts[i].CreatedDate;
+                        } else {
+                            array[index].Attempt[i] = '-';
+                        }
+                    }
+                } else {
+                    array[index].IsAttempt = 'No';
+                    for (var i=0; i <= 1; i++) {
+                        array[index].Attempt[i] = '-';
+                    }
                 }
             });
             $rootScope.$emit('stopSpin');
