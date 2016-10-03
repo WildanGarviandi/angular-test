@@ -377,6 +377,14 @@ angular.module('adminApp')
                 controller: 'completed'
             },
         },
+        exportTrips: {
+            method: 'GET',
+            params: {
+                module: 'trip',
+                submodule: 'export',
+                controller: 'normal'
+            }
+        },
         getZipcodes: {
             method: 'GET',
             params: {
@@ -528,6 +536,13 @@ angular.module('adminApp')
             params: {
                 module: 'order',
                 controller: 'bulk-return-warehouse'
+            }
+        },
+        bulkSetReturnSender: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-return-customer'
             }
         }
     });

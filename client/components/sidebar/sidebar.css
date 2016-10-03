@@ -268,8 +268,7 @@
 
 .side-city-image {
     background-image: url('../../assets/images/nav-city.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
+    background-size: 30px;
 }
 
 .side-trip-image {
@@ -278,8 +277,7 @@
 
 .side-city-image.active {
     background-image: url('../../assets/images/nav-city-active.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
+    background-size: 30px;
 }
 
 .side-trip-image.active {
@@ -288,74 +286,70 @@
 
 .side-driver-image {
     background-image: url('../../assets/images/nav-driver.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
+    background-size: 30px;
 }
 
 .side-driver-image.active {
     background-image: url('../../assets/images/nav-driver-active.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
+    background-size: 30px;
 }
 
 .side-ondemand-image {
     background-image: url('../../assets/images/nav-ondemand.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
+    background-size: 30px;
 }
 
 .side-ondemand-image.active {
     background-image: url('../../assets/images/nav-ondemand-active.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
+    background-size: 30px;
 }
 
 .side-orders-image {
     background-image: url('../../assets/images/nav-order.png');
     background-size: 30px 30px;
-    background-repeat: no-repeat;
 }
 
 .side-orders-image.active {
     background-image: url('../../assets/images/nav-order-active.png');
     background-size: 30px 30px;
-    background-repeat: no-repeat;
 }
 
 .side-codorders-image {
     background-image: url('../../assets/images/nav-codorder.png');
     background-size: 30px 30px;
-    background-repeat: no-repeat;
 }
 
 .side-codorders-image.active {
     background-image: url('../../assets/images/nav-codorder-active.png');
     background-size: 30px 30px;
-    background-repeat: no-repeat;
 }
 
 .side-codpayments-image {
     background-image: url('../../assets/images/nav-codpayment.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
+    background-size: 30px;
 }
 
 .side-codpayments-image.active {
     background-image: url('../../assets/images/nav-codpayment-active.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
+    background-size: 30px;
 }
 
 .side-returnedorders-image {
     background-image: url('../../assets/images/nav-return.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
+    background-size: 30px;
 }
  
 .side-returnedorders-image.active {
     background-image: url('../../assets/images/nav-return-active.png');
-    background-size: 30px 30px;
-    background-repeat: no-repeat;
+    background-size: 30px;
+}
+
+.side-hubmonitor-image {
+    background-image: url('../../assets/images/nav-hubmonitor.png');
+}
+
+.side-hubmonitor-image.active {
+    background-image: url('../../assets/images/nav-hubmonitor-active.png');
 }
 
 /* Booking */

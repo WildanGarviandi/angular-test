@@ -85,8 +85,8 @@
                         User
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.User.FirstName}} {{order.User.LastName}} / 
-                        {{order.User.Email}} / {{order.User.CountryCode}} {{order.User.PhoneNumber}}
+                        {{order.User.FirstName || '-'}} {{order.User.LastName || '-'}} / 
+                        {{order.User.Email || '-'}} / {{order.User.CountryCode}} {{order.User.PhoneNumber || '-'}}
                     </div>
                     <div class="col-sm-4"></div>
                 </div>
@@ -96,8 +96,8 @@
                         Webstore
                     </div>
                     <div class="col-sm-8 summary-from">
-                        {{order.WebstoreUser.FirstName}} {{order.WebstoreUser.LastName}} / 
-                        {{order.WebstoreUser.Email}} / {{order.WebstoreUser.CountryCode}} {{order.WebstoreUser.PhoneNumber}}
+                        {{order.WebstoreUser.FirstName || '-'}} {{order.WebstoreUser.LastName || '-'}} / 
+                        {{order.WebstoreUser.Email || '-'}} / {{order.WebstoreUser.CountryCode}} {{order.WebstoreUser.PhoneNumber || '-'}}
                     </div>
                     <div class="col-sm-4"></div>
                 </div>
@@ -411,56 +411,205 @@
                 <div class="clearfix"></div>
                 <div ng-repeat="route in order.UserOrderRoutes" class="row-fluid order-detail-from-address">
                     <uib-accordion>
-                    <uib-accordion-group 
-                        heading="Route {{$index + 1}}: {{route.Trip.TripNumber}}">
+                    <uib-accordion-group
+                        heading="Route {{$index + 1}} | Status: {{route.OrderStatus.OrderStatus}} 
+                            {{ route.Trip !== null ? ' | Fleet: ' + route.Trip.FleetManager.CompanyDetail.CompanyName : ''}} 
+                            {{ route.Trip !== null ? ' | Driver: ' + route.Trip.Driver.FirstName + ' ' + route.Trip.Driver.LastName : ''}}">
                         <div class="order-status-container-body">
-                            Pickup Address: {{route.PickupAddress.Address1}}
+                            <div class="row-fluid">
+                                <div class="col-md-2">
+                                    Origin Hub
+                                </div>
+                                <div ng-show="route.OriginHub.Name || route.OriginHub.Address1" class="col-md-10 summary-from">
+                                    {{route.OriginHub.Name || '-'}} / {{route.OriginHub.Address1 || '-'}}
+                                </div>
+                                <div ng-hide="route.OriginHub.Name && route.OriginHub.Address1" class="col-md-10 summary-from">
+                                    -
+                                </div>
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Pickup Time: {{route.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="col-md-2">
+                                Destination Hub
+                            </div>
+                            <div ng-show="route.DestinationHub.Name || route.DestinationHub.Address1" class="col-md-10 summary-from">
+                                {{route.DestinationHub.Name || '-'}} / {{route.DestinationHub.Address1 || '-'}}
+                            </div>
+                            <div ng-hide="route.DestinationHub.Name && route.DestinationHub.Address1" class="col-md-10 summary-from">
+                                -
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Dropoff Address: {{route.DropoffAddress.Address1}}
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="col-md-2">
+                                Pickup Address
+                            </div>
+                            <div ng-show="route.PickupAddress.Address1" class="col-md-10 summary-from">
+                                {{route.PickupAddress.Address1}}
+                            </div>
+                            <div ng-hide="route.PickupAddress.Address1" class="col-md-10 summary-from">
+                                -
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Dropoff Time: {{route.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="col-md-2">
+                                Pickup Time
+                            </div>
+                            <div ng-show="route.PickupTime" class="col-md-10 summary-from">
+                                {{route.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                            </div>
+                            <div ng-hide="route.PickupTime" class="col-md-10 summary-from">
+                                -
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Distance: {{route.Distance / 1000 | number : 3 }} km
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="col-md-2">
+                                Dropoff Address
+                            </div>
+                            <div ng-show="route.DropoffAddress.Address1" class="col-md-10 summary-from">
+                                {{route.DropoffAddress.Address1}}
+                            </div>
+                            <div ng-hide="route.DropoffAddress.Address1" class="col-md-10 summary-from">
+                                -
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            ETA Delivery: {{route.ETADelivery | secondsToDateTime | date:'HH:mm:ss'}}
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="col-md-2">
+                                Dropoff Time
+                            </div>
+                            <div ng-show="route.DropoffTime" class="col-md-10 summary-from">
+                                {{route.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                            </div>
+                            <div ng-hide="route.DropoffTime" class="col-md-10 summary-from">
+                                -
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Logistic Fee: {{route.LogisticFee | currency: currency}}
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="col-md-2">
+                                Distance
+                            </div>
+                            <div class="col-md-10 summary-from">
+                                {{route.Distance / 1000 | number : 3 }} km
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Net Margin: {{route.NetMargin}}
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="col-md-2">
+                                ETA Delivery
+                            </div>
+                            <div class="col-md-10 summary-from">
+                                {{route.ETADelivery | secondsToDateTime | date:'HH:mm:ss'}}
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Status: {{route.OrderStatus.OrderStatus}}
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="col-md-2">
+                                Logistic Fee
+                            </div>
+                            <div class="col-md-10 summary-from">
+                                {{route.LogisticFee | currency: currency}}
+                            </div>
                         </div>
-                        <div class="order-status-container-body">
-                            Fleet Manager: {{route.FleetManager.CompanyDetail.CompanyName}} / 
-                            {{route.FleetManager.Email}} / {{route.FleetManager.PhoneNumber}}
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="col-md-2">
+                                Net Margin
+                            </div>
+                            <div ng-show="route.NetMargin" class="col-md-10 summary-from">
+                                {{route.NetMargin}}
+                            </div>
+                            <div ng-hide="route.NetMargin" class="col-md-10 summary-from">
+                                -
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="col-md-2">
+                                Status
+                            </div>
+                            <div class="col-md-10 summary-from">
+                                {{route.OrderStatus.OrderStatus}}
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="row-fluid">
+                            <div class="col-md-2">
+                                Fleet Manager
+                            </div>
+                            <div ng-show="route.FleetManager" class="col-md-10 summary-from">
+                                {{route.FleetManager.CompanyDetail.CompanyName}} / 
+                                {{route.FleetManager.Email}} / {{route.FleetManager.PhoneNumber}}
+                            </div>
+                            <div ng-hide="route.FleetManager" class="col-md-10 summary-from">
+                                -
+                            </div>
                         </div>
                         <uib-accordion>
-                        <uib-accordion-group heading="Trip">
-                            <div class="order-status-container-body">
-                                Driver: {{route.Trip.Driver.FirstName}} {{route.Trip.Driver.LastName}}
+                        <uib-accordion-group ng-if="route.Trip !== null" heading="Trip">
+                            <div class="row-fluid">
+                                <div class="col-md-2">
+                                    Driver
+                                </div>
+                                <div ng-show="route.Trip.Driver.FirstName || route.Trip.Driver.LastName" class="col-md-10 summary-from">
+                                    {{route.Trip.Driver.FirstName}} {{route.Trip.Driver.LastName}}
+                                </div>
+                                <div ng-hide="route.Trip.Driver.FirstName && route.Trip.Driver.LastName" class="col-md-10 summary-from">
+                                    -
+                                </div>
                             </div>
-                            <div class="order-status-container-body">
-                                Container: {{route.Trip.ContainerNumber}}
+                            <div class="clearfix"></div>
+                            <div class="row-fluid">
+                                <div class="col-md-2">
+                                    Container
+                                </div>
+                                <div ng-show="route.Trip.ContainerNumber" class="col-md-10 summary-from">
+                                    {{route.Trip.ContainerNumber}}
+                                </div>
+                                <div ng-hide="route.Trip.ContainerNumber" class="col-md-10 summary-from">
+                                    -
+                                </div>
                             </div>
-                            <div class="order-status-container-body">
-                                Status: {{route.Trip.OrderStatus.OrderStatus}}
+                            <div class="clearfix"></div>
+                            <div class="row-fluid">
+                                <div class="col-md-2">
+                                    Status
+                                </div>
+                                <div ng-show="route.Trip.OrderStatus.OrderStatus" class="col-md-10 summary-from">
+                                    {{route.Trip.OrderStatus.OrderStatus}}
+                                </div>
+                                <div ng-hide="route.Trip.OrderStatus.OrderStatus" class="col-md-10 summary-from">
+                                    -
+                                </div>
                             </div>
-                            <div class="order-status-container-body">
-                                PickupTime: {{route.Trip.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                            <div class="clearfix"></div>
+                            <div class="row-fluid">
+                                <div class="col-md-2">
+                                    PickupTime
+                                </div>
+                                <div ng-show="route.Trip.PickupTime" class="col-md-10 summary-from">
+                                    {{route.Trip.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                                </div>
+                                <div ng-hide="route.Trip.PickupTime" class="col-md-10 summary-from">
+                                    -
+                                </div>
                             </div>
-                            <div class="order-status-container-body">
-                                Dropoff Time: {{route.Trip.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
-                            </div>                            
+                            <div class="clearfix"></div>
+                            <div class="row-fluid">
+                                <div class="col-md-2">
+                                    Dropoff Time
+                                </div>
+                                <div ng-show="route.Trip.DropoffTime" class="col-md-10 summary-from">
+                                    {{route.Trip.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                                </div>
+                                <div ng-hide="route.Trip.DropoffTime" class="col-md-10 summary-from">
+                                    -
+                                </div>
+                            </div>
                         </uib-accordion-group>   
                         </uib-accordion>
                     </uib-accordion-group>   

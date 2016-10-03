@@ -4,29 +4,23 @@
         <div>
             <div class="col-md-6 col-sm-7">
                 <div class="hub-title-box">
-                    Operational Districts
+                    Hub Monitoring
                 </div>
             </div>
             <div class="col-md-3 col-sm-5 pull-right">
-                <div class="district" ng-include="'components/user/user.html'"></div>
+                <div class="hub" ng-include="'components/user/user.html'"></div>
             </div>
-            <!-- Search box -->
             <div class="col-md-3 col-sm-12">
                 <div class="hub-search">
                     <div class="input-group">
-                        <input  type="search" 
-                                name="" 
-                                class="form-control" 
-                                value="" 
-                                placeholder="Search by name, city, province, or zipcode" 
-                                ng-model="searchQuery" 
-                                ng-keyup="search($event)">
+                        <input type="search" name="" class="form-control" 
+                            placeholder="Search Hub" 
+                            ng-model="searchQuery" 
+                            ng-keyup="search($event)">
                         <div class="input-group-btn">
-                            <button class="btn btn-default" 
-                                    type="button" 
-                                    ng-click="search()"
-                                ><span  class="glyphicon glyphicon-search" 
-                                        aria-hidden="true"></span></button>
+                            <button class="btn btn-default" type="button" ng-click="search()">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -36,22 +30,15 @@
     
     <div class="container-content">
         <div class="col-md-12">
-            <div class="addButton">
-                <button class="btn btn-primary" type="button" ng-click="addDistrict()">Add District</button>
-                <div class="pull-right" ng-repeat=" number in ['All', 20, 10]">
-                    <button class="btn btn-primary" 
-                        ng-click="changeItemsByPage(number)"
-                        ng-disabled="itemsByPageNumber == number">{{number}}</button>
-                </div>
-            </div>
-
             <table st-table="displayed" st-pipe="callServer" class="table table-hover">
-                <thead class="hub-table-head" ng-show="!isLoading && displayed.length > 0">
+                <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
                         <th>Name</th>
-                        <th>City</th>
-                        <th>Province</th>
-                        <th></th>
+                        <th class="text-center">Current Pickup Orders</th>
+                        <th class="text-center">Inbound Trip / Total Orders</th>
+                        <th class="text-center">Received Orders</th>
+                        <th class="text-center">Outbound Trip / Total Orders</th>
+                        <th>Fleet Manager</th>
                     </tr>
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
@@ -68,16 +55,13 @@
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
-                    <tr ng-repeat="district in displayed">
-                        <td>{{district.Name}}</td>
-                        <td>{{district.City}}</td>
-                        <td>{{district.Province}}</td>
-                        <td>
-                            <button class="btn btn-primary" 
-                                    type="button" 
-                                    ng-click="editDistrict(district.DistrictID)"
-                                >Edit</button>
-                        </td>
+                    <tr ng-repeat="hub in displayed">
+                        <td>{{hub.Name}}</td>
+                        <td class="text-center">{{hub.PickupOrders}}</td>
+                        <td class="text-center">{{hub.InboundTrip}} / {{hub.InboundTripOrders}}</td>
+                        <td class="text-center">{{hub.ReceivedOrders}}</td>
+                        <td class="text-center">{{hub.OutboundTrip}} / {{hub.OutboundTripOrders}}</td>
+                        <td>{{hub.User.CompanyDetail.CompanyName}}
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">

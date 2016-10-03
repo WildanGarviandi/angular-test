@@ -72,6 +72,7 @@ function mainConfig() {
         updatablePrice: [1, 6, 9],
         // BOOKED, NOTASSIGNED, PREBOOKED
         returnableWarehouse: [2, 3, 4],
+        returnableSender: [15],
         defaultReturnReason : {
             ReasonName: 'MANUAL_PROCESS',
             ReasonID: 11
