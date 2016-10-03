@@ -47,3 +47,7 @@
     height: 380px;
     overflow-y: scroll;
 }
+
+.panel-title > a:hover {
+    color: #ABABAB;
+}

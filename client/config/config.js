@@ -18,7 +18,7 @@ function mainConfig() {
             var countryCode = '+62';
             break;        
         case 'admin2|com':
-            var url = 'http://api2.etobee.com';
+            var url = 'https://api2.etobee.com';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
             var decimalSeparator = ',';
@@ -77,6 +77,12 @@ function mainConfig() {
         // BOOKED, NOTASSIGNED, PREBOOKED
         updatablePrice: [1, 6, 9],
         // BOOKED, NOTASSIGNED, PREBOOKED
+        returnableWarehouse: [2, 3, 4],
+        returnableSender: [15],
+        defaultReturnReason : {
+            ReasonName: 'MANUAL_PROCESS',
+            ReasonID: 11
+        }
     };
 }
 

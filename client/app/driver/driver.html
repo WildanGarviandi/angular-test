@@ -18,7 +18,13 @@
             </div>
         </div>
     </div>
-    
+
+    <div class="first-row">
+        <button class="btn order-buttons" ng-click="refresh()">Refresh</button>
+        <button class="btn order-buttons" ng-click="clearFilter()">
+            <i class="fa fa-refresh"></i> Reset Filter</button>
+    </div>
+
     <div class="container-content">
         <div class="col-md-12">
             <table st-table="displayed" st-pipe="callServer" class="table table-hover">

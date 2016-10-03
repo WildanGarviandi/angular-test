@@ -14,6 +14,9 @@ angular.module('adminApp')
     $rootScope.$emit('startSpin');
     Auth.getCurrentUser().then(function(data) {
         $scope.user = data.profile;
+        $scope.user.oldPassword = '';
+        $scope.user.newPassword = '';
+        $scope.user.confirmPassword = '';
         $rootScope.$emit('stopSpin');
     });
 
@@ -49,18 +52,49 @@ angular.module('adminApp')
 
     $scope.updateProfile = function () {
         $rootScope.$emit('startSpin');
+        var messages = '';
         var params = {
             ProfilePicture: $scope.user.ProfilePicture
         };
+
+        if ($scope.changePass) {
+            $scope.submitted = true;
+
+            if (!$scope.user.oldPassword || !$scope.user.newPassword || !$scope.user.confirmPassword || $scope.user.newPassword !== $scope.user.confirmPassword) {
+                $rootScope.$emit('stopSpin');
+                return;
+            }
+        }
+
         Services2.updateUserProfile(params)
-        .$promise.then(function (result) { 
+        .$promise.then(function (result) {
             $rootScope.$emit('stopSpin');
             if (result.data.RowUpdated > 0) {
-                alert('Update profile success!');
-                $state.reload();
+                messages = 'Update profile success!';
             } else {
-                alert('Update profile failed. Please try again');
+                messages = 'Update profile failed. Please try again';
             }
+
+            if ($scope.changePass) {
+                Services2.updateUserPassword({
+                    newPassword: $scope.user.newPassword,
+                    oldPassword: $scope.user.oldPassword
+                })
+                .$promise.then(function (changedPass) { 
+                    messages = 'Update profile success!';
+                    alert(messages);
+                })
+                .catch(function(err) {
+                    messages = 'Update profile failed. Old password wrong. Please try again';
+                    alert(messages);
+                });
+            } else {
+                alert(messages);
+            }
+
+            $state.reload();
+        }).catch(function(err) {
+            alert('Update profile failed. Please try again');
         });
     };
 

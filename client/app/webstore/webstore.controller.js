@@ -27,11 +27,18 @@ angular.module('adminApp')
     });
 
     $scope.statusList = [
-        { key: '', text: 'SHOW ALL'}, 
+        { key: '', text: 'ALL'}, 
         { key: 1, text: 'PENDING'}, 
         { key: 2, text: 'ACTIVATED'}
     ];
     $scope.statusFilter = $scope.statusList[0];
+
+    $scope.postPaidPaymentList = [
+        { key: 'all', text: 'ALL'},
+        { key: 1, text: 'Postpaid'},
+        { key: 0, text: 'Prepaid'},
+    ];
+    $scope.postPaidPaymentFilter = $scope.postPaidPaymentList[0];
 
     $scope.webstore = {
         HubID: null,
@@ -62,8 +69,9 @@ angular.module('adminApp')
     };
 
     $scope.searchFilter = {};
-    $scope.itemsByPage = 10;
-    $scope.offset = 0;
+    $scope.itemsByPage = $location.search().limit || 10;
+    $scope.offset = $location.search().offset || 0;
+    $scope.isFirstLoaded = true;
     $scope.uploadError = false;
 
     $scope.cutoffTimes = [];
@@ -93,6 +101,7 @@ angular.module('adminApp')
 
     var createWebstore = function(callback) {
         var webstore = {
+            PostPaidPayment: $scope.webstore.PostPaidPayment,
             AllowCOD: $scope.webstore.AllowCOD,
             HubID: $scope.webstore.HubID,
             FirstName: $scope.webstore.FirstName,
@@ -138,6 +147,7 @@ angular.module('adminApp')
 
     var updateWebstore = function(callback) {
         var webstore = {
+            PostPaidPayment: $scope.webstore.PostPaidPayment,
             AllowCOD: $scope.webstore.AllowCOD,
             HubID: $scope.webstore.HubID,
             UserID: $stateParams.webstoreID,
@@ -261,6 +271,27 @@ angular.module('adminApp')
     }
 
     /**
+     * Get postPaidPayment selection
+     * 
+     * @return {void}
+     */
+    $scope.getDefaultValues = function() {
+        $http.get('config/defaultValues.json').success(function(data) {
+            $scope.payments = data.postPaidPayment;
+        });
+    }
+
+    /**
+     * Assign postPaidPayment to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.choosePayment = function(item) {
+        $scope.webstore.PostPaidPayment = item.value;
+        $scope.payment = item;
+    }
+
+    /**
      * Get single webstore
      * 
      * @return {void}
@@ -273,7 +304,11 @@ angular.module('adminApp')
             id: $scope.id,
         }).$promise.then(function(result) {
             var data = result.data;
+            $scope.parentWebstore = data.Parent;
+            $scope.childrenWebstore = data.Children;
             $scope.webstore = data.User;
+            $scope.webstore.PostPaidPayment = data.User.WebstoreCompany.PostPaidPayment;
+            $scope.payment = $scope.payments[~~data.User.WebstoreCompany.PostPaidPayment];
             $scope.webstore.AllowCOD = data.User.WebstoreCompany.AllowCOD;
             if (data.hasHub) {
                 $scope.hub = {key: data.User.WebstoreCompany.Hub.Name, value: data.User.WebstoreCompany.Hub.HubID};
@@ -295,6 +330,10 @@ angular.module('adminApp')
         });
     }
 
+    $scope.paginationChildWebstore = function(value) {
+        $scope.offset = Math.ceil(value);
+    }
+
     /**
      * Get all webstores
      * 
@@ -302,15 +341,32 @@ angular.module('adminApp')
      */
     $scope.getWebstores = function() {
         $rootScope.$emit('startSpin');
-        if ($stateParams.query) {
-            $scope.reqSearchString = $stateParams.query;
-        }
+        var paramsQuery = {
+            'name': 'name',
+            'email': 'email',
+            'address': 'address'
+        };
+        lodash.each(paramsQuery, function (val, key) {
+            $scope.searchFilter[val] = $location.search()[key] || $scope.searchFilter[val];
+        });
+
+        var paramsValue = {
+            'statusFilter': 'statusList',
+            'postPaidPaymentFilter': 'postPaidPaymentList',
+        };
+        lodash.each(paramsValue, function (val, key) {
+            var text = $location.search()[key] || $scope[key].text;
+            $scope[key] = lodash.find($scope[val], { 'text': text });
+        });
+
+        $location.search('offset', $scope.offset);
         $scope.isLoading = true;
         var params = {
             name: $scope.searchFilter.name,
             email: $scope.searchFilter.email,
             address: $scope.searchFilter.address,
             status: $scope.statusFilter.key,
+            postPaidPayment: $scope.postPaidPaymentFilter.key,
             offset: $scope.offset,
             limit: $scope.itemsByPage
         };
@@ -396,11 +452,15 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.callServer = function(state) {
-        $scope.offset = state.pagination.start;
         $scope.tableState = state;
+        if ($scope.isFirstLoaded) {
+            $scope.tableState.pagination.start = $scope.offset;
+            $scope.isFirstLoaded = false;
+        } else {
+            $scope.offset = state.pagination.start;
+        }
         $scope.getUnverifiedNumber();
         $scope.getWebstores();
-        $scope.isFirstLoaded = true;
     }
 
     /**
@@ -441,6 +501,7 @@ angular.module('adminApp')
     $scope.loadManagePage = function() {
         $scope.getCountries();
         $scope.getHubs();
+        $scope.getDefaultValues();
         if ($state.current.name === 'app.update-webstore') {
             $scope.getWebstoreDetails();
             setTimeout(function() {
@@ -457,12 +518,19 @@ angular.module('adminApp')
     }
 
     $scope.chooseRegistrationStatus = function(item) {
+        $location.search('statusFilter', item.text);
         $scope.statusFilter = item;
         $scope.offset = 0;
         $scope.itemsByPage = 10;
         $scope.tableState.pagination.start = 0;
         $scope.searchFilter = {};
         $scope.getWebstores();
+    }
+
+    $scope.choosePostPaidPayment = function(item){
+        $location.search('postPaidPaymentFilter', item.text);
+        $scope.postPaidPaymentFilter = item;
+        $scope.filterWebstores();
     }
 
     $scope.showUnverified = function() {
@@ -550,6 +618,9 @@ angular.module('adminApp')
     };
 
     $scope.filterWebstores = function () {
+        $location.search('name', $scope.searchFilter.name);
+        $location.search('email', $scope.searchFilter.email);
+        $location.search('address', $scope.searchFilter.address);
         $scope.offset = 0;
         $scope.tableState.pagination.start = 0;
         $scope.getWebstores();
@@ -589,4 +660,24 @@ angular.module('adminApp')
 
     $scope.loadManagePage();
 
+    /**
+     * Refresh list with user input request
+     * 
+     * @return {void}
+     */
+    $scope.refresh = function(item) {
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getWebstores(); 
+    }
+
+    /**
+     * Clear Filter
+     * 
+     * @return {void}
+     */
+    $scope.clearFilter = function(item) {
+        $state.reload();
+    }
+    
   });

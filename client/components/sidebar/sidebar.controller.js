@@ -22,8 +22,11 @@ angular.module('adminApp')
             trips: {
                 routes: ['/trips']
             },
-            hub: {
-                routes: ['/hub']
+            hubs: {
+                submenus: {
+                    all: { routes: ['/hub'] },
+                    hubmonitor: { routes: ['/hub-monitor'] }
+                }
             },
             drivers: {
                 routes: ['/drivers']
@@ -53,7 +56,7 @@ angular.module('adminApp')
         function routeActive(routes) {
             var active = false;
             routes.forEach(function (route) {
-                if (new RegExp($scope.currentPath, 'i').test(route)) {
+                if ($scope.currentPath === route) {
                     active = true; 
                 }
             });

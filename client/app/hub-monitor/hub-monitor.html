@@ -4,7 +4,7 @@
         <div>
             <div class="col-md-6 col-sm-7">
                 <div class="hub-title-box">
-                    Hub Management
+                    Hub Monitoring
                 </div>
             </div>
             <div class="col-md-3 col-sm-5 pull-right">
@@ -13,9 +13,14 @@
             <div class="col-md-3 col-sm-12">
                 <div class="hub-search">
                     <div class="input-group">
-                        <input type="search" name="" class="form-control" value="" placeholder="Search Hub" ng-model="searchQuery" ng-keyup="search($event)">
+                        <input type="search" name="" class="form-control" 
+                            placeholder="Search Hub" 
+                            ng-model="searchQuery" 
+                            ng-keyup="search($event)">
                         <div class="input-group-btn">
-                            <button class="btn btn-default" type="button" ng-click="search()"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                            <button class="btn btn-default" type="button" ng-click="search()">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -25,19 +30,15 @@
     
     <div class="container-content">
         <div class="col-md-12">
-            <div class="addButton">
-                <button class="btn btn-primary" type="button" ng-click="addHub()">Add Hub</button>
-            </div>
             <table st-table="displayed" st-pipe="callServer" class="table table-hover">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
                         <th>Name</th>
-                        <th>Type</th>
-                        <th>Address</th>
-                        <th>City</th>
-                        <th>State</th>
+                        <th class="text-center">Current Pickup Orders</th>
+                        <th class="text-center">Inbound Trip / Total Orders</th>
+                        <th class="text-center">Received Orders</th>
+                        <th class="text-center">Outbound Trip / Total Orders</th>
                         <th>Fleet Manager</th>
-                        <th></th>
                     </tr>
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
@@ -56,14 +57,11 @@
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="hub in displayed">
                         <td>{{hub.Name}}</td>
-                        <td>{{hub.Type}}</td>
-                        <td>{{hub.Address1}}</td>
-                        <td>{{hub.City}}</td>
-                        <td>{{hub.State}}</td>
+                        <td class="text-center">{{hub.PickupOrders}}</td>
+                        <td class="text-center">{{hub.InboundTrip}} / {{hub.InboundTripOrders}}</td>
+                        <td class="text-center">{{hub.ReceivedOrders}}</td>
+                        <td class="text-center">{{hub.OutboundTrip}} / {{hub.OutboundTripOrders}}</td>
                         <td>{{hub.User.CompanyDetail.CompanyName}}
-                        <td>
-                            <button class="btn btn-primary" type="button" ng-click="editHub(hub.HubID)">Edit</button>
-                        </td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">

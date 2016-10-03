@@ -17,15 +17,18 @@ angular.module('adminApp')
             $window,
             config,
             $document,
-            $timeout
+            $timeout,
+            $q
         ) {
 
     Auth.getCurrentUser().then(function(data) {
         $scope.user = data.profile;
     });
 
-    $scope.itemsByPage = 10;
-    $scope.offset = 0;
+    $scope.itemsByPage = $location.search().limit || 10;
+    $scope.offset = $location.search().offset || 0;
+    $scope.isFirstLoaded = true;
+    $scope.isFirstSort = true;
 
     $scope.status = {
         key: 'All',
@@ -42,13 +45,13 @@ angular.module('adminApp')
     ]
 
     $scope.pickupDatePicker = {
-        startDate: null,
-        endDate: null
+        startDate: $location.search().startPickup || null,
+        endDate: $location.search().endPickup || null
     };
 
     $scope.dropoffDatePicker = {
-        startDate: null,
-        endDate: null
+        startDate: $location.search().startDropoff || null,
+        endDate: $location.search().endDropoff || null
     };
 
     $scope.optionsDatepicker = {
@@ -65,44 +68,62 @@ angular.module('adminApp')
     $scope.currency = config.currency + " ";
     $scope.isFirstSort = true;
 
+    // Generated scope:
+    // PickupDatePicker, DropoffDatePicker
+    // startPickup, endPickup, startDropoff, endDropoff
+    ['Pickup', 'Dropoff'].forEach(function (val) {
+        $scope.$watch(
+            (val.toLowerCase() + 'DatePicker'),
+            function (date) {
+                if (date.startDate) { $location.search('start' + val, (new Date(date.startDate)).toISOString()); }
+                if (date.endDate) { $location.search('end' + val, (new Date(date.endDate)).toISOString()); }
+            }
+        );
+    });
+
     /**
      * Get status
      * 
      * @return {void}
      */
     $scope.getStatus = function() {
-        Services2.getStatus().$promise.then(function(data) {
-            $scope.statuses = []; 
-            $scope.statuses.push($scope.status);
-            data.data.rows.forEach(function(status) {
-                $scope.statuses.push({key: status.OrderStatus, value: status.OrderStatusID});
-            }); 
+        return $q(function (resolve) {
+            Services2.getStatus().$promise.then(function(data) {
+                $scope.statuses = []; 
+                $scope.statuses.push($scope.status);
+                data.data.rows.forEach(function(status) {
+                    $scope.statuses.push({key: status.OrderStatus, value: status.OrderStatusID});
+                });
+                resolve();
+            });
         });
     }
 
-    /**
-     * Assign status to the chosen item
-     * 
-     * @return {void}
-     */
-    $scope.chooseStatus = function(item) {
-        $scope.status = item;
-        $scope.offset = 0;
-        $scope.tableState.pagination.start = 0;
-        $scope.getOrder(); 
-    }
+    // Here, model and param have same naming format
+    var pickedVariables = {
+        'Status': {
+            model: 'status',
+            pick: 'value',
+            collection: 'statuses'
+        },
+        'CodPaymentStatus': {
+            model: 'codPaymentStatus',
+            pick: 'value',
+            collection: 'codPaymentStatuses'
+        }
+    };
 
-    /**
-     * Assign CODPayment status to the chosen item
-     * 
-     * @return {void}
-     */
-    $scope.chooseCodPaymentStatus = function(item) {
-        $scope.codPaymentStatus = item;
-        $scope.offset = 0;
-        $scope.tableState.pagination.start = 0;
-        $scope.getOrder(); 
-    }
+    // Generates
+    // chooseStatus, chooseCodPaymentStatus
+    lodash.each(pickedVariables, function (val, key) {
+        $scope['choose' + key] = function(item) {
+            $location.search(val.model, item[val.pick]);
+            $scope[val.model] = item;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            $scope.getOrder();
+        };
+    });
 
     /**
      * Process order from backend to add some attributes
@@ -145,6 +166,39 @@ angular.module('adminApp')
         if ($scope.dropoffDatePicker.endDate) {
             $scope.dropoffDatePicker.endDate = new Date($scope.dropoffDatePicker.endDate);
         }
+
+        var paramsQuery = {
+            'id': 'queryUserOrderNumber',
+            'user': 'queryUser',
+            'driver': 'queryDriver',
+            'fleet': 'queryFleetManager'
+        };
+        lodash.each(paramsQuery, function (val, key) {
+            $scope[val] = $location.search()[key] || $scope[val];
+        });
+
+        lodash.each(pickedVariables, function (val, key) {
+            var value = $location.search()[val.model] || $scope[val.model][val.pick];
+            var findObject = {};
+            findObject[val.pick] = (parseInt(value)) ? parseInt(value) : value;
+            $scope[val.model] = lodash.find($scope[val.collection], findObject);
+        });
+
+        ['Pickup', 'Dropoff'].forEach(function (data) {
+            $scope[data.toLowerCase() + 'DatePicker'].startDate = 
+                    ($location.search()['start' + data]) ?
+                    new Date($location.search()['start' + data]) :
+                    $scope[data.toLowerCase() + 'DatePicker'].startDate;
+            $scope[data.toLowerCase() + 'DatePicker'].endDate = 
+                    ($location.search()['end' + data]) ?
+                    new Date($location.search()['end' + data]) :
+                    $scope[data.toLowerCase() + 'DatePicker'].endDate;
+        });
+        
+        $scope.isFirstSort = ($location.search().sortBy) ? false : true;
+        // exception for offset
+        $location.search('offset', $scope.offset);
+
         $scope.isLoading = true;
         var params = {
             offset: $scope.offset,
@@ -175,95 +229,46 @@ angular.module('adminApp')
         });
     }
 
-    /**
-     * Add search user order number
-     * 
-     * @return {void}
-     */
-    $scope.reqSearchUserOrderNumber = '';
-    $scope.searchOrder = function(event) {
-        if ((event && event.keyCode === 13) || !event) {
-            $scope.reqSearchUserOrderNumber = $scope.queryUserOrderNumber;
-            $scope.offset = 0;
-            $scope.tableState.pagination.start = 0;
-            $scope.getOrder();
-        };
-    }
+    var variables = {
+        'Order': {
+            model: 'queryUserOrderNumber',
+            param: 'id'
+        },
+        'User': {
+            model: 'queryUser',
+            param: 'user'
+        },
+        'Driver': {
+            model: 'queryDriver',
+            param: 'driver'
+        },
+        'Pickup': {
+            model: 'queryPickup',
+            param: 'pickup'
+        },
+        'Dropoff': {
+            model: 'queryDropoff',
+            param: 'dropoff'
+        },
+        'FleetManager': {
+            model: 'queryFleetManager',
+            param: 'fleet'
+        }
+    };
 
-    /**
-     * Add search user
-     * 
-     * @return {void}
-     */
-    $scope.reqSearchUser = '';
-    $scope.searchUser = function(event) {
-        if ((event && event.keyCode === 13) || !event) {
-            $scope.reqSearchUser = $scope.queryUser;
-            $scope.offset = 0;
-            $scope.tableState.pagination.start = 0;
-            $scope.getOrder();
+    // Generates:
+    // searchOrder, searchUser, searchDriver, searchPickup, searchDropoff,
+    // searchFleetManager
+    lodash.each(variables, function (val, key) {
+        $scope['search' + key] = function(event){
+            if ((event && event.keyCode === 13) || !event) {
+                $location.search(val.param, $scope[val.model]);
+                $scope.offset = 0;
+                $scope.tableState.pagination.start = 0;
+                $scope.getOrder();
+            }
         };
-    }
-
-    /**
-     * Add search driver
-     * 
-     * @return {void}
-     */
-    $scope.reqSearchDriver = '';
-    $scope.searchDriver = function(event) {
-        if ((event && event.keyCode === 13) || !event) {
-            $scope.reqSearchDriver = $scope.queryDriver;
-            $scope.offset = 0;
-            $scope.tableState.pagination.start = 0;
-            $scope.getOrder();
-        };
-    }
-
-    /**
-     * Add search fleet manager
-     * 
-     * @return {void}
-     */
-    $scope.reqSearchFleetManager = '';
-    $scope.searchFleetManager = function(event) {
-        if ((event && event.keyCode === 13) || !event) {
-            $scope.reqSearchFleetManager = $scope.queryFleetManager;
-            $scope.offset = 0;
-            $scope.tableState.pagination.start = 0;
-            $scope.getOrder();
-        };
-    }
-
-    /**
-     * Add search pickup
-     * 
-     * @return {void}
-     */
-    $scope.reqSearchPickup = '';
-    $scope.searchPickup = function(event) {
-        if ((event && event.keyCode === 13) || !event) {
-            $scope.reqSearchPickup = $scope.queryPickup;
-            $scope.offset = 0;
-            $scope.tableState.pagination.start = 0;
-            $scope.getOrder();
-        };
-    }
-
-    /**
-     * Add search dropoff
-     * 
-     * @return {void}
-     */
-    $scope.reqSearchDropoff = '';
-    $scope.searchDropoff = function(event) {
-        if ((event && event.keyCode === 13) || !event) {
-            $scope.reqSearchDropoff = $scope.queryDropoff;
-            $scope.offset = 0;
-            $scope.tableState.pagination.start = 0;
-            $scope.getOrder();
-        };
-    }
+    });
 
     /**
      * Sort by column
@@ -271,6 +276,8 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.sortColumn = function(sortBy, sortCriteria) {
+        $location.search('sortBy', sortBy);
+        $location.search('sortCriteria', sortCriteria);
         $scope.sortBy = sortBy;
         $scope.sortCriteria = sortCriteria;
         $scope.isFirstSort = false;
@@ -285,11 +292,14 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.callServer = function(state) {        
-        $scope.offset = state.pagination.start;
         $scope.tableState = state;
-        $scope.getStatus(); 
-        $scope.getOrder();
-        $scope.isFirstLoaded = true;
+        if ($scope.isFirstLoaded) {
+            $scope.tableState.pagination.start = $scope.offset;
+            $scope.isFirstLoaded = false;
+        } else {
+            $scope.offset = state.pagination.start;
+        }
+        $scope.getStatus().then($scope.getOrder);
     }
 
     $scope.pickerFocus = function() {
@@ -386,5 +396,24 @@ angular.module('adminApp')
         });
     };
 
+    /**
+     * Refresh list with user input request
+     * 
+     * @return {void}
+     */
+    $scope.refresh = function(item) {
+        $scope.offset = 0;
+        $scope.tableState.pagination.start = 0;
+        $scope.getOrder(); 
+    }
 
+    /**
+     * Clear Filter
+     * 
+     * @return {void}
+     */
+    $scope.clearFilter = function(item) {
+        $state.reload();
+    }
+    
   });

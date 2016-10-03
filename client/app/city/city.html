@@ -33,21 +33,25 @@
     </div>
     
     <div class="container-content">
-        <div class="col-md-2">
-            <div class="filter">
-                <p>Status</p>
-                <ui-select ng-model="cityStatus" theme="selectize" on-select="chooseStatus($item)" class="booking-order-type">
-                    <ui-select-match placeholder="Choose city status">{{$select.selected.key}}</ui-select-match>
-                    <ui-select-choices repeat="ot in cityStatuses | filter: $select.search" selected>
-                        <span ng-bind-html="ot.key | highlight: $select.search"></span>
-                    </ui-select-choices>
-                </ui-select>
+        <div class="row row-eq-height">
+            <div class="col-md-1">
+                <div class="addButton">
+                    <button class="btn btn-primary" type="button" ng-click="addCity()">Add City</button>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="filter">
+                    <p>Status</p>
+                    <ui-select ng-model="cityStatus" theme="selectize" on-select="chooseStatus($item)" class="booking-order-type">
+                        <ui-select-match placeholder="Choose city status">{{$select.selected.key}}</ui-select-match>
+                        <ui-select-choices repeat="ot in cityStatuses | filter: $select.search" selected>
+                            <span ng-bind-html="ot.key | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
             </div>
         </div>
         <div class="col-md-12">
-            <div class="addButton">
-                <button class="btn btn-primary" type="button" ng-click="addCity()">Add City</button>
-            </div>
             <div ng-if="reqSearchString">
                 Showing results for "{{reqSearchString}}" -
                 <ng-pluralize count="count" when="{ 

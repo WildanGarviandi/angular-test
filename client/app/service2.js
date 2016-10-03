@@ -331,6 +331,12 @@ angular.module('adminApp')
                 module: 'user'
             }
         },
+        updateUserPassword: {
+            method: 'POST',
+            params: {
+                module: 'change-password'
+            }
+        },
         getCODOrder: {
             method: 'GET',
             params: {
@@ -396,6 +402,14 @@ angular.module('adminApp')
                 submodule: 'export',
                 controller: 'completed'
             },
+        },
+        exportTrips: {
+            method: 'GET',
+            params: {
+                module: 'trip',
+                submodule: 'export',
+                controller: 'normal'
+            }
         },
         getZipcodes: {
             method: 'GET',
@@ -514,6 +528,48 @@ angular.module('adminApp')
                 module: 'returnedorder',
                 id: null
             },
+        },
+        updateCod: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'cod',
+                id: null
+            }
+        },
+        getGoal: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'goal'
+            }
+        },
+        setGoal: {
+            method: 'POST',
+            params: {
+                module: 'dashboard',
+                controller: 'goal'
+            }
+        },
+        getReasonReturns: {
+            method: 'GET',
+            params: {
+                module: 'reasonReturn'
+            },
+        },
+        bulkSetReturnWarehouse: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-return-warehouse'
+            }
+        },
+        bulkSetReturnSender: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-return-customer'
+            }
         }
     });
 });

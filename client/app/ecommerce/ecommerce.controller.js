@@ -93,58 +93,49 @@ angular.module('adminApp')
                 resolve();
             });
         });
-    };   
-
-    /**
-     * Assign pickup type to the chosen item
-     * 
-     * @return {void}
-     */
-    $scope.choosePickup = function() {
-        if (!$stateParams.query) {
-            getPrices();
-        }
     };
 
-    /**
-     * Change prices based on webstore
-     * 
-     */
-    $scope.chooseWebstore = function() {
-        if (!$stateParams.query) {
-            getPrices();
-        }
+    var pickedVariables = {
+        'Pickup': {
+            model: 'pickup',
+            pick: 'value',
+            collection: 'pickupTypes'
+        },
+        'Webstore': {
+            model: 'webstore',
+            pick: 'value',
+            collection: 'webstores'
+        },
+        'Vehicle': {
+            model: 'vehicle',
+            pick: 'VehicleID',
+            collection: 'vehicleTypes'
+        },
+        'Weight': {
+            model: 'weight',
+            pick: 'value',
+            collection: 'weight'
+        },
+        'Discount': {
+            model: 'discount',
+            pick: 'id',
+            collection: 'discount'
+        },
     };
 
-    /**
-     * Change prices based on vehicle
-     * 
-     */
-    $scope.chooseVehicle = function () {
-        if (!$stateParams.query) {
+    lodash.each(pickedVariables, function (val, key) {
+        /**
+         * Assign url param when choosing an option
+         * Generates:
+         * choosePickup, chooseWebstore, chooseVehicle, chooseWeight, chooseDiscount
+         * 
+         * @return {void}
+         */
+        $scope['choose' + key] = function (item) {
+            $location.search(val.model, item[val.pick]);
             getPrices();
-        }
-    };
-
-    /**
-     * Change prices based on weight
-     * 
-     */
-    $scope.chooseWeight = function () {
-        if (!$stateParams.query) {
-            getPrices();
-        }
-    };
-
-    /**
-     * Change prices based on discount
-     * 
-     */
-    $scope.chooseDiscount = function () {
-        if (!$stateParams.query) {
-            getPrices();
-        }
-    };
+        };
+    });
 
     /**
      * Get all webstores
@@ -202,6 +193,14 @@ angular.module('adminApp')
      */
     var getPrices = function() {
         $rootScope.$emit('startSpin');
+
+        lodash.each(pickedVariables, function (val) {
+            var value = $location.search()[val.model] || $scope.input[val.model][val.pick];
+            var findObject = {};
+            findObject[val.pick] = (parseInt(value)) ? parseInt(value) : value;
+            $scope.input[val.model] = lodash.find($scope[val.collection], findObject);
+        });
+
         var params = {
             webstoreUserID: $scope.input.webstore.value,
             pickupType: $scope.input.pickup.value,
@@ -309,10 +308,10 @@ angular.module('adminApp')
                     '</div>' +
                     '<div class="ui-grid-cell-contents" title="TOOLTIP" ' +
                         'ng-if="COL_FIELD CUSTOM_FILTERS.source !== ' + "'nosource'" + '">' +
-                        '<div ng-if="COL_FIELD CUSTOM_FILTERS.source === ' + "'webstore'" + '">' +
-                            '{{COL_FIELD CUSTOM_FILTERS.price}}' + '</div>' +
-                        '<div class="red" ng-if="COL_FIELD CUSTOM_FILTERS.source === ' + "'master'" + '">' +
-                            '{{COL_FIELD CUSTOM_FILTERS.price}}' + '</div>' +
+                        '<div class="text-right" ng-if="COL_FIELD CUSTOM_FILTERS.source === ' + "'webstore'" + '">' +
+                            '{{COL_FIELD CUSTOM_FILTERS.price | number | localizenumber}}' + '</div>' +
+                        '<div class="red text-right" ng-if="COL_FIELD CUSTOM_FILTERS.source === ' + "'master'" + '">' +
+                            '{{COL_FIELD CUSTOM_FILTERS.price | number | localizenumber}}' + '</div>' +
                     '</div>',
                 editableCellTemplate: 
                     '<div>' +
@@ -434,14 +433,13 @@ angular.module('adminApp')
     };
 
     $rootScope.$emit('startSpin');
-    getDefaultValues().then(
-    getWebstores().then(
-    getVehicles().then(function(){
-        getPlaces().then(function(){
-            buildColumnDefs();
-            getPrices();
-        });
-    })
-    ));
+    getDefaultValues()
+    .then(getWebstores)
+    .then(getVehicles)
+    .then(getPlaces)
+    .then(function () {
+        buildColumnDefs();
+        getPrices();
+    });
 
 });

@@ -52,12 +52,14 @@ angular.module('adminApp')
 
     $scope.sumZipField = 1;
 
-    $scope.itemsByPage = 10;
-    $scope.offset = 0;
+    $scope.itemsByPage = $location.search().limit || 10;
+    $scope.offset = $location.search().offset || 0;
+    $scope.isFirstLoaded = true;
 
     var createHub = function(callback) {
-        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City)){
-            alert('Country, State, City must be filled');
+        $scope.submitted = true;
+
+        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City && $scope.hub.Type && $scope.fleetManager && $scope.fleetManager.User)) {
             return;
         }
         var hub = {
@@ -82,7 +84,8 @@ angular.module('adminApp')
         Services2.createHub(hub).$promise.then(function(response, error) {
             $rootScope.$emit('stopSpin');
             if (response) {
-                return callback(null, response);
+                callback(null, response);
+                return $window.location = '/hub';
             } else {
                 return callback(error);
             }
@@ -94,10 +97,12 @@ angular.module('adminApp')
     }
 
     var updateHub = function(callback) {
-        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City)){
-            alert('Country, State, City must be filled');
+        $scope.submitted = true;
+
+        if (!($scope.hub.Country && $scope.hub.State && $scope.hub.City && $scope.hub.Type && $scope.fleetManager && $scope.fleetManager.User)) {
             return;
         }
+
         var hub = {
             ParentHubID: $scope.hub.ParentHubID,
             Name: $scope.hub.Name,
@@ -122,7 +127,8 @@ angular.module('adminApp')
         }, hub).$promise.then(function(response, error) {
             $rootScope.$emit('stopSpin');
             if (response) {
-                return callback(null, response);
+                callback(null, response);
+                return $window.location = '/hub';
             } else {
                 return callback(error);
             }
@@ -151,6 +157,10 @@ angular.module('adminApp')
     $scope.chooseType = function(item) {
         $scope.hub.Type = item.value;
         $scope.type = item;
+        if ($scope.hub.Type === 'CENTRAL') {
+            $scope.hub.ParentHubID = null;
+            $scope.parent = null;
+        }
     }
 
     $scope.chooseFleetManager = function(item) {
@@ -345,9 +355,8 @@ angular.module('adminApp')
      */
     $scope.getHubs = function() {
         $rootScope.$emit('startSpin');
-        if ($stateParams.query) {
-            $scope.reqSearchString = $stateParams.query;
-        }
+        $scope.reqSearchString = $scope.searchQuery = $location.search().q || $scope.searchQuery;
+        $location.search('offset', $scope.offset);
         $scope.isLoading = true;
         var params = {
             offset: $scope.offset,
@@ -390,6 +399,7 @@ angular.module('adminApp')
     $scope.reqSearchString = '';
     $scope.search = function(event) {
         if ((event && event.keyCode === 13) || !event) {
+            $location.search('q', $scope.searchQuery);
             $scope.reqSearchString = $scope.searchQuery;
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
@@ -459,10 +469,14 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.callServer = function(state) {
-        $scope.offset = state.pagination.start;
         $scope.tableState = state;
+        if ($scope.isFirstLoaded) {
+            $scope.tableState.pagination.start = $scope.offset;
+            $scope.isFirstLoaded = false;
+        } else {
+            $scope.offset = state.pagination.start;
+        }
         $scope.getHubs();
-        $scope.isFirstLoaded = true;
     }
 
     /**

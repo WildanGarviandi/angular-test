@@ -57,7 +57,8 @@
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="order in displayed">
                         <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
-                        <td>{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName}}</td>
+                        <td>{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName ||
+                                order.FleetManager.CompanyDetail.CompanyName}}</td>
                         <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                         <td>{{order.Driver.CountryCode}}{{order.Driver.PhoneNumber}}</td>
                         <td>{{order.PickupType}}</td>

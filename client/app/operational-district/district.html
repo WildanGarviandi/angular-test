@@ -38,10 +38,10 @@
         <div class="col-md-12">
             <div class="addButton">
                 <button class="btn btn-primary" type="button" ng-click="addDistrict()">Add District</button>
-                <div class="pull-right">
-                    <button class="btn btn-primary" ng-click="changeItemsByPage(10)">10</button>
-                    <button class="btn btn-primary" ng-click="changeItemsByPage(20)">20</button>
-                    <button class="btn btn-primary" ng-click="changeItemsByPage('All')">All</button>
+                <div class="pull-right" ng-repeat=" number in ['All', 20, 10]">
+                    <button class="btn btn-primary" 
+                        ng-click="changeItemsByPage(number)"
+                        ng-disabled="itemsByPageNumber == number">{{number}}</button>
                 </div>
             </div>
 

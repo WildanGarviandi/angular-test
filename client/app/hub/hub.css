@@ -127,6 +127,15 @@
     position: relative;
 }
 
+.container-hubs .first-row {
+    margin-top: 10px;
+    margin-left: 15px;
+}
+
+.container-hubs .first-row button {
+    margin-right: 10px
+}
+
 .box-header {
     height: 90px;
     background: white;
