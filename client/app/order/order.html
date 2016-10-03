@@ -23,7 +23,17 @@
                 <button class="btn order-buttons" ng-click="showImportOrders()">Import Orders</button>
             </div>
             <div class="col-md-1">
-                <button class="btn order-buttons" ng-click="showExportOrders()">Export Orders</button>
+                <button class="order-buttons btn dropdown-toggle" 
+                    type="button" 
+                    data-toggle="dropdown">
+                    Export Orders
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a ng-show="features.order.set_price" ng-click="exportOrders('normal')">Old Format</a></li>
+                    <li><a ng-show="features.order.reassign_fleet" ng-click="exportOrders('uploadable')">Import Format</a></li>
+                    <li><a ng-show="features.order.bulk_mark_delivered" ng-click="exportOrders('completed')">Completed Orders</a></li>
+                </ul>
             </div>
             <div class="col-md-1">
                 <div class="dropdown">
@@ -615,9 +625,54 @@
     </div>
     <div class="content-wrapper booking-popup notification-popup container-fluid">
         <div class="row-fluid">
-            <button class="btn btn-primary" ng-click="exportNormalOrders()">Old Format</button>  
-            <button class="btn btn-primary" ng-click="exportUploadableOrders()">Import Format</button>  
-            <button class="btn btn-primary" ng-click="exportCompletedOrders()">Completed Orders</button>            
+            <div ng-hide="exportDatePicker">
+                <p>Are you sure want to export all Orders ?</p>
+                <p><small>* it may take several minutes to complete, because there are {{orderFound | number}} Orders Found</small></p>
+                <button class="btn btn-info" ng-click="exportDatePicker = true">Arrange Date</button>
+                <button class="btn btn-success" ng-click="exportOrders(exportType, false)">Accept</button>
+            </div>
+        </div>
+        <div class="row-fluid" ng-show="exportDatePicker">
+            <p class="label-date-export">
+                From:
+            </p>
+            <p class="input-group input-date-export"> 
+                <input type="text"
+                    class="form-control"
+                    ng-model="createdDatePicker.startDate"
+                    uib-datepicker-popup
+                    date:'yyyy-MM-dd'
+                    is-open="isStartDatePickerOpen"
+                    max-date="maxExportDate"
+                    ng-click="isStartDatePickerOpen = !isStartDatePickerOpen" />
+                <span class="input-group-btn">
+                    <button type="button"
+                        class="btn btn-default"
+                        ng-click="isStartDatePickerOpen = !isStartDatePickerOpen"><i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                </span>
+            </p>
+            <p class="label-date-export">
+                To:
+            </p>
+            <p class="input-group input-date-export">
+                <input type="text"
+                    class="form-control"
+                    ng-model="createdDatePicker.endDate"
+                    uib-datepicker-popup
+                    date:'yyyy-MM-dd'
+                    is-open="isEndDatePickerOpen"
+                    max-date="maxExportDate"
+                    ng-click="isEndDatePickerOpen = !isEndDatePickerOpen" />
+                <span class="input-group-btn">
+                    <button type="button"
+                        class="btn btn-default"
+                        ng-click="isEndDatePickerOpen = !isEndDatePickerOpen"><i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                </span>
+            </p>
+            <button class="btn btn-danger" ng-click="exportDatePicker = false">Cancel</button>
+            <button class="btn btn-success" ng-click="exportOrders(exportType, true)">Accept</button>
         </div>
     </div>
 </script>

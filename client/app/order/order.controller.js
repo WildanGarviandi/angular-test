@@ -31,6 +31,8 @@ angular.module('adminApp')
     $scope.offset = 0;
     $scope.queryMultipleEDS = '';
     $scope.orderNotFound = [];
+    $scope.defaultFilter = {};
+    $scope.isDefaultFilterActive = true;
 
     $scope.status = {
         key: 'All',
@@ -131,6 +133,11 @@ angular.module('adminApp')
 
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
+    $scope.createdDatePicker = {
+        startDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 7),
+        endDate: new Date()
+    };
+    $scope.exportDatePicker = false;
 
     $scope.maxExportDate = new Date();
  
@@ -982,7 +989,8 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.showExportOrders = function() {
+    $scope.showExportOrders = function(type) {
+        $scope.exportType = type;
         ngDialog.close()
         return ngDialog.open({
             template: 'exportModal',
@@ -1069,6 +1077,12 @@ angular.module('adminApp')
             sortCriteria: $scope.sortCriteria,
         };
 
+        if (lodash.isEmpty($scope.defaultFilter)) {
+            $scope.defaultFilter = params;
+        } else {
+            $scope.isDefaultFilterActive = false;
+        }
+
         return params;
     }
 
@@ -1105,11 +1119,20 @@ angular.module('adminApp')
             sortBy: $scope.sortBy,
             sortCriteria: $scope.sortCriteria,
         };
+
         return params;
     }
     
     var httpSaveBlob = function(url, params, type, fileName){
-        $rootScope.$emit('startSpin');
+        var style = '<link rel="stylesheet" href="app/app.css">';
+
+        var output = '<div class="circleSpinnerloader">'+
+                        '<div class="loadersanimation"></div>'+
+                    '</div>'+
+                    '<h3 style="text-align: center">Loading . . .</h3>';
+
+        var popout = window.open();
+            popout.document.write(style+output);
 
         $http({
             url: config.url + url,
@@ -1121,15 +1144,36 @@ angular.module('adminApp')
             },
             responseType: 'arraybuffer'
         }).then(function(response) {
-            var blob = new Blob([response.data], {type: type});
-            
-            var a = document.createElement('a');
-            a.href = window.URL.createObjectURL(blob);
-            a.download = fileName;
-            a.target = '_blank';
-            a.click();
 
-            $rootScope.$emit('stopSpin');
+            var blob = new Blob([response.data], { type: type });
+
+            if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                window.navigator.msSaveBlob(blob, fileName);
+            } else {
+                var URL = window.URL || window.webkitURL;
+                var downloadUrl = window.URL.createObjectURL(blob);
+
+                if (fileName) {
+                    // use HTML5 a[download] attribute to specify filename
+                    var a = document.createElement("a");
+                    if (typeof a.download === 'undefined') {
+                        popout.location.href = downloadUrl;
+                    } else {
+                        a.href = downloadUrl;
+                        a.download = fileName;
+                        a.target = '_blank';
+                        document.body.appendChild(a);
+                        a.click();
+                    }
+                } else {
+                    popout.location.href = downloadUrl;
+                }
+
+                setTimeout(function () { 
+                    window.URL.revokeObjectURL(downloadUrl); 
+                    popout.close();
+                }, 1000); // cleanup
+            }
         }).catch(function (e) {
             $rootScope.$emit('stopSpin');
             SweetAlert.swal('Download Failed ', e.statusText);
@@ -1137,44 +1181,38 @@ angular.module('adminApp')
     }
 
     /**
-     * Export normal orders
+     * Export orders
      * 
      * @return {void}
      */
-    $scope.exportNormalOrders = function() {
-        var url = 'order/export/normal';
-        var params = $scope.getExportParam();
-        var fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
-        var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    $scope.exportOrders = function(type, isDateActive) {
+        if ($scope.isDefaultFilterActive && (typeof isDateActive === 'undefined')) {
+            return $scope.showExportOrders(type);
+        }
 
-        httpSaveBlob(url, params, type, fileName);
-    }
-
-    /**
-     * Export uploadable orders
-     * 
-     * @return {void}
-     */
-    $scope.exportUploadableOrders = function() {
-        var url = 'order/export/uploadable';
         var params = $scope.getExportParam();
-        var fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
-        var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+        if (isDateActive) {
+            if ($scope.createdDatePicker.endDate) {
+                $scope.createdDatePicker.endDate.setHours(23,59,59,0);
+            };
+            
+            params.startDate = $scope.createdDatePicker.startDate;
+            params.endDate = $scope.createdDatePicker.endDate;
+        }
+
+        if (type === 'normal') {
+            var url = 'order/export/normal';
+        } else if (type === 'uploadable') {
+            var url = 'order/export/uploadable';
+        } else if (type === 'completed') {
+            var url = 'order/export/completed';
+        }
+
         
-        httpSaveBlob(url, params, type, fileName);
-    }
-
-    /**
-     * Export completed orders
-     * 
-     * @return {void}
-     */
-    $scope.exportCompletedOrders = function() {
-        var url = 'order/export/completed';
-        var params = $scope.getExportParam();
         var fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
         var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-        
+           
         httpSaveBlob(url, params, type, fileName);
     }
 
