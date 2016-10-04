@@ -537,6 +537,13 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'bulk-return-warehouse'
             }
+        },
+        bulkSetReturnSender: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-return-customer'
+            }
         }
     });
 });

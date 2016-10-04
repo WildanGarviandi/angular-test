@@ -40,8 +40,9 @@ angular.module('adminApp')
         value: 'all'
     }];
 
-    $scope.itemsByPage = 10;
-    $scope.offset = 0;
+    $scope.itemsByPage = $location.search().limit || 10;
+    $scope.offset = $location.search().offset || 0;
+    $scope.isFirstLoaded = true;
 
     var createCity = function(callback) {
         var city = {
@@ -123,12 +124,13 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.chooseStatus = function(item) {
-            $scope.cityStatus = item;
-            $scope.offset = 0;
-            if (!$stateParams.query) {
-                $scope.getCities();
-            }
-        };
+        $location.search('status', item.value);
+        $scope.cityStatus = item;
+        $scope.offset = 0;
+        if (!$stateParams.query) {
+            $scope.getCities();
+        }
+    };
 
     /**
      * Create single city
@@ -188,9 +190,12 @@ angular.module('adminApp')
      */
     $scope.getCities = function() {
         $rootScope.$emit('startSpin');
-        if ($stateParams.query) {
-            $scope.reqSearchString = $stateParams.query;
-        }
+        $scope.reqSearchString = $scope.searchQuery = $location.search().q || $scope.searchQuery;
+
+        var value = $location.search().status || $scope.cityStatus.value;
+        $scope.cityStatus = lodash.find($scope.cityStatuses, { 'value': value });
+
+        $location.search('offset', $scope.offset);
         $scope.isLoading = true;
         var params = {
             offset: $scope.offset,
@@ -216,6 +221,7 @@ angular.module('adminApp')
     $scope.reqSearchString = '';
     $scope.search = function(event) {
         if ((event && event.keyCode === 13) || !event) {
+            $location.search('q', $scope.searchQuery);
             $scope.reqSearchString = $scope.searchQuery;
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
@@ -305,10 +311,14 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.callServer = function(state) {
-        $scope.offset = state.pagination.start;
         $scope.tableState = state;
+        if ($scope.isFirstLoaded) {
+            $scope.tableState.pagination.start = $scope.offset;
+            $scope.isFirstLoaded = false;
+        } else {
+            $scope.offset = state.pagination.start;
+        }
         $scope.getCities();
-        $scope.isFirstLoaded = true;
     }
 
     /**

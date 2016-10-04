@@ -1,3 +1,16 @@
+.row-eq-height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.row-eq-height .addButton {
+    margin-bottom: 5px;
+    position: absolute;
+    bottom: 0;
+}
+
 .check-true {
     background-image: url('../../assets/images/checkbox.png');
     background-size: 30px 30px;

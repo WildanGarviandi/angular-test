@@ -37,6 +37,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.chooseWebstore = function(item) {
+        $location.search('webstore', item.value);
         $scope.webstore = item;
         if (!$stateParams.query) {
             $scope.getPrices();
@@ -99,6 +100,9 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getPrices = function() {
+        var value = $location.search().webstore || $scope.webstore.value;
+        $scope.webstore = lodash.find($scope.webstores, 
+                            {'value': (parseInt(value)) ? parseInt(value) : value});
         if ($scope.webstore.value !== 0) {
             $scope.getMasterPrices()
             .then($scope.getDistancePrices);
