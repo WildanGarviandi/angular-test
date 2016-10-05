@@ -30,9 +30,9 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a ng-show="features.order.set_price" ng-click="exportOrders('normal')">Old Format</a></li>
-                    <li><a ng-show="features.order.reassign_fleet" ng-click="exportOrders('uploadable')">Import Format</a></li>
-                    <li><a ng-show="features.order.bulk_mark_delivered" ng-click="exportOrders('completed')">Completed Orders</a></li>
+                    <li><a ng-click="exportOrders('normal')">Old Format</a></li>
+                    <li><a ng-click="exportOrders('uploadable')">Import Format</a></li>
+                    <li><a ng-click="exportOrders('completed')">Completed Orders</a></li>
                 </ul>
             </div>
             <div class="col-md-1">
@@ -629,7 +629,7 @@
                 <p>Are you sure want to export all Orders ?</p>
                 <p><small>* it may take several minutes to complete, because there are {{orderFound | number}} Orders Found</small></p>
                 <button class="btn btn-info" ng-click="exportDatePicker = true">Arrange Date</button>
-                <button class="btn btn-success" ng-click="exportOrders(exportType, false)">Accept</button>
+                <button class="btn btn-success" ng-click="exportOrdersByDate(exportType, false)">Accept</button>
             </div>
         </div>
         <div class="row-fluid" ng-show="exportDatePicker">
@@ -672,7 +672,7 @@
                 </span>
             </p>
             <button class="btn btn-danger" ng-click="exportDatePicker = false">Cancel</button>
-            <button class="btn btn-success" ng-click="exportOrders(exportType, true)">Accept</button>
+            <button class="btn btn-success" ng-click="exportOrdersByDate(exportType, true)">Accept</button>
         </div>
     </div>
 </script>

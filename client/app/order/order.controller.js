@@ -134,7 +134,7 @@ angular.module('adminApp')
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
     $scope.createdDatePicker = {
-        startDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 7),
+        startDate: moment().subtract(7, "days").format("YYYY-MM-DD"),
         endDate: new Date()
     };
     $scope.exportDatePicker = false;
@@ -1181,24 +1181,50 @@ angular.module('adminApp')
     }
 
     /**
-     * Export orders
+     * Export orders with Date or All Orders
      * 
      * @return {void}
      */
-    $scope.exportOrders = function(type, isDateActive) {
-        if ($scope.isDefaultFilterActive && (typeof isDateActive === 'undefined')) {
-            return $scope.showExportOrders(type);
-        }
-
+    $scope.exportOrdersByDate = function(type, isDateActive) {
         var params = $scope.getExportParam();
 
         if (isDateActive) {
             if ($scope.createdDatePicker.endDate) {
                 $scope.createdDatePicker.endDate.setHours(23,59,59,0);
             };
-            
+
             params.startDate = $scope.createdDatePicker.startDate;
             params.endDate = $scope.createdDatePicker.endDate;
+        }
+
+        if (type === 'normal') {
+            var url = 'order/export/normal';
+        } else if (type === 'uploadable') {
+            var url = 'order/export/uploadable';
+        } else if (type === 'completed') {
+            var url = 'order/export/completed';
+        }
+        
+        var fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
+        var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+           
+        return httpSaveBlob(url, params, type, fileName);
+    }
+
+    /**
+     * Export orders
+     * 
+     * @return {void}
+     */
+    $scope.exportOrders = function(type) {
+        var defaultFilter = $scope.defaultFilter;
+        delete defaultFilter['limit'];
+        delete defaultFilter['offset'];
+
+        var params = $scope.getExportParam();
+
+        if ($scope.isDefaultFilterActive || lodash.isEqual(defaultFilter, params)) {
+            return $scope.showExportOrders(type);
         }
 
         if (type === 'normal') {
@@ -1213,7 +1239,7 @@ angular.module('adminApp')
         var fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
         var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
            
-        httpSaveBlob(url, params, type, fileName);
+        return httpSaveBlob(url, params, type, fileName);
     }
 
     /**
