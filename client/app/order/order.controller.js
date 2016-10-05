@@ -1126,10 +1126,10 @@ angular.module('adminApp')
     var httpSaveBlob = function(url, params, type, fileName){
         var style = '<link rel="stylesheet" href="app/app.css">';
 
-        var output = '<div class="circleSpinnerloader">'+
+        var output = '<div class="circleSpinnerloader" style="margin-top: 50px; margin-bottom: 50px">'+
                         '<div class="loadersanimation"></div>'+
                     '</div>'+
-                    '<h3 style="text-align: center">Loading . . .</h3>';
+                    '<p style="text-align: center">You can do other things, while exporting in progress</p>';
 
         var popout = window.open();
             popout.document.write(style+output);
@@ -1186,6 +1186,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.exportOrdersByDate = function(type, isDateActive) {
+        ngDialog.close();
         var params = $scope.getExportParam();
 
         if (isDateActive) {
