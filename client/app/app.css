@@ -185,3 +185,18 @@ table > tbody > tr > td.more {
     min-width: 80px;
 }
 
+.table-responsive {
+    overflow-x: scroll;
+}
+
+.table-responsive > table {
+    margin-bottom: 0;
+}
+
+.top-buffer { 
+    margin-top:20px; 
+}
+
+.panel-group {
+    margin-bottom: 0px;
+}

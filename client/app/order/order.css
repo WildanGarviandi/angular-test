@@ -4,7 +4,7 @@
     position: relative;
     padding-left: 0;
     padding-right: 0;
-    width: 1500px;
+    margin: 0;
 }
 
 .container-order .first-row {
@@ -319,10 +319,6 @@
 #reassignDriverModal .modal-table {
     max-height: 400px;
     overflow: scroll;
-}
-
-#order-page {
-    width: 2200px;
 }
 
 #order-page table {

@@ -1,4 +1,4 @@
-<div class="container-fluid container-order" id="order-page">
+<div class="container-fluid container-order" id="">
     <div class="clearfix"></div>
     <div class="row-fluid box-header">
         <div>
@@ -63,11 +63,11 @@
             </p>
         </span>
     </div>
-    <div class="row">
+    <div class="row no-margin">
         <div class="col-md-11 action-button">
         </div>        
-        <div class="col-md-4">
-            <div class="row">
+        <div class="col-md-4 top-buffer">
+            <div class="row no-margin">
                 <uib-accordion>
                     <uib-accordion-group is-open="areaFilter.open">
                         <uib-accordion-heading>
@@ -102,386 +102,388 @@
         </div>
 
         <div class="clearfix"></div>
-        <div class="col-md-12">
-            <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
-                <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
-                    <tr>
-                        <th class="checkbox-header">
-                            <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
-                        </th>
-                        <th class="checkbox-header"></th>
-                        <th>AWB / Web Order ID</th>
-                        <th class="sortable-column"
-                            ng-if="sortBy !== 'PickupTime' || isFirstSort"
-                            ng-click="sortColumn('PickupTime', 'ASC')">
-                            Pickup Time
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'PickupTime' && sortCriteria == 'ASC'" 
-                            ng-click="sortColumn('PickupTime', 'DESC')">
-                            <span class="caret caret-reversed" ></span>
-                            Pickup Time
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'PickupTime' && sortCriteria == 'DESC'" 
-                            ng-click="sortColumn('PickupTime', 'ASC')">
-                            <span class="caret" ></span>
-                            Pickup Time
-                        </th>
-                        <th>Dropoff Time</th>
-                        <th>Pickup Address</th>
-                        <th>Sender</th>
-                        <th>Dropoff Address</th>
-                        <th>Recipient</th>
-                        <th>Fleet Manager</th>
-                        <th class="sortable-column"
-                            ng-if="sortBy !== 'Driver.FirstName' || isFirstSort"
-                            ng-click="sortColumn('Driver.FirstName', 'ASC')">
-                            Driver
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'Driver.FirstName' && sortCriteria == 'ASC'" 
-                            ng-click="sortColumn('Driver.FirstName', 'DESC')">
-                            <span class="caret caret-reversed" ></span>
-                            Driver
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'Driver.FirstName' && sortCriteria == 'DESC'" 
-                            ng-click="sortColumn('Driver.FirstName', 'ASC')">
-                            <span class="caret" ></span>
-                            Driver
-                        </th>
-                        <th>Customer</th>
-                        <th>Pickup Type</th>
-                        <th>Order Type</th>
-                        <th class="sortable-column"
-                            ng-if="sortBy !== 'CutOffTime' || isFirstSort"
-                            ng-click="sortColumn('CutOffTime', 'ASC')">
-                            Cutoff Time
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'CutOffTime' && sortCriteria == 'ASC'" 
-                            ng-click="sortColumn('CutOffTime', 'DESC')">
-                            <span class="caret caret-reversed" ></span>
-                            Cutoff Time
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'CutOffTime' && sortCriteria == 'DESC'" 
-                            ng-click="sortColumn('CutOffTime', 'ASC')">
-                            <span class="caret" ></span>
-                            Cutoff Time
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy !== 'DueTime' || isFirstSort"
-                            ng-click="sortColumn('DueTime', 'ASC')">
-                            Due Time
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'DueTime' && sortCriteria == 'ASC'" 
-                            ng-click="sortColumn('DueTime', 'DESC')">
-                            <span class="caret caret-reversed" ></span>
-                            Due Time
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'DueTime' && sortCriteria == 'DESC'" 
-                            ng-click="sortColumn('DueTime', 'ASC')">
-                            <span class="caret" ></span>
-                            Due Time
-                        </th>
-                        <th>Status</th>
-                        <th>Total Failed Attempts</th>
-                        <th>Failed Attempt</th>
-                        <th>First Attempt</th>
-                        <th>Second Attempt</th>
-                    </tr>
-                </thead>
-                <tbody ng-show="!isLoading && displayed.length == 0">
-                    <tr>
-                        <td colspan="9" class="text-center">
-                            No data found
-                        </td>
-                    </tr>
-                </tbody>
-                <tbody ng-show="isLoading">
-                    <tr>
-                        <td colspan="9" class="text-center">Loading ... </td>
-                    </tr>
-                </tbody>
-                <tbody>
-                    <tr>
-                        <th class="order-checkbox">
-                        </th>
-                        <th></th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryUserOrderNumber" 
-                                    ng-keyup="searchOrder($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    date-range-picker 
-                                    ng-model="pickupDatePicker" 
-                                    options="optionsDatepicker" />
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    date-range-picker 
-                                    ng-model="dropoffDatePicker" 
-                                    options="optionsDatepicker" />
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryPickup" 
-                                    ng-keyup="searchPickup($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="querySender" 
-                                    ng-keyup="searchSender($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" ng-model="queryDropoff" 
-                                    ng-keyup="searchDropoff($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryRecipient" 
-                                    ng-keyup="searchRecipient($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryFleet" 
-                                    ng-keyup="searchFleet($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryDriver" 
-                                    ng-keyup="searchDriver($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryMerchant" 
-                                    ng-keyup="searchMerchant($event)"
-                                    uib-typeahead="customer for customer in getCustomers($viewValue)"
-                                    typeahead-min-length="2"
-                                    typeahead-wait-ms="500"
-                                    typeahead-no-results="noResults"
-                                    typeahead-loading="loadingLocations">
-                                <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
-                            </div>
-                            <div ng-show="noResults">
-                                <i class="glyphicon glyphicon-remove"></i> No Results Found
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <ui-select ng-model="pickupType" 
-                                    theme="selectize" 
-                                    on-select="choosePickupType($item)" 
-                                    class="booking-order-type">
-                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
-                                    <ui-select-choices repeat="ot in pickupTypes | filter: $select.search" selected>
-                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <ui-select ng-model="orderType" 
-                                    theme="selectize" 
-                                    on-select="chooseOrderType($item)" 
-                                    class="booking-order-type">
-                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
-                                    <ui-select-choices repeat="ot in orderTypes | filter: $select.search" selected>
-                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    ng-model="cutOffTime" 
-                                    uib-datepicker-popup
-                                    date:'yyyy-MM-dd'
-                                    is-open="isCutOffTimeDatePickerOpen"
-                                    ng-click="isCutOffTimeDatePickerOpen = !isCutOffTimeDatePickerOpen"
-                                    ng-change="searchCutOffTime($event)" />
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    ng-model="dueTime" 
-                                    uib-datepicker-popup
-                                    date:'yyyy-MM-dd'
-                                    is-open="isDueTimeDatePickerOpen"
-                                    ng-click="isDueTimeDatePickerOpen = !isDueTimeDatePickerOpen" 
-                                    ng-change="searchDueTime($event)" />
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <ui-select ng-model="status" 
-                                    theme="selectize" 
-                                    on-select="chooseStatus($item)" 
-                                    class="booking-order-type">
-                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
-                                    <ui-select-choices repeat="ot in statuses | filter: $select.search" selected>
-                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-                        </th>
-                        <th>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <ui-select ng-model="isAttempt" 
-                                    theme="selectize" 
-                                    on-select="chooseisAttempt($item)" 
-                                    class="booking-order-type">
-                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
-                                    <ui-select-choices repeat="ot in isAttempts | filter: $select.search" selected>
-                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    date-range-picker 
-                                    ng-model="firstAttemptDatePicker" 
-                                    options="optionsDatepicker"
-                                    disabled/>
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    date-range-picker 
-                                    ng-model="secondAttemptDatePicker" 
-                                    options="optionsDatepicker"
-                                    disabled/>
-                            </div>
-                        </th>
-                    </tr>
-                </tbody>
-                <tbody ng-show="!isLoading && displayed.length > 0">
-                    <tr ng-if="displayed"></tr>
-                    <tr ng-repeat="order in displayed">
-                        <td ng-click="$event.stopPropagation()">
-                            <input type="checkbox" ng-change="prepareSelectedOrders()" ng-model="order.Selected" />
-                        </td>
-                        <td><a href=""><i class="fa fa-search-plus fa-lg" 
-                                ng-click="detailsPage(order.UserOrderID)"
-                                tooltip-placement="top" 
-                                uib-tooltip="View Details"></i></a></td>
-                        <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
-                        <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
-                        <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
-                        <td>{{order.PickupAddress.Address1}}</td>
-                        <td>{{order.PickupAddress.FirstName}} {{order.PickupAddress.LastName}} /
-                            {{order.PickupAddress.CountryCode}}-{{order.PickupAddress.MobileNumber}} /
-                            {{order.PickupAddress.EmailID}}
-                        </td>
-                        <td>{{order.DropoffAddress.Address1}}</td>
-                        <td>{{order.DropoffAddress.FirstName}} {{order.DropoffAddress.LastName}} /
-                            {{order.DropoffAddress.CountryCode}}-{{order.DropoffAddress.MobileNumber}} /
-                            {{order.DropoffAddress.EmailID}}
-                        </td>
-                        <td>{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName ||
-                                order.FleetManager.CompanyDetail.CompanyName}}</td>
-                        <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
-                        <td>{{order.CustomerName}}</td>
-                        <td>{{order.PickupType}}</td>
-                        <td>{{order.OrderType}}</td>
-                        <td>{{order.CutOffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
-                        <td>{{order.DueTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
-                        <td>{{order.OrderStatus.OrderStatus}}</td>
-                        <td>{{order.UserOrderAttempts.length}}</td>
-                        <td>{{order.IsAttempt}}</td>
-                        <td>{{order.Attempt[0] | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
-                        <td>{{order.Attempt[1] | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
-                    </tr>
-                </tbody>
-                <tfoot ng-show="!isLoading && displayed.length > 0">
-                    <tr>
-                        <td colspan="2">
-                            <h5 class="text-primary"><strong>{{orderFound | number}} orders found</strong></h5>
-                        </td>
-                        <td colspan="4" 
-                            class="text-center" 
-                            st-pagination="" 
-                            st-items-by-page="itemsByPage" 
-                            st-displayed-pages='9' st-template='components/table/pagination.html'>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+        <div id="order-page" class="col-md-12">
+            <div class="table-responsive">
+                <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
+                    <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
+                        <tr>
+                            <th class="checkbox-header">
+                                <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
+                            </th>
+                            <th class="checkbox-header"></th>
+                            <th>AWB / Web Order ID</th>
+                            <th class="sortable-column"
+                                ng-if="sortBy !== 'PickupTime' || isFirstSort"
+                                ng-click="sortColumn('PickupTime', 'ASC')">
+                                Pickup Time
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'PickupTime' && sortCriteria == 'ASC'" 
+                                ng-click="sortColumn('PickupTime', 'DESC')">
+                                <span class="caret caret-reversed" ></span>
+                                Pickup Time
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'PickupTime' && sortCriteria == 'DESC'" 
+                                ng-click="sortColumn('PickupTime', 'ASC')">
+                                <span class="caret" ></span>
+                                Pickup Time
+                            </th>
+                            <th>Dropoff Time</th>
+                            <th>Pickup Address</th>
+                            <th>Sender</th>
+                            <th>Dropoff Address</th>
+                            <th>Recipient</th>
+                            <th>Fleet Manager</th>
+                            <th class="sortable-column"
+                                ng-if="sortBy !== 'Driver.FirstName' || isFirstSort"
+                                ng-click="sortColumn('Driver.FirstName', 'ASC')">
+                                Driver
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'Driver.FirstName' && sortCriteria == 'ASC'" 
+                                ng-click="sortColumn('Driver.FirstName', 'DESC')">
+                                <span class="caret caret-reversed" ></span>
+                                Driver
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'Driver.FirstName' && sortCriteria == 'DESC'" 
+                                ng-click="sortColumn('Driver.FirstName', 'ASC')">
+                                <span class="caret" ></span>
+                                Driver
+                            </th>
+                            <th>Customer</th>
+                            <th>Pickup Type</th>
+                            <th>Order Type</th>
+                            <th class="sortable-column"
+                                ng-if="sortBy !== 'CutOffTime' || isFirstSort"
+                                ng-click="sortColumn('CutOffTime', 'ASC')">
+                                Cutoff Time
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'CutOffTime' && sortCriteria == 'ASC'" 
+                                ng-click="sortColumn('CutOffTime', 'DESC')">
+                                <span class="caret caret-reversed" ></span>
+                                Cutoff Time
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'CutOffTime' && sortCriteria == 'DESC'" 
+                                ng-click="sortColumn('CutOffTime', 'ASC')">
+                                <span class="caret" ></span>
+                                Cutoff Time
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy !== 'DueTime' || isFirstSort"
+                                ng-click="sortColumn('DueTime', 'ASC')">
+                                Due Time
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'DueTime' && sortCriteria == 'ASC'" 
+                                ng-click="sortColumn('DueTime', 'DESC')">
+                                <span class="caret caret-reversed" ></span>
+                                Due Time
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'DueTime' && sortCriteria == 'DESC'" 
+                                ng-click="sortColumn('DueTime', 'ASC')">
+                                <span class="caret" ></span>
+                                Due Time
+                            </th>
+                            <th>Status</th>
+                            <th>Total Failed Attempts</th>
+                            <th>Failed Attempt</th>
+                            <th>First Attempt</th>
+                            <th>Second Attempt</th>
+                        </tr>
+                    </thead>
+                    <tbody ng-show="!isLoading && displayed.length == 0">
+                        <tr>
+                            <td colspan="9" class="text-center">
+                                No data found
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody ng-show="isLoading">
+                        <tr>
+                            <td colspan="9" class="text-center">Loading ... </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <th class="order-checkbox">
+                            </th>
+                            <th></th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryUserOrderNumber" 
+                                        ng-keyup="searchOrder($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        id="date-picker" 
+                                        type="text" 
+                                        class="form-control input-table" 
+                                        date-range-picker 
+                                        ng-model="pickupDatePicker" 
+                                        options="optionsDatepicker" />
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        id="date-picker" 
+                                        type="text" 
+                                        class="form-control input-table" 
+                                        date-range-picker 
+                                        ng-model="dropoffDatePicker" 
+                                        options="optionsDatepicker" />
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryPickup" 
+                                        ng-keyup="searchPickup($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="querySender" 
+                                        ng-keyup="searchSender($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" ng-model="queryDropoff" 
+                                        ng-keyup="searchDropoff($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryRecipient" 
+                                        ng-keyup="searchRecipient($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryFleet" 
+                                        ng-keyup="searchFleet($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryDriver" 
+                                        ng-keyup="searchDriver($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="text" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryMerchant" 
+                                        ng-keyup="searchMerchant($event)"
+                                        uib-typeahead="customer for customer in getCustomers($viewValue)"
+                                        typeahead-min-length="2"
+                                        typeahead-wait-ms="500"
+                                        typeahead-no-results="noResults"
+                                        typeahead-loading="loadingLocations">
+                                    <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+                                </div>
+                                <div ng-show="noResults">
+                                    <i class="glyphicon glyphicon-remove"></i> No Results Found
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <ui-select ng-model="pickupType" 
+                                        theme="selectize" 
+                                        on-select="choosePickupType($item)" 
+                                        class="booking-order-type">
+                                        <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                                        <ui-select-choices repeat="ot in pickupTypes | filter: $select.search" selected>
+                                            <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <ui-select ng-model="orderType" 
+                                        theme="selectize" 
+                                        on-select="chooseOrderType($item)" 
+                                        class="booking-order-type">
+                                        <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                                        <ui-select-choices repeat="ot in orderTypes | filter: $select.search" selected>
+                                            <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        id="date-picker" 
+                                        type="text" 
+                                        class="form-control input-table" 
+                                        ng-model="cutOffTime" 
+                                        uib-datepicker-popup
+                                        date:'yyyy-MM-dd'
+                                        is-open="isCutOffTimeDatePickerOpen"
+                                        ng-click="isCutOffTimeDatePickerOpen = !isCutOffTimeDatePickerOpen"
+                                        ng-change="searchCutOffTime($event)" />
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        id="date-picker" 
+                                        type="text" 
+                                        class="form-control input-table" 
+                                        ng-model="dueTime" 
+                                        uib-datepicker-popup
+                                        date:'yyyy-MM-dd'
+                                        is-open="isDueTimeDatePickerOpen"
+                                        ng-click="isDueTimeDatePickerOpen = !isDueTimeDatePickerOpen" 
+                                        ng-change="searchDueTime($event)" />
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <ui-select ng-model="status" 
+                                        theme="selectize" 
+                                        on-select="chooseStatus($item)" 
+                                        class="booking-order-type">
+                                        <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                                        <ui-select-choices repeat="ot in statuses | filter: $select.search" selected>
+                                            <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </th>
+                            <th>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <ui-select ng-model="isAttempt" 
+                                        theme="selectize" 
+                                        on-select="chooseisAttempt($item)" 
+                                        class="booking-order-type">
+                                        <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                                        <ui-select-choices repeat="ot in isAttempts | filter: $select.search" selected>
+                                            <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        id="date-picker" 
+                                        type="text" 
+                                        class="form-control input-table" 
+                                        date-range-picker 
+                                        ng-model="firstAttemptDatePicker" 
+                                        options="optionsDatepicker"
+                                        disabled/>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        id="date-picker" 
+                                        type="text" 
+                                        class="form-control input-table" 
+                                        date-range-picker 
+                                        ng-model="secondAttemptDatePicker" 
+                                        options="optionsDatepicker"
+                                        disabled/>
+                                </div>
+                            </th>
+                        </tr>
+                    </tbody>
+                    <tbody ng-show="!isLoading && displayed.length > 0">
+                        <tr ng-if="displayed"></tr>
+                        <tr ng-repeat="order in displayed">
+                            <td ng-click="$event.stopPropagation()">
+                                <input type="checkbox" ng-change="prepareSelectedOrders()" ng-model="order.Selected" />
+                            </td>
+                            <td><a href=""><i class="fa fa-search-plus fa-lg" 
+                                    ng-click="detailsPage(order.UserOrderID)"
+                                    tooltip-placement="top" 
+                                    uib-tooltip="View Details"></i></a></td>
+                            <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
+                            <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                            <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                            <td>{{order.PickupAddress.Address1}}</td>
+                            <td>{{order.PickupAddress.FirstName}} {{order.PickupAddress.LastName}} /
+                                {{order.PickupAddress.CountryCode}}-{{order.PickupAddress.MobileNumber}} /
+                                {{order.PickupAddress.EmailID}}
+                            </td>
+                            <td>{{order.DropoffAddress.Address1}}</td>
+                            <td>{{order.DropoffAddress.FirstName}} {{order.DropoffAddress.LastName}} /
+                                {{order.DropoffAddress.CountryCode}}-{{order.DropoffAddress.MobileNumber}} /
+                                {{order.DropoffAddress.EmailID}}
+                            </td>
+                            <td>{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName ||
+                                    order.FleetManager.CompanyDetail.CompanyName}}</td>
+                            <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
+                            <td>{{order.CustomerName}}</td>
+                            <td>{{order.PickupType}}</td>
+                            <td>{{order.OrderType}}</td>
+                            <td>{{order.CutOffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                            <td>{{order.DueTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                            <td>{{order.OrderStatus.OrderStatus}}</td>
+                            <td>{{order.UserOrderAttempts.length}}</td>
+                            <td>{{order.IsAttempt}}</td>
+                            <td>{{order.Attempt[0] | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                            <td>{{order.Attempt[1] | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot ng-show="!isLoading && displayed.length > 0">
+                        <tr>
+                            <td colspan="4">
+                                <h5 class="text-primary"><strong>{{orderFound | number}} orders found</strong></h5>
+                            </td>
+                            <td colspan="9" 
+                                class="text-center" 
+                                st-pagination="" 
+                                st-items-by-page="itemsByPage" 
+                                st-displayed-pages='9' st-template='components/table/pagination.html'>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     </div>
 </div>
