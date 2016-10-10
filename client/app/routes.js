@@ -300,6 +300,16 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.driverSchedule', {
+            url: 'driverSchedules',
+             views: {
+                'content@': {
+                    templateUrl: 'app/driverSchedule/driverSchedule.html',
+                    controller: 'DriverScheduleCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.ecommercePrice', {
             url: 'ondemandPrice',
             views: {

@@ -1,0 +1,263 @@
+<div class="container-fluid container-hubs">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    Driver Schedule Management
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <div class="hub-search">
+                    <div class="input-group">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="first-row">
+        <button class="btn order-buttons" ng-click="refresh()">Refresh</button>
+        <button class="btn order-buttons" ng-click="clearFilter()">
+            <i class="fa fa-refresh"></i> Reset Filter
+        </button>
+        <button class="btn order-buttons" ng-click="openCreateUnavailableDriverModal()">
+            <i class="fa fa-plus"></i> Add Unavailable Driver
+        </button>
+    </div>
+
+    <div class="container-content">
+        <div class="col-md-12">
+            <table st-table="displayed" st-pipe="callServer" class="table table-hover">
+                <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
+                    <tr>
+                        <th>Appointment Time</th>
+                        <th>Customer</th>
+                        <th>Driver</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Schedule Type</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody ng-show="!isLoading && displayed.length == 0">
+                    <tr>
+                        <td colspan="9" class="text-center">
+                            No data found
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody ng-show="isLoading">
+                    <tr>
+                        <td colspan="9" class="text-center">Loading ... </td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    type="search" 
+                                    class="form-control input-table" 
+                                    value="" 
+                                    ng-model="queryDriver" 
+                                    ng-keyup="searchDriver($event)">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    date-range-picker 
+                                    ng-model="startDatePicker" 
+                                    options="optionsDatepicker" />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    id="date-picker" 
+                                    type="text" 
+                                    class="form-control input-table" 
+                                    date-range-picker 
+                                    ng-model="endDatePicker" 
+                                    options="optionsDatepicker" />
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <ui-select 
+                                    ng-model="scheduleType" 
+                                    theme="selectize" 
+                                    on-select="chooseScheduleType($item)" 
+                                    class="booking-order-type">
+                                    <ui-select-match placeholder="Choose schedule type">{{$select.selected.key}}</ui-select-match>
+                                    <ui-select-choices repeat="ot in scheduleTypes | filter: $select.search" selected>
+                                        <span ng-bind-html="ot.key | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tbody>
+                <tbody ng-show="!isLoading && displayed.length > 0">
+                    <tr ng-if="displayed"></tr>
+                    <tr ng-repeat="driver in displayed">
+                        <td>{{driver.UserOrder.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td>{{driver.UserOrder.User.FirstName}} {{driver.UserOrder.User.LastName}} / 
+                            {{driver.UserOrder.User.CountryCode}} {{driver.UserOrder.User.PhoneNumber}}</td>
+                        <td>{{driver.User.FirstName}} {{driver.User.LastName}} / 
+                            {{driver.User.CountryCode}} {{driver.User.PhoneNumber}}</td>
+                        <td>{{driver.StartDate | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td>{{driver.EndDate | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td>{{driver.ScheduleType}}</td>
+                        <td>{{driver.UserOrder.PickupAddress.Address1}}</td>
+                        <td>{{driver.UserOrder.OrderStatus.OrderStatus}}</td>
+                        <td>
+                            <button
+                                class="btn btn-primary" 
+                                type="button" 
+                                ng-click="editDriverSchedule(driver.User.UserID)">
+                                Edit
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot ng-show="!isLoading && displayed.length > 0">
+                    <tr>
+                        <td colspan="9" 
+                            class="text-center" 
+                            st-pagination="" 
+                            st-items-by-page="itemsByPage" 
+                            st-displayed-pages='9' st-template='components/table/pagination.html'>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="createUnavailableDriverTemplate">
+    <div class="container-fluid" id="createUnavailableDriver">
+        <h3>Add Unavailable Driver Schedule</h3>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <div class="col-md-3">
+                Select Fleet
+            </div> 
+            <div class="col-md-9">
+                <ui-select 
+                    ng-model="company" 
+                    theme="selectize" 
+                    on-select="chooseCompany($item)" 
+                    class="booking-order-type">
+                    <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
+                    <ui-select-choices repeat="c in companies | filter: $select.search" selected>
+                        <span class="input-table" ng-bind-html="c.CompanyName | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <div class="col-md-3">
+                Select Driver
+            </div> 
+            <div class="col-md-9">
+                <div ng-if="drivers.length > 0 && isFetchingDrivers" class="animate-if">
+                    <ui-select 
+                        ng-model="driver" 
+                        theme="selectize" 
+                        on-select="getStartAndEndDate($item)" 
+                        class="booking-order-type">
+                        <ui-select-match class="input-table">{{$select.selected.value}}</ui-select-match>
+                        <ui-select-choices repeat="d in drivers | filter: $select.search" selected>
+                            <span class="input-table" ng-bind-html="d.value | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div ng-if="drivers.length == 0 && isFetchingDrivers" class="animate-if">
+                    No driver found
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid" ng-show="isFetchingDate">
+            <div class="col-md-3">
+                Select Date
+            </div> 
+            <div class="col-md-9">
+                <div class="col-md-12">
+                    <p class="col-md-2">
+                        From:
+                    </p>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle" id="dropdown" role="button" data-toggle="dropdown" data-target="#" href="#">
+                            <div class="input-group">
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    data-ng-model="createdDatePicker.startDate" 
+                                    datetime="MM/dd/yyyy HH:mm:ss">
+                                <span class="input-group-addon">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </span>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            <datetimepicker 
+                                data-before-render="beforeRender($dates)"
+                                data-ng-model="createdDatePicker.startDate" 
+                                data-datetimepicker-config="{ dropdownSelector: '#dropdown' }"
+                                data-on-set-time="onTimeSet(newDate, oldDate)"/>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <p class="col-md-2">
+                        To:
+                    </p>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
+                            <div class="input-group">
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    data-ng-model="createdDatePicker.endDate" 
+                                    datetime="MM/dd/yyyy HH:mm:ss">
+                                <span class="input-group-addon">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </span>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            <datetimepicker 
+                                data-before-render="beforeRender($dates)"
+                                data-ng-model="createdDatePicker.endDate" 
+                                data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"
+                                data-on-set-time="onTimeSet(newDate, oldDate)"/>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid" ng-show="isFetchingDate">
+            <a class="btn btn-danger" ng-click="cancelModal()">Cancel</a>
+            <a class="btn btn-success" ng-click="createUnavailableDriver()">Create</a>
+        </div>
+    </div>
+</script>
