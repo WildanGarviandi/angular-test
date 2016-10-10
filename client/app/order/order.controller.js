@@ -147,7 +147,7 @@ angular.module('adminApp')
         function (newValue) {
             // Filter empty line(s)
             $scope.userOrderNumbers = newValue.split('\n').filter(function (val) {
-                return (val);
+                return (val.replace(/^\s+|\s+$/gm,''));
             });
         }
     );
@@ -421,7 +421,7 @@ angular.module('adminApp')
      */
     var getExistOrder = function () {
         Services2.getExistOrder({
-            userOrderNumbers: JSON.stringify($scope.userOrderNumbers)
+            userOrderNumbers: JSON.stringify($scope.userOrderNumbers).replace(/"\s+|\s+"/g,'"')
         }).$promise.then(function (result) {
             $scope.orderNotFound = [];
             result.data.forEach(function (order) {
