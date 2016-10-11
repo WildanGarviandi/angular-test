@@ -146,8 +146,8 @@ angular.module('adminApp')
         'queryMultipleEDS',
         function (newValue) {
             // Filter empty line(s)
-            $scope.userOrderNumbers = newValue.split('\n').filter(function (val) {
-                return (val.replace(/^\s+|\s+$/gm,''));
+            $scope.userOrderNumbers = newValue.split(/\s+/).filter(function (val) {
+                return val;
             });
         }
     );
@@ -421,7 +421,7 @@ angular.module('adminApp')
      */
     var getExistOrder = function () {
         Services2.getExistOrder({
-            userOrderNumbers: JSON.stringify($scope.userOrderNumbers).replace(/"\s+|\s+"/g,'"')
+            userOrderNumbers: JSON.stringify($scope.userOrderNumbers)
         }).$promise.then(function (result) {
             $scope.orderNotFound = [];
             result.data.forEach(function (order) {
