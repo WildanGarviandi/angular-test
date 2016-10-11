@@ -24,6 +24,9 @@ angular.module('adminApp')
         $scope.user = data.profile;
     });
 
+    $scope.isOrder = false;
+    $scope.driverSchedule = {}
+
     $scope.startDatePicker = {
         startDate: $location.search().minStart || null,
         endDate: $location.search().maxStart || null
@@ -279,7 +282,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.editDriverSchedule = function(id) {
-        window.location = '/update-driverschedule/' + id;
+        window.location = '/update-driverSchedule/' + id;
     }
 
     /**
@@ -289,6 +292,68 @@ angular.module('adminApp')
      */
     $scope.backButton = function() {
         $window.history.back();
+    }
+
+    /**
+     * Get single driver
+     * 
+     * @return {void}
+     */
+    $scope.getDriverScheduleDetails = function() {
+        $rootScope.$emit('startSpin');
+        $scope.isLoading = true;
+        $scope.isLatLangExist = false;
+
+        $scope.id = $stateParams.driverScheduleID;
+        Services2.getOneDriverSchedule({
+            id: $scope.id,
+        }).$promise.then(function(data) {
+            $scope.driverSchedule = data.data;
+            $scope.driverSchedule.StartDate = new Date($scope.driverSchedule.StartDate);
+            $scope.driverSchedule.EndDate = new Date($scope.driverSchedule.EndDate);
+            $scope.driverSchedule.UserOrder.PickupTime = new Date($scope.driverSchedule.UserOrder.PickupTime);
+
+            var latitude = -6.2115;
+            var longitude = 106.8452;
+            if (data.data.UserOrder 
+                && data.data.UserOrder.PickupAddress
+                && data.data.UserOrder.PickupAddress.Latitude
+                && data.data.UserOrder.PickupAddress.Longitude
+            ) {
+                latitude = data.data.UserOrder.PickupAddress.Latitude;
+                longitude = data.data.UserOrder.PickupAddress.Longitude;
+                $scope.isLatLangExist = true;
+            }
+
+            $scope.isOrder = (data.data.ScheduleType === 1) ? true : false;
+
+            $scope.getDriverDetails(data.data.User.UserID);
+            $scope.locationPicker(latitude, longitude);
+
+            $scope.isLoading = false;
+            $rootScope.$emit('stopSpin');
+        });
+    }
+
+    /**
+     * Get single driver
+     * 
+     * @return {void}
+     */
+    $scope.getDriverDetails = function(driverID) {
+        Services2.getOneDriver({
+            id: driverID,
+        }).$promise.then(function(data) {
+            $scope.driverDetail = {
+                key: driverID,
+                value: data.data.Driver.Driver.FirstName + ' ' + data.data.Driver.Driver.LastName
+            };
+            
+            $scope.company = lodash.find($scope.companies, {
+                CompanyDetailID: data.data.Driver.Driver.Driver.CompanyDetail.CompanyDetailID
+            });
+            $scope.chooseCompany($scope.company);
+        });
     }
 
     /**
@@ -351,6 +416,56 @@ angular.module('adminApp')
         });
     }
 
+    var updateDriverSchedule = function(callback) {
+        if($scope.isOrder){
+            if (!$scope.selectedUserID) {
+                alert('No data updated.');
+                return;
+            }
+
+            var driverSchedule = {
+                DriverId: $scope.selectedUserID
+            };
+        }else{
+            var driverSchedule = {
+                StartDate: $scope.driverSchedule.StartDate,
+                EndDate: $scope.driverSchedule.EndDate
+            };
+        }
+
+        $rootScope.$emit('startSpin');
+        Services2.updateDriverSchedule({
+            id: $stateParams.driverScheduleID
+        }, driverSchedule).$promise.then(function(response, error) {
+            $rootScope.$emit('stopSpin');
+            if (response) {
+                return callback(null, response);
+            } else {
+                return callback(error);
+            }
+        })
+        .catch(function(err) {
+            $rootScope.$emit('stopSpin');
+            return callback(err);
+        });
+    }
+
+    /**
+     * Update single driver schedule
+     * 
+     * @return {void}
+     */
+    $scope.updateDriverSchedule = function() {
+        updateDriverSchedule(function(err, driverSchedule) {
+            if (err) {
+                alert('Error: '+ err.data.error.message );
+            } else {
+                alert('Your driver ID:' + driverSchedule.data.DriverSchedule.DriverScheduleID + ' has been successfully updated.');
+                $location.path('/driverSchedules');
+            } 
+        });
+    }
+
     /**
      * Init table state
      * 
@@ -373,8 +488,9 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.loadManagePage = function() {
-        if ($stateParams.driverID !== undefined) {
-
+        if ($stateParams.driverScheduleID !== undefined) {
+            getCompanies();
+            $scope.getDriverScheduleDetails();
             $scope.updatePage = true;
             $scope.addPage = false;
         } else {
@@ -383,6 +499,40 @@ angular.module('adminApp')
     }
 
     $scope.loadManagePage();
+
+    /**
+     * Pick location from maps
+     * 
+     * @return {void}
+     */
+    $scope.locationPicker = function(latitude, longitude) {
+        $('#maps').locationpicker({
+            location: {
+                latitude: latitude, 
+                longitude: longitude
+            },   
+            radius: null,
+            inputBinding: {
+                latitudeInput: $('#us2-lat'),
+                longitudeInput: $('#us2-lon'),
+                locationNameInput: $('#us2-address') 
+            },
+            enableAutocomplete: true,
+            onchanged: function (currentLocation, radius, isMarkerDropped) {
+                var addressComponents = $(this).locationpicker('map').location.addressComponents;
+                $scope.updateLocation(addressComponents);
+            },
+        });
+    }
+
+    /**
+     * Update address components
+     * 
+     * @return {void}
+     */
+    $scope.updateLocation = function(addressComponents) {
+        $scope.driverSchedule.UserOrder.PickupAddress.Address1 = addressComponents.addressLine1;
+    }
 
     /**
      * Refresh list with user input request
