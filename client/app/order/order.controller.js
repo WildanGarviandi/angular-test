@@ -113,7 +113,7 @@ angular.module('adminApp')
         eventHandlers: {
             'apply.daterangepicker': function(ev, picker) {
                 if (!ev.model.startDate && !ev.model.endDate) {
-                    $scope[$scope.pickerName + 'DatePicker'] = {
+                    $scope[$scope.pickerName] = {
                         startDate: new Date().setHours(0, 0, 0, 0),
                         endDate: new Date().setHours(23, 59, 59, 59)
                     };
