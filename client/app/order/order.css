@@ -467,4 +467,8 @@ a {
 
 .order-table tr:hover a i {
     visibility: visible;
+}
+
+.order-buttons.col-xs-12 {
+    margin-bottom: 5px;
 };

@@ -2,71 +2,84 @@
     <div class="clearfix"></div>
     <div class="row-fluid box-header">
         <div>
-            <div class="col-md-6 col-sm-7">
+            <div class="col-md-6 col-sm-7 col-xs-6">
                 <div class="hub-title-box">
                     Order Management
                 </div>
             </div>
-            <div class="col-md-3 col-sm-5 pull-right">
+            <div class="col-md-3 col-sm-5 col-xs-6 pull-right">
                 <div class="hub" ng-include="'components/user/user.html'"></div>
             </div>
-            <div class="col-md-3 col-sm-12">
+            <div class="col-md-3 col-sm-12 hide">
                 <div class="hub-search">
                 </div>
             </div>
         </div>
     </div>
-    <div class="first-row">
-        <button class="btn order-buttons first-row-element" ng-click="showImportOrders()">Import Orders</button>
-        <button class="btn order-buttons first-row-element" ng-click="showExportOrders()">Export Orders</button>
-        <div class="dropdown first-row-element">
+    <div class="col-xs-12 action-button">
+        <br>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <button class="btn order-buttons col-xs-12" ng-click="showImportOrders()">Import Orders</button>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <button class="order-buttons btn dropdown-toggle col-xs-12" type="button" data-toggle="dropdown">
+                Export Orders
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu col-xs-12">
+                <li><a ng-click="exportOrders('normal')">Old Format</a></li>
+                <li><a ng-click="exportOrders('uploadable')">Import Format</a></li>
+                <li><a ng-click="exportOrders('completed')">Completed Orders</a></li>
+            </ul>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
             <button ng-show="features.order.set_price || 
                 features.order.reassign_fleet || 
                 features.order.bulk_mark_delivered || 
-                features.order.bulk_return_warehouse ||
-                features.order.bulk_return_sender"
-                ng-disabled="!isOrderSelected"
-                class="order-buttons btn dropdown-toggle" 
-                type="button" 
-                data-toggle="dropdown">
+                features.order.bulk_return_warehouse||
+                features.order.bulk_return_sender" ng-disabled="!isOrderSelected" class="order-buttons btn dropdown-toggle col-xs-12" type="button" data-toggle="dropdown" disabled="disabled">
                 Action
                 <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu">
-                <li><a ng-show="features.order.set_price" ng-click="showSetPrice()">Update Price</a></li>
-                <li><a ng-show="features.order.reassign_fleet" ng-click="showReassignFleet()">Reassign Fleet</a></li>
-                <li><a ng-show="features.order.bulk_mark_delivered" ng-click="bulkSetDeliveredStatus()">Mark as Delivered</a></li>
+            <ul class="dropdown-menu col-xs-12">
+                <li><a ng-show="features.order.set_price" ng-click="showSetPrice()" class="">Update Price</a></li>
+                <li><a ng-show="features.order.reassign_fleet" ng-click="showReassignFleet()" class="">Reassign Fleet</a></li>
+                <li><a ng-show="features.order.bulk_mark_delivered" ng-click="bulkSetDeliveredStatus()" class="">Mark as Delivered</a></li>
                 <li>
-                    <a ng-show="features.order.bulk_return_warehouse" ng-click="showReturnWarehouse()">Mark as Return Warehouse</a>
+                    <a ng-show="features.order.bulk_return_warehouse" ng-click="showReturnWarehouse()" class="">Mark as Return Warehouse</a>
                 </li>
-                        <li>
-                            <a ng-show="features.order.bulk_return_sender" ng-click="showReturnSender()">Mark as Return Sender</a>
-                        </li>
+                <li>
+                    <a ng-show="features.order.bulk_return_sender" ng-click="showReturnSender()" class="">Mark as Return Sender</a>
+                </li>
             </ul>
         </div>
         <div class="first-row-separator first-row-element"></div>
-        <button class="btn order-buttons first-row-element" ng-click="refresh()">Refresh</button>
-        <button class="btn order-buttons first-row-element" ng-click="clearFilter()">
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <button class="btn order-buttons first-row-element col-xs-12" ng-click="refresh()">Refresh</button>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <button class="btn order-buttons first-row-element col-xs-12" ng-click="clearFilter()">
             <i class="fa fa-refresh"></i> Reset Filter</button>
-        <span style="position:absolute" class="first-row-element">
-            <ui-select ng-model="itemsByPage" 
-                theme="selectize" 
-                on-select="setLimit($item)" 
-                class="content-choose-limit">
-                <ui-select-match>{{$select.selected}}</ui-select-match>
-                <ui-select-choices repeat="ot in limitPages" selected>
-                    <span ng-bind-html="ot"></span>
-                </ui-select-choices>
-            </ui-select>
-            <p class="label-limit">
-                records per page
-            </p>
-        </span>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <span style="position:absolute" class="first-row-element col-xs-12 no-padding">
+                <ui-select ng-model="itemsByPage" 
+                    theme="selectize" 
+                    on-select="setLimit($item)" 
+                    class="content-choose-limit">
+                    <ui-select-match>{{$select.selected}}</ui-select-match>
+                    <ui-select-choices repeat="ot in limitPages" selected>
+                        <span ng-bind-html="ot"></span>
+                    </ui-select-choices>
+                </ui-select>
+                <p class="label-limit">
+                    records per page
+                </p>
+            </span>
+        </div>
     </div>
     <div class="row no-margin">
-        <div class="col-md-11 action-button">
-        </div>        
-        <div class="col-md-4 top-buffer">
+        <div class="col-md-4 col-xs-12 top-buffer">
             <div class="row no-margin">
                 <uib-accordion>
                     <uib-accordion-group is-open="areaFilter.open">
