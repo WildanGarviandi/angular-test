@@ -53,8 +53,8 @@ angular.module('adminApp')
         UserAddress : {
             Address1: '',
             Address2: '',
-            Latitude: -6.2115,
-            Longitude: 106.8452,
+            Latitude: config.defaultLocation.Latitude,
+            Longitude: config.defaultLocation.Longitude,
             City: '',
             State: '',
             Country: '',
