@@ -65,7 +65,47 @@ angular.module('adminApp')
         ReferrerTypeID: 2,
         DeviceTypeID: 7,
         StatusID: 2,
-        UserTypeID: 5
+        UserTypeID: 5,
+        PricingType: 1,
+        PackageDimension: []
+    };
+
+    var PackageDimensionID = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+    $scope.packageDimensionGrid = {
+        enableCellEditOnFocus: true,
+        enableColumnMenus: false,
+        enableHorizontalScrollbar : 0,
+        enableVerticalScrollbar : 0,
+        headerRowHeight:30,
+        minRowsToShow : 8,
+        columnDefs : [
+            {
+                name: 'PackageSizeID',
+                displayName: 'Size',
+                enableCellEdit: false
+            },
+            {
+                name: 'Width',
+                displayName: 'Width\n(cm)',
+                enableCellEdit: true
+            },
+            {
+                name: 'Length',
+                displayName: 'Length\n(cm)',
+                enableCellEdit: true
+            },
+            {
+                name: 'Height',
+                displayName: 'Height\n(cm)',
+                enableCellEdit: true
+            },
+            {
+                name: 'Weight',
+                displayName: 'Weight\n(kg)',
+                enableCellEdit: true
+            }
+        ],
+        data : []
     };
 
     $scope.searchFilter = {};
@@ -98,6 +138,16 @@ angular.module('adminApp')
       return phone;
     }
 
+    function FormatDimensionData(data) {
+        var newData = [];
+        data.forEach(function(obj, i) {
+            var clone = lodash.cloneDeep(obj);
+            clone.PackageSizeID = i + 1;
+            newData.push(clone);
+        });
+        return newData;
+    }
+
 
     var createWebstore = function(callback) {
         var webstore = {
@@ -122,6 +172,8 @@ angular.module('adminApp')
             AverageWeights: $scope.webstore.WebstoreCompany.AverageWeights,
             PickupOptions: $scope.webstore.WebstoreCompany.PickupOptions,
             CODCommission: $scope.webstore.WebstoreCompany.CODCommission,
+            PricingType: parseInt($scope.webstore.PricingType),
+            PackageDimension: FormatDimensionData($scope.packageDimensionGrid.data),
             SourceID: 1,
             RegistrationSourceKey: 0,
             ReferrerTypeID: 2,
@@ -170,6 +222,8 @@ angular.module('adminApp')
             AverageWeights: $scope.webstore.WebstoreCompany.AverageWeights,
             PickupOptions: $scope.webstore.WebstoreCompany.PickupOptions,
             CODCommission: $scope.webstore.WebstoreCompany.CODCommission,
+            PricingType: parseInt($scope.webstore.PricingType),
+            PackageDimension: FormatDimensionData($scope.packageDimensionGrid.data)
         };
         $rootScope.$emit('startSpin');
         Webstores.updateWebstore({_id: $stateParams.webstoreID, webstore: webstore}).$promise.then(function(response) {
@@ -324,6 +378,12 @@ angular.module('adminApp')
             }
 
             $scope.webstore.WebstoreCompany.CODCommission = Math.round($scope.webstore.WebstoreCompany.CODCommission*1000)/1000;
+            $scope.webstore.PricingType = data.User.PricingType;
+            data.User.PackageDimension.forEach(function(obj) {
+                obj.PackageSizeID = PackageDimensionID[obj.PackageSizeID - 1];
+                $scope.packageDimensionGrid.data.push(obj);
+            });
+            
             $scope.locationPicker();
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
@@ -679,5 +739,33 @@ angular.module('adminApp')
     $scope.clearFilter = function(item) {
         $state.reload();
     }
-    
+
+    /**
+     * Add new row to Package Dimension table
+     * 
+     * @return {void}
+     */
+    $scope.addPackageDimensionRow = function(row) {
+        if ($scope.packageDimensionGrid.data.length < 7) {
+            var newSize = {
+                PackageSizeID : PackageDimensionID[$scope.packageDimensionGrid.data.length],
+                Width : 1,
+                Length : 1,
+                Height : 1,
+                Weight : 1
+            }
+            $scope.packageDimensionGrid.data.push(newSize);
+        }
+    };
+
+    /**
+     * Delete a row from Package Dimension table
+     * 
+     * @return {void}
+     */
+    $scope.deletePackageDimensionRow = function(row) {
+        var index = row ? row : $scope.packageDimensionGrid.data.length - 1;
+        $scope.packageDimensionGrid.data.splice(index, 1);
+    };
+
   });

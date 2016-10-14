@@ -103,3 +103,18 @@
 .dialog-header-title {
 
 }
+
+.package-dimension-grid {
+    margin-bottom: 8px;
+}
+
+.pricing-type-field label {
+    display: block;
+    font-weight: normal;
+}
+
+.pricing-type-field input[type="radio"] {
+    width: auto;
+    vertical-align: middle;
+    margin: 0;
+}
