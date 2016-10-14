@@ -163,8 +163,8 @@ angular.module('adminApp')
         'queryMultipleEDS',
         function (newValue) {
             // Filter empty line(s)
-            $scope.userOrderNumbers = newValue.split('\n').filter(function (val) {
-                return (val);
+            $scope.userOrderNumbers = newValue.split(/\s+/).filter(function (val) {
+                return val;
             });
         }
     );
