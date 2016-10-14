@@ -370,6 +370,13 @@
     background-image: url('../../assets/images/nav-track-selected.png');
 }
 
+.side-delivery-distribution-image {
+    background-image: url('../../assets/images/nav-delivery-distribution.png');
+}
+
+.side-delivery-distribution-image.active {
+    background-image: url('../../assets/images/nav-delivery-distribution-active.png');
+}
 
 #spinner-container {
     position: fixed;

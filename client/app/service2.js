@@ -544,6 +544,13 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'bulk-return-customer'
             }
+        },
+        getDeliveryDistributions: {
+            method: 'GET',
+            params: {
+                module: 'report',
+                controller: 'deliveryDistribution'
+            }
         }
     });
 });

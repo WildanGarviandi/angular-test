@@ -249,5 +249,15 @@
             "key": "Last Leg",
             "value": 3
         }
+    ],
+    "deliveryDistributionGroup": [
+        {
+            "key": "Destination",
+            "value": "destination"
+        },
+        {
+            "key": "Origin",
+            "value": "origin"
+        }
     ]
 }
