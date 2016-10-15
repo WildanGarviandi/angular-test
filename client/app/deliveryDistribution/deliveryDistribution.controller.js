@@ -43,7 +43,6 @@ angular.module('adminApp')
     var getDefaultValues = function() {
         $http.get('config/defaultValues.json').success(function(data) {
             $scope.groupBys = $scope.groupBys.concat(data.deliveryDistributionGroup);
-
             $scope.groupBy = $scope.groupBys[0];
         });
     };
@@ -69,7 +68,7 @@ angular.module('adminApp')
     }
 
     /**
-     * Get all driver schedule
+     * Get all delivery distribution
      * 
      * @return {void}
      */
@@ -83,7 +82,6 @@ angular.module('adminApp')
         };
         Services2.getDeliveryDistributions(params).$promise.then(function(data) {
             $scope.displayed = data.data;
-
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
