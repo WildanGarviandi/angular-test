@@ -260,3 +260,18 @@ table > tbody > tr > td.more {
     }
 }
 /* End Loading CSS */
+.table-responsive {
+    overflow-x: scroll;
+}
+
+.table-responsive > table {
+    margin-bottom: 0;
+}
+
+.top-buffer { 
+    margin-top:20px; 
+}
+
+.panel-group {
+    margin-bottom: 0px;
+}

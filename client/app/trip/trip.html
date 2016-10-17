@@ -26,278 +26,280 @@
     </div>
     <div class="">
         <div class="col-md-12">
-            <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
-                <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
-                    <tr>
-                        <th class="sortable-column"
-                            ng-if="sortBy !== 'PickupTime' || isFirstSort"
-                            ng-click="sortColumn('PickupTime', 'ASC')">
-                            Pickup Time
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'PickupTime' && sortCriteria == 'ASC'" 
-                            ng-click="sortColumn('PickupTime', 'DESC')">
-                            <span class="caret caret-reversed" ></span>
-                            Pickup Time
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'PickupTime' && sortCriteria == 'DESC'" 
-                            ng-click="sortColumn('PickupTime', 'ASC')">
-                            <span class="caret" ></span>
-                            Pickup Time
-                        </th>
-                        <th>Dropoff Time</th>
-                        <th>Pickup Address</th>
-                        <th>Dropoff Address</th>
-                        <th>Orders</th>
-                        <th>Fleet Manager</th>
-                        <th>Origin Hub</th>
-                        <th>Destination Hub</th>
-                        <th>Step</th>
-                        <th class="sortable-column"
-                            ng-if="sortBy !== 'Driver.FirstName' || isFirstSort"
-                            ng-click="sortColumn('Driver.FirstName', 'ASC')">
-                            Driver
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'Driver.FirstName' && sortCriteria == 'ASC'" 
-                            ng-click="sortColumn('Driver.FirstName', 'DESC')">
-                            <span class="caret caret-reversed" ></span>
-                            Driver
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'Driver.FirstName' && sortCriteria == 'DESC'" 
-                            ng-click="sortColumn('Driver.FirstName', 'ASC')">
-                            <span class="caret" ></span>
-                            Driver
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy !== 'ContainerNumber' || isFirstSort"
-                            ng-click="sortColumn('ContainerNumber', 'ASC')">
-                            Container
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'ContainerNumber' && sortCriteria == 'ASC'" 
-                            ng-click="sortColumn('ContainerNumber', 'DESC')">
-                            <span class="caret caret-reversed" ></span>
-                            Container
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'ContainerNumber' && sortCriteria == 'DESC'" 
-                            ng-click="sortColumn('ContainerNumber', 'ASC')">
-                            <span class="caret" ></span>
-                            Container
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy !== 'District.Name' || isFirstSort"
-                            ng-click="sortColumn('District.Name', 'ASC')">
-                            District
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'District.Name' && sortCriteria == 'ASC'" 
-                            ng-click="sortColumn('District.Name', 'DESC')">
-                            <span class="caret caret-reversed" ></span>
-                            District
-                        </th>
-                        <th class="sortable-column"
-                            ng-if="sortBy == 'District.Name' && sortCriteria == 'DESC'" 
-                            ng-click="sortColumn('District.Name', 'ASC')">
-                            <span class="caret" ></span>
-                            District
-                        </th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody ng-show="!isLoading && displayed.length == 0">
-                    <tr>
-                        <td colspan="13" class="text-center">
-                            No data found
-                        </td>
-                    </tr>
-                </tbody>
-                <tbody ng-show="isLoading">
-                    <tr>
-                        <td colspan="13" class="text-center">Loading ... </td>
-                    </tr>
-                </tbody>
-                <tbody>
-                    <tr>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    date-range-picker 
-                                    ng-model="pickupDatePicker" 
-                                    options="optionsDatepicker"
-                                    ng-click="setPickerName('pickupDatePicker')" />
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    date-range-picker 
-                                    ng-model="dropoffDatePicker" 
-                                    options="optionsDatepicker"
-                                    ng-click="setPickerName('dropoffDatePicker')" />
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryPickup" 
-                                    ng-keyup="searchPickup($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" ng-model="queryDropoff" 
-                                    ng-keyup="searchDropoff($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryUserOrderNumber" 
-                                    ng-keyup="searchOrder($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryFleet" 
-                                    ng-keyup="searchFleet($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryOriginHub" 
-                                    ng-keyup="searchOriginHub($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryDestinationHub" 
-                                    ng-keyup="searchDestinationHub($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <ui-select ng-model="step" 
-                                    theme="selectize" 
-                                    on-select="chooseStep($item)" 
-                                    class="booking-order-type">
-                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
-                                    <ui-select-choices repeat="ot in steps | filter: $select.search" selected>
-                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryDriver" 
-                                    ng-keyup="searchDriver($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryContainerNumber" 
-                                    ng-keyup="searchContainer($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryDistrict" 
-                                    ng-keyup="searchDistrict($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <ui-select ng-model="status" 
-                                    theme="selectize" 
-                                    on-select="chooseStatus($item)" 
-                                    class="booking-order-type">
-                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
-                                    <ui-select-choices repeat="ot in statuses | filter: $select.search" selected>
-                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-                        </th>
-                    </tr>
-                </tbody>
-                <tbody ng-show="!isLoading && displayed.length > 0">
-                    <tr ng-if="displayed"></tr>
-                    <tr ng-repeat="trip in displayed">
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.PickupAddress.Address1}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffAddress.Address1}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">
-                            <ng-pluralize count="trip.UserOrderRoutes.length"
-                                 when="{'0': '-',
-                                     '1': '1 Order',
-                                     'other': '{{trip.UserOrderRoutes.length}} Orders'}">
-                            </ng-pluralize>
-                        </td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.Driver.Driver.FleetManager.CompanyDetail.CompanyName}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.OriginHub.Name}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.DestinationHub.Name}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.Step}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.Driver.FirstName}} {{trip.Driver.LastName}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.ContainerNumber}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.District.Name}}</td>
-                        <td ng-click="detailsPage(trip.TripID)">{{trip.OrderStatus.OrderStatus}}</td>
-                    </tr>
-                </tbody>
-                <tfoot ng-show="!isLoading && displayed.length > 0">
-                    <tr>
-                        <td colspan="13" 
-                            class="text-center" 
-                            st-pagination="" 
-                            st-items-by-page="itemsByPage" 
-                            st-displayed-pages='9' st-template='components/table/pagination.html'>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+            <div class="table-responsive">
+                <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
+                    <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
+                        <tr>
+                            <th class="sortable-column"
+                                ng-if="sortBy !== 'PickupTime' || isFirstSort"
+                                ng-click="sortColumn('PickupTime', 'ASC')">
+                                Pickup Time
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'PickupTime' && sortCriteria == 'ASC'" 
+                                ng-click="sortColumn('PickupTime', 'DESC')">
+                                <span class="caret caret-reversed" ></span>
+                                Pickup Time
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'PickupTime' && sortCriteria == 'DESC'" 
+                                ng-click="sortColumn('PickupTime', 'ASC')">
+                                <span class="caret" ></span>
+                                Pickup Time
+                            </th>
+                            <th>Dropoff Time</th>
+                            <th>Pickup Address</th>
+                            <th>Dropoff Address</th>
+                            <th>Orders</th>
+                            <th>Fleet Manager</th>
+                            <th>Origin Hub</th>
+                            <th>Destination Hub</th>
+                            <th>Step</th>
+                            <th class="sortable-column"
+                                ng-if="sortBy !== 'Driver.FirstName' || isFirstSort"
+                                ng-click="sortColumn('Driver.FirstName', 'ASC')">
+                                Driver
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'Driver.FirstName' && sortCriteria == 'ASC'" 
+                                ng-click="sortColumn('Driver.FirstName', 'DESC')">
+                                <span class="caret caret-reversed" ></span>
+                                Driver
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'Driver.FirstName' && sortCriteria == 'DESC'" 
+                                ng-click="sortColumn('Driver.FirstName', 'ASC')">
+                                <span class="caret" ></span>
+                                Driver
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy !== 'ContainerNumber' || isFirstSort"
+                                ng-click="sortColumn('ContainerNumber', 'ASC')">
+                                Container
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'ContainerNumber' && sortCriteria == 'ASC'" 
+                                ng-click="sortColumn('ContainerNumber', 'DESC')">
+                                <span class="caret caret-reversed" ></span>
+                                Container
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'ContainerNumber' && sortCriteria == 'DESC'" 
+                                ng-click="sortColumn('ContainerNumber', 'ASC')">
+                                <span class="caret" ></span>
+                                Container
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy !== 'District.Name' || isFirstSort"
+                                ng-click="sortColumn('District.Name', 'ASC')">
+                                District
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'District.Name' && sortCriteria == 'ASC'" 
+                                ng-click="sortColumn('District.Name', 'DESC')">
+                                <span class="caret caret-reversed" ></span>
+                                District
+                            </th>
+                            <th class="sortable-column"
+                                ng-if="sortBy == 'District.Name' && sortCriteria == 'DESC'" 
+                                ng-click="sortColumn('District.Name', 'ASC')">
+                                <span class="caret" ></span>
+                                District
+                            </th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody ng-show="!isLoading && displayed.length == 0">
+                        <tr>
+                            <td colspan="13" class="text-center">
+                                No data found
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody ng-show="isLoading">
+                        <tr>
+                            <td colspan="13" class="text-center">Loading ... </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <th>
+                                <div class="filter-table">
+                                    <input
+                                        id="date-picker"
+                                        type="text"
+                                        class="form-control input-table"
+                                        date-range-picker
+                                        ng-model="pickupDatePicker"
+                                        options="optionsDatepicker"
+                                        ng-click="setPickerName('pickupDatePicker')" />
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input
+                                        id="date-picker"
+                                        type="text"
+                                        class="form-control input-table"
+                                        date-range-picker
+                                        ng-model="dropoffDatePicker"
+                                        options="optionsDatepicker"
+                                        ng-click="setPickerName('dropoffDatePicker')" />
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryPickup" 
+                                        ng-keyup="searchPickup($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" ng-model="queryDropoff" 
+                                        ng-keyup="searchDropoff($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryUserOrderNumber" 
+                                        ng-keyup="searchOrder($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryFleet" 
+                                        ng-keyup="searchFleet($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryOriginHub" 
+                                        ng-keyup="searchOriginHub($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryDestinationHub" 
+                                        ng-keyup="searchDestinationHub($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <ui-select ng-model="step" 
+                                        theme="selectize" 
+                                        on-select="chooseStep($item)" 
+                                        class="booking-order-type">
+                                        <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                                        <ui-select-choices repeat="ot in steps | filter: $select.search" selected>
+                                            <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryDriver" 
+                                        ng-keyup="searchDriver($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryContainerNumber" 
+                                        ng-keyup="searchContainer($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
+                                        ng-model="queryDistrict" 
+                                        ng-keyup="searchDistrict($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <ui-select ng-model="status" 
+                                        theme="selectize" 
+                                        on-select="chooseStatus($item)" 
+                                        class="booking-order-type">
+                                        <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                                        <ui-select-choices repeat="ot in statuses | filter: $select.search" selected>
+                                            <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </th>
+                        </tr>
+                    </tbody>
+                    <tbody ng-show="!isLoading && displayed.length > 0">
+                        <tr ng-if="displayed"></tr>
+                        <tr ng-repeat="trip in displayed">
+                            <td ng-click="detailsPage(trip.TripID)">{{trip.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                            <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                            <td ng-click="detailsPage(trip.TripID)">{{trip.PickupAddress.Address1}}</td>
+                            <td ng-click="detailsPage(trip.TripID)">{{trip.DropoffAddress.Address1}}</td>
+                            <td ng-click="detailsPage(trip.TripID)">
+                                <ng-pluralize count="trip.UserOrderRoutes.length"
+                                     when="{'0': '-',
+                                         '1': '1 Order',
+                                         'other': '{{trip.UserOrderRoutes.length}} Orders'}">
+                                </ng-pluralize>
+                            </td>
+                            <td ng-click="detailsPage(trip.TripID)">{{trip.Driver.Driver.FleetManager.CompanyDetail.CompanyName}}</td>
+                            <td ng-click="detailsPage(trip.TripID)">{{trip.OriginHub.Name}}</td>
+                            <td ng-click="detailsPage(trip.TripID)">{{trip.DestinationHub.Name}}</td>
+                            <td ng-click="detailsPage(trip.TripID)">{{trip.Step}}</td>
+                            <td ng-click="detailsPage(trip.TripID)">{{trip.Driver.FirstName}} {{trip.Driver.LastName}}</td>
+                            <td ng-click="detailsPage(trip.TripID)">{{trip.ContainerNumber}}</td>
+                            <td ng-click="detailsPage(trip.TripID)">{{trip.District.Name}}</td>
+                            <td ng-click="detailsPage(trip.TripID)">{{trip.OrderStatus.OrderStatus}}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot ng-show="!isLoading && displayed.length > 0">
+                        <tr>
+                            <td colspan="13" 
+                                class="text-center" 
+                                st-pagination="" 
+                                st-items-by-page="itemsByPage" 
+                                st-displayed-pages='9' st-template='components/table/pagination.html'>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     </div>
 </div>
