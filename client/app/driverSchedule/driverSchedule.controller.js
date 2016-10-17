@@ -17,6 +17,7 @@ angular.module('adminApp')
             $window,
             ngDialog,
             SweetAlert,
+            config,
             $q
         ) {
 
@@ -302,7 +303,7 @@ angular.module('adminApp')
     $scope.getDriverScheduleDetails = function() {
         $rootScope.$emit('startSpin');
         $scope.isLoading = true;
-        $scope.isLatLangExist = false;
+        $scope.isLatLongExist = false;
 
         $scope.id = $stateParams.driverScheduleID;
         Services2.getOneDriverSchedule({
@@ -313,8 +314,8 @@ angular.module('adminApp')
             $scope.driverSchedule.EndDate = new Date($scope.driverSchedule.EndDate);
             $scope.driverSchedule.UserOrder.PickupTime = new Date($scope.driverSchedule.UserOrder.PickupTime);
 
-            var latitude = -6.2115;
-            var longitude = 106.8452;
+            var latitude = config.defaultLocation.Latitude;
+            var longitude = config.defaultLocation.Longitude;
             if (data.data.UserOrder 
                 && data.data.UserOrder.PickupAddress
                 && data.data.UserOrder.PickupAddress.Latitude
@@ -322,10 +323,10 @@ angular.module('adminApp')
             ) {
                 latitude = data.data.UserOrder.PickupAddress.Latitude;
                 longitude = data.data.UserOrder.PickupAddress.Longitude;
-                $scope.isLatLangExist = true;
+                $scope.isLatLongExist = true;
             }
 
-            $scope.isOrder = (data.data.ScheduleType === 1) ? true : false;
+            $scope.isOrder = (data.data.ScheduleType === 1);
 
             $scope.getDriverDetails(data.data.User.UserID);
             $scope.locationPicker(latitude, longitude);
@@ -346,11 +347,11 @@ angular.module('adminApp')
         }).$promise.then(function(data) {
             $scope.driverDetail = {
                 key: driverID,
-                value: data.data.Driver.Driver.FirstName + ' ' + data.data.Driver.Driver.LastName
+                value: data.data.Driver.FirstName + ' ' + data.data.Driver.LastName
             };
             
             $scope.company = lodash.find($scope.companies, {
-                CompanyDetailID: data.data.Driver.Driver.Driver.CompanyDetail.CompanyDetailID
+                CompanyDetailID: data.data.Driver.Driver.CompanyDetail.CompanyDetailID
             });
             $scope.chooseCompany($scope.company);
         });
@@ -392,7 +393,7 @@ angular.module('adminApp')
         });
 
         $location.search('offset', $scope.offset);
-        $scope.isLoading = true;console.log($scope.startDatePicker)
+        $scope.isLoading = true;
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
@@ -512,12 +513,7 @@ angular.module('adminApp')
                 longitude: longitude
             },   
             radius: null,
-            inputBinding: {
-                latitudeInput: $('#us2-lat'),
-                longitudeInput: $('#us2-lon'),
-                locationNameInput: $('#us2-address') 
-            },
-            enableAutocomplete: true,
+            draggable: false,
             onchanged: function (currentLocation, radius, isMarkerDropped) {
                 var addressComponents = $(this).locationpicker('map').location.addressComponents;
                 $scope.updateLocation(addressComponents);
@@ -533,6 +529,12 @@ angular.module('adminApp')
     $scope.updateLocation = function(addressComponents) {
         $scope.driverSchedule.UserOrder.PickupAddress.Address1 = addressComponents.addressLine1;
     }
+
+    $scope.$watch('openMap', function () {
+        window.setTimeout(function(){
+            $('#maps').locationpicker('autosize');
+        }, 100);
+    });
 
     /**
      * Refresh list with user input request

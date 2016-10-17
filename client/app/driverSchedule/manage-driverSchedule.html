@@ -16,37 +16,26 @@
             </div>
         </div>
     </div>
-    
-    <div class="webstore-details">
-        <div class="container-fluid col-md-4 pull-left">
+    <br>
+    <div class="webstore-details col-md-4 col-xs-12 no-padding">
+        <div class="container-fluid col-md-12 pull-left">
             <form class="form" name="hubForm" novalidate>
-                <div class="container-fluid hub-container">
+                <div class="container-fluid">
                     <div class="form-group col-xs-12 no-padding">                    
                         <div class="col-md-5 no-padding">
                             Appointment Time
                         </div>  
                         <div class="col-md-7 col-xs-9 no-padding">
-                            <div class="dropdown">
-                                <a class="dropdown-toggle" id="dropdown" role="button" data-toggle="dropdown" data-target="#" href="#">
-                                    <div class="input-group">
-                                        <input 
-                                            type="text" 
-                                            class="form-control" 
-                                            data-ng-model="driverSchedule.UserOrder.PickupTime" 
-                                            datetime="MM/dd/yyyy HH:mm:ss"
-                                            disabled="disabled">
-                                        <span class="input-group-addon">
-                                            <i class="glyphicon glyphicon-calendar"></i>
-                                        </span>
-                                    </div>
-                                </a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                    <datetimepicker 
-                                        data-before-render="beforeRender($dates)"
-                                        data-ng-model="driverSchedule.UserOrder.PickupTime" 
-                                        data-datetimepicker-config="{ dropdownSelector: '#dropdown' }"
-                                        data-on-set-time="onTimeSet(newDate, oldDate)"/>
-                                </ul>
+                            <div class="input-group">
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    data-ng-model="driverSchedule.UserOrder.PickupTime" 
+                                    datetime="MM/dd/yyyy HH:mm:ss"
+                                    disabled="disabled">
+                                <span class="input-group-addon">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -122,7 +111,7 @@
                                         </span>
                                     </div>
                                 </a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" ng-hide="isOrder">
                                     <datetimepicker 
                                         data-before-render="beforeRender($dates)"
                                         data-ng-model="driverSchedule.StartDate" 
@@ -146,7 +135,7 @@
                                         </span>
                                     </div>
                                 </a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" ng-hide="isOrder">
                                     <datetimepicker 
                                         data-before-render="beforeRender($dates)"
                                         data-ng-model="driverSchedule.EndDate" 
@@ -163,20 +152,17 @@
                         </div>  
                         <div class="col-md-7 col-xs-9 no-padding">
                             {{driverSchedule.UserOrder.PickupAddress.Address1}}
-                            <div ng-show="isLatLangExist">
-                                <button class="btn btn-default pull-right" ng-click="openMap = true">See on Map</button>
+                            <div ng-show="isLatLongExist">
+                                <br>
+                                <button class="btn btn-default pull-right col-xs-12" ng-click="openMap = true">See on Map</button>
                             </div>
-                            <div ng-hide="isLatLangExist">
+                            <div ng-hide="isLatLongExist">
                                 <br>
                                 <p>Not Available on Map</p>
                             </div>
                         </div>
                     </div>
                     <div class="clearfix"></div>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
                     <br>
                     <br>
                     <div ng-if="updatePage" class="row-fluid">
@@ -188,8 +174,10 @@
             </form>
         </div>
     </div>
-    <div ng-show="openMap" class="col-md-4 hub-container pull-left" style="margin-left:10px">
-        <button ng-click="openMap = false" class="btn btn-default pull-left" style="position:absolute; z-index: 99;"><i class="fa fa-times"></i></button>
-        <div id="maps" class="maps-webstore pull-left" style="margin:0 !important"></div>
+    <div ng-show="openMap" class="col-md-5 col-xs-12 pull-left" style="margin-left:10px">
+        <button ng-click="openMap = false" class="btn btn-default pull-left" style="position:absolute; z-index: 99;">
+            <i class="fa fa-times"></i>
+        </button>
+        <div id="maps" class="maps-webstore pull-left" style="margin:0 !important; width: 100%; position: inherit"></div>
     </div>
 </div>
