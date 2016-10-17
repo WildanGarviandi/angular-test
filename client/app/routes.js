@@ -300,6 +300,36 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.fleet', {
+            url: 'fleets',
+             views: {
+                'content@': {
+                    templateUrl: 'app/fleet/fleet.html',
+                    controller: 'FleetCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.add-fleet', {
+            url: 'add-fleet',
+             views: {
+                'content@': {
+                    templateUrl: 'app/fleet/manage-fleet.html',
+                    controller: 'FleetCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.update-fleet', {
+            url: 'update-fleet/:fleetID',
+             views: {
+                'content@': {
+                    templateUrl: 'app/fleet/manage-fleet.html',
+                    controller: 'FleetCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.ecommercePrice', {
             url: 'ondemandPrice',
             views: {

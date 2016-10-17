@@ -352,6 +352,15 @@
     background-image: url('../../assets/images/nav-hubmonitor-active.png');
 }
 
+.side-fleet-image {
+    background-image: url('../../assets/images/nav-fleet.png');
+    background-size: 30px;
+}
+
+.side-fleet-image.active {
+    background-image: url('../../assets/images/nav-fleet-active.png');
+    background-size: 30px;
+}
 /* Booking */
 
 .side-booking-image {
