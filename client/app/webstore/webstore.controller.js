@@ -70,7 +70,7 @@ angular.module('adminApp')
         PackageDimension: []
     };
 
-    var PackageDimensionID = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+    $scope.packageDimensionID = config.packageDimensionID;
     $scope.packageDimensionGrid = {
         enableCellEditOnFocus: true,
         enableColumnMenus: false,
@@ -138,7 +138,7 @@ angular.module('adminApp')
       return phone;
     }
 
-    function FormatDimensionData(data) {
+    function formatDimensionData(data) {
         var newData = [];
         data.forEach(function(obj, i) {
             var clone = lodash.cloneDeep(obj);
@@ -173,7 +173,7 @@ angular.module('adminApp')
             PickupOptions: $scope.webstore.WebstoreCompany.PickupOptions,
             CODCommission: $scope.webstore.WebstoreCompany.CODCommission,
             PricingType: parseInt($scope.webstore.PricingType),
-            PackageDimension: FormatDimensionData($scope.packageDimensionGrid.data),
+            PackageDimension: formatDimensionData($scope.packageDimensionGrid.data),
             SourceID: 1,
             RegistrationSourceKey: 0,
             ReferrerTypeID: 2,
@@ -223,7 +223,7 @@ angular.module('adminApp')
             PickupOptions: $scope.webstore.WebstoreCompany.PickupOptions,
             CODCommission: $scope.webstore.WebstoreCompany.CODCommission,
             PricingType: parseInt($scope.webstore.PricingType),
-            PackageDimension: FormatDimensionData($scope.packageDimensionGrid.data)
+            PackageDimension: formatDimensionData($scope.packageDimensionGrid.data)
         };
         $rootScope.$emit('startSpin');
         Webstores.updateWebstore({_id: $stateParams.webstoreID, webstore: webstore}).$promise.then(function(response) {
@@ -380,7 +380,7 @@ angular.module('adminApp')
             $scope.webstore.WebstoreCompany.CODCommission = Math.round($scope.webstore.WebstoreCompany.CODCommission*1000)/1000;
             $scope.webstore.PricingType = data.User.PricingType;
             data.User.PackageDimension.forEach(function(obj) {
-                obj.PackageSizeID = PackageDimensionID[obj.PackageSizeID - 1];
+                obj.PackageSizeID = $scope.packageDimensionID[obj.PackageSizeID - 1];
                 $scope.packageDimensionGrid.data.push(obj);
             });
             
@@ -746,9 +746,9 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.addPackageDimensionRow = function(row) {
-        if ($scope.packageDimensionGrid.data.length < 7) {
+        if ($scope.packageDimensionGrid.data.length < $scope.packageDimensionID.length) {
             var newSize = {
-                PackageSizeID : PackageDimensionID[$scope.packageDimensionGrid.data.length],
+                PackageSizeID : $scope.packageDimensionID[$scope.packageDimensionGrid.data.length],
                 Width : 1,
                 Length : 1,
                 Height : 1,

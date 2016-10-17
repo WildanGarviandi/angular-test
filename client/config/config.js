@@ -76,7 +76,8 @@ function mainConfig() {
         defaultReturnReason : {
             ReasonName: 'MANUAL_PROCESS',
             ReasonID: 11
-        }
+        },
+        packageDimensionID: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
     };
 }
 

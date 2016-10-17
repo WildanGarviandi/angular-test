@@ -354,15 +354,34 @@
                     </div> 
                     <div class="hub-field pricing-type-field">
                         <label>
-                            <input type="radio" name="pricingType" ng-model="webstore.PricingType" value="1"> By Weight
+                            <input ng-model="webstore.PricingType"
+                                type="radio"
+                                name="pricingType"
+                                value="1" /> By Weight
                         </label>
                         <label>
-                            <input type="radio" name="pricingType" ng-model="webstore.PricingType" value="2"> By Package Size
+                            <input ng-model="webstore.PricingType"
+                                type="radio"
+                                name="pricingType"
+                                value="2" /> By Package Size
                         </label>
                         <div ng-if="webstore.PricingType == 2">
-                            <div class="package-dimension-grid" ui-grid="packageDimensionGrid" ui-grid-auto-resize ui-grid-cellNav ui-grid-edit></div>
-                            <button class="btn btn-default" ng-disabled="packageDimensionGrid.data.length >= 7" ng-click="addPackageDimensionRow()">Add New Size</button>
-                            <button class="btn btn-default" ng-disabled="packageDimensionGrid.data.length == 0" ng-click="deletePackageDimensionRow()">Delete Last Size</button>
+                            <div ui-grid="packageDimensionGrid"
+                                ui-grid-edit
+                                ui-grid-auto-resize
+                                ui-grid-cellNav
+                                class="package-dimension-grid">
+                            </div>
+                            <button class="btn btn-default"
+                                ng-disabled="packageDimensionGrid.data.length >= packageDimensionID.length"
+                                ng-click="addPackageDimensionRow()">
+                                Add New Size
+                            </button>
+                            <button class="btn btn-default"
+                                ng-disabled="packageDimensionGrid.data.length == 0"
+                                ng-click="deletePackageDimensionRow()">
+                                Delete Last Size
+                            </button>
                         </div>
                     </div>
                 </div>
