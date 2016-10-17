@@ -208,6 +208,24 @@ angular.module('adminApp')
         $scope.isFetchingDate = true;
     }
 
+    /**
+     * Get status
+     * 
+     * @return {void}
+     */
+    $scope.getStatus = function() {
+        return $q(function (resolve) {
+            Services2.getStatus().$promise.then(function(data) {
+                $scope.statuses = []; 
+                $scope.statuses.push($scope.status);
+                data.data.rows.forEach(function(status) {
+                    $scope.statuses.push({key: status.OrderStatus, value: status.OrderStatusID});
+                });
+                resolve();
+            });
+        });
+    };
+
     // Here, model and param have same naming format
     var pickedVariables = {
         'ScheduleType': {
@@ -215,10 +233,15 @@ angular.module('adminApp')
             pick: 'value',
             collection: 'scheduleTypes'
         },
+        'Status': {
+            model: 'status',
+            pick: 'value',
+            collection: 'statuses'
+        }
     };
 
     // Generates
-    // chooseScheduleType
+    // chooseScheduleType, chooseStatus
     lodash.each(pickedVariables, function (val, key) {
         $scope['choose' + key] = function(item) {
             $location.search(val.model, item[val.pick]);
@@ -327,7 +350,7 @@ angular.module('adminApp')
         });
 
         $location.search('offset', $scope.offset);
-        $scope.isLoading = true;console.log($scope.startDatePicker)
+        $scope.isLoading = true;
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
@@ -337,8 +360,10 @@ angular.module('adminApp')
             maxStartDate: $scope.startDatePicker.endDate,
             minEndDate: $scope.endDatePicker.startDate,
             maxEndDate: $scope.endDatePicker.endDate,
+            orderStatus: $scope.status.value,
         };
         Services2.getDriverSchedules(params).$promise.then(function(data) {
+            $scope.driverScheduleFound = data.data.count;
             $scope.displayed = data.data.rows;
             $scope.displayed.forEach(function (val, index, array) {
                 array[index].ScheduleType = (lodash.find($scope.scheduleTypes, {value: val.ScheduleType})).key;
@@ -364,7 +389,7 @@ angular.module('adminApp')
         } else {
             $scope.offset = state.pagination.start;
         }
-        $scope.getDriverSchedules();
+        $scope.getStatus().then($scope.getDriverSchedules);
     }
 
     /**

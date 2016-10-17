@@ -108,7 +108,20 @@
                             </div>
                         </th>
                         <th></th>
-                        <th></th>
+                        <th>
+                            <div class="filter-table">
+                                <ui-select 
+                                    ng-model="status" 
+                                    theme="selectize" 
+                                    on-select="chooseStatus($item)" 
+                                    class="booking-order-type">
+                                    <ui-select-match placeholder="Choose schedule type">{{$select.selected.key}}</ui-select-match>
+                                    <ui-select-choices repeat="ot in statuses | filter: $select.search" selected>
+                                        <span ng-bind-html="ot.key | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </th>
                         <th></th>
                     </tr>
                 </tbody>
@@ -137,7 +150,10 @@
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
                     <tr>
-                        <td colspan="9" 
+                        <td colspan="2">
+                            <h5 class="text-primary"><strong>{{driverScheduleFound | number}} driver schedules found</strong></h5>
+                        </td>
+                        <td colspan="7" 
                             class="text-center" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 
