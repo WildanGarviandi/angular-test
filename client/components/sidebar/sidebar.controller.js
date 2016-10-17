@@ -116,7 +116,7 @@ angular.module('adminApp')
         }
 
         $scope.isMenuDisable = function() {
-            $scope.menus.driverSchedule.menu = config.driverSchedule.menu;
+            $scope.menus.driverSchedule.menu = config.features.driverSchedule.menu;
         }
 
         $scope.isMenuDisable();
