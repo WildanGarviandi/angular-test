@@ -174,6 +174,32 @@ angular.module('adminApp')
                 id: null
             },
         },
+        getFleets: {
+            method: 'GET',
+            params: {
+                module: 'fleet'
+            },
+        },
+        getOneFleet: {
+            method: 'GET',
+            params: {
+                module: 'fleet',
+                id: null
+            },
+        },
+        createFleet: {
+            method: 'POST',
+            params: {
+                module: 'fleet'
+            },
+        },
+        updateFleet: {
+            method: 'POST',
+            params: {
+                module: 'fleet',
+                id: null
+            },
+        },
         getUserStatus: {
             method: 'GET',
             params: {

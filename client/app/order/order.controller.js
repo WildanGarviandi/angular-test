@@ -34,6 +34,8 @@ angular.module('adminApp')
 
     $scope.queryMultipleEDS = '';
     $scope.orderNotFound = [];
+    $scope.defaultFilter = {};
+    $scope.isDefaultFilterActive = true;
 
     $scope.status = {
         key: 'All',
@@ -98,10 +100,24 @@ angular.module('adminApp')
 
     $scope.importedDatePicker = new Date();
 
+    /*
+     * Set picker name for filter
+     * 
+    */
+    $scope.setPickerName = function(pickerName) {
+        $scope.pickerName = pickerName;
+    }
+
     $scope.optionsDatepicker = {
         separator: ':',
         eventHandlers: {
             'apply.daterangepicker': function(ev, picker) {
+                if (!ev.model.startDate && !ev.model.endDate) {
+                    $scope[$scope.pickerName] = {
+                        startDate: new Date().setHours(0, 0, 0, 0),
+                        endDate: new Date().setHours(23, 59, 59, 59)
+                    };
+                }
                 $scope.offset = 0;
                 $scope.tableState.pagination.start = 0;
                 $scope.getOrder();
@@ -134,9 +150,10 @@ angular.module('adminApp')
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
     $scope.createdDatePicker = {
-        startDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 7),
+        startDate: moment().subtract(7, "days").format("YYYY-MM-DD"),
         endDate: new Date()
     };
+    $scope.exportDatePicker = false;
 
     $scope.maxExportDate = new Date();
  
@@ -146,8 +163,8 @@ angular.module('adminApp')
         'queryMultipleEDS',
         function (newValue) {
             // Filter empty line(s)
-            $scope.userOrderNumbers = newValue.split('\n').filter(function (val) {
-                return (val);
+            $scope.userOrderNumbers = newValue.split(/\s+/).filter(function (val) {
+                return val;
             });
         }
     );
@@ -262,49 +279,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getOrder = function() {
-        $rootScope.$emit('startSpin');               
-        if ($scope.pickupDatePicker.startDate) {
-            $scope.pickupDatePicker.startDate = new Date($scope.pickupDatePicker.startDate);
-        }
-        if ($scope.pickupDatePicker.endDate) {
-            $scope.pickupDatePicker.endDate = new Date($scope.pickupDatePicker.endDate);
-        }
-        if ($scope.dropoffDatePicker.startDate) {
-            $scope.dropoffDatePicker.startDate = new Date($scope.dropoffDatePicker.startDate);     
-        }
-        if ($scope.dropoffDatePicker.endDate) {
-            $scope.dropoffDatePicker.endDate = new Date($scope.dropoffDatePicker.endDate);
-        }
-        if ($scope.cutOffTime) {
-            $scope.cutOffTime = moment($scope.cutOffTime).format('YYYY-MM-DD'); 
-        }
-        if ($scope.dueTime) {
-            $scope.dueTime = moment($scope.dueTime).format('YYYY-MM-DD'); 
-        }
-        if ($scope.firstAttemptDatePicker.startDate) {
-            $scope.firstAttemptDatePicker.startDate = new Date($scope.firstAttemptDatePicker.startDate);
-            $scope.firstAttemptDatePicker.startDate.setHours(
-                $scope.firstAttemptDatePicker.startDate.getHours() - $scope.firstAttemptDatePicker.startDate.getTimezoneOffset() / 60
-            );           
-        }
-        if ($scope.firstAttemptDatePicker.endDate) {
-            $scope.firstAttemptDatePicker.endDate = new Date($scope.firstAttemptDatePicker.endDate);
-            $scope.firstAttemptDatePicker.endDate.setHours(
-                $scope.firstAttemptDatePicker.endDate.getHours() - $scope.firstAttemptDatePicker.endDate.getTimezoneOffset() / 60
-            );
-        }
-        if ($scope.secondAttemptDatePicker.startDate) {
-            $scope.secondAttemptDatePicker.startDate = new Date($scope.secondAttemptDatePicker.startDate);
-            $scope.secondAttemptDatePicker.startDate.setHours(
-                $scope.secondAttemptDatePicker.startDate.getHours() - $scope.secondAttemptDatePicker.startDate.getTimezoneOffset() / 60
-            );           
-        }
-        if ($scope.secondAttemptDatePicker.endDate) {
-            $scope.secondAttemptDatePicker.endDate = new Date($scope.secondAttemptDatePicker.endDate);
-            $scope.secondAttemptDatePicker.endDate.setHours(
-                $scope.secondAttemptDatePicker.endDate.getHours() - $scope.secondAttemptDatePicker.endDate.getTimezoneOffset() / 60
-            );
-        }
+        $rootScope.$emit('startSpin');  
 
         var paramsQuery = {
             'id': 'queryUserOrderNumber',
@@ -345,35 +320,7 @@ angular.module('adminApp')
         $location.search('offset', $scope.offset);
         
         $scope.isLoading = true;
-        var params = {
-            offset: $scope.offset,
-            limit: $scope.itemsByPage,
-            userOrderNumber: $scope.queryUserOrderNumber,
-            userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
-            driver: $scope.queryDriver,
-            merchant: $scope.queryMerchant,
-            pickup: $scope.queryPickup,
-            sender: $scope.querySender,
-            dropoff: $scope.queryDropoff,
-            pickupType: $scope.pickupType.value,
-            userType: $scope.orderType.key,
-            recipient: $scope.queryRecipient,
-            status: $scope.status.value,
-            startPickup: $scope.pickupDatePicker.startDate,
-            endPickup: $scope.pickupDatePicker.endDate,
-            startDropoff: $scope.dropoffDatePicker.startDate,
-            endDropoff: $scope.dropoffDatePicker.endDate,
-            cutOffTime: $scope.cutOffTime,
-            dueTime: $scope.dueTime,
-            isAttempt: $scope.isAttempt.value,
-            startFirstAttempt: $scope.firstAttemptDatePicker.startDate, 
-            endFirstAttempt: $scope.firstAttemptDatePicker.endDate, 
-            startSecondAttempt: $scope.secondAttemptDatePicker.startDate, 
-            endSecondAttempt: $scope.secondAttemptDatePicker.endDate, 
-            fleet: $scope.queryFleet,
-            sortBy: $scope.sortBy,
-            sortCriteria: $scope.sortCriteria,
-        }
+        var params = $scope.getFilterParam();
         Services2.getOrder(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
@@ -1055,78 +1002,258 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.showExportOrders = function() {
+    $scope.showExportOrders = function(type) {
+        $scope.exportType = type;
         ngDialog.close()
         return ngDialog.open({
             template: 'exportModal',
             scope: $scope
         });
     }
- 
+
     /**
-     * Export normal orders
+     * Get Filter Param
      * 
      * @return {void}
      */
-    $scope.exportNormalOrders = function() {
-        $rootScope.$emit('startSpin');
-        if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
+    $scope.getFilterParam = function() {
+        if ($scope.pickupDatePicker.startDate) {
+            $scope.pickupDatePicker.startDate = new Date($scope.pickupDatePicker.startDate);
         }
-        Services2.exportNormalOrders({
-            startDate: $scope.createdDatePicker.startDate,
-            endDate: $scope.createdDatePicker.endDate,
-        }).$promise.then(function(result) {
-            ngDialog.closeAll();
-            $rootScope.$emit('stopSpin');
-            window.location = config.url + 'order/download/' + result.data.hash;
-        }).catch(function() {
-            $rootScope.$emit('stopSpin');
-        })
+        if ($scope.pickupDatePicker.endDate) {
+            $scope.pickupDatePicker.endDate = new Date($scope.pickupDatePicker.endDate);
+        }
+        if ($scope.dropoffDatePicker.startDate) {
+            $scope.dropoffDatePicker.startDate = new Date($scope.dropoffDatePicker.startDate);     
+        }
+        if ($scope.dropoffDatePicker.endDate) {
+            $scope.dropoffDatePicker.endDate = new Date($scope.dropoffDatePicker.endDate);
+        }
+        if ($scope.cutOffTime) {
+            $scope.cutOffTime = moment($scope.cutOffTime).format('YYYY-MM-DD');
+        }
+        if ($scope.firstAttemptDatePicker.startDate) {
+            $scope.firstAttemptDatePicker.startDate = new Date($scope.firstAttemptDatePicker.startDate);
+            $scope.firstAttemptDatePicker.startDate.setHours(
+                $scope.firstAttemptDatePicker.startDate.getHours() - $scope.firstAttemptDatePicker.startDate.getTimezoneOffset() / 60
+            );           
+        }
+        if ($scope.firstAttemptDatePicker.endDate) {
+            $scope.firstAttemptDatePicker.endDate = new Date($scope.firstAttemptDatePicker.endDate);
+            $scope.firstAttemptDatePicker.endDate.setHours(
+                $scope.firstAttemptDatePicker.endDate.getHours() - $scope.firstAttemptDatePicker.endDate.getTimezoneOffset() / 60
+            );
+        }
+        if ($scope.secondAttemptDatePicker.startDate) {
+            $scope.secondAttemptDatePicker.startDate = new Date($scope.secondAttemptDatePicker.startDate);
+            $scope.secondAttemptDatePicker.startDate.setHours(
+                $scope.secondAttemptDatePicker.startDate.getHours() - $scope.secondAttemptDatePicker.startDate.getTimezoneOffset() / 60
+            );           
+        }
+        if ($scope.secondAttemptDatePicker.endDate) {
+            $scope.secondAttemptDatePicker.endDate = new Date($scope.secondAttemptDatePicker.endDate);
+            $scope.secondAttemptDatePicker.endDate.setHours(
+                $scope.secondAttemptDatePicker.endDate.getHours() - $scope.secondAttemptDatePicker.endDate.getTimezoneOffset() / 60
+            );
+        }        
+        if ($scope.dueTime) {
+            $scope.dueTime = moment($scope.dueTime).format('YYYY-MM-DD'); 
+        }
+        
+        var params = {
+            offset: $scope.offset,
+            limit: $scope.itemsByPage,
+            userOrderNumber: $scope.queryUserOrderNumber,
+            userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
+            driver: $scope.queryDriver,
+            merchant: $scope.queryMerchant,
+            pickup: $scope.queryPickup,
+            sender: $scope.querySender,
+            dropoff: $scope.queryDropoff,
+            pickupType: $scope.pickupType.value,
+            userType: $scope.orderType.key,
+            recipient: $scope.queryRecipient,
+            status: $scope.status.value,
+            startPickup: $scope.pickupDatePicker.startDate,
+            endPickup: $scope.pickupDatePicker.endDate,
+            startDropoff: $scope.dropoffDatePicker.startDate,
+            endDropoff: $scope.dropoffDatePicker.endDate,
+            cutOffTime: $scope.cutOffTime,
+            dueTime: $scope.dueTime,
+            isAttempt: $scope.isAttempt.value,
+            startFirstAttempt: $scope.firstAttemptDatePicker.startDate, 
+            endFirstAttempt: $scope.firstAttemptDatePicker.endDate, 
+            startSecondAttempt: $scope.secondAttemptDatePicker.startDate, 
+            endSecondAttempt: $scope.secondAttemptDatePicker.endDate, 
+            fleet: $scope.queryFleet,
+            sortBy: $scope.sortBy,
+            sortCriteria: $scope.sortCriteria,
+        };
+
+        if (lodash.isEmpty($scope.defaultFilter)) {
+            $scope.defaultFilter = params;
+        } else {
+            $scope.isDefaultFilterActive = false;
+        }
+
+        return params;
     }
 
     /**
-     * Export uploadable orders
+     * Get Export Filter Param
      * 
      * @return {void}
      */
-    $scope.exportUploadableOrders = function() {
-        $rootScope.$emit('startSpin');
-        if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
-        }
-        Services2.exportUploadableOrders({
-            startDate: $scope.createdDatePicker.startDate,
-            endDate: $scope.createdDatePicker.endDate,
-        }).$promise.then(function(result) {
-            ngDialog.closeAll();
+    $scope.getExportParam = function() {
+        var params = {
+            userOrderNumber: $scope.queryUserOrderNumber,
+            userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
+            driver: $scope.queryDriver,
+            merchant: $scope.queryMerchant,
+            pickup: $scope.queryPickup,
+            sender: $scope.querySender,
+            dropoff: $scope.queryDropoff,
+            pickupType: $scope.pickupType.value,
+            userType: $scope.orderType.key,
+            recipient: $scope.queryRecipient,
+            status: $scope.status.value,
+            startPickup: $scope.pickupDatePicker.startDate,
+            endPickup: $scope.pickupDatePicker.endDate,
+            startDropoff: $scope.dropoffDatePicker.startDate,
+            endDropoff: $scope.dropoffDatePicker.endDate,
+            cutOffTime: $scope.cutOffTime,
+            dueTime: $scope.dueTime,
+            isAttempt: $scope.isAttempt.value,
+            startFirstAttempt: $scope.firstAttemptDatePicker.startDate, 
+            endFirstAttempt: $scope.firstAttemptDatePicker.endDate, 
+            startSecondAttempt: $scope.secondAttemptDatePicker.startDate, 
+            endSecondAttempt: $scope.secondAttemptDatePicker.endDate,
+            fleet: $scope.queryFleet,
+            sortBy: $scope.sortBy,
+            sortCriteria: $scope.sortCriteria,
+        };
+
+        return params;
+    }
+    
+    var httpSaveBlob = function(url, params, type, fileName){
+        var style = '<link rel="stylesheet" href="app/app.css">';
+
+        var output = '<div class="circleSpinnerloader" style="margin-top: 50px; margin-bottom: 50px">'+
+                        '<div class="loadersanimation"></div>'+
+                    '</div>'+
+                    '<p style="text-align: center">You can do other things, while exporting in progress</p>';
+
+        var popout = window.open();
+            popout.document.write(style+output);
+
+        $http({
+            url: config.url + url,
+            method: "GET",
+            params: params,
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': type
+            },
+            responseType: 'arraybuffer'
+        }).then(function(response) {
+
+            var blob = new Blob([response.data], { type: type });
+
+            if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                window.navigator.msSaveBlob(blob, fileName);
+            } else {
+                var URL = window.URL || window.webkitURL;
+                var downloadUrl = window.URL.createObjectURL(blob);
+
+                if (fileName) {
+                    // use HTML5 a[download] attribute to specify filename
+                    var a = document.createElement("a");
+                    if (typeof a.download === 'undefined') {
+                        popout.location.href = downloadUrl;
+                    } else {
+                        a.href = downloadUrl;
+                        a.download = fileName;
+                        a.target = '_blank';
+                        document.body.appendChild(a);
+                        a.click();
+                    }
+                } else {
+                    popout.location.href = downloadUrl;
+                }
+
+                setTimeout(function () { 
+                    window.URL.revokeObjectURL(downloadUrl); 
+                    popout.close();
+                }, 1000); // cleanup
+            }
+        }).catch(function (e) {
             $rootScope.$emit('stopSpin');
-            window.location = config.url + 'order/download/' + result.data.hash;
-        }).catch(function() {
-            $rootScope.$emit('stopSpin');
-        })
+            SweetAlert.swal('Download Failed ', e.statusText);
+        });
     }
 
     /**
-     * Export completed orders
+     * Export orders with Date or All Orders
      * 
      * @return {void}
      */
-    $scope.exportCompletedOrders = function() {
-        $rootScope.$emit('startSpin');
-        if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
+    $scope.exportOrdersByDate = function(type, isDateActive) {
+        ngDialog.close();
+        var params = $scope.getExportParam();
+
+        if (isDateActive) {
+            if ($scope.createdDatePicker.endDate) {
+                $scope.createdDatePicker.endDate.setHours(23,59,59,0);
+            };
+
+            params.startDate = $scope.createdDatePicker.startDate;
+            params.endDate = $scope.createdDatePicker.endDate;
         }
-        Services2.exportCompletedOrders({
-            startDate: $scope.createdDatePicker.startDate,
-            endDate: $scope.createdDatePicker.endDate,
-        }).$promise.then(function(result) {
-            ngDialog.closeAll();
-            $rootScope.$emit('stopSpin');
-            window.location = config.url + 'order/download/' + result.data.hash;
-        }).catch(function() {
-            $rootScope.$emit('stopSpin');
-        })
+
+        if (type === 'normal') {
+            var url = 'order/export/normal';
+        } else if (type === 'uploadable') {
+            var url = 'order/export/uploadable';
+        } else if (type === 'completed') {
+            var url = 'order/export/completed';
+        }
+        
+        var fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
+        var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+           
+        return httpSaveBlob(url, params, type, fileName);
+    }
+
+    /**
+     * Export orders
+     * 
+     * @return {void}
+     */
+    $scope.exportOrders = function(type) {
+        var defaultFilter = $scope.defaultFilter;
+        delete defaultFilter['limit'];
+        delete defaultFilter['offset'];
+
+        var params = $scope.getExportParam();
+
+        if ($scope.isDefaultFilterActive || lodash.isEqual(defaultFilter, params)) {
+            return $scope.showExportOrders(type);
+        }
+
+        if (type === 'normal') {
+            var url = 'order/export/normal';
+        } else if (type === 'uploadable') {
+            var url = 'order/export/uploadable';
+        } else if (type === 'completed') {
+            var url = 'order/export/completed';
+        }
+
+        
+        var fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
+        var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+           
+        return httpSaveBlob(url, params, type, fileName);
     }
 
     /**

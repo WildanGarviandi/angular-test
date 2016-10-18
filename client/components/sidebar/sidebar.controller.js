@@ -47,6 +47,9 @@ angular.module('adminApp')
                     cod: { routes: ['/codorders'] },
                     codpayment: { routes: ['/codpayments'] },
                 }
+            },
+            fleets : {
+                routes: ['/fleets']
             }
         };
 
