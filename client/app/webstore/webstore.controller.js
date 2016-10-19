@@ -172,8 +172,6 @@ angular.module('adminApp')
             AverageWeights: $scope.webstore.WebstoreCompany.AverageWeights,
             PickupOptions: $scope.webstore.WebstoreCompany.PickupOptions,
             CODCommission: $scope.webstore.WebstoreCompany.CODCommission,
-            PricingType: parseInt($scope.webstore.PricingType),
-            PackageDimension: formatDimensionData($scope.packageDimensionGrid.data),
             SourceID: 1,
             RegistrationSourceKey: 0,
             ReferrerTypeID: 2,
@@ -181,14 +179,61 @@ angular.module('adminApp')
             StatusID: 2,
             UserTypeID: 5,
         };
+        var pricingType = parseInt($scope.webstore.PricingType);
+        if (pricingType === 2) {
+            var packageDimension = formatDimensionData($scope.packageDimensionGrid.data);
+        }
         $rootScope.$emit('startSpin');
         Webstores.createWebstore(webstore).$promise.then(function(response) {
-            $rootScope.$emit('stopSpin');
-
             if (response) {
-                return callback(null, response.data)
+                return Webstores.updatePricingType({_id: $stateParams.webstoreID, pricingType: pricingType}).$promise;
             } else {
-                return callback('failed')
+                reject({statusText: 'updateWebstore failed'});
+            }
+        })
+        .then(function(response) {
+            if (response) {
+                if (response.data.pricingType === 1) {
+                    resolve(response);
+                } else {
+                    var packageDimensionQueue = [];
+                    packageDimension.forEach(function(obj) {
+                        var params = {
+                            _id: $stateParams.webstoreID,
+                            packageDimensionID: obj.packageDimensionID,
+                            length: obj.length,
+                            width: obj.width,
+                            height: obj.height,
+                            weight: obj.weight
+                        };
+                        packageDimensionQueue.push(Webstores.updatePackageDimension(params).$promise);
+                    });
+                    return $q.all(packageDimensionQueue);
+                }
+            } else {
+                reject({statusText: 'updatePricingType failed'});
+            }
+        })
+        .then(function(response) {
+            $rootScope.$emit('stopSpin');
+            if (response instanceof Array || response.constructor === Array) {
+                var callbackData = {
+                    webstore : {
+                        UserID : ''
+                    }
+                };
+                response.forEach(function(obj) {
+                    if (obj.data.success) {
+                        callbackData.webstore.UserID = obj.data.merchantID;
+                    } else {
+                        return callback('failed', {});
+                    }
+                });
+                return callback(null, callbackData);
+            } else if (response) {
+                return callback(null, response.data);
+            } else {
+                return callback('failed', {});
             }
         })
         .catch(function() {
@@ -222,14 +267,60 @@ angular.module('adminApp')
             AverageWeights: $scope.webstore.WebstoreCompany.AverageWeights,
             PickupOptions: $scope.webstore.WebstoreCompany.PickupOptions,
             CODCommission: $scope.webstore.WebstoreCompany.CODCommission,
-            PricingType: parseInt($scope.webstore.PricingType),
-            PackageDimension: formatDimensionData($scope.packageDimensionGrid.data)
         };
+        var pricingType = parseInt($scope.webstore.PricingType);
+        if (pricingType === 2) {
+            var packageDimension = formatDimensionData($scope.packageDimensionGrid.data);
+        }
         $rootScope.$emit('startSpin');
         Webstores.updateWebstore({_id: $stateParams.webstoreID, webstore: webstore}).$promise.then(function(response) {
-            $rootScope.$emit('stopSpin');
             if (response) {
-                return callback(null, response.data)
+                return Webstores.updatePricingType({_id: $stateParams.webstoreID, pricingType: pricingType}).$promise;
+            } else {
+                reject({statusText: 'updateWebstore failed'});
+            }
+        })
+        .then(function(response) {
+            if (response) {
+                if (response.data.pricingType === 1) {
+                    resolve(response);
+                } else {
+                    var packageDimensionQueue = [];
+                    packageDimension.forEach(function(obj) {
+                        var params = {
+                            _id: $stateParams.webstoreID,
+                            packageDimensionID: obj.packageDimensionID,
+                            length: obj.length,
+                            width: obj.width,
+                            height: obj.height,
+                            weight: obj.weight
+                        };
+                        packageDimensionQueue.push(Webstores.updatePackageDimension(params).$promise);
+                    });
+                    return $q.all(packageDimensionQueue);
+                }
+            } else {
+                reject({statusText: 'updatePricingType failed'});
+            }
+        })
+        .then(function(response) {
+            $rootScope.$emit('stopSpin');
+            if (response instanceof Array || response.constructor === Array) {
+                var callbackData = {
+                    webstore : {
+                        UserID : ''
+                    }
+                };
+                response.forEach(function(obj) {
+                    if (obj.data.success) {
+                        callbackData.webstore.UserID = obj.data.merchantID;
+                    } else {
+                        return callback('failed', {});
+                    }
+                });
+                return callback(null, callbackData);
+            } else if (response) {
+                return callback(null, response.data);
             } else {
                 return callback('failed', {});
             }
