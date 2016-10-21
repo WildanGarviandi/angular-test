@@ -16,6 +16,7 @@ function mainConfig() {
             var zipLength = 5;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
             var countryCode = '+62';
+            var webtrackingURL = 'http://staging.track.etobee.com';
             break;        
         case 'admin2|com':
             var url = 'https://api2.etobee.com';
@@ -25,6 +26,7 @@ function mainConfig() {
             var zipLength = 5;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
             var countryCode = '+62';
+            var webtrackingURL = 'http://track.etobee.com';
             break;    
         case 'staging|ph':
             var url = 'http://staging.api2.etobee.com';
@@ -34,6 +36,7 @@ function mainConfig() {
             var zipLength = 4;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
             var countryCode = '+63';
+            var webtrackingURL = 'http://staging.track.etobee.com';
             break;    
         case 'admin2|ph':
             var url = 'http://api2.etobee.com.ph';
@@ -43,6 +46,7 @@ function mainConfig() {
             var zipLength = 4;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
             var countryCode = '+63';
+            var webtrackingURL = 'http://track.etobee.com.ph';
             break;
         default:
             var url = 'http://localhost:3001';
@@ -51,7 +55,8 @@ function mainConfig() {
             var decimalSeparator = ',';
             var zipLength = 5;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
-            var countryCode = '+62';    
+            var countryCode = '+62';
+            var webtrackingURL = 'http://localhost:4000';
             break;
     } 
 
@@ -82,7 +87,8 @@ function mainConfig() {
         defaultReturnReason : {
             ReasonName: 'MANUAL_PROCESS',
             ReasonID: 11
-        }
+        },
+        webtrackingURL: webtrackingURL
     };
 }
 

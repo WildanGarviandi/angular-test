@@ -570,6 +570,13 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'bulk-return-customer'
             }
+        },
+        getTrack: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'track'
+            }
         }
     });
 });
