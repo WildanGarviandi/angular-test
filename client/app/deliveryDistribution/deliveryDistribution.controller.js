@@ -29,7 +29,10 @@ angular.module('adminApp')
     $scope.isFirstLoaded = true;
     $scope.currency = config.currency + " ";
     $scope.groupBys = [];
-    $scope.groupBy = {};
+    $scope.groupBy = {
+        key: "Destination",
+        value: "destination"
+    };
     $scope.createdDatePicker = {
         startDate: moment().subtract(1, "months").format("YYYY-MM-DD"),
         endDate: new Date()
