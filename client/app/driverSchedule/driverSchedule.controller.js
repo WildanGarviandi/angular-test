@@ -68,6 +68,14 @@ angular.module('adminApp')
 
     getDefaultValues();
 
+    $scope.onTimeSetStart = function (newDate, oldDate) {
+        $scope.startDateString = moment(newDate).format('ddd, DD-MM-YYYY HH:mm:ss');
+    }
+
+    $scope.onTimeSetEnd = function (newDate, oldDate) {
+        $scope.endDateString = moment(newDate).format('ddd, DD-MM-YYYY HH:mm:ss');
+    }
+
     /**
      * Get all companies
      * 
@@ -164,9 +172,9 @@ angular.module('adminApp')
     $scope.createUnavailableDriver = function() {
         var userID = $scope.selectedUserID;
         var params = {
-            UserID: userID,
-            StartDate: $scope.createdDatePicker.startDate,
-            EndDate: $scope.createdDatePicker.endDate
+            driverID: userID,
+            startDate: $scope.createdDatePicker.startDate,
+            endDate: $scope.createdDatePicker.endDate
         };
         SweetAlert.swal({
             title: "Are you sure?",
@@ -174,10 +182,10 @@ angular.module('adminApp')
                 + $scope.selectedUserName
                 + "\n" 
                 + "Start: " 
-                + $scope.createdDatePicker.startDate 
+                + $scope.startDateString 
                 + "\n" 
                 + "End: "
-                + $scope.createdDatePicker.endDate,
+                + $scope.endDateString,
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -191,6 +199,7 @@ angular.module('adminApp')
                     SweetAlert.swal('Success', 'Unavailale Driver has been created', 'success');
                     ngDialog.close();
                     $rootScope.$emit('stopSpin');
+                    $state.reload();
                 })
                 .catch(function(err) {
                     SweetAlert.swal('Error', err.data.error.message, 'error');
