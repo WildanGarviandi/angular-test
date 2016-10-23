@@ -312,7 +312,9 @@ angular.module('adminApp')
             $scope.driverSchedule = data.data;
             $scope.driverSchedule.StartDate = new Date($scope.driverSchedule.StartDate);
             $scope.driverSchedule.EndDate = new Date($scope.driverSchedule.EndDate);
-            $scope.driverSchedule.UserOrder.PickupTime = new Date($scope.driverSchedule.UserOrder.PickupTime);
+            if ($scope.driverSchedule.UserOrder && $scope.driverSchedule.UserOrder.PickupTime) {
+                $scope.driverSchedule.UserOrder.PickupTime = new Date($scope.driverSchedule.UserOrder.PickupTime);
+            }
 
             var latitude = config.defaultLocation.Latitude;
             var longitude = config.defaultLocation.Longitude;
@@ -425,12 +427,12 @@ angular.module('adminApp')
             }
 
             var driverSchedule = {
-                DriverId: $scope.selectedUserID
+                driverID: $scope.selectedUserID
             };
         }else{
             var driverSchedule = {
-                StartDate: $scope.driverSchedule.StartDate,
-                EndDate: $scope.driverSchedule.EndDate
+                startDate: $scope.driverSchedule.StartDate,
+                endDate: $scope.driverSchedule.EndDate
             };
         }
 
@@ -451,6 +453,12 @@ angular.module('adminApp')
         });
     }
 
+    function getLastStringBy(needle, string){
+        var n = string.lastIndexOf(needle);
+        var result = string.substring(n + 1).trim();
+        return result;
+    }
+
     /**
      * Update single driver schedule
      * 
@@ -459,9 +467,27 @@ angular.module('adminApp')
     $scope.updateDriverSchedule = function() {
         updateDriverSchedule(function(err, driverSchedule) {
             if (err) {
-                alert('Error: '+ err.data.error.message );
+                var messages = err.data.error.message;
+                if (messages.indexOf(':') > -1) {
+                    var baseUrl = window.location.origin;
+                    messages += '<br>' 
+                        + 'please see this link to see overlapping schedule'
+                        + '<br>'
+                        + '<a href="' + baseUrl + '/driverSchedules/' + getLastStringBy(':', messages) + '" target="_blank">Click Here</a>';
+                };
+
+                SweetAlert.swal({
+                    title: 'Error', 
+                    text: messages,
+                    type: 'error',
+                    html: true
+                });
             } else {
-                alert('Your driver ID:' + driverSchedule.data.DriverSchedule.DriverScheduleID + ' has been successfully updated.');
+                SweetAlert.swal(
+                    'Success', 
+                    'Your driver ID: ' + driverSchedule.data.DriverScheduleID + ' has been successfully updated', 
+                    'success'
+                );
                 $location.path('/driverSchedules');
             } 
         });
