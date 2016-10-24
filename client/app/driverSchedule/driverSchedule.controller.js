@@ -453,6 +453,12 @@ angular.module('adminApp')
         });
     }
 
+    /**
+     * Get last string after separator (character)
+     * @param {Character} needle - example ':'
+     * @param {String} string - example 'John : Doe'
+     * @return {String} getLastStringBy - example 'Doe'
+     */
     function getLastStringBy(needle, string){
         var n = string.lastIndexOf(needle);
         var result = string.substring(n + 1).trim();
@@ -473,7 +479,7 @@ angular.module('adminApp')
                     messages += '<br>' 
                         + 'please see this link to see overlapping schedule'
                         + '<br>'
-                        + '<a href="' + baseUrl + '/driverSchedules/' + getLastStringBy(':', messages) + '" target="_blank">Click Here</a>';
+                        + '<a href="' + baseUrl + '/update-driverSchedule/' + getLastStringBy(':', messages) + '" target="_blank">Click Here</a>';
                 };
 
                 SweetAlert.swal({
