@@ -100,6 +100,9 @@ angular.module('adminApp')
 
     $scope.importedDatePicker = new Date();
 
+    $scope.urlToDownload = {};
+    $scope.urlToDownload.templateDeliveryAttempts = '../../assets/template/importUserOrderAttempt.xlsx';
+
     /*
      * Set picker name for filter
      * 
@@ -738,6 +741,20 @@ angular.module('adminApp')
     }
 
     /**
+     * Show import delivery attempts modals
+     * 
+     * @return {void}
+    */
+    $scope.showImportDeliveryAttempts = function() {
+        ngDialog.close()
+        ngDialog.open({
+            template: 'importDeliveryAttemptsModal',
+            scope: $scope,
+            className: 'ngdialog-theme-default import-orders'
+        });
+    }
+
+    /**
      * Set imported date picker
      * 
      * @return {void}
@@ -792,6 +809,44 @@ angular.module('adminApp')
                             } else {
                                 $scope.error.push({row: row, list: order.error});
                             }
+                        });
+                    }).catch(function(error){
+                        $rootScope.$emit('stopSpin');
+                        $scope.clearMessage();
+                        var errorMessage = error.data.error.message;
+                        if (!(errorMessage instanceof Array)) {
+                            $scope.error.push({list: [error.data.error.message]});
+                        }
+                    });
+                }
+            }
+        }
+    };
+
+    /**
+     * Upload orders
+     * 
+     * @return {void}
+    */
+    $scope.uploadDeliveryAttempts = function(files) {
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                if (!file.$error) {
+                    $rootScope.$emit('startSpin');
+                    Upload.upload({
+                        url: config.url + 'order/import/bulk-report-attempt',
+                        data: {
+                            file: file
+                        }
+                    }).then(function(response) {
+                        $rootScope.$emit('stopSpin');
+                        $scope.clearMessage();
+                        $scope.uploaded = {};
+                        $scope.uploaded.totalFailure = response.data.data.totalFailure;
+                        $scope.uploaded.totalSuccess = response.data.data.totalSuccess;
+                        response.data.data.errorMessages.forEach(function(order, index){
+                            $scope.error.push({row: order.at_line, list: order.error});
                         });
                     }).catch(function(error){
                         $rootScope.$emit('stopSpin');
