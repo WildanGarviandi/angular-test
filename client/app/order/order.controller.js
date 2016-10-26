@@ -1949,11 +1949,11 @@ angular.module('adminApp')
             return;
         }
 
-        if (prohibitedIDs.length > 0) {
+        if (prohibitedIDs.length > 0) {            
             var messages = '';
             messages += 'This order has status which is prohibited <table align="center">';
             if (prohibitedIDs.length > 1) {
-                messages += 'These orders have status which are prohibited <table align="center">';
+                messages = 'These orders have status which are prohibited <table align="center">';
             }
             prohibitedIDs.forEach(function (e) {
                 messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
