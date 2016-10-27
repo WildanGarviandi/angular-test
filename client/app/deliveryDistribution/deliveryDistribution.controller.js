@@ -34,7 +34,7 @@ angular.module('adminApp')
         value: "destination"
     };
     $scope.createdDatePicker = {
-        startDate: new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()),
+        startDate: moment().subtract(1, "months").startOf('day'),
         endDate: new Date()
     };
 
@@ -78,7 +78,9 @@ angular.module('adminApp')
     $scope.getDeliveryDistributions = function() {
         $rootScope.$emit('startSpin');
         $scope.isLoading = true;
-            $scope.createdDatePicker.endDate.setHours(23,59,59,0);
+        if ($scope.createdDatePicker.endDate) {
+            $scope.createdDatePicker.endDate.setHours(23, 59, 59, 0);
+        }
         var params = {
             groupBy: $scope.groupBy.value,
             startDate: new Date($scope.createdDatePicker.startDate),
