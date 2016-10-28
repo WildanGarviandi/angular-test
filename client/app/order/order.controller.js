@@ -1335,13 +1335,12 @@ angular.module('adminApp')
             offset: 0,
             limit: 0,
             status: 'All',
-            codStatus: 'all'
+            codStatus: 'all',
+            company: 'all'
         };
         if (company && company.CompanyName !== 'All') {
             $scope.fleet = company;
             params.company = company.CompanyDetailID;
-        } else {
-            params.company = 'all';
         }
         return getAllDriversOnModal(params);
     };
