@@ -176,6 +176,14 @@ angular.module('adminApp')
             startDate: $scope.createdDatePicker.startDate,
             endDate: $scope.createdDatePicker.endDate
         };
+
+        if (!$scope.startDateString) {
+            $scope.startDateString = moment($scope.createdDatePicker.startDate).format('ddd, DD-MM-YYYY HH:mm:ss');
+        }
+        if (!$scope.endDateString) {
+            $scope.endDateString = moment($scope.createdDatePicker.endDate).format('ddd, DD-MM-YYYY HH:mm:ss');
+        }
+
         SweetAlert.swal({
             title: "Are you sure?",
             text: "You will create Unavailale Driver with driver \n"
