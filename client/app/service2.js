@@ -574,8 +574,8 @@ angular.module('adminApp')
         getTrack: {
             method: 'GET',
             params: {
-                module: 'order',
-                controller: 'track'
+                module: 'webtrack',
+                controller: 'token'
             }
         }
     });
