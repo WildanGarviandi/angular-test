@@ -34,7 +34,7 @@ angular.module('adminApp')
         value: "destination"
     };
     $scope.createdDatePicker = {
-        startDate: moment().subtract(1, "months").startOf('day'),
+        startDate: new Date(moment().subtract(1, "months").startOf('day')),
         endDate: new Date()
     };
 
