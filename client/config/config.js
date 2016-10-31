@@ -62,6 +62,7 @@ function mainConfig() {
         url: url + '/v2/admin/',
         endpoints: {
             signIn: 'sign-in',
+            adminFeatures: 'features'
         },
         defaultLocation: defaultLocation,
         notCancellableOrderStatus: [4, 5, 13, 16],
