@@ -1998,7 +1998,19 @@ angular.module('adminApp')
                         }
                     }
                     $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Orders status changed');
+                    var messages = '<table align="center" style="font-size: 12px;">';
+                    result.data.forEach(function (o) {
+                        messages += '<tr><td class="text-right">' + o.UserOrderID + 
+                                    ' : </td><td class="text-left"> ' + o.message + '</td></tr>';
+                    })
+                    messages += '</table>';
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: 'Mark as Pickup', 
+                        text: messages,
+                        html: true,
+                        customClass: 'alert-big'
+                    });
                     $state.reload();
                 }).catch(function (e) {
                     $rootScope.$emit('stopSpin');
