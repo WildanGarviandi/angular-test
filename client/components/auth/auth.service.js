@@ -49,7 +49,9 @@ angular.module('adminApp')
 
                 $http.get(config.url + config.endpoints.adminFeatures).
                 success(function(data) {
-                    $cookies.put('techSupport', data.data.techsupport);
+                    if (data.data && data.data.techsupport) {
+                        $cookies.put('techSupport', data.data.techsupport);
+                    }
                     deferred.resolve(data);
                     return cb();
                 }).
