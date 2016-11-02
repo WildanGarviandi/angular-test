@@ -61,8 +61,7 @@ function mainConfig() {
         zipLength: zipLength,
         url: url + '/v2/admin/',
         endpoints: {
-            signIn: 'sign-in',
-            adminFeatures: 'features'
+            signIn: 'sign-in'
         },
         defaultLocation: defaultLocation,
         notCancellableOrderStatus: [4, 5, 13, 16],

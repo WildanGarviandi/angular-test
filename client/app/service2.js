@@ -331,6 +331,12 @@ angular.module('adminApp')
                 module: 'user'
             }
         },
+        getAdminFeatures: {
+            method: 'GET',
+            params: {
+                module: 'features',
+            }
+        },
         updateUserPassword: {
             method: 'POST',
             params: {

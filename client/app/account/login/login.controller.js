@@ -19,10 +19,12 @@ angular.module('adminApp')
             .then( function() {
                 Auth.getAdminFeatures();
             })
-            .then(function() {
-                // Logged in, redirect to home
-                $rootScope.$emit('startSpin');
-                $location.path('/');
+            .then(function(feature) {
+                setTimeout(function () { 
+                    // Logged in, redirect to home
+                    $rootScope.$emit('startSpin');
+                    $location.path('/');
+                }, 100); 
             })
             .catch( function(err) {
                 console.log(err)

@@ -37,30 +37,21 @@ angular.module('adminApp')
             },
 
             /**
-            * Authenticate user and save token
+            * Get admin features
             *
-            * @param  {Function} callback - optional
             * @return {Promise}
             */
-            getAdminFeatures: function(callback) {
-                var cb = callback || angular.noop;
-                var deferred = $q.defer();
-                $cookies.put('techSupport', false);
-
-                $http.get(config.url + config.endpoints.adminFeatures).
-                success(function(data) {
-                    if (data.data && data.data.techsupport) {
-                        $cookies.put('techSupport', data.data.techsupport);
-                    }
-                    deferred.resolve(data);
-                    return cb();
-                }).
-                error(function(err) {
-                    deferred.reject(err);
-                    return cb(err);
-                }.bind(this));
-
-                return deferred.promise;
+            getAdminFeatures: function() {
+                return $q(function (resolve) {
+                    Services2.getAdminFeatures()
+                    .$promise.then(function (data) {
+                        $cookies.put('techSupport', false);
+                        if (data.data && data.data.techsupport) {
+                            $cookies.put('techSupport', data.data.techsupport);
+                        }
+                        resolve(data);
+                    });
+                });
             },
 
             /**
