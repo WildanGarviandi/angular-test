@@ -842,19 +842,33 @@ angular.module('adminApp')
                     }).then(function(response) {
                         $rootScope.$emit('stopSpin');
                         $scope.clearMessage();
+                        if (!response.data.data.Insert) {
+                            $scope.error = {};
+                            $scope.error.isArray = false;
+                            var errorMessages = response.data.data.messages;
+                            if (!errorMessages) {
+                                $scope.error.isArray = true;
+                                errorMessages = response.data.data.message;
+                            }
+                            $scope.error.title = response.data.data.title;
+                            $scope.error.message = errorMessages;
+                            if ($scope.error.isArray) {
+                                $scope.error.message = [];
+                                errorMessages.forEach(function(errorMessage, index){
+                                    $scope.error.message.push({
+                                        row: errorMessage.at_row, 
+                                        list: errorMessage.error
+                                    });
+                                });
+                            }
+                        }
+
                         $scope.uploaded = {};
-                        $scope.uploaded.totalFailure = response.data.data.totalFailure;
-                        $scope.uploaded.totalSuccess = response.data.data.totalSuccess;
-                        response.data.data.errorMessages.forEach(function(order, index){
-                            $scope.error.push({row: order.at_line, list: order.error});
-                        });
+                        $scope.uploaded.insert = response.data.data.Insert;
+                        $scope.uploaded.update = response.data.data.Update;
                     }).catch(function(error){
                         $rootScope.$emit('stopSpin');
                         $scope.clearMessage();
-                        var errorMessage = error.data.error.message;
-                        if (!(errorMessage instanceof Array)) {
-                            $scope.error.push({list: [error.data.error.message]});
-                        }
                     });
                 }
             }
