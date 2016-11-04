@@ -28,7 +28,8 @@ angular.module('adminApp', [
     'oitozero.ngSweetAlert',
     'dynamicNumber',
     'xeditable',
-    'ui-notification'
+    'ui-notification',
+    'ngHandsontable'
 ])
     .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
         $urlRouterProvider

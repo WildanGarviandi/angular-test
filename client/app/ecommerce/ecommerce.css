@@ -39,3 +39,44 @@
 .blank {
     background-color: yellow !important;
 }
+
+.bg-white {
+    background: #FFFFFF;
+}
+
+.tab-button {
+    background: #7A4078;
+}
+
+.tab-button > a {
+    color: #FFFFFF;
+    border-radius: 0 !important;
+}
+
+.tab-button > a:hover, .tab-button > a:focus {
+    background: #FFFFFF !important;
+    color: #555555;
+}
+
+.tab-border {
+    border-left: 1px solid #DDDDDD;
+    border-right: 1px solid #DDDDDD;
+}
+
+.cell-red {
+    text-align: right;
+    margin-bottom: 0;
+    color: red !important;
+}
+
+.htCore td {
+    text-align: right;
+}
+
+.htCore td.htDimmed {
+    text-align: left;
+}
+
+.colHeader {
+    text-transform: capitalize;
+}
