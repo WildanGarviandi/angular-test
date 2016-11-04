@@ -67,25 +67,22 @@
             <i class="fa fa-refresh"></i> Reset Filter</button>
         </div>
         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-            <span style="position:absolute" class="first-row-element col-xs-12 no-padding">
+            <span class="first-row-element col-xs-12 no-padding">
                 <ui-select ng-model="itemsByPage" 
                     theme="selectize" 
                     on-select="setLimit($item)" 
-                    class="content-choose-limit">
+                    class="content-choose-limit"
+                    style="width: 55px">
                     <ui-select-match>{{$select.selected}}</ui-select-match>
                     <ui-select-choices repeat="ot in limitPages" selected>
                         <span ng-bind-html="ot"></span>
                     </ui-select-choices>
                 </ui-select>
-                <p class="label-limit">
+                <small class="label-limit" style="padding-right:0; position: absolute;">
                     records per page
-                </p>
+                </small>
             </span>
         </div>
-    </div>
-
-    <div class="col-xs-12 action-button">
-        <br>
         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
             <button class="btn order-buttons col-xs-12" ng-click="showImportDeliveryAttempts()">Import Attempts</button>
         </div>
