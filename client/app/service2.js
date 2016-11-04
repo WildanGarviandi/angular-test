@@ -570,6 +570,13 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'bulk-return-customer'
             }
+        },
+        bulkSetPickupStatus: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-pickup-orders'
+            }
         }
     });
 });

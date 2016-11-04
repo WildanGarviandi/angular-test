@@ -82,7 +82,8 @@ function mainConfig() {
         defaultReturnReason : {
             ReasonName: 'MANUAL_PROCESS',
             ReasonID: 11
-        }
+        },
+        canChangeToPickup: [6]
     };
 }
 

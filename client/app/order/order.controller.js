@@ -146,6 +146,7 @@ angular.module('adminApp')
     $scope.returnableWarehouse = config.returnableWarehouse;
     $scope.returnableSender = config.returnableSender;
     $scope.defaultReturnReason = config.defaultReturnReason;
+    $scope.canChangeToPickup = config.canChangeToPickup;
 
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
@@ -1920,6 +1921,113 @@ angular.module('adminApp')
      */
     $scope.clearFilter = function(item) {
         $state.reload();
+    }
+
+    /**
+     * Set multiple order status to PICKUP
+     * @return {void}
+     */
+    $scope.bulkSetPickupStatus = function () {
+        var totalSelected = 0;
+        var selectedOrder = 0;
+        var orderIDs = [];
+        var prohibitedIDs = [];
+        $scope.displayed.forEach(function (val) {
+            if (val.Selected) { 
+                if ($scope.canChangeToPickup.indexOf(val.OrderStatus.OrderStatusID) >= 0) {
+                    totalSelected++; 
+                    orderIDs.push(val.UserOrderID);
+                } else {
+                    prohibitedIDs.push(val);
+                }
+                selectedOrder++;
+            }
+        });
+
+        if (selectedOrder === 0) {
+            SweetAlert.swal('No orders selected');
+            return;
+        }
+
+        if (prohibitedIDs.length > 0) {            
+            var messages = '';
+            messages += 'This order has status which is prohibited <table align="center">';
+            if (prohibitedIDs.length > 1) {
+                messages = 'These orders have status which are prohibited <table align="center">';
+            }
+            prohibitedIDs.forEach(function (e) {
+                messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
+                            ' : </td><td class="text-left"> ' + e.OrderStatus.OrderStatus + '</td></tr>';
+            })
+            messages += '</table>';
+            SweetAlert.swal({
+                title: 'Can not mark as PICKUP',
+                text: messages,
+                type: 'error',
+                html: true
+            });
+            return;
+        }
+
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Mark as PICKUP for " + totalSelected + " orders ?",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.bulkSetPickupStatus({
+                    orderIDs: orderIDs
+                }).$promise.then(function (result) {
+                    if (result.data.error) {
+                        var messages = '<table align="center">';
+                        result.data.error.forEach(function (e) {
+                            messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
+                                        ' : </td><td class="text-left"> ' + e.error.message + '</td></tr>';
+                        })
+                        messages += '</table>';
+                        throw {
+                            data: {
+                                message: result.data.message,
+                                error: {
+                                    message: messages
+                                }
+                            }
+                        }
+                    }
+                    $rootScope.$emit('stopSpin');
+                    var messages = '<table align="center" style="font-size: 12px;">';
+                    result.data.forEach(function (o) {
+                        messages += '<tr><td class="text-right">' + o.UserOrderID + 
+                                    ' : </td><td class="text-left"> ' + o.message + '</td></tr>';
+                    })
+                    messages += '</table>';
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: 'Mark as Pickup', 
+                        text: messages,
+                        html: true,
+                        customClass: 'alert-big'
+                    });
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: (e.data.message) ? e.data.message : 'Failed in marking status as PICKUP', 
+                        text: e.data.error.message, 
+                        type: "error",
+                        html: true,
+                        customClass: 'alert-big'
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            $state.reload();
+                        }
+                    });
+                });
+            }
+        });
     }
     
 });

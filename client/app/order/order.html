@@ -37,7 +37,8 @@
                 features.order.reassign_fleet || 
                 features.order.bulk_mark_delivered || 
                 features.order.bulk_return_warehouse||
-                features.order.bulk_return_sender" 
+                features.order.bulk_return_sender ||
+                features.order.bulk_set_pickup" 
                 ng-disabled="!isOrderSelected" 
                 class="order-buttons btn dropdown-toggle col-xs-12" 
                 type="button" 
@@ -55,6 +56,9 @@
                 </li>
                 <li>
                     <a ng-show="features.order.bulk_return_sender" ng-click="showReturnSender()" class="">Mark as Return Sender</a>
+                </li>
+                <li>
+                    <a ng-show="features.order.bulk_set_pickup" ng-click="bulkSetPickupStatus()" class="">Mark as Pickup</a>
                 </li>
             </ul>
         </div>
