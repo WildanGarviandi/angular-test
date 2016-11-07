@@ -2031,7 +2031,7 @@ angular.module('adminApp')
                     fleetManagerID: $scope.driver.fleetManagerID,
                     deliveryFee: ($scope.isUpdateDeliveryFee) ? $scope.newDeliveryFee : null,
                 };
-
+                var orders = '(' + orderNumbers.join(", ") + ')';
                 orderIDs.reduce(function(p, orderID) {
                     return p.then(function() {
                         return Services2.reassignDriver({
@@ -2041,7 +2041,6 @@ angular.module('adminApp')
                         });
                     });
                 }, $q.when(true)).then(function(result) {
-                    var orders = '(' + orderNumbers.join(", ") + ')';
                     $rootScope.$emit('stopSpin');
                     SweetAlert.swal({
                         title: "Reassign Drivers", 
@@ -2055,7 +2054,8 @@ angular.module('adminApp')
                     $rootScope.$emit('stopSpin');
                     SweetAlert.swal({
                         title: 'Failed in reassigning driver',
-                        text: err.data.error.message
+                        text: orders + '<br>' + err.data.error.message,
+                        html: true
                     }, function(){
                         ngDialog.closeAll();
                     });
