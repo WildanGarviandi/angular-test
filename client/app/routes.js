@@ -419,5 +419,15 @@ angular.module('adminApp')
                 }
             },
             authenticate: true
+        })
+        .state('app.deliveryDistribution', {
+            url: 'deliveryDistribution',
+             views: {
+                'content@': {
+                    templateUrl: 'app/deliveryDistribution/deliveryDistribution.html',
+                    controller: 'DeliveryDistributionCtrl',
+                }
+            },
+            authenticate: true
         });
     });
