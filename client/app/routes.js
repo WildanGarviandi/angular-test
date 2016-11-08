@@ -340,6 +340,16 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.update-driverSchedule', {
+            url: 'update-driverSchedule/:driverScheduleID',
+             views: {
+                'content@': {
+                    templateUrl: 'app/driverSchedule/manage-driverSchedule.html',
+                    controller: 'DriverScheduleCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.ecommercePrice', {
             url: 'ondemandPrice',
             views: {

@@ -213,6 +213,20 @@ angular.module('adminApp')
                 controller: 'unavailable',
             },
         },
+        getOneDriverSchedule: {
+            method: 'GET',
+            params: {
+                module: 'driverschedule',
+                id: null
+            },
+        },
+        updateDriverSchedule: {
+            method: 'POST',
+            params: {
+                module: 'driverschedule',
+                id: null,
+            },
+        },
         getUserStatus: {
             method: 'GET',
             params: {
