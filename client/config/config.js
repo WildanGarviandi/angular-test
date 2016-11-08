@@ -56,7 +56,7 @@ function mainConfig() {
             var zipLength = 5;
             var activeMerchant = [0, 0, 0, 0, 0, 0];
             var countryCode = '+62';
-            var webtrackingURL = 'http://localhost:4000';
+            var webtrackingURL = 'http://staging.track.etobee.com';
             break;
     } 
 
