@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('adminApp')
-    .controller('SidebarCtrl', function($scope, $location, $rootScope, usSpinnerService, localStorageService, Notification) {
+    .controller('SidebarCtrl', function($scope, $location, $rootScope, usSpinnerService, localStorageService, Notification, config) {
 
         $scope.currentPath = $location.path();
         $scope.menus = {
@@ -30,6 +30,9 @@ angular.module('adminApp')
             },
             drivers: {
                 routes: ['/drivers']
+            },
+            driverSchedule: {
+                routes: ['/driverSchedule']
             },
             webstore: {
                 routes: ['/webstore']
@@ -94,6 +97,7 @@ angular.module('adminApp')
             console.log($scope.currentPath);
             console.log('sidebar');
             Notification.clearAll();
+            $scope.isMenuDisable();
             $scope.refreshSidebar();
         });
 
@@ -114,5 +118,10 @@ angular.module('adminApp')
             $scope.menus[menu].expanded = !$scope.menus[menu].expanded;
         }
 
+        $scope.isMenuDisable = function() {
+            $scope.menus.driverSchedule.menu = config.features.driverSchedule.menu;
+        }
+
+        $scope.isMenuDisable();
         $scope.refreshSidebar();
     });

@@ -141,6 +141,15 @@
             </a>
         </li>
 
+        <li class="row" ng-show="menus.driverSchedule.menu">
+            <a ui-sref="app.driverSchedule" >
+                <div class="side-image side-driver-schedule-image"
+                    ng-class="{ expanded: expanded, active: menus.driverSchedule.active }"></div>
+                <div class="side-text"
+                    ng-class="{ expanded: expanded, active: menus.driverSchedule.active }">Driver Schedule</div>
+            </a>
+        </li>
+
         <li class="row">
             <a ui-sref="app.fleet" >
                 <div class="side-image side-fleet-image"
