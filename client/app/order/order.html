@@ -78,7 +78,7 @@
                         <span ng-bind-html="ot"></span>
                     </ui-select-choices>
                 </ui-select>
-                <small class="label-limit" style="padding-right:0; position: absolute;">
+                <small class="label-limit">
                     records per page
                 </small>
             </span>
@@ -820,21 +820,21 @@
             <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
         </div>
         <div class="clearfix"></div>
-        <div class="row-fluid" ng-if="uploaded"> 
-            <uib-alert ng-if="uploaded.insert" type="success">
-                Inserted: {{uploaded.insert}} 
+        <div class="row-fluid" ng-if="uploadedDeliveryAttempts"> 
+            <uib-alert ng-if="uploadedDeliveryAttempts.insert" type="success">
+                Inserted: {{uploadedDeliveryAttempts.insert}} 
             </uib-alert>
-            <uib-alert ng-if="uploaded.update" type="success">
-                Updated: {{uploaded.update}} 
+            <uib-alert ng-if="uploadedDeliveryAttempts.update" type="success">
+                Updated: {{uploadedDeliveryAttempts.update}} 
             </uib-alert>
-            <uib-alert ng-if="error.title" type="danger">
-                {{error.title}} 
+            <uib-alert ng-if="errorUploadDeliveryAttempts.title" type="danger">
+                {{errorUploadDeliveryAttempts.title}} 
             </uib-alert>
-            <uib-alert ng-if="error.isArray == false && error.message" type="danger">
-                {{error.message}} 
+            <uib-alert ng-if="errorUploadDeliveryAttempts.isArray == false && errorUploadDeliveryAttempts.message" type="danger">
+                {{errorUploadDeliveryAttempts.message}} 
             </uib-alert>
-            <div ng-if="error.isArray">
-                <div ng-repeat="err in error.message track by $index">
+            <div ng-if="errorUploadDeliveryAttempts.isArray">
+                <div ng-repeat="err in errorUploadDeliveryAttempts.message track by $index">
                     <uib-alert type="danger">
                         <span ng-if="err.row">
                             Row {{err.row}} :

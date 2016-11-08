@@ -843,19 +843,19 @@ angular.module('adminApp')
                         $rootScope.$emit('stopSpin');
                         $scope.clearMessage();
                         if (!response.data.data.Insert) {
-                            $scope.error = {};
-                            $scope.error.isArray = false;
+                            $scope.errorUploadDeliveryAttempts = {};
+                            $scope.errorUploadDeliveryAttempts.isArray = false;
                             var errorMessages = response.data.data.messages;
                             if (!errorMessages) {
-                                $scope.error.isArray = true;
+                                $scope.errorUploadDeliveryAttempts.isArray = true;
                                 errorMessages = response.data.data.message;
                             }
-                            $scope.error.title = response.data.data.title;
-                            $scope.error.message = errorMessages;
-                            if ($scope.error.isArray) {
-                                $scope.error.message = [];
+                            $scope.errorUploadDeliveryAttempts.title = response.data.data.title;
+                            $scope.errorUploadDeliveryAttempts.message = errorMessages;
+                            if ($scope.errorUploadDeliveryAttempts.isArray) {
+                                $scope.errorUploadDeliveryAttempts.message = [];
                                 errorMessages.forEach(function(errorMessage, index){
-                                    $scope.error.message.push({
+                                    $scope.errorUploadDeliveryAttempts.message.push({
                                         row: errorMessage.at_row, 
                                         list: errorMessage.error
                                     });
@@ -863,9 +863,9 @@ angular.module('adminApp')
                             }
                         }
 
-                        $scope.uploaded = {};
-                        $scope.uploaded.insert = response.data.data.Insert;
-                        $scope.uploaded.update = response.data.data.Update;
+                        $scope.uploadedDeliveryAttempts = {};
+                        $scope.uploadedDeliveryAttempts.insert = response.data.data.Insert;
+                        $scope.uploadedDeliveryAttempts.update = response.data.data.Update;
                     }).catch(function(error){
                         $rootScope.$emit('stopSpin');
                         $scope.clearMessage();
