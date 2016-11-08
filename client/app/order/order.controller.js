@@ -20,7 +20,9 @@ angular.module('adminApp')
             Webstores,
             Upload,
             $q,
-            SweetAlert
+            SweetAlert,
+            $httpParamSerializer,
+            $cookies
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -100,6 +102,9 @@ angular.module('adminApp')
 
     $scope.importedDatePicker = new Date();
 
+    $scope.drivers = [];
+    $scope.isFetchingDrivers = false;
+
     /*
      * Set picker name for filter
      * 
@@ -141,6 +146,7 @@ angular.module('adminApp')
     $scope.notCancellableOrderStatus = config.notCancellableOrderStatus;
     $scope.deliverableOrderStatus = config.deliverableOrderStatus;
     $scope.reassignableFleet = config.reassignableFleet;
+    $scope.reassignableDriver = config.reassignableDriver;
     $scope.updatablePrice = config.updatablePrice;
     $scope.features = config.features;
     $scope.returnableWarehouse = config.returnableWarehouse;
@@ -187,6 +193,7 @@ angular.module('adminApp')
     $scope.newPrice = 0;
     $scope.limitPages = [$scope.itemsByPage, 25, 50, 100, 200];
     $scope.isOrderSelected = false;
+    $scope.techSupport = $cookies.get('techSupport') === 'true';
 
     /**
      * Get default values from config
@@ -274,6 +281,15 @@ angular.module('adminApp')
         $scope.getOrder(); 
     };
 
+    function checkUrlLengthIsValid(url, params, length) {
+        var urls = config.url + url + '?' + $httpParamSerializer(params);
+        var isValid = true;
+        if (urls.length > length) {
+            isValid = false;
+        }
+        return isValid;
+    }
+
     /**
      * Get all orders
      * 
@@ -322,6 +338,10 @@ angular.module('adminApp')
         
         $scope.isLoading = true;
         var params = $scope.getFilterParam();
+        if (!checkUrlLengthIsValid('order', params, 2047)) {
+            $rootScope.$emit('stopSpin');
+            return SweetAlert.swal('Error', 'too many filters', 'error');
+        }
         Services2.getOrder(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
@@ -951,6 +971,35 @@ angular.module('adminApp')
     };
 
     /**
+     * Get all drivers for reassign feature in modal on management page 
+     * @param  {Object} params - get params
+     * @return void
+     */
+    var getAllDriversOnModal = function (params) {
+        $rootScope.$emit('startSpin');
+        Services2.getDrivers(params).$promise.then(function(result) {
+            params.limit = result.data.Drivers.count;
+            Services2.getDrivers(params).$promise.then(function(result) {
+                var drivers = [];
+                result.data.Drivers.rows.forEach(function(driver){
+                    var driverData = {
+                        key: driver.UserID, 
+                        value: driver.Driver.FirstName + ' ' + driver.Driver.LastName,
+                        fleetManagerID: driver.Driver.Driver.FleetManager.UserID
+                    };
+                    drivers.push(driverData);
+                });
+                drivers = lodash.sortBy(drivers, function (i) { 
+                    return i.value.toLowerCase(); 
+                });
+                $scope.drivers = drivers;
+                $scope.driver = $scope.drivers[0];
+                $rootScope.$emit('stopSpin');
+            });
+        });
+    };
+
+    /**
      * Get all drivers for reassign feature
      * @param  {Object} params - get params
      * @return void
@@ -1292,6 +1341,32 @@ angular.module('adminApp')
     };
 
     /**
+     * Call getAllDrivers function when a company is choosen
+     * @param  {[type]} company [description]
+     * @return {Object} promise of data of all drivers
+     */
+    $scope.chooseCompanyReturnDrivers = function (company) {
+        $scope.drivers = [];
+        $scope.isFetchingDrivers = true;
+        var params = {
+            offset: 0,
+            limit: 0,
+            status: 'All',
+            codStatus: 'all',
+            company: 'all'
+        };
+        if (company && company.CompanyName !== 'All') {
+            $scope.fleet = company;
+            params.company = company.CompanyDetailID;
+        }
+        return getAllDriversOnModal(params);
+    };
+
+    $scope.chooseDriver = function (driver) {
+        $scope.driver = driver;
+    }
+
+    /**
      * Choose company on import orders
      * @param  {[type]} company [description]
      * @return {void}
@@ -1597,6 +1672,23 @@ angular.module('adminApp')
  
         return checked;
     };
+    
+    /**
+     * Check whether there is one or more non-reassignable orders selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedNonReassignableDriverExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected && $scope.reassignableDriver.indexOf(order.OrderStatus.OrderStatusID) === -1) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
 
     /**
      * Check whether there is one or more orders with cannot be returned to warehouse selected.
@@ -1665,6 +1757,42 @@ angular.module('adminApp')
             ngDialog.close();
             return ngDialog.open({
                 template: 'reassignFleetModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default reassign-fleet'
+            });
+        });
+    }
+
+    /**
+     * Show reassign fleet modals
+     * 
+     * @return {void}
+    */
+    $scope.showReassignDriver = function() {
+        if ($scope.selectedNonReassignableDriverExists()) {
+            var allowedStatus = '';
+            lodash.each($scope.statuses, function (val, key) {
+                if ($scope.reassignableDriver.indexOf(val.value) !== -1) {
+                    allowedStatus += ' '+val.key;
+                }
+            });
+            SweetAlert.swal({
+                title: 'Error',
+                text: 'You have selected one or more orders which cannot be reassigned <br><br> Allowed Status <br>'+allowedStatus,
+                html: true,
+                type: 'error'
+            });
+            return false;
+        }
+        $rootScope.$emit('startSpin');
+        
+        getCompanies()
+        .then($scope.chooseCompanyReturnDrivers)
+        .then(function () {
+            ngDialog.close();
+            $rootScope.$emit('stopSpin');
+            return ngDialog.open({
+                template: 'reassignDriverModal',
                 scope: $scope,
                 className: 'ngdialog-theme-default reassign-fleet'
             });
@@ -1885,6 +2013,69 @@ angular.module('adminApp')
                     $rootScope.$emit('stopSpin');
                     SweetAlert.swal('Failed in reassigning fleet', e.data.error.message);
                     $state.reload();
+                });
+            }
+        });
+    }
+
+    /**
+     * Bulk reassign Driver
+     * 
+     * @return {void}
+     */
+    $scope.bulkReassignDriver = function() {
+        var orderIDs = [],
+            orderNumbers = [];
+        $scope.selectedOrders.forEach(function(order) {
+            orderIDs.push(order.UserOrderID);
+            orderNumbers.push(order.UserOrderNumber);
+        });
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Reassign driver of these orders?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                ngDialog.close();
+                $rootScope.$emit('startSpin');
+                var driverName = $scope.driver.value;
+                var params = {
+                    driverID : $scope.driver.key,
+                    fleetManagerID: $scope.driver.fleetManagerID,
+                    deliveryFee: ($scope.isUpdateDeliveryFee) ? $scope.newDeliveryFee : null,
+                };
+                var orders = '(' + orderNumbers.join(", ") + ')';
+                orderIDs.reduce(function(p, orderID) {
+                    return p.then(function() {
+                        return Services2.reassignDriver({
+                            id: orderID
+                        }, params).$promise.then(function(result) {
+                            return result;
+                        });
+                    });
+                }, $q.when(true)).then(function(result) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: "Reassign Drivers", 
+                        text: orders + '<br>' + 'successfully reassign to driver ' + driverName,
+                        html: true
+                    }, function () {
+                        ngDialog.closeAll();
+                        $state.reload();
+                    });
+                }, function(err) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: 'Failed in reassigning driver',
+                        text: orders + '<br>' + err.data.error.message,
+                        html: true
+                    }, function(){
+                        ngDialog.closeAll();
+                    });
                 });
             }
         });

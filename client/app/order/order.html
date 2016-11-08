@@ -38,7 +38,8 @@
                 features.order.bulk_mark_delivered || 
                 features.order.bulk_return_warehouse||
                 features.order.bulk_return_sender ||
-                features.order.bulk_set_pickup" 
+                features.order.bulk_set_pickup ||
+                features.order.bulk_reassign_driver" 
                 ng-disabled="!isOrderSelected" 
                 class="order-buttons btn dropdown-toggle col-xs-12" 
                 type="button" 
@@ -50,6 +51,9 @@
             <ul class="dropdown-menu col-xs-12">
                 <li><a ng-show="features.order.set_price" ng-click="showSetPrice()" class="">Update Price</a></li>
                 <li><a ng-show="features.order.reassign_fleet" ng-click="showReassignFleet()" class="">Reassign Fleet</a></li>
+                <li>
+                    <a ng-show="features.order.bulk_reassign_driver" ng-click="showReassignDriver()" class="">Reassign Driver</a>
+                </li>
                 <li><a ng-show="features.order.bulk_mark_delivered" ng-click="bulkSetDeliveredStatus()" class="">Mark as Delivered</a></li>
                 <li>
                     <a ng-show="features.order.bulk_return_warehouse" ng-click="showReturnWarehouse()" class="">Mark as Return Warehouse</a>
@@ -70,8 +74,8 @@
             <button class="btn order-buttons first-row-element col-xs-12" ng-click="clearFilter()">
             <i class="fa fa-refresh"></i> Reset Filter</button>
         </div>
-        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-            <span style="position:absolute" class="first-row-element col-xs-12 no-padding">
+        <div class="col-lg-2 col-md-5 col-sm-4 col-xs-6">
+            <span class="first-row-element col-xs-12 no-padding">
                 <ui-select ng-model="itemsByPage" 
                     theme="selectize" 
                     on-select="setLimit($item)" 
@@ -81,46 +85,57 @@
                         <span ng-bind-html="ot"></span>
                     </ui-select-choices>
                 </ui-select>
-                <p class="label-limit">
-                    records per page
-                </p>
             </span>
+            <p class="label-limit">
+                records per page
+            </p>
         </div>
-    </div>
-    <div class="row no-margin">
-        <div class="col-md-4 col-xs-12 top-buffer">
-            <div class="row no-margin">
-                <uib-accordion>
-                    <uib-accordion-group is-open="areaFilter.open">
-                        <uib-accordion-heading>
-                            Multiple Filter by EDS / AWB / WebOrderID
-                            <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': areaFilter.open, 'glyphicon-chevron-right': !areaFilter.open}"></i>
-                        </uib-accordion-heading>
-                        <textarea ng-model="$parent.$parent.$parent.queryMultipleEDS"
-                            id="eds-textarea"
-                            placeholder="Write/Paste EDS Number or Order ID here, separated with newline">
-                        </textarea>
-                        <div class="col-md-9">
-                            <div>
-                                <span ng-if="$parent.$parent.$parent.queryMultipleEDS !== ''">
-                                    {{userOrderNumbers.length}} </span> 
-                                <span ng-if="!$parent.$parent.$parent.queryMultipleEDS">0</span> inserted.
-                            </div>
-                            <div class="text-danger" ng-if="orderNotFound.length > 0">
-                                <span ng-if="orderNotFound.length > 1">These orders <span ng-repeat="o in orderNotFound">{{o}}, </span> are not found.</span>
-                                <span ng-if="orderNotFound.length === 1">This order <span ng-repeat="o in orderNotFound">{{o}}</span> is not found.</span>
-                            </div>
+        <div class="clearfix"></div>        
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6" ng-show="techSupport">
+            <button class="order-buttons-support btn dropdown-toggle col-xs-12" 
+                type="button" 
+                data-toggle="dropdown">
+                Tech Support
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu col-xs-12">
+                <li><a class=""></a></li>
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-4 col-xs-12">
+            <uib-accordion>
+                <uib-accordion-group is-open="areaFilter.open">
+                    <uib-accordion-heading>
+                        Multiple Filter by EDS / AWB / WebOrderID
+                        <i class="pull-right glyphicon" 
+                            ng-class="{'glyphicon-chevron-down': areaFilter.open, 'glyphicon-chevron-right': !areaFilter.open}">
+                        </i>
+                    </uib-accordion-heading>
+                    <textarea ng-model="$parent.$parent.$parent.queryMultipleEDS"
+                        id="eds-textarea"
+                        placeholder="Write/Paste EDS Number or Order ID here, separated with newline">
+                    </textarea>
+                    <div class="col-md-9">
+                        <div>
+                            <span ng-if="$parent.$parent.$parent.queryMultipleEDS !== ''">
+                                {{userOrderNumbers.length}} </span> 
+                            <span ng-if="!$parent.$parent.$parent.queryMultipleEDS">0</span> inserted.
                         </div>
-                        
-                        <div class="pull-right">
-                            <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
-                            <a class="btn btn-default" 
-                                ng-click="areaFilter.open = false; clearTextArea()">Cancel</a>
-                            <a ng-click="filterMultipleEDS()" class="btn btn-success">Filter</a>
+                        <div class="text-danger" ng-if="orderNotFound.length > 0">
+                            <span ng-if="orderNotFound.length > 1">These orders <span ng-repeat="o in orderNotFound">{{o}}, </span> are not found.</span>
+                            <span ng-if="orderNotFound.length === 1">This order <span ng-repeat="o in orderNotFound">{{o}}</span> is not found.</span>
                         </div>
-                    </uib-accordion-group>
-                </uib-accordion>
-            </div>
+                    </div>
+                    
+                    <div class="pull-right">
+                        <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
+                        <a class="btn btn-default" 
+                            ng-click="areaFilter.open = false; clearTextArea()">Cancel</a>
+                        <a ng-click="filterMultipleEDS()" class="btn btn-success">Filter</a>
+                    </div>
+                </uib-accordion-group>
+            </uib-accordion>
         </div>
 
         <div class="clearfix"></div>
@@ -735,6 +750,77 @@
         <div class="clearfix"></div>
         <div class="row-fluid">
             <button class="btn btn-primary" ng-click="reassignFleet()">Reassign Fleet</button>              
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="reassignDriverModal">
+    <div class="header-wrapper col-xs-12">
+        <h2>Reassign Driver</h2>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid">
+        <div class="col-md-4 no-padding">
+            <h4>Selected Orders:</h4>
+            <div ng-repeat="order in orders">
+                <div ng-if="order.Selected" class="row-fluid">
+                    {{order.UserOrderNumber}}
+                </div>
+            </div>
+            <br>
+        </div>
+        <div class="col-md-8 no-padding">
+            <label>
+                <input type="checkbox" ng-model="$parent.isUpdateDeliveryFee">
+                Update delivery fee ?
+            </label>
+            <input  ng-if="$parent.isUpdateDeliveryFee"
+                    type="number"
+                    class="form-control input-table"
+                    placeholder="input delivery fee"
+                    ng-model="$parent.$parent.newDeliveryFee">
+            <br>
+            <div class="row-fluid">                    
+                <div class="label-payment">
+                    Select Fleet :
+                </div> 
+                <div class="col-xs-12 no-padding">
+                    <ui-select ng-model="fleet" 
+                        theme="selectize" 
+                        on-select="chooseCompanyReturnDrivers($item)" 
+                        class="booking-order-type">
+                        <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
+                        <ui-select-choices repeat="f in fleets | filter: $select.search track by $index" selected>
+                            <span class="input-table" ng-bind-html="f.CompanyName | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="row-fluid">                    
+                <div class="label-payment">
+                    Select Driver :
+                </div> 
+                <div class="col-xs-12 no-padding">
+                    <div ng-if="drivers.length > 0 && isFetchingDrivers" class="animate-if">
+                        <ui-select ng-model="driver" 
+                            theme="selectize"
+                            on-select="chooseDriver($item)" 
+                            class="booking-order-type">
+                            <ui-select-match class="input-table">{{$select.selected.value}}</ui-select-match>
+                            <ui-select-choices repeat="d in drivers | filter: $select.search" selected>
+                                <span class="input-table" ng-bind-html="d.value | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div ng-if="drivers.length == 0 && isFetchingDrivers" class="animate-if">
+                        No driver found
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+        <div class="col-xs-12 no-padding">
+            <button class="btn btn-primary" ng-click="bulkReassignDriver()">Reassign Driver</button>              
         </div>
     </div>
 </script>

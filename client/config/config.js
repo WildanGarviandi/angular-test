@@ -61,7 +61,7 @@ function mainConfig() {
         zipLength: zipLength,
         url: url + '/v2/admin/',
         endpoints: {
-            signIn: 'sign-in',
+            signIn: 'sign-in'
         },
         defaultLocation: defaultLocation,
         notCancellableOrderStatus: [4, 5, 13, 16],
@@ -72,6 +72,8 @@ function mainConfig() {
         activeMerchant: activeMerchant,
         countryCode: countryCode,
         deliverableOrderStatus: [2, 3, 4],
+        // ACCEPTED, PICKUP, IN-TRANSIT
+        reassignableDriver: [2, 3, 4, 6],
         // ACCEPTED, PICKUP, IN-TRANSIT
         reassignableFleet: [1, 6, 9],
         // BOOKED, NOTASSIGNED, PREBOOKED
