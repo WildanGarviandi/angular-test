@@ -37,12 +37,31 @@ angular.module('adminApp')
             },
 
             /**
+            * Get admin features
+            *
+            * @return {Promise}
+            */
+            getAdminFeatures: function() {
+                return $q(function (resolve) {
+                    Services2.getAdminFeatures()
+                    .$promise.then(function (data) {
+                        $cookies.put('techSupport', false);
+                        if (data.data && data.data.techsupport) {
+                            $cookies.put('techSupport', data.data.techsupport);
+                        }
+                        resolve(data);
+                    });
+                });
+            },
+
+            /**
             * Delete access token and user info
             *
             * @param  {Function}
             */
             logout: function() {
                 $cookies.remove('token');
+                $cookies.remove('techSupport');
             },
 
             /**

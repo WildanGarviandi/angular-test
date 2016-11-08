@@ -21,7 +21,8 @@ angular.module('adminApp')
             Upload,
             $q,
             SweetAlert,
-            $httpParamSerializer
+            $httpParamSerializer,
+            $cookies
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -188,6 +189,7 @@ angular.module('adminApp')
     $scope.newPrice = 0;
     $scope.limitPages = [$scope.itemsByPage, 25, 50, 100, 200];
     $scope.isOrderSelected = false;
+    $scope.techSupport = $cookies.get('techSupport') === 'true';
 
     /**
      * Get default values from config

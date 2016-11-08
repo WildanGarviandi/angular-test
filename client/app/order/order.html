@@ -70,8 +70,8 @@
             <button class="btn order-buttons first-row-element col-xs-12" ng-click="clearFilter()">
             <i class="fa fa-refresh"></i> Reset Filter</button>
         </div>
-        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-            <span style="position:absolute" class="first-row-element col-xs-12 no-padding">
+        <div class="col-lg-2 col-md-5 col-sm-4 col-xs-6">
+            <span class="first-row-element col-xs-12 no-padding">
                 <ui-select ng-model="itemsByPage" 
                     theme="selectize" 
                     on-select="setLimit($item)" 
@@ -81,46 +81,57 @@
                         <span ng-bind-html="ot"></span>
                     </ui-select-choices>
                 </ui-select>
-                <p class="label-limit">
-                    records per page
-                </p>
             </span>
+            <p class="label-limit">
+                records per page
+            </p>
         </div>
-    </div>
-    <div class="row no-margin">
-        <div class="col-md-4 col-xs-12 top-buffer">
-            <div class="row no-margin">
-                <uib-accordion>
-                    <uib-accordion-group is-open="areaFilter.open">
-                        <uib-accordion-heading>
-                            Multiple Filter by EDS / AWB / WebOrderID
-                            <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': areaFilter.open, 'glyphicon-chevron-right': !areaFilter.open}"></i>
-                        </uib-accordion-heading>
-                        <textarea ng-model="$parent.$parent.$parent.queryMultipleEDS"
-                            id="eds-textarea"
-                            placeholder="Write/Paste EDS Number or Order ID here, separated with newline">
-                        </textarea>
-                        <div class="col-md-9">
-                            <div>
-                                <span ng-if="$parent.$parent.$parent.queryMultipleEDS !== ''">
-                                    {{userOrderNumbers.length}} </span> 
-                                <span ng-if="!$parent.$parent.$parent.queryMultipleEDS">0</span> inserted.
-                            </div>
-                            <div class="text-danger" ng-if="orderNotFound.length > 0">
-                                <span ng-if="orderNotFound.length > 1">These orders <span ng-repeat="o in orderNotFound">{{o}}, </span> are not found.</span>
-                                <span ng-if="orderNotFound.length === 1">This order <span ng-repeat="o in orderNotFound">{{o}}</span> is not found.</span>
-                            </div>
+        <div class="clearfix"></div>        
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6" ng-show="techSupport">
+            <button class="order-buttons-support btn dropdown-toggle col-xs-12" 
+                type="button" 
+                data-toggle="dropdown">
+                Tech Support
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu col-xs-12">
+                <li><a class=""></a></li>
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-4 col-xs-12">
+            <uib-accordion>
+                <uib-accordion-group is-open="areaFilter.open">
+                    <uib-accordion-heading>
+                        Multiple Filter by EDS / AWB / WebOrderID
+                        <i class="pull-right glyphicon" 
+                            ng-class="{'glyphicon-chevron-down': areaFilter.open, 'glyphicon-chevron-right': !areaFilter.open}">
+                        </i>
+                    </uib-accordion-heading>
+                    <textarea ng-model="$parent.$parent.$parent.queryMultipleEDS"
+                        id="eds-textarea"
+                        placeholder="Write/Paste EDS Number or Order ID here, separated with newline">
+                    </textarea>
+                    <div class="col-md-9">
+                        <div>
+                            <span ng-if="$parent.$parent.$parent.queryMultipleEDS !== ''">
+                                {{userOrderNumbers.length}} </span> 
+                            <span ng-if="!$parent.$parent.$parent.queryMultipleEDS">0</span> inserted.
                         </div>
-                        
-                        <div class="pull-right">
-                            <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
-                            <a class="btn btn-default" 
-                                ng-click="areaFilter.open = false; clearTextArea()">Cancel</a>
-                            <a ng-click="filterMultipleEDS()" class="btn btn-success">Filter</a>
+                        <div class="text-danger" ng-if="orderNotFound.length > 0">
+                            <span ng-if="orderNotFound.length > 1">These orders <span ng-repeat="o in orderNotFound">{{o}}, </span> are not found.</span>
+                            <span ng-if="orderNotFound.length === 1">This order <span ng-repeat="o in orderNotFound">{{o}}</span> is not found.</span>
                         </div>
-                    </uib-accordion-group>
-                </uib-accordion>
-            </div>
+                    </div>
+                    
+                    <div class="pull-right">
+                        <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
+                        <a class="btn btn-default" 
+                            ng-click="areaFilter.open = false; clearTextArea()">Cancel</a>
+                        <a ng-click="filterMultipleEDS()" class="btn btn-success">Filter</a>
+                    </div>
+                </uib-accordion-group>
+            </uib-accordion>
         </div>
 
         <div class="clearfix"></div>
