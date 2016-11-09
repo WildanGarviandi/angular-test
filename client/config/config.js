@@ -75,7 +75,7 @@ function mainConfig() {
         // ACCEPTED, PICKUP, IN-TRANSIT
         reassignableDriver: [2, 3, 4, 6],
         // ACCEPTED, PICKUP, IN-TRANSIT
-        reassignableFleet: [1, 6, 9],
+        reassignableFleet: [1, 3, 6, 9],
         // BOOKED, NOTASSIGNED, PREBOOKED
         updatablePrice: [1, 6, 9],
         // BOOKED, NOTASSIGNED, PREBOOKED
