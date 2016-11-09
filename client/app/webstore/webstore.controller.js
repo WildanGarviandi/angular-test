@@ -19,7 +19,8 @@ angular.module('adminApp')
             Upload,
             config,
             $timeout,
-            ngDialog
+            ngDialog,
+            SweetAlert
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -73,6 +74,9 @@ angular.module('adminApp')
     $scope.offset = $location.search().offset || 0;
     $scope.isFirstLoaded = true;
     $scope.uploadError = false;
+    $scope.newChild = {};
+    $scope.allWebstores = [];
+    $scope.input = {};
 
     $scope.cutoffTimes = [];
     for (var i = 0; i < 24; i++) {
@@ -173,6 +177,42 @@ angular.module('adminApp')
         };
         $rootScope.$emit('startSpin');
         Webstores.updateWebstore({_id: $stateParams.webstoreID, webstore: webstore}).$promise.then(function(response) {
+            $rootScope.$emit('stopSpin');
+            if (response) {
+                return callback(null, response.data)
+            } else {
+                return callback('failed', {});
+            }
+        })
+        .catch(function(err) {
+            $rootScope.$emit('stopSpin');
+            return callback(err.statusText, {});
+        });
+    }
+
+    var createChild = function(callback) {
+        var params = {
+            parentUserID: $stateParams.webstoreID,
+            merchantID: $scope.input.merchantID
+        };
+        $rootScope.$emit('startSpin');
+        Services2.createWebstoreChild({id: $scope.newChild.key}, params).$promise.then(function(response) {
+            $rootScope.$emit('stopSpin');
+            if (response) {
+                return callback(null, response.data)
+            } else {
+                return callback('failed', {});
+            }
+        })
+        .catch(function(err) {
+            $rootScope.$emit('stopSpin');
+            return callback(err.statusText, {});
+        });
+    }
+
+    var deleteChild = function(childId, callback) {
+        $rootScope.$emit('startSpin');
+        Services2.deleteWebstoreChild({childId: childId, parentId: $stateParams.webstoreID}).$promise.then(function(response) {
             $rootScope.$emit('stopSpin');
             if (response) {
                 return callback(null, response.data)
@@ -386,6 +426,28 @@ angular.module('adminApp')
     }
 
     /**
+     * Get all webstores in detail
+     * 
+     * @return {void}
+     */
+    $scope.getAllWebstore = function() {
+        var params = {
+            offset: 0,
+            limit: 10000000
+        };
+        Webstores.getWebstore(params).$promise.then(function(data) {
+            _.each(data.data.webstores, function(webstore) {
+                var webstoreData = {
+                    key: webstore.webstore.UserID,
+                    text: webstore.webstore.FirstName + ' ' + webstore.webstore.LastName
+                };
+                $scope.allWebstores.push(webstoreData);
+            });
+            $scope.newChild = $scope.allWebstores[0];
+        });
+    }
+
+    /**
      * Add search params for getWebstores()
      * 
      * @return {void}
@@ -446,6 +508,54 @@ angular.module('adminApp')
         }
     }    
     
+    /**
+     * Create single child webstore
+     * 
+     * @return {void}
+     */
+    $scope.createChild = function() {
+        if(!$scope.input.merchantID) {
+            return alert('Merchant ID must be Unique');
+        }
+
+        createChild(function(err, result) {        
+            if (result.status === false) {
+                alert('error');
+            };
+            $scope.getWebstoreDetails();
+        })
+    }
+
+    /**
+     * Delete single child webstore
+     * 
+     * @return {void}
+     */
+    $scope.deleteChild = function(childId, childName) {
+        SweetAlert.swal({
+            title: "Are you sure?",
+            text: "You will remove <b>" + childName + "</b> as webstore children",
+            type: "warning",
+            html: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Remove",
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+
+                deleteChild(childId, function(err, result) {        
+                    if (result.status === false) {
+                        alert('error');
+                    };
+                    $scope.getWebstoreDetails();
+                })
+            } else {
+                $rootScope.$emit('stopSpin');
+            }
+        });
+    }
+
     /**
      * Init table state
      * 
@@ -509,6 +619,7 @@ angular.module('adminApp')
                     window.location = '/webstore';
                 }
             }, 4000);
+            $scope.getAllWebstore();
             $scope.updatePage = true;
             $scope.addPage = false;
         } else if ($state.current.name === 'app.add-webstore') {
@@ -531,6 +642,10 @@ angular.module('adminApp')
         $location.search('postPaidPaymentFilter', item.text);
         $scope.postPaidPaymentFilter = item;
         $scope.filterWebstores();
+    }
+
+    $scope.chooseWebstore = function(item){
+        $scope.newChild = item;
     }
 
     $scope.showUnverified = function() {

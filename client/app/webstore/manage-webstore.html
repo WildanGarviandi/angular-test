@@ -368,7 +368,7 @@
             </form>
         </div>
     </div>
-    <div class="col-md-4 hub-container pull-left" style="margin-left:10px">
+    <div class="col-md-6 pull-left no-padding" style="margin-left:10px; margin-top:20px">
         <h5 ng-show="parentWebstore">
             Webstore Parent :
         </h5>
@@ -399,7 +399,39 @@
                 <button ng-hide="showChildren" ng-click="showChildren = true" class="btn btn-xs btn-default"><i class="fa fa-chevron-down"></i></button>
                 <button ng-show="showChildren" ng-click="showChildren = false" class="btn btn-xs btn-default"><i class="fa fa-chevron-up"></i></button>
             </span>
+            <button ng-hide="showCreateChild" ng-click="showCreateChild = true" class="btn btn-xs btn-default pull-right">Create Child</button>
+            <button ng-show="showCreateChild" ng-click="showCreateChild = false" class="btn btn-xs btn-default pull-right">Cancel Create</button>
         </h5>
+        <div ng-show="showCreateChild" class="row no-margin createWebstoreChild">
+            <div class="col-xs-12 no-padding">
+                <div class="form-group">
+                    <div class="form-label col-md-2">
+                        <p class="no-margin">Create Child</p>
+                    </div>
+                    <div class="form-input col-md-4">
+                        <input ng-model="input.merchantID" 
+                            type="text" 
+                            name="merchantID" 
+                            class="form-control input-md" 
+                            placeholder="Merchant ID" />
+                    </div>
+                    <div class="form-input col-md-4">
+                        <ui-select ng-model="newChild" 
+                            theme="selectize" 
+                            on-select="chooseWebstore($item)" 
+                            class="booking-order-type input-md">
+                            <ui-select-match class="input-table">{{$select.selected.text}}</ui-select-match>
+                            <ui-select-choices repeat="ot in allWebstores | filter: $select.search" selected>
+                                <span class="input-table" ng-bind-html="ot.text | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-md btn-default col-xs-12" ng-click="createChild()">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <table ng-show="showChildren && childrenWebstore.length > 0" t-table="childrenWebstore" class="table table-hover webstore-table">
             <thead class="hubs-table-head">
                 <tr>
@@ -408,6 +440,7 @@
                     <th>Mobile</th>
                     <th>Payment</th>
                     <th>Allow COD</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -417,6 +450,7 @@
                     <td>{{children.PhoneNumber}}</td>
                     <td class="webstore-cell">{{children.WebstoreCompany.PostPaidPayment ? "Postpaid" : "Prepaid"}}</td>
                     <td class="webstore-cell">{{children.WebstoreCompany.AllowCOD ? "Yes" : "No"}}</td>
+                    <td><button class="btn btn-danger btn-xs" ng-click="deleteChild(children.UserID, children.FirstName + ' '+ children.LastName)"><i class="fa fa-trash-o"></i></button></td>
                 </tr>
             </tbody>
             <tfoot ng-show="childrenWebstore.length > 5">
