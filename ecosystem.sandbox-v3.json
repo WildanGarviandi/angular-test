@@ -1,0 +1,30 @@
+{
+    /**
+     * Application configuration section
+     * http://pm2.keymetrics.io/docs/usage/application-declaration/
+     */
+    "apps" : [
+        {
+            "name" : "etobee-admin-sandbox-v3",
+            "script" : "app.js",
+            "env": {
+                "NODE_ENV": "sandbox"
+            }
+        }
+    ],
+
+    /**
+     * Deployment section
+     * http://pm2.keymetrics.io/docs/usage/deployment/
+     */
+    "deploy" : {
+        "sandbox" : {
+            "user" : "ubuntu",
+            "host" : "sandbox-v3.admin2.etobee.com",
+            "ref" : "origin/v3.0",
+            "repo": "git@gitlab.com:etobee-techgroup/etobee-admin.git",
+            "path" : "/home/ubuntu/etobee-admin-sandbox-v3",
+            "post-deploy" : "cp /home/ubuntu/config/etobee-admin-sandbox-v3/env.js client/config/. && npm install && bower install -F && PORT=3020 pm2 startOrRestart ecosystem.sandbox-v3.json --env sandbox"
+        }
+    }
+}
