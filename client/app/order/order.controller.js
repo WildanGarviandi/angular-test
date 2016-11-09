@@ -2009,6 +2009,7 @@ angular.module('adminApp')
                     $rootScope.$emit('stopSpin');
                     SweetAlert.swal(result.data[0] + ' orders updated');
                     ngDialog.closeAll();
+                    $state.reload();
                 }).catch(function (e) {
                     $rootScope.$emit('stopSpin');
                     SweetAlert.swal('Failed in reassigning fleet', e.data.error.message);
