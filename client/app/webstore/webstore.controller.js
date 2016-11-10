@@ -19,7 +19,8 @@ angular.module('adminApp')
             Upload,
             config,
             $timeout,
-            ngDialog
+            ngDialog,
+            $q
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -70,7 +71,6 @@ angular.module('adminApp')
         PackageDimension: []
     };
 
-    $scope.packageDimensionID = config.packageDimensionID;
     $scope.packageDimensionGrid = {
         enableCellEditOnFocus: true,
         enableColumnMenus: false,
@@ -150,6 +150,7 @@ angular.module('adminApp')
 
 
     var createWebstore = function(callback) {
+        var pricingType = parseInt($scope.webstore.PricingType);
         var webstore = {
             PostPaidPayment: $scope.webstore.PostPaidPayment,
             AllowCOD: $scope.webstore.AllowCOD,
@@ -178,20 +179,15 @@ angular.module('adminApp')
             DeviceTypeID: 7,
             StatusID: 2,
             UserTypeID: 5,
+            PricingType: pricingType
         };
-        var pricingType = parseInt($scope.webstore.PricingType);
-        if (pricingType === 2) {
-            var packageDimension = formatDimensionData($scope.packageDimensionGrid.data);
-        }
         $rootScope.$emit('startSpin');
-        Webstores.createWebstore(webstore).$promise.then(function(response) {
-            if (response) {
-                return Webstores.updatePricingType({_id: $stateParams.webstoreID, pricingType: pricingType}).$promise;
-            } else {
-                reject({statusText: 'updateWebstore failed'});
-            }
-        })
+        Webstores.createWebstore(webstore).$promise
         .then(function(response) {
+            var packageDimension;
+            if (pricingType === 2) {
+                packageDimension = formatDimensionData($scope.packageDimensionGrid.data);
+            }
             if (response) {
                 if (response.data.pricingType === 1) {
                     resolve(response);
@@ -200,11 +196,11 @@ angular.module('adminApp')
                     packageDimension.forEach(function(obj) {
                         var params = {
                             _id: $stateParams.webstoreID,
-                            packageDimensionID: obj.packageDimensionID,
-                            length: obj.length,
-                            width: obj.width,
-                            height: obj.height,
-                            weight: obj.weight
+                            packageDimensionID: obj.PackageSizeID,
+                            length: obj.Length,
+                            width: obj.Width,
+                            height: obj.Height,
+                            weight: obj.Weight
                         };
                         packageDimensionQueue.push(Webstores.updatePackageDimension(params).$promise);
                     });
@@ -243,6 +239,7 @@ angular.module('adminApp')
     }
 
     var updateWebstore = function(callback) {
+        var pricingType = parseInt($scope.webstore.PricingType);
         var webstore = {
             PostPaidPayment: $scope.webstore.PostPaidPayment,
             AllowCOD: $scope.webstore.AllowCOD,
@@ -267,20 +264,15 @@ angular.module('adminApp')
             AverageWeights: $scope.webstore.WebstoreCompany.AverageWeights,
             PickupOptions: $scope.webstore.WebstoreCompany.PickupOptions,
             CODCommission: $scope.webstore.WebstoreCompany.CODCommission,
+            PricingType: pricingType
         };
-        var pricingType = parseInt($scope.webstore.PricingType);
-        if (pricingType === 2) {
-            var packageDimension = formatDimensionData($scope.packageDimensionGrid.data);
-        }
         $rootScope.$emit('startSpin');
-        Webstores.updateWebstore({_id: $stateParams.webstoreID, webstore: webstore}).$promise.then(function(response) {
-            if (response) {
-                return Webstores.updatePricingType({_id: $stateParams.webstoreID, pricingType: pricingType}).$promise;
-            } else {
-                reject({statusText: 'updateWebstore failed'});
-            }
-        })
+        Webstores.updateWebstore({_id: $stateParams.webstoreID, webstore: webstore}).$promise
         .then(function(response) {
+            var packageDimension;
+            if (pricingType === 2) {
+                packageDimension = formatDimensionData($scope.packageDimensionGrid.data);
+            }
             if (response) {
                 if (response.data.pricingType === 1) {
                     resolve(response);
@@ -289,11 +281,11 @@ angular.module('adminApp')
                     packageDimension.forEach(function(obj) {
                         var params = {
                             _id: $stateParams.webstoreID,
-                            packageDimensionID: obj.packageDimensionID,
-                            length: obj.length,
-                            width: obj.width,
-                            height: obj.height,
-                            weight: obj.weight
+                            packageDimensionID: obj.PackageSizeID,
+                            length: obj.Length,
+                            width: obj.Width,
+                            height: obj.Height,
+                            weight: obj.Weight
                         };
                         packageDimensionQueue.push(Webstores.updatePackageDimension(params).$promise);
                     });
@@ -307,6 +299,7 @@ angular.module('adminApp')
             $rootScope.$emit('stopSpin');
             if (response instanceof Array || response.constructor === Array) {
                 var callbackData = {
+                    status: false,
                     webstore : {
                         UserID : ''
                     }
@@ -314,6 +307,7 @@ angular.module('adminApp')
                 response.forEach(function(obj) {
                     if (obj.data.success) {
                         callbackData.webstore.UserID = obj.data.merchantID;
+                        callbackData.status = obj.data.success;
                     } else {
                         return callback('failed', {});
                     }
@@ -469,9 +463,9 @@ angular.module('adminApp')
             }
 
             $scope.webstore.WebstoreCompany.CODCommission = Math.round($scope.webstore.WebstoreCompany.CODCommission*1000)/1000;
-            $scope.webstore.PricingType = data.User.PricingType;
+            $scope.webstore.PricingType = data.User.WebstoreCompany.PricingType;
             data.User.PackageDimension.forEach(function(obj) {
-                obj.PackageSizeID = $scope.packageDimensionID[obj.PackageSizeID - 1];
+                obj.PackageSizeID = config.packageDimensionID[obj.PackageDimensionID - 1];
                 $scope.packageDimensionGrid.data.push(obj);
             });
             
@@ -837,9 +831,9 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.addPackageDimensionRow = function(row) {
-        if ($scope.packageDimensionGrid.data.length < $scope.packageDimensionID.length) {
+        if ($scope.packageDimensionGrid.data.length < config.packageDimensionID.length) {
             var newSize = {
-                PackageSizeID : $scope.packageDimensionID[$scope.packageDimensionGrid.data.length],
+                PackageSizeID : config.packageDimensionID[$scope.packageDimensionGrid.data.length],
                 Width : 1,
                 Length : 1,
                 Height : 1,
