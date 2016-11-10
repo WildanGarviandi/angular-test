@@ -431,11 +431,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getAllWebstore = function() {
-        var params = {
-            offset: 0,
-            limit: 10000000
-        };
-        Webstores.getWebstore(params).$promise.then(function(data) {
+        Webstores.getWebstore().$promise.then(function(data) {
             _.each(data.data.webstores, function(webstore) {
                 var webstoreData = {
                     key: webstore.webstore.UserID,

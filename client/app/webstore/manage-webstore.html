@@ -368,7 +368,7 @@
             </form>
         </div>
     </div>
-    <div class="col-md-6 pull-left no-padding" style="margin-left:10px; margin-top:20px">
+    <div class="col-md-6 pull-left no-padding webstore-info">
         <h5 ng-show="parentWebstore">
             Webstore Parent :
         </h5>
@@ -418,6 +418,7 @@
                     <div class="form-input col-md-4">
                         <ui-select ng-model="newChild" 
                             theme="selectize" 
+                            tagging="tagHandler"
                             on-select="chooseWebstore($item)" 
                             class="booking-order-type input-md">
                             <ui-select-match class="input-table">{{$select.selected.text}}</ui-select-match>
@@ -450,7 +451,12 @@
                     <td>{{children.PhoneNumber}}</td>
                     <td class="webstore-cell">{{children.WebstoreCompany.PostPaidPayment ? "Postpaid" : "Prepaid"}}</td>
                     <td class="webstore-cell">{{children.WebstoreCompany.AllowCOD ? "Yes" : "No"}}</td>
-                    <td><button class="btn btn-danger btn-xs" ng-click="deleteChild(children.UserID, children.FirstName + ' '+ children.LastName)"><i class="fa fa-trash-o"></i></button></td>
+                    <td>
+                        <button class="btn btn-danger btn-xs" 
+                            ng-click="deleteChild(children.UserID, children.FirstName + ' '+ children.LastName)">
+                            <i class="fa fa-trash-o"></i>
+                        </button>
+                    </td>
                 </tr>
             </tbody>
             <tfoot ng-show="childrenWebstore.length > 5">
