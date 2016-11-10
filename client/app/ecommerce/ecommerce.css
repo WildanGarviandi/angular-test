@@ -80,3 +80,12 @@
 .colHeader {
     text-transform: capitalize;
 }
+
+.padding-b-15 {
+    padding-bottom: 15px;
+}
+
+.pricing-grid {
+    overflow: hidden; 
+    min-height: 300px;
+}

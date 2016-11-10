@@ -50,8 +50,14 @@
     </div>
     <div class="row">
         <uib-tabset active="active" class="col-md-12">
-            <uib-tab index="$index + 1" ng-repeat="tab in tabs" heading="{{tab.title}}" disable="tab.disabled" class="tab-button" active="tabs[$index].active" ng-click="chooseTab(tab.pricingType); tabs[$index].active = true">
-                <div class="row no-margin bg-white tab-border" style="padding-bottom: 15px">
+            <uib-tab index="$index + 1" 
+                ng-repeat="tab in tabs" 
+                heading="{{tab.title}}" 
+                disable="tab.disabled" 
+                class="tab-button" 
+                active="tabs[$index].active" 
+                ng-click="chooseTab(tab.pricingType); tabs[$index].active = true">
+                <div class="row no-margin bg-white tab-border padding-b-15">
                     <br>
                     <div class="col-md-4">
                         <p class="label-input">
@@ -85,14 +91,14 @@
             </div>
         </div>
         <div class="col-md-12">
-            <div class="bg-white" style="overflow: hidden; min-height: 300px">
+            <div class="bg-white pricing-grid">
                 <hot-table settings="{contextMenu: ['undo', 'redo'], afterChange: afterChange, beforeChange: beforeChange}"
                     col-headers="table.colHeaders"
                     datarows="table.data"
                     columns="table.columns">
                 </hot-table>
             </div>
-            <div class="col-md-12 no-padding bg-white tab-border" style="border-bottom: 1px solid #DDDDDD">
+            <div class="col-md-12 no-padding bg-white">
                 <h6><strong>Note:</strong> <span class="red">Red prices</span> is from master / default price</h6>
             </div>
         </div>

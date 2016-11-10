@@ -141,8 +141,9 @@ angular.module('adminApp')
             $location.search(val.model, item[val.pick]);
             if (key === 'Webstore') {
                 getWebstoreDetail(item[val.pick]);
+            } else {
+                getPrices();
             }
-            getPrices();
         };
     });
 
@@ -171,15 +172,16 @@ angular.module('adminApp')
         return $q(function (resolve) {
             if (!webstoreID) {
                 $scope.input.webstore = $scope.webstores[0];
+                getPrices();
                 return resolve();
             };
 
             Webstores.getWebstoreDetails({
                 id: webstoreID,
             }).$promise.then(function(result) {
-                //$scope.webstore = {key: result.data.User.FirstName.concat(' ', result.data.User.LastName), value: result.data.User.UserID};
                 $scope.input.webstore = {key: result.data.User.FirstName.concat(' ', result.data.User.LastName), value: result.data.User.UserID};
                 $scope.input.pricingType = result.data.User.WebstoreCompany.PricingType;
+                getPrices();
                 resolve();
             });
         });
@@ -227,6 +229,12 @@ angular.module('adminApp')
         } else {
             $scope.createTab($scope.input.pricingType);
         }
+
+        lodash.each($scope.tabs, function (val, key) {
+            if (val.pricingType === $scope.input.pricingType) {
+                $scope.tabs[key].active = true;
+            }
+        });
 
         var params = {
             merchantID: $scope.input.webstore.value,
@@ -376,7 +384,7 @@ angular.module('adminApp')
                 
             });
             $scope.table.data.push(rowContents);
-            i++
+            i++;
         });
     };
 
@@ -402,6 +410,10 @@ angular.module('adminApp')
         });
     };
 
+    /**
+     * Do function before cell changed
+     * Check initial state is integer or not
+     */
     $scope.beforeChange = function (changes, source) {
         $.each(changes, function (index, element) {
             var change = element;
@@ -413,6 +425,10 @@ angular.module('adminApp')
         });
     }
 
+    /**
+     * Do function after cell changed
+     * 
+     */
     $scope.afterChange = function (changes) {
         if (!changes) {
             return;
@@ -431,6 +447,10 @@ angular.module('adminApp')
         });
     }
 
+    /**
+     * Collect all changed Cell before push to Server
+     * 
+     */
     function collectDataBeforeSafe(data) {
         var isDataExist = false;
         var indexKey;
@@ -462,6 +482,10 @@ angular.module('adminApp')
         }
     }
 
+    /**
+     * Push Data to server by time interval
+     * set every 2 minutes while idle and has not pushed to server
+     */
     function startTimer(){
         var interval = 1;
         var timerID = -1; //hold the id
