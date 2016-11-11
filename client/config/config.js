@@ -66,8 +66,8 @@ function mainConfig() {
         defaultLocation: defaultLocation,
         notCancellableOrderStatus: [4, 5, 13, 16],
         // INTRANSIT, DELIVERED, CANCELLED, RETURNED_SENDER
-        reassignableOrderStatus: [2, 6, 10, 12, 15],
-        // ACCEPTED, NOTASSIGNED, NO-DRIVER, EXPIRED, RETURNED_WAREHOUSE
+        reassignableOrderStatus: [2, 6, 10, 12, 15, 3],
+        // ACCEPTED, NOTASSIGNED, NO-DRIVER, EXPIRED, RETURNED_WAREHOUSE, PICKUP
         activeGoal: 1500,
         activeMerchant: activeMerchant,
         countryCode: countryCode,
