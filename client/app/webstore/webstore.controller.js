@@ -27,6 +27,8 @@ angular.module('adminApp')
         $scope.user = data.profile;
     });
 
+    $scope.config = config;
+
     $scope.statusList = [
         { key: '', text: 'ALL'}, 
         { key: 1, text: 'PENDING'}, 
@@ -77,7 +79,6 @@ angular.module('adminApp')
         enableHorizontalScrollbar : 0,
         enableVerticalScrollbar : 0,
         headerRowHeight:30,
-        minRowsToShow : 8,
         columnDefs : [
             {
                 name: 'PackageSizeID',
@@ -468,7 +469,8 @@ angular.module('adminApp')
                 obj.PackageSizeID = config.packageDimensionID[obj.PackageDimensionID - 1];
                 $scope.packageDimensionGrid.data.push(obj);
             });
-            
+            $scope.packageDimensionGrid.minRowsToShow = $scope.packageDimensionGrid.data.length + 1;
+
             $scope.locationPicker();
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
@@ -840,6 +842,8 @@ angular.module('adminApp')
                 Weight : 1
             }
             $scope.packageDimensionGrid.data.push(newSize);
+            angular.element(document.getElementsByClassName('package-dimension-grid')[0])
+                .css('height', 82 + (30 * ($scope.packageDimensionGrid.data.length - 1)) + 'px');
         }
     };
 
@@ -851,6 +855,8 @@ angular.module('adminApp')
     $scope.deletePackageDimensionRow = function(row) {
         var index = row ? row : $scope.packageDimensionGrid.data.length - 1;
         $scope.packageDimensionGrid.data.splice(index, 1);
+        angular.element(document.getElementsByClassName('package-dimension-grid')[0])
+            .css('height', 82 + (30 * ($scope.packageDimensionGrid.data.length - 1)) + 'px');
     };
 
   });

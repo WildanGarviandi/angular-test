@@ -25,6 +25,7 @@ angular.module('adminApp', [
     'ui.grid.edit',
     'ui.grid.pinning',
     'ui.grid.cellNav',
+    'ui.grid.autoResize',
     'oitozero.ngSweetAlert',
     'dynamicNumber',
     'xeditable',
