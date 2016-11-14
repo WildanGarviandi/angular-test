@@ -824,7 +824,17 @@ angular.module('adminApp')
     };
 
     /**
-     * Upload orders
+     * Clear message of delivery attempts
+     * 
+     * @return {void}
+    */
+    $scope.clearMessageDeliveryAttempts = function () {
+        $scope.uploadedDeliveryAttempts = [];
+        $scope.errorUploadDeliveryAttempts = [];
+    }
+
+    /**
+     * Upload delivery attempts
      * 
      * @return {void}
     */
@@ -841,7 +851,7 @@ angular.module('adminApp')
                         }
                     }).then(function(response) {
                         $rootScope.$emit('stopSpin');
-                        $scope.clearMessage();
+                        $scope.clearMessageDeliveryAttempts();
                         if (!response.data.data.Insert) {
                             $scope.errorUploadDeliveryAttempts = {};
                             $scope.errorUploadDeliveryAttempts.isArray = false;
@@ -868,7 +878,7 @@ angular.module('adminApp')
                         $scope.uploadedDeliveryAttempts.update = response.data.data.Update;
                     }).catch(function(error){
                         $rootScope.$emit('stopSpin');
-                        $scope.clearMessage();
+                        $scope.clearMessageDeliveryAttempts();
                     });
                 }
             }

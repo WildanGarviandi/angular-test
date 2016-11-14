@@ -845,6 +845,9 @@
                     </uib-alert>
                 </div>
             </div>
+            <div class="col-xs-12 no-padding" ng-if="uploadedDeliveryAttempts.insert || errorUploadDeliveryAttempts.title">
+                <button class="btn btn-info" ng-click="clearMessageDeliveryAttempts()">Clear Notification Info</button>
+            </div>
         </div>
         <div class="clearfix"></div>
     </div>
