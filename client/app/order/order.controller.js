@@ -20,7 +20,8 @@ angular.module('adminApp')
             Webstores,
             Upload,
             $q,
-            SweetAlert
+            SweetAlert,
+            $timeout
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -720,6 +721,28 @@ angular.module('adminApp')
     }
 
     /**
+     * Fet all hubs data
+     * 
+     */
+    function getHubs () {
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            var params = {
+                offset: 0
+            };
+            Services2.getHubs(params).$promise.then(function(data) {
+                var hubs = data.data.Hubs.rows;
+                $scope.hubs = []; 
+                hubs.forEach(function(hub) {
+                    $scope.hubs.push({name: hub.Name, id: hub.HubID});
+                });
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
+        });
+    }
+
+    /**
      * Show import orders modals
      * 
      * @return {void}
@@ -900,18 +923,22 @@ angular.module('adminApp')
      * 
      * @return {Object} Promise
      */
-    var getCompanies = function () {
+    var getCompanies = function (withoutAllOption) {
         $scope.companies = [{
             CompanyDetailID: 'all',
             CompanyName: 'All (search by name)'
         }];
 
-        $scope.fleets = [{
-            User: {
-                UserID: '0'
-            },
-            CompanyName: 'All'
-        }];
+        if (withoutAllOption) {
+            $scope.fleets = [];
+        } else {
+            $scope.fleets = [{
+                User: {
+                    UserID: '0'
+                },
+                CompanyName: 'All'
+            }];
+        }
         return $q(function (resolve) {
             $rootScope.$emit('startSpin');
             Services2.getAllCompanies().$promise.then(function(result) {
@@ -1921,5 +1948,138 @@ angular.module('adminApp')
     $scope.clearFilter = function(item) {
         $state.reload();
     }
+
+    /**
+     * Set all seleted order to scope
+     */
+    function setSelectedOrder () {
+        $scope.selectedOrders = [];
+        $scope.displayed.forEach(function (order) {
+            if (order.Selected) {
+                $scope.selectedOrders.push(order);
+            }
+        });
+    }
+
+    /**
+     * Initialize reroute data and open modal
+     *
+     */
+    $scope.openRerouteModal = function () {
+        $scope.rerouteData = {
+            originHub: {},
+            destinationHub: {}
+        }
+        setSelectedOrder();
+        $scope.customFleet = false;
+        $scope.customFleetData = {
+            sender: '',
+            fee: 0,
+            transportation: '',
+            departureTime: moment().format(),
+            arrivalTime: moment().format(),
+            receipt: ''
+        }
+        $scope.customFleetDateOptions = {
+            singleDatePicker: true,
+            timePicker: true,
+            drops: 'up',
+            locale: {
+                format: 'MM/DD/YYYY hh:mm A'
+            }
+        }
+
+        getCompanies(true)
+        .then(getHubs)
+        .then(function () {
+            ngDialog.open({
+                template: 'rerouteModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default reroute-modal',
+                closeByDocument: false
+            });
+        });
+    }
+
+    $scope.reroute = function () {
+        reroute();
+    }
+
+    /**
+     * Reroute / redirect order
+     * Send to the API
+     * 
+     */
+    function reroute () {
+        var orderIDs = [];
+        var userOrderNumbers = [];
+        $scope.selectedOrders.forEach(function (order) {
+            orderIDs.push(order.UserOrderID);
+            userOrderNumbers.push(order.UserOrderNumber);
+        });
+        SweetAlert.swal({
+            title: 'Summary',
+            text: 'Reroute orders ' + userOrderNumbers.join(', ') + ' from hub ' + $scope.rerouteData.originHub.name +
+                    ' to hub ' + $scope.rerouteData.destinationHub.name + 
+                    ' by logistic vendor ' + 
+                    (($scope.customFleet) ? $scope.customFleetData.sender : $scope.fleet.CompanyName) + ' ? ',
+            showCancelButton: true,
+            closeOnConfirm: false,
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.rerouteOrders({
+                    userOrderIDs: orderIDs,
+                    originHubID: $scope.rerouteData.originHub.id,
+                    destinationHubID: $scope.rerouteData.destinationHub.id,
+                    fleetID: (!$scope.customFleet) ? $scope.fleet.User.UserID : null,
+                    externalTripData: ($scope.customFleet) ? $scope.customFleetData : null
+                }).$promise.then(function (result) {
+                    $rootScope.$emit('stopSpin');
+                    ngDialog.closeAll();
+                    SweetAlert.swal({
+                        title: "Reroute Succeed!",
+                        type: "success"
+                    });
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    ngDialog.closeAll();
+                    SweetAlert.swal("Reroute Failed!", "Please call tech support", "error");
+                });
+            }
+        });
+    }
+
+    $scope.uploadPic = function (file) {
+        $rootScope.$emit('startSpin');
+        if (file) {
+            $scope.f = file;
+            file.upload = Upload.upload({
+                url: config.url + 'upload/picture',
+                data: {file: file}
+            })
+            .then(function (response) {
+                $timeout(function () {
+                    file.result = response.data;
+                    if (response.data.data && !response.data.error) {
+                        $scope.customFleetData.receipt = response.data.data.Location;
+                    } else {
+                        alert('Uploading picture failed. Please try again');
+                        $scope.errorMsg = 'Uploading picture failed. Please try again';
+                    }
+                    $rootScope.$emit('stopSpin');
+                });
+            }, function (response) {
+                if (response.status > 0) {
+                    $scope.errorMsg = response.status + ': ' + response.data;
+                }
+                $rootScope.$emit('stopSpin');
+            }, function (evt) {
+                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            });
+        }
+    };
     
 });

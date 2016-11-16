@@ -570,6 +570,13 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'bulk-return-customer'
             }
+        },
+        rerouteOrders: {
+            method: 'POST',
+            params: {
+                module: 'trip',
+                controller: 'redirect'
+            }
         }
     });
 });
