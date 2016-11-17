@@ -583,6 +583,9 @@ angular.module('adminApp')
                 alert('Failed');                 
             }
             $rootScope.$emit('stopSpin');
+        }).catch(function (e) {
+            $rootScope.$emit('stopSpin');
+            alert('Failed'); 
         });
     }
 
