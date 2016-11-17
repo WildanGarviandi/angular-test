@@ -99,7 +99,7 @@
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu col-xs-12">
-                <li><a class=""></a></li>
+                <li><a ng-click="showUpdateOrderTime()" class="">Update Order Time</a></li>
             </ul>
         </div>
         <div class="clearfix"></div>
@@ -874,5 +874,47 @@
         <div class="row-fluid">
             <button class="btn btn-primary" ng-click="bulkReturnSender()">Mark as Return Sender</button>              
         </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="importUpdateOrderTimeModal">
+    <div class="header-wrapper">
+        <h1>Update Order Time</h1>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid">
+        <div class="row no-margin">
+            <div class="col-xs-12 no-padding">
+                Example for import:
+                <a href="{{urlToDownload.templateUpdateTime}}" target="_blank">Download Template</a>
+            </div>
+        </div>
+        <div class="row-fluid uploadXls">
+            <div ngf-drop="uploadUpdateTime($files)" 
+                ngf-select="uploadUpdateTime($files)" 
+                ng-model="files" 
+                class="drop-box" 
+                ngf-drag-over-class="dragover" 
+                ngf-multiple="true" 
+                ngf-allow-dir="true" 
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+                ngf-pattern="'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'">
+                Drop <strong>.xlsx</strong> or click here to upload
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid" ng-if="uploadedUpdateTime"> 
+            <uib-alert ng-if="uploadedUpdateTime.link" type="success">
+                <p>result in excel file will start download automatically</p>
+                <p>if not start try click this link <a href="{{uploadedUpdateTime.link}}" download="{{uploadedUpdateTime.fileName}}" target="_blank">Download</a></p> 
+            </uib-alert>
+            <uib-alert ng-if="errorUploadUpdateTime.message" type="danger">
+                {{errorUploadUpdateTime.message}} 
+            </uib-alert>
+        </div>
+        <div class="clearfix"></div>
     </div>
 </script>
