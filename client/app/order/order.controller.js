@@ -37,6 +37,8 @@ angular.module('adminApp')
     $scope.defaultFilter = {};
     $scope.isDefaultFilterActive = true;
 
+    $scope.isImportTypeDefault = true;
+
     $scope.status = {
         key: 'All',
         value: 'All'
@@ -98,7 +100,11 @@ angular.module('adminApp')
         endDate: null
     };
 
-    $scope.importedDatePicker = new Date();
+    $scope.importedDatePicker = moment().add(1, 'hours').toDate();
+
+    $scope.dataTemporary = [];
+    $scope.showMerchantListOnImport = false;
+    $scope.showFleetListOnImport = false;
 
     /*
      * Set picker name for filter
@@ -709,12 +715,16 @@ angular.module('adminApp')
      */
     $scope.getMerchants = function() {
         Webstores.getWebstore().$promise.then(function(data) {
-            $scope.merchants = []; 
+            $scope.merchants = [{
+                key: 'Choose Merchant',
+                value: '0'
+            }];
             data.data.webstores.forEach(function(merchant) {
                 $scope.merchants.push({
                     key: merchant.webstore.FirstName + ' ' + merchant.webstore.LastName, 
                     value: merchant.webstore.UserID
                 });
+                $scope.merchant = $scope.merchants[0];
             });
         });
     }
@@ -747,6 +757,24 @@ angular.module('adminApp')
     }
 
     /**
+     * Check is it using Merchant on import
+     * 
+     * @return {void}
+    */
+    $scope.isShowMerchantListOnImport = function() {
+        $scope.showMerchantListOnImport = !$scope.showMerchantListOnImport;
+    }
+
+    /**
+     * Check is it using Fleet on import
+     * 
+     * @return {void}
+    */
+    $scope.isShowFleetListOnImport = function() {
+        $scope.showFleetListOnImport = !$scope.showFleetListOnImport;
+    }
+
+    /**
      * Clear message
      * 
      * @return {void}
@@ -754,7 +782,7 @@ angular.module('adminApp')
     $scope.clearMessage = function () {
         $scope.uploaded = [];
         $scope.updated = [];
-        $scope.error = [];
+        $scope.importOrderError = [];
     }
 
     /**
@@ -767,43 +795,104 @@ angular.module('adminApp')
             alert('Please select merchant');
             return;
         }
+
+        $scope.dataTemporary = [];
+        $scope.dataTemporary.title = '';
+        var data = {};
+
         if (files && files.length) {
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
+                $scope.dataTemporary.title += file.name;
+                data.file = file;
+                data.pickupTime = $scope.importedDatePicker;
+
                 if (!file.$error) {
                     $rootScope.$emit('startSpin');
-                    Upload.upload({
-                        url: config.url + 'order/import/xlsx',
-                        data: {
-                            file: file,
-                            merchantID : $scope.merchant.value,
-                            pickupTime: $scope.importedDatePicker,
-                            fleetManagerID: $scope.fleet.User.UserID
-                        }
-                    }).then(function(response) {
-                        $rootScope.$emit('stopSpin');
-                        $scope.clearMessage();
-                        response.data.data.forEach(function(order, index){
-                            var row = index + 2;
-                            if (order.isCreated) {
-                                $scope.uploaded.push(order);
-                            } else if (order.isUpdated) {
-                                $scope.updated.push(order);
-                            } else {
-                                $scope.error.push({row: row, list: order.error});
-                            }
-                        });
-                    }).catch(function(error){
-                        $rootScope.$emit('stopSpin');
-                        $scope.clearMessage();
-                        var errorMessage = error.data.error.message;
-                        if (!(errorMessage instanceof Array)) {
-                            $scope.error.push({list: [error.data.error.message]});
-                        }
-                    });
+                    $scope.dataTemporary.push(data);
                 }
             }
         }
+    };
+
+    /**
+     * Start upload orders
+     * 
+     * @return {void}
+    */
+    $scope.startUpload = function() {
+        var url = config.url + 'order/import/xlsx';
+        var data = $scope.dataTemporary;
+
+        if (!data.length) {
+            return SweetAlert.swal({
+                title: 'Error',
+                text: 'Please drop excel file',
+                type: 'error'
+            });
+        }
+
+        if ($scope.showMerchantListOnImport && !parseInt($scope.merchant.value)) {
+            return SweetAlert.swal({
+                title: 'Error',
+                text: 'Merchant required',
+                type: 'error'
+            });
+        }
+
+        if ($scope.showFleetListOnImport && !parseInt($scope.fleet.User.UserID)) {
+            return SweetAlert.swal({
+                title: 'Error',
+                text: 'Fleet required',
+                type: 'error'
+            });
+        }
+
+        var successFunction = function (response) {
+            response.data.data.forEach(function(order, index){
+                var row = index + 2;
+                if (order.isCreated) {
+                    $scope.uploaded.push(order);
+                } else if (order.isUpdated) {
+                    $scope.updated.push(order);
+                } else {
+                    $scope.importOrderError.push({row: row, list: order.error});
+                }
+            });
+        };
+
+        var errorFunction = function(error) {
+            var errorMessage = error.data.error.message;
+            if (!(errorMessage instanceof Array)) {
+                $scope.importOrderError.push({list: [error.data.error.message]});
+            }
+        };
+        
+        lodash.forEach(data, function(val) {
+            val.merchantID = $scope.merchant.value;
+            val.fleetManagerID = $scope.fleet.User.UserID;
+            doUpload(url, val, successFunction, errorFunction);
+        })
+    }
+
+    /**
+     * General function to import file
+     * 
+     * @return {void}
+    */
+    var doUpload = function(url, data, successFunction, errorFunction) {
+        Upload.upload({
+            url: url,
+            data: data
+        }).then(function(response) {
+            $rootScope.$emit('stopSpin');
+            $scope.clearMessage();
+            successFunction(response);
+        }).catch(function(error){
+            $rootScope.$emit('stopSpin');
+            $scope.clearMessage();
+            errorFunction(error);
+        });
     };
 
     /**
@@ -910,7 +999,7 @@ angular.module('adminApp')
             User: {
                 UserID: '0'
             },
-            CompanyName: 'All'
+            CompanyName: 'Choose Fleet'
         }];
         return $q(function (resolve) {
             $rootScope.$emit('startSpin');
