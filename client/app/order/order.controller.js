@@ -749,7 +749,7 @@ angular.module('adminApp')
     */
     $scope.showImportOrders = function() {
         $scope.getMerchants();
-        getCompanies()
+        getCompanies(true)
         .then(function () {
             ngDialog.close()
             ngDialog.open({
@@ -920,18 +920,18 @@ angular.module('adminApp')
 
     /**
      * Get all companies
-     * 
-     * @return {Object} Promise
+     * @param  {boolean} withAllOption - if true, will add 'All' option or 'no fleet'
+     *      
      */
-    var getCompanies = function (withoutAllOption) {
+    var getCompanies = function (withAllOption) {
         $scope.companies = [{
             CompanyDetailID: 'all',
             CompanyName: 'All (search by name)'
         }];
 
-        if (withoutAllOption) {
-            $scope.fleets = [];
-        } else {
+        $scope.fleets = [];
+
+        if (withAllOption) {
             $scope.fleets = [{
                 User: {
                     UserID: '0'
@@ -939,6 +939,7 @@ angular.module('adminApp')
                 CompanyName: 'All'
             }];
         }
+
         return $q(function (resolve) {
             $rootScope.$emit('startSpin');
             Services2.getAllCompanies().$promise.then(function(result) {
@@ -1005,7 +1006,7 @@ angular.module('adminApp')
      */
     $scope.reassignDriver = function () {
         $rootScope.$emit('startSpin');
-        getCompanies()
+        getCompanies(true)
         .then(function () {
             ngDialog.open({
                 template: 'reassignDriverTemplate',
@@ -1686,7 +1687,7 @@ angular.module('adminApp')
             SweetAlert.swal('Error', 'You have selected one or more orders which cannot be reassigned', 'error');
             return false;
         }
-        getCompanies()
+        getCompanies(true)
         .then(function () {
             ngDialog.close();
             return ngDialog.open({
@@ -1989,7 +1990,7 @@ angular.module('adminApp')
             }
         }
 
-        getCompanies(true)
+        getCompanies(false)
         .then(getHubs)
         .then(function () {
             ngDialog.open({
@@ -2021,8 +2022,9 @@ angular.module('adminApp')
             title: 'Summary',
             text: 'Reroute orders ' + userOrderNumbers.join(', ') + ' from hub ' + $scope.rerouteData.originHub.name +
                     ' to hub ' + $scope.rerouteData.destinationHub.name + 
-                    ' by logistic vendor ' + 
-                    (($scope.customFleet) ? $scope.customFleetData.sender : $scope.fleet.CompanyName) + ' ? ',
+                    ' by ' + 
+                    (($scope.customFleet) ? ('third party logistic ' + $scope.customFleetData.sender) : 
+                        ('logistic vendor ' + $scope.fleet.CompanyName)) + ' ? ',
             showCancelButton: true,
             closeOnConfirm: false,
             confirmButtonText: "Yes",
@@ -2052,6 +2054,11 @@ angular.module('adminApp')
         });
     }
 
+    /**
+     * Upload an image to the cloud, will return a url as a response
+     * @param  {File} file - image to be uploaded
+     * 
+     */
     $scope.uploadPic = function (file) {
         $rootScope.$emit('startSpin');
         if (file) {
