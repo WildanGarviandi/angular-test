@@ -821,7 +821,6 @@ angular.module('adminApp')
                 data.pickupTime = $scope.importedDatePicker;
 
                 if (!file.$error) {
-                    $rootScope.$emit('startSpin');
                     $scope.dataTemporary.push(data);
                 }
             }
@@ -897,6 +896,7 @@ angular.module('adminApp')
      * @return {void}
     */
     var doUpload = function(url, data, successFunction, errorFunction) {
+        $rootScope.$emit('startSpin');
         Upload.upload({
             url: url,
             data: data
