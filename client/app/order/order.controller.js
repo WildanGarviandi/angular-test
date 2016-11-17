@@ -2048,7 +2048,8 @@ angular.module('adminApp')
                 }).catch(function (e) {
                     $rootScope.$emit('stopSpin');
                     ngDialog.closeAll();
-                    SweetAlert.swal("Reroute Failed!", "Please call tech support", "error");
+                    SweetAlert.swal("Reroute Failed!", 'Please call tech support. Error message: ' + 
+                        e.data.error.message, "error");
                 });
             }
         });
