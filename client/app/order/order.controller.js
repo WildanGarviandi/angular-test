@@ -101,10 +101,12 @@ angular.module('adminApp')
     };
 
     $scope.importedDatePicker = moment().add(1, 'hours').toDate();
+    $scope.importedDatePickerNow = moment().add(1, 'hours').format('dddd, MMM Do HH:mm');
 
     $scope.dataTemporary = [];
     $scope.showMerchantListOnImport = false;
     $scope.showFleetListOnImport = false;
+    $scope.readyForPickupOnImport = false;
 
     /*
      * Set picker name for filter
@@ -735,6 +737,7 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.showImportOrders = function() {
+        $scope.clearMessage();
         $scope.getMerchants();
         getCompanies()
         .then(function () {
@@ -754,6 +757,7 @@ angular.module('adminApp')
     */
     $scope.onTimeSet = function (newDate, oldDate) {
         $scope.importedDatePicker = newDate;
+        $scope.importedDatePickerNow = moment(newDate).format('dddd, MMM Do HH:mm');
     }
 
     /**
@@ -772,6 +776,15 @@ angular.module('adminApp')
     */
     $scope.isShowFleetListOnImport = function() {
         $scope.showFleetListOnImport = !$scope.showFleetListOnImport;
+    }
+
+    /**
+     * Check is it ready for pickup on import
+     * 
+     * @return {void}
+    */
+    $scope.isReadyForPickupOnImport = function() {
+        $scope.readyForPickupOnImport = !$scope.readyForPickupOnImport;
     }
 
     /**
@@ -871,6 +884,9 @@ angular.module('adminApp')
         lodash.forEach(data, function(val) {
             val.merchantID = $scope.merchant.value;
             val.fleetManagerID = $scope.fleet.User.UserID;
+            if ($scope.readyForPickupOnImport) {
+                val.isReadyForPickup = true;
+            }
             doUpload(url, val, successFunction, errorFunction);
         })
     }
