@@ -75,8 +75,8 @@
                         <ui-select-match placeholder="Choose parent">
                             {{ $select.selected.key }}
                         </ui-select-match>
-                        <ui-select-choices repeat="m in hubs" selected>
-                            <span ng-bind-html="m.key"></span>
+                        <ui-select-choices repeat="m in hubs | filter: $select.search" selected>
+                            <span ng-bind-html="m.key | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
                 </div>
@@ -93,8 +93,8 @@
                         <ui-select-match placeholder="Choose fleet manager">
                             {{ $select.selected.CompanyName }}
                         </ui-select-match>
-                        <ui-select-choices repeat="m in companies" selected>
-                            <span ng-bind-html="m.CompanyName"></span>
+                        <ui-select-choices repeat="m in companies | filter: $select.search" selected>
+                            <span ng-bind-html="m.CompanyName | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
                     <div class="form-group has-error">
@@ -161,8 +161,8 @@
                         <ui-select-match placeholder="Choose country">
                             {{ $select.selected.Name }}
                         </ui-select-match>
-                        <ui-select-choices repeat="m in countries" selected>
-                            <span ng-bind-html="m.Name"></span>
+                        <ui-select-choices repeat="m in countries | filter: $select.search" selected>
+                            <span ng-bind-html="m.Name | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
                     <div class="form-group has-error">
@@ -184,8 +184,8 @@
                         <ui-select-match placeholder="Choose state">
                             {{ $select.selected.Name }}
                         </ui-select-match>
-                        <ui-select-choices repeat="m in states" selected>
-                            <span ng-bind-html="m.Name"></span>
+                        <ui-select-choices repeat="m in states | filter: $select.search" selected>
+                            <span ng-bind-html="m.Name | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
                     <div class="form-group has-error">
@@ -207,8 +207,8 @@
                         <ui-select-match placeholder="Choose city">
                             {{ $select.selected.Name }}
                         </ui-select-match>
-                        <ui-select-choices repeat="m in cities" selected>
-                            <span ng-bind-html="m.Name"></span>
+                        <ui-select-choices repeat="m in cities | filter: $select.search" selected>
+                            <span ng-bind-html="m.Name | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
                     <div class="form-group has-error">
