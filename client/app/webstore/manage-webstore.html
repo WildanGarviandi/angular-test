@@ -400,8 +400,14 @@
             <h5>
                 <b>Webstore Children</b> 
                 <span>({{childrenWebstore.length}} Children)</span>
-                <button ng-hide="showCreateChild" ng-click="showCreateChild = true" class="btn btn-sm btn-default pull-right">Create Child</button>
-                <button ng-show="showCreateChild" ng-click="showCreateChild = false" class="btn btn-sm btn-default pull-right">Cancel Create</button>
+                <button 
+                    ng-hide="showCreateChild" 
+                    ng-click="showCreateChild = true" 
+                    class="btn btn-sm btn-default pull-right">Create Child</button>
+                <button 
+                    ng-show="showCreateChild" 
+                    ng-click="showCreateChild = false" 
+                    class="btn btn-sm btn-default pull-right">Cancel Create</button>
             </h5>
         </div>
         <div ng-show="showCreateChild" class="row no-margin createWebstoreChild">
@@ -465,11 +471,27 @@
                 <tfoot ng-show="childrenWebstore.length > 5">
                     <tr class="paginationBar">
                         <td colspan="5">
-                            <button ng-click="paginationChildWebstore(0)" class="btn btn-sm btn-default">First</button>
-                            <button ng-click="paginationChildWebstore(offset-5)" ng-class="{disabled: offset == 0}" class="btn btn-sm btn-default"><</button>
-                            <button ng-repeat="n in childrenWebstore" ng-if="$index % 5 == 0" ng-class="{active: $index == offset}" class="btn btn-sm btn-default" ng-click="paginationChildWebstore($index)" ng-bind="($index/5) + 1">1</button>
-                            <button ng-click="paginationChildWebstore(offset+5)" ng-class="{disabled: offset >= (childrenWebstore.length - (childrenWebstore.length % 5))}" class="btn btn-sm btn-default">></button>
-                            <button ng-click="paginationChildWebstore(childrenWebstore.length - (childrenWebstore.length % 5))" class="btn btn-sm btn-default">Last</button>
+                            <button 
+                                ng-click="paginationChildWebstore(0)" 
+                                class="btn btn-sm btn-default">First</button>
+                            <button 
+                                ng-click="paginationChildWebstore(offset-5)"
+                                ng-class="{disabled: offset == 0}" 
+                                class="btn btn-sm btn-default"><</button>
+                            <button 
+                                ng-repeat="n in childrenWebstore" 
+                                ng-if="$index % 5 == 0" 
+                                ng-class="{active: $index == offset}" 
+                                class="btn btn-sm btn-default" 
+                                ng-click="paginationChildWebstore($index)" 
+                                ng-bind="($index/5) + 1">1</button>
+                            <button 
+                                ng-click="paginationChildWebstore(offset+5)" 
+                                ng-class="{disabled: offset >= (childrenWebstore.length - (childrenWebstore.length % 5))}" 
+                                class="btn btn-sm btn-default">></button>
+                            <button 
+                                ng-click="paginationChildWebstore(childrenWebstore.length - (childrenWebstore.length % 5))"
+                                class="btn btn-sm btn-default">Last</button>
                         </td>
                     </tr>
                 </tfoot>
