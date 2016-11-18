@@ -868,6 +868,11 @@
                     ng-model="customFleetData.transportation" required />
             </div>
             <div class="form-group">
+                <label class="control-label" for="awb">AWB Number : </label>
+                <input type="text" name="awb" class="form-control"
+                    ng-model="customFleetData.awbNumber" required />
+            </div>
+            <div class="form-group">
                 <label class="control-label" for="departure">Departure Time: </label>
                 <input type="text" name="departure" class="form-control date-picker"
                     ng-model="customFleetData.departureTime" date-range-picker required
@@ -893,7 +898,8 @@
         <div class="row-fluid">
             <button class="btn btn-primary btn-block submit-btn" ng-click="reroute()"
                 ng-disabled="!rerouteData.originHub.id || !rerouteData.destinationHub.id || 
-                    (!customFleet && !fleet) || (customFleet && fleetForm.$invalid)">Reroute</button>
+                    (!customFleet && !fleet) || (customFleet && (fleetForm.$invalid || !customFleetData.receipt))"
+                    >Reroute</button>
         </div>
     </div>
 </script>

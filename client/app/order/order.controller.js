@@ -1979,7 +1979,8 @@ angular.module('adminApp')
             transportation: '',
             departureTime: moment().format(),
             arrivalTime: moment().format(),
-            receipt: ''
+            receipt: '',
+            awbNumber: ''
         }
         $scope.customFleetDateOptions = {
             singleDatePicker: true,
