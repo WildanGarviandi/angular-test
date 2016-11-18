@@ -793,6 +793,8 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.clearMessage = function () {
+        $scope.dataTemporary = [];
+        $scope.dataTemporary.title = '';
         $scope.uploaded = [];
         $scope.updated = [];
         $scope.importOrderError = [];
@@ -809,8 +811,8 @@ angular.module('adminApp')
             return;
         }
 
-        $scope.dataTemporary = [];
-        $scope.dataTemporary.title = '';
+        $scope.clearMessage();
+        
         var data = {};
 
         if (files && files.length) {
