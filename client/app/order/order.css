@@ -486,4 +486,26 @@ a {
 
 .order-buttons.col-xs-12 {
     margin-bottom: 5px;
-};
+}
+
+.order-table {
+     max-height: 550px;
+     margin-top: 20px;
+}
+
+.order-table table {
+     margin: 0px !important;
+}
+
+.order-table tfoot td {
+     border: 0px !important;
+}
+
+.order-table .pagination {
+     margin: 0px !important;
+}
+
+.order-table tfoot {
+    position: absolute;
+    bottom: -50px;
+};;
