@@ -50,6 +50,9 @@ angular.module('adminApp')
             },
             fleets : {
                 routes: ['/fleets']
+            },
+            deliveryDistribution: {
+                routes: ['/deliveryDistribution']
             }
         };
 
@@ -114,5 +117,10 @@ angular.module('adminApp')
             $scope.menus[menu].expanded = !$scope.menus[menu].expanded;
         }
 
+        $scope.isMenuDisable = function() {
+            $scope.menus.deliveryDistribution.menu = config.features.deliveryDistribution.menu;
+        }
+
+        $scope.isMenuDisable();
         $scope.refreshSidebar();
     });
