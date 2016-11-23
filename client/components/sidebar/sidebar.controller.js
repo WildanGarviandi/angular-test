@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('adminApp')
-    .controller('SidebarCtrl', function($scope, $location, $rootScope, usSpinnerService, localStorageService, Notification) {
+    .controller('SidebarCtrl', function($scope, $location, $rootScope, usSpinnerService, localStorageService, Notification, config) {
 
         $scope.currentPath = $location.path();
         $scope.menus = {
