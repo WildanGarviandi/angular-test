@@ -62,17 +62,8 @@ function mainConfig() {
             var activeMerchant = [0, 0, 0, 0, 0, 0];
             var countryCode = '+63';
             break;
-        case 'staging.admin|com':
-            var url = 'https://api2.etobee.com';
-            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
-            var currency = 'Rp';
-            var decimalSeparator = ',';
-            var zipLength = 5;
-            var activeMerchant = [0, 0, 0, 0, 0, 0];
-            var countryCode = '+62';
-            break;
-        case 'sandbox-v3.admin|com':
-            var url = 'https://api2.etobee.com';
+        case 'sandbox-v3|com':
+            var url = 'http://sandbox-v2.api2.etobee.com';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
             var decimalSeparator = ',';
