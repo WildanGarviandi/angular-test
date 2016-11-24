@@ -71,7 +71,7 @@
     <!-- endbuild -->
 </head>
 
-<body ng-app="adminApp">
+<body ng-app="adminApp" ng-style="{'overflow': spinnerShown ? 'hidden': 'visible'}">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -222,8 +222,14 @@
     <div ng-class="{ content: true, expanded: expanded }">
         <div ui-view="content"></div>
     </div>
-    <div id='spinner-container' ng-class="{ overlay: spinnerShown }" ng-if="spinnerShown">
-        <span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-1" ></span>
+    <div id='spinner-container' class="spinner-container spinnerShown" ng-if="spinnerShown">
+        <!--<span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-1" ></span>-->
+        <div class="spinner-body">
+            <div class="circleSpinnerloader spinner-area">
+            </div>
+            <p class="text-center text-white">etobee</p>
+            <h6 class="text-center text-white">loading . . .</h6>
+        </div>
     </div>
 
 </body>

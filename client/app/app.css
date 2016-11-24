@@ -259,7 +259,44 @@ table > tbody > tr > td.more {
         transform: rotate(360deg);
     }
 }
+
+.spinner-container {
+    background: rgb(105, 36, 103);
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: table;
+}
+
+.spinner-body {
+    height: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.spinner-area {
+    background-position-y: 11px;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    transform: rotate(0deg);
+    background-size: 47px;
+    background-color: #7d1a7a;
+    animation: spin 1800ms linear infinite;
+    border-color: #fff;
+}
+
+body! > .spinner-container {
+    overflow: hidden;
+}
 /* End Loading CSS */
+
+.text-white {
+    color: white;
+}
+
 .table-responsive {
     overflow-x: scroll;
 }
