@@ -104,6 +104,8 @@ angular.module('adminApp')
 
     $scope.drivers = [];
     $scope.isFetchingDrivers = false;
+    $scope.urlToDownload = {};
+    $scope.urlToDownload.templateDeliveryAttempts = '../../assets/template/importUserOrderAttempt.xlsx';
 
     /*
      * Set picker name for filter
@@ -759,6 +761,20 @@ angular.module('adminApp')
     }
 
     /**
+     * Show import delivery attempts modals
+     * 
+     * @return {void}
+    */
+    $scope.showImportDeliveryAttempts = function() {
+        ngDialog.close()
+        ngDialog.open({
+            template: 'importDeliveryAttemptsModal',
+            scope: $scope,
+            className: 'ngdialog-theme-default import-orders'
+        });
+    }
+
+    /**
      * Set imported date picker
      * 
      * @return {void}
@@ -821,6 +837,68 @@ angular.module('adminApp')
                         if (!(errorMessage instanceof Array)) {
                             $scope.error.push({list: [error.data.error.message]});
                         }
+                    });
+                }
+            }
+        }
+    };
+
+    /**
+     * Clear message of delivery attempts
+     * 
+     * @return {void}
+    */
+    $scope.clearMessageDeliveryAttempts = function () {
+        $scope.uploadedDeliveryAttempts = [];
+        $scope.errorUploadDeliveryAttempts = [];
+    }
+
+    /**
+     * Upload delivery attempts
+     * 
+     * @return {void}
+    */
+    $scope.uploadDeliveryAttempts = function(files) {
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                if (!file.$error) {
+                    $rootScope.$emit('startSpin');
+                    Upload.upload({
+                        url: config.url + 'order/import/bulk-report-attempt',
+                        data: {
+                            file: file
+                        }
+                    }).then(function(response) {
+                        $rootScope.$emit('stopSpin');
+                        $scope.clearMessageDeliveryAttempts();
+                        if (!response.data.data.Insert) {
+                            $scope.errorUploadDeliveryAttempts = {};
+                            $scope.errorUploadDeliveryAttempts.isArray = false;
+                            var errorMessages = response.data.data.messages;
+                            if (!errorMessages) {
+                                $scope.errorUploadDeliveryAttempts.isArray = true;
+                                errorMessages = response.data.data.message;
+                            }
+                            $scope.errorUploadDeliveryAttempts.title = response.data.data.title;
+                            $scope.errorUploadDeliveryAttempts.message = errorMessages;
+                            if ($scope.errorUploadDeliveryAttempts.isArray) {
+                                $scope.errorUploadDeliveryAttempts.message = [];
+                                errorMessages.forEach(function(errorMessage, index){
+                                    $scope.errorUploadDeliveryAttempts.message.push({
+                                        row: errorMessage.at_row, 
+                                        list: errorMessage.error
+                                    });
+                                });
+                            }
+                        }
+
+                        $scope.uploadedDeliveryAttempts = {};
+                        $scope.uploadedDeliveryAttempts.insert = response.data.data.Insert;
+                        $scope.uploadedDeliveryAttempts.update = response.data.data.Update;
+                    }).catch(function(error){
+                        $rootScope.$emit('stopSpin');
+                        $scope.clearMessageDeliveryAttempts();
                     });
                 }
             }

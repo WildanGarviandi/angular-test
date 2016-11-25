@@ -456,6 +456,8 @@
 .label-limit {
     padding: 8px;
     font-size: 13px;
+    padding-right:0;
+    position: absolute;
 }
 
 .action-button {
