@@ -2044,6 +2044,9 @@ angular.module('adminApp')
                     ngDialog.closeAll();
                     SweetAlert.swal({
                         title: "Reroute Succeed!",
+                        text: "Order has been reroute to trip with ID " + result.data.tripID + " from Hub " +
+                                $scope.rerouteData.originHub.name + " to Hub " + 
+                                $scope.rerouteData.destinationHub.name + ".",
                         type: "success"
                     });
                 }).catch(function (e) {
