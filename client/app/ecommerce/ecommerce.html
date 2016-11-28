@@ -21,11 +21,12 @@
                 Select Webstore :
                 <ui-select ng-model="input.webstore"
                     theme="bootstrap"
+                    tagging="tagHandler"
                     on-select="chooseWebstore($item)">
-                    <ui-select-match placeholder="Search or choose webstore">
+                    <ui-select-match class="ui-select-match" placeholder="Search or choose webstore">
                         {{ $select.selected.key }}
                     </ui-select-match>
-                    <ui-select-choices repeat="m in webstores | filter: $select.search" selected>
+                    <ui-select-choices class="ui-select-choices" repeat="m in webstores | filter: $select.search" selected>
                         <span ng-bind-html="m.key | highlight: $select.search"></span>
                     </ui-select-choices>
                 </ui-select>
@@ -35,50 +36,11 @@
                 <ui-select ng-model="input.pickup"
                     theme="bootstrap"
                     on-select="choosePickup($item)">
-                    <ui-select-match placeholder="Choose pickup type">
+                    <ui-select-match class="ui-select-match" placeholder="Choose pickup type">
                         {{ $select.selected.key }}
                     </ui-select-match>
-                    <ui-select-choices repeat="m in pickupTypes" selected>
-                        <span ng-bind-html="m.key"></span>
-                    </ui-select-choices>
-                </ui-select>
-            </div>
-            <div class="col-md-2">
-                Select Vehicle Type :
-                <ui-select ng-model="input.vehicle"
-                    theme="bootstrap"
-                    on-select="chooseVehicle($item)">
-                    <ui-select-match placeholder="Choose vehicle type">
-                        {{ $select.selected.Name }}
-                    </ui-select-match>
-                    <ui-select-choices repeat="m in vehicleTypes" selected>
-                        <span ng-bind-html="m.Name"></span>
-                    </ui-select-choices>
-                </ui-select>
-            </div>
-            <div class="col-md-2">
-                Select Weight :
-                <ui-select ng-model="input.weight"
-                    theme="bootstrap"
-                    on-select="chooseWeight($item)">
-                    <ui-select-match placeholder="Choose weight">
-                        {{ $select.selected.description }}
-                    </ui-select-match>
-                    <ui-select-choices repeat="m in weight" selected>
-                        <span ng-bind-html="m.description"></span>
-                    </ui-select-choices>
-                </ui-select>
-            </div>
-            <div class="col-md-2">
-                Select Discount :
-                <ui-select ng-model="input.discount"
-                    theme="bootstrap"
-                    on-select="chooseDiscount($item)">
-                    <ui-select-match placeholder="Select discount">
-                        {{ $select.selected.description }}
-                    </ui-select-match>
-                    <ui-select-choices repeat="m in discount" selected>
-                        <span ng-bind-html="m.description"></span>
+                    <ui-select-choices class="ui-select-choices" repeat="m in pickupTypes | filter: $select.search" selected>
+                        <span ng-bind-html="m.key | highlight: $select.search"></span>
                     </ui-select-choices>
                 </ui-select>
             </div>
@@ -88,16 +50,39 @@
     </div>
     <div class="row">
         <uib-tabset active="active" class="col-md-12">
-            <uib-tab index="{{$index + 1}}"
-                select="filterTab(tab.value)" 
-                heading="{{tab.heading}}"
-                active="tab.active"
-                ng-repeat="tab in tabs"
-                ng-hide="tab.hide"
-                uib-tooltip="{{tab.tooltip}}"></uib-tab>
+            <uib-tab index="$index + 1" 
+                ng-repeat="tab in tabs" 
+                heading="{{tab.title}}" 
+                disable="tab.disabled" 
+                class="tab-button" 
+                active="tabs[$index].active" 
+                ng-click="chooseTab(tab.pricingType); tabs[$index].active = true">
+                <div class="row no-margin bg-white tab-border padding-b-15">
+                    <br>
+                    <div class="col-md-4">
+                        <p class="label-input">
+                        Select {{tab.type}}
+                        </p>
+                        <ui-select ng-model="tab.model"
+                            theme="bootstrap"
+                            class="col-md-9 no-padding"
+                            on-select="tab.choose($item)">
+                            <ui-select-match class="ui-select-match" placeholder="Choose {{tab.type}}">
+                                {{ $select.selected.key }}
+                            </ui-select-match>
+                            <ui-select-choices class="ui-select-choices" repeat="m in tab.models | filter: $select.search" selected>
+                                <span ng-bind-html="m.key | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <button class="col-md-2 btn order-buttons first-row-element" ng-disable="table.error" ng-click="savePrice()">Save</button>
+                    <p ng-show="table.error" class="text-danger col-md-6 label-input">{{table.error}}</p>
+                    <p ng-show="table.success" class="text-success col-md-6 label-input">{{table.success}}</p>
+                </div>
+            </uib-tab>
         </uib-tabset>
-        <div class="row">
-            <div class="text-center" ng-if="blankCounter !== 0 && input.webstore.value === 0" >
+        <div class="col-md-12">
+            <div class="text-center bg-white tab-border" ng-if="blankCounter !== 0 && input.webstore.value === 0" >
                 <span class="red">
                     <strong>WARNING!</strong> {{blankCounter}}
                 </span> 
@@ -105,7 +90,17 @@
                      still not assigned. Please fill the yellow boxes.
             </div>
         </div>
-        <div ui-grid="gridOptions" class="grid" ui-grid-edit ui-grid-pinning ui-grid-cellNav></div>
-        <h6><strong>Note:</strong> <span class="red">Red prices</span> is from master / default price</h6>
+        <div class="col-md-12">
+            <div class="bg-white pricing-grid">
+                <hot-table settings="{contextMenu: ['undo', 'redo'], afterChange: afterChange, beforeChange: beforeChange}"
+                    col-headers="table.colHeaders"
+                    datarows="table.data"
+                    columns="table.columns">
+                </hot-table>
+            </div>
+            <div class="col-md-12 no-padding bg-white">
+                <h6><strong>Note:</strong> <span class="red">Red prices</span> is from master / default price</h6>
+            </div>
+        </div>
     </div>
 </div>

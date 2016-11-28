@@ -235,15 +235,20 @@ angular.module('adminApp')
         },
         getEcommercePrices: {
             method: 'GET',
+            url: config.url + ':module/:controller/:merchantID',
             params: {
-                module: 'ecommerce-price'
+                module: 'price',
+                controller: 'merchant',
+                merchantID: null
             },
         },
         saveEcommercePrice: {
             method: 'POST',
+            url: config.url + ':module/:controller/:merchantID',
             params: {
-                module: 'ecommerce-price',
-                id: null
+                module: 'price',
+                controller: 'merchant',
+                merchantID: null
             },
         },
         deleteEcommercePrice: {
