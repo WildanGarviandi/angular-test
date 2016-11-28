@@ -31,6 +31,9 @@ angular.module('adminApp')
             drivers: {
                 routes: ['/drivers']
             },
+            driverSchedule: {
+                routes: ['/driverSchedule']
+            },
             webstore: {
                 routes: ['/webstore']
             },
@@ -97,6 +100,7 @@ angular.module('adminApp')
             console.log($scope.currentPath);
             console.log('sidebar');
             Notification.clearAll();
+            $scope.isMenuDisable();
             $scope.refreshSidebar();
         });
 
@@ -119,6 +123,7 @@ angular.module('adminApp')
 
         $scope.isMenuDisable = function() {
             $scope.menus.deliveryDistribution.menu = config.features.deliveryDistribution.menu;
+            $scope.menus.driverSchedule.menu = config.features.driverSchedule.menu;
         }
 
         $scope.isMenuDisable();

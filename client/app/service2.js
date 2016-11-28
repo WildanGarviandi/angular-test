@@ -200,6 +200,33 @@ angular.module('adminApp')
                 id: null
             },
         },
+        getDriverSchedules: {
+            method: 'GET',
+            params: {
+                module: 'driverschedule'
+            },
+        },
+        createUnavailableDriverSchedule: {
+            method: 'POST',
+            params: {
+                module: 'driverschedule',
+                controller: 'unavailable',
+            },
+        },
+        getOneDriverSchedule: {
+            method: 'GET',
+            params: {
+                module: 'driverschedule',
+                id: null
+            },
+        },
+        updateDriverSchedule: {
+            method: 'POST',
+            params: {
+                module: 'driverschedule',
+                id: null,
+            },
+        },
         getUserStatus: {
             method: 'GET',
             params: {
@@ -334,6 +361,12 @@ angular.module('adminApp')
             method: 'POST',
             params: {
                 module: 'user'
+            }
+        },
+        getAdminFeatures: {
+            method: 'GET',
+            params: {
+                module: 'features',
             }
         },
         updateUserPassword: {
@@ -581,6 +614,13 @@ angular.module('adminApp')
             params: {
                 module: 'report',
                 controller: 'deliveryDistribution'
+            }
+        },
+        bulkSetPickupStatus: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-pickup-orders'
             }
         }
     });

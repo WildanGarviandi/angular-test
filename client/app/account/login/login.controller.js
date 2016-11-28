@@ -17,9 +17,14 @@ angular.module('adminApp')
                 password: $scope.user.password
             })
             .then( function() {
-                // Logged in, redirect to home
-                $rootScope.$emit('startSpin');
-                $location.path('/');
+                Auth.getAdminFeatures();
+            })
+            .then(function(feature) {
+                setTimeout(function () { 
+                    // Logged in, redirect to home
+                    $rootScope.$emit('startSpin');
+                    $location.path('/');
+                }, 100); 
             })
             .catch( function(err) {
                 console.log(err)

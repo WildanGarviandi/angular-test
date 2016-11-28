@@ -70,19 +70,21 @@ function mainConfig() {
         zipLength: zipLength,
         url: url + '/v2/admin/',
         endpoints: {
-            signIn: 'sign-in',
+            signIn: 'sign-in'
         },
         defaultLocation: defaultLocation,
         notCancellableOrderStatus: [4, 5, 13, 16],
         // INTRANSIT, DELIVERED, CANCELLED, RETURNED_SENDER
-        reassignableOrderStatus: [2, 6, 10, 12, 15],
-        // ACCEPTED, NOTASSIGNED, NO-DRIVER, EXPIRED, RETURNED_WAREHOUSE
+        reassignableOrderStatus: [2, 6, 10, 12, 15, 3],
+        // ACCEPTED, NOTASSIGNED, NO-DRIVER, EXPIRED, RETURNED_WAREHOUSE, PICKUP
         activeGoal: 1500,
         activeMerchant: activeMerchant,
         countryCode: countryCode,
         deliverableOrderStatus: [2, 3, 4],
         // ACCEPTED, PICKUP, IN-TRANSIT
-        reassignableFleet: [1, 6, 9],
+        reassignableDriver: [2, 3, 4, 6],
+        // ACCEPTED, PICKUP, IN-TRANSIT
+        reassignableFleet: [1, 3, 6, 9],
         // BOOKED, NOTASSIGNED, PREBOOKED
         updatablePrice: [1, 6, 9],
         // BOOKED, NOTASSIGNED, PREBOOKED
@@ -93,6 +95,7 @@ function mainConfig() {
             ReasonID: 11
         },
         packageDimensionID: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
+        canChangeToPickup: [6]
     };
 }
 

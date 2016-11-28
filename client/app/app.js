@@ -33,8 +33,8 @@ angular.module('adminApp', [
 ])
     .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
         $urlRouterProvider
-        .when('/', '/dashboard')
-        .otherwise('/dashboard');
+        .when('/', '/orders')
+        .otherwise('/orders');
 
         $locationProvider.html5Mode(true);
         $httpProvider.interceptors.push('errorInterceptor');

@@ -289,5 +289,15 @@
             "key": "Origin",
             "value": "origin"
         }
+    ],
+    "scheduleTypes": [
+        {
+            "key": "Order",
+            "value": 1
+        },
+        {
+            "key": "Unavailable",
+            "value": 2
+        }
     ]
 }

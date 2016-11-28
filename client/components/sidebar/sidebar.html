@@ -4,67 +4,6 @@
     </div>
     <ul>
         <li class="row">
-            <a ui-sref="app.dashboard" >
-                <div class="side-image side-dashboard-image"
-                    ng-class="{ expanded: expanded, active: menus.dashboard.active }"></div>
-                <div class="side-text" 
-                    ng-class="{ expanded: expanded, active: menus.dashboard.active }">Dashboard</div>
-            </a>
-        </li>
-
-        <li class="row">
-            <div ng-click="toggleExpandMenu('hubs')">
-                <div class="side-image side-hub-image"  
-                    ng-class="{ expanded: expanded, active: menus.hubs.active }">
-                </div>
-                <div class="side-text"  
-                    ng-class="{ expanded: expanded, active: menus.hubs.active }">
-                    <span>Hubs</span>
-                </div>
-                <div class="side-caret">
-                    <span class="fa fa-caret-down fa-lg pull-right caret-icon"
-                        ng-class="{ expanded: expanded, 'image-caret': expanded, 'fa-caret-up': menus.hubs.expanded }"
-                        caret-dropdown="hubs"></span>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-            <ul class="sub-panel"
-                ng-class="{ hidden: !menus.hubs.expanded }">
-                <li class="">
-                    <a ui-sref="app.hub" >
-                        <div class="side-image side-hub-image"
-                            ng-class="{ expanded: expanded, active: menus.hubs.submenus.all.active }"></div>
-                        <div class="side-text"
-                            ng-class="{ expanded: expanded, active: menus.hubs.submenus.all.active }">
-                            Hubs Management
-                        </div>
-                    </a>
-                    <div class="clearfix"></div>
-                </li>
-                <li class="">
-                    <a ui-sref="app.hubMonitor" >
-                        <div class="side-image side-hubmonitor-image"
-                            ng-class="{ expanded: expanded, active: menus.hubs.submenus.hubmonitor.active }"></div>
-                        <div class="side-text"
-                            ng-class="{ expanded: expanded, active: menus.hubs.submenus.hubmonitor.active }">
-                            Hubs Monitoring
-                        </div>
-                    </a>
-                    <div class="clearfix"></div>
-                </li>
-            </ul>
-        </li>
-            
-        <li class="row">
-            <a ui-sref="app.trip" >
-                <div class="side-image side-trip-image"
-                    ng-class="{ expanded: expanded, active: menus.trips.active }"></div>
-                <div class="side-text"
-                    ng-class="{ expanded: expanded, active: menus.trips.active }">Trips</div>
-            </a>
-        </li>
-        
-        <li class="row">
             <div ng-click="toggleExpandMenu('orders')">
                 <div class="side-image side-orders-image"  
                     ng-class="{ expanded: expanded, active: menus.orders.active }">
@@ -142,11 +81,81 @@
         </li>
 
         <li class="row">
+            <a ui-sref="app.dashboard" >
+                <div class="side-image side-dashboard-image"
+                    ng-class="{ expanded: expanded, active: menus.dashboard.active }"></div>
+                <div class="side-text" 
+                    ng-class="{ expanded: expanded, active: menus.dashboard.active }">Dashboard</div>
+            </a>
+        </li>
+
+        <li class="row">
+            <div ng-click="toggleExpandMenu('hubs')">
+                <div class="side-image side-hub-image"  
+                    ng-class="{ expanded: expanded, active: menus.hubs.active }">
+                </div>
+                <div class="side-text"  
+                    ng-class="{ expanded: expanded, active: menus.hubs.active }">
+                    <span>Hubs</span>
+                </div>
+                <div class="side-caret">
+                    <span class="fa fa-caret-down fa-lg pull-right caret-icon"
+                        ng-class="{ expanded: expanded, 'image-caret': expanded, 'fa-caret-up': menus.hubs.expanded }"
+                        caret-dropdown="hubs"></span>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <ul class="sub-panel"
+                ng-class="{ hidden: !menus.hubs.expanded }">
+                <li class="">
+                    <a ui-sref="app.hub" >
+                        <div class="side-image side-hub-image"
+                            ng-class="{ expanded: expanded, active: menus.hubs.submenus.all.active }"></div>
+                        <div class="side-text"
+                            ng-class="{ expanded: expanded, active: menus.hubs.submenus.all.active }">
+                            Hubs Management
+                        </div>
+                    </a>
+                    <div class="clearfix"></div>
+                </li>
+                <li class="">
+                    <a ui-sref="app.hubMonitor" >
+                        <div class="side-image side-hubmonitor-image"
+                            ng-class="{ expanded: expanded, active: menus.hubs.submenus.hubmonitor.active }"></div>
+                        <div class="side-text"
+                            ng-class="{ expanded: expanded, active: menus.hubs.submenus.hubmonitor.active }">
+                            Hubs Monitoring
+                        </div>
+                    </a>
+                    <div class="clearfix"></div>
+                </li>
+            </ul>
+        </li>
+            
+        <li class="row">
+            <a ui-sref="app.trip" >
+                <div class="side-image side-trip-image"
+                    ng-class="{ expanded: expanded, active: menus.trips.active }"></div>
+                <div class="side-text"
+                    ng-class="{ expanded: expanded, active: menus.trips.active }">Trips</div>
+            </a>
+        </li>
+        
+        <li class="row">
             <a ui-sref="app.driver" >
                 <div class="side-image side-driver-image"
                     ng-class="{ expanded: expanded, active: menus.drivers.active }"></div>
                 <div class="side-text"
                     ng-class="{ expanded: expanded, active: menus.drivers.active }">Drivers</div>
+            </a>
+        </li>
+
+        <li class="row" ng-show="menus.driverSchedule.menu">
+            <a ui-sref="app.driverSchedule" >
+                <div class="side-image side-driver-schedule-image"
+                    ng-class="{ expanded: expanded, active: menus.driverSchedule.active }"></div>
+                <div class="side-text"
+                    ng-class="{ expanded: expanded, active: menus.driverSchedule.active }">Driver Schedule</div>
             </a>
         </li>
 

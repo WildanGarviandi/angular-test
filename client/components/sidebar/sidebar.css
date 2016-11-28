@@ -294,6 +294,16 @@
     background-size: 30px;
 }
 
+.side-driver-schedule-image {
+    background-image: url('../../assets/images/nav-driver-schedule.png');
+    background-size: 30px;
+}
+
+.side-driver-schedule-image.active {
+    background-image: url('../../assets/images/nav-driver-schedule-active.png');
+    background-size: 30px;
+}
+
 .side-ondemand-image {
     background-image: url('../../assets/images/nav-ondemand.png');
     background-size: 30px;
