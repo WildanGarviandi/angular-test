@@ -1867,18 +1867,31 @@ angular.module('adminApp')
         }, function (isConfirm){ 
             if (isConfirm) {
                 $rootScope.$emit('startSpin');
-                ngDialog.closeAll();
                 Services2.bulkCancelOrderStatus({
                     orderIDs: orderIDs
                 }).$promise.then(function (result) {
+                    if (result.data.error) {
+                        throw {
+                            data: {
+                                error: {
+                                    message: result.data.error[0].error.message
+                                }
+                            }
+                        }
+                    }
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Order canceled successfully');
+                    $state.reload();
+                }).catch(function (e) {
                     $rootScope.$emit('stopSpin');
                     SweetAlert.swal({
-                        title: "Cancel Orders", 
-                        text: orders + '<br>' + 'cancelled successfully',
-                        html: true
-                    }, function () {
-                        ngDialog.closeAll();
-                        $state.reload();
+                            title: 'Failed in cancelled order', 
+                            text: e.data.error.message, 
+                            type: "error"
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            $state.reload();
+                        }
                     });
                 });
             }
