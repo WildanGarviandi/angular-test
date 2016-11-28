@@ -39,5 +39,19 @@ angular.module('adminApp')
                 module: 'webstore',
             },
         },
+        updatePricingType: {
+            method: 'POST',
+            url: config.url + ':module/:id/type',
+            params: {
+                module: 'pricing'
+            }
+        },
+        updatePackageDimension: {
+            method: 'POST',
+            url: config.url + ':module/:id/packageDimension',
+            params: {
+                module: 'webstore'
+            }
+        }
     });
 });
