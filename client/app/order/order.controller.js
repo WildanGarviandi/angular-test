@@ -1725,6 +1725,23 @@ angular.module('adminApp')
     };
 
     /**
+     * Check whether there is one or more non-cancelable orders selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedNonCancelableOrders = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected && $scope.notCancellableOrderStatus.indexOf(order.OrderStatus.OrderStatusID) !== -1) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+
+    /**
      * Show set price modals
      * 
      * @return {void}
@@ -1798,6 +1815,75 @@ angular.module('adminApp')
             });
         });
     }
+
+    /**
+     * Show bulk cancel order modals
+     * @return void
+     */
+    $scope.showBulkCancelOrder = function () {
+        var orderIDs = [],
+            orderNumbers = [],
+            orderNumbersFail = [];
+        $scope.selectedOrders.forEach(function(order) {
+            orderIDs.push(order.UserOrderID);
+            orderNumbers.push(order.UserOrderNumber);
+            if ($scope.notCancellableOrderStatus.indexOf(order.OrderStatus.OrderStatusID) !== -1) {
+                orderNumbersFail.push(order.UserOrderNumber);
+            }
+        });
+        var orders = '(' + orderNumbers.join(", ") + ')';
+        var ordersFail = '(' + orderNumbersFail.join(", ") + ')';
+
+        if ($scope.selectedNonCancelableOrders()) {
+            var notAllowedStatus = '';
+            lodash.each($scope.statuses, function (val, key) {
+                if ($scope.notCancellableOrderStatus.indexOf(val.value) !== -1) {
+                    notAllowedStatus += ' '+val.key;
+                }
+            });
+
+            var text = 'These order contain <p style="color:red; display: inline;">NOT ALLOWED</p> status<br><br>'
+                    + ordersFail 
+                    + '<br><br>Not Allowed Status<br>' 
+                    + notAllowedStatus;
+            SweetAlert.swal({
+                title: 'Error',
+                text: text,
+                html: true,
+                type: 'error'
+            });
+            return false;
+        }
+
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Want to Cancel these orders?<br>" + orders,
+            type: "warning",
+            html: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                ngDialog.closeAll();
+                Services2.bulkCancelOrderStatus({
+                    orderIDs: orderIDs
+                }).$promise.then(function (result) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: "Cancel Orders", 
+                        text: orders + '<br>' + 'cancelled successfully',
+                        html: true
+                    }, function () {
+                        ngDialog.closeAll();
+                        $state.reload();
+                    });
+                });
+            }
+        });
+    };
 
     /**
      * Show set return warehouse modals

@@ -610,6 +610,13 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'bulk-pickup-orders'
             }
+        },
+        bulkCancelOrderStatus: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-cancel'
+            }
         }
     });
 });
