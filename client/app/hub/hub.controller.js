@@ -40,7 +40,7 @@ angular.module('adminApp')
         key: 'CENTRAL',
         value: 'CENTRAL'
     }, {
-        key: 'GENERAL',
+        key: 'LOCAL',
         value: 'GENERAL'
     },  ];
 
@@ -327,6 +327,9 @@ angular.module('adminApp')
         }).$promise.then(function(data) {
             $scope.hub = data.data.Hub;
             $scope.type = {key: $scope.hub.Type, value: $scope.hub.Type};
+            if ($scope.hub.Type === 'GENERAL') {
+                $scope.type = {key: 'LOCAL', value: $scope.hub.Type};
+            }
             if ($scope.hub.ParentHub) {
                 $scope.parent = {key: $scope.hub.ParentHub.Name, value: $scope.hub.ParentHub.HubID};
             }
@@ -366,8 +369,11 @@ angular.module('adminApp')
         Services2.getHubs(params).$promise.then(function(data) {
             var hubs = data.data.Hubs.rows;
             $scope.hubs = []; 
-            hubs.forEach(function(hub) {
+            hubs.forEach(function(hub, idx) {
                 $scope.hubs.push({key: hub.Name, value: hub.HubID});
+                if (hub.Type === 'GENERAL') {
+                    hubs[idx].Type = 'LOCAL';
+                }
             });
             $scope.displayed = hubs;
             $scope.isLoading = false;
@@ -386,7 +392,9 @@ angular.module('adminApp')
         Services2.getHubs().$promise.then(function(data) {
             $scope.hubs = []; 
             data.data.Hubs.rows.forEach(function(hub) {
-                $scope.hubs.push({key: hub.Name, value: hub.HubID});
+                if (hub.Type === 'CENTRAL') {
+                    $scope.hubs.push({key: hub.Name, value: hub.HubID});
+                };
             });
         });
     }
@@ -575,6 +583,9 @@ angular.module('adminApp')
                 alert('Failed');                 
             }
             $rootScope.$emit('stopSpin');
+        }).catch(function (e) {
+            $rootScope.$emit('stopSpin');
+            alert('Failed'); 
         });
     }
 

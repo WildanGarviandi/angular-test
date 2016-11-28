@@ -64,22 +64,22 @@ angular.module('adminApp')
 
 
     var updateDriver = function(callback) {
-        if ($scope.driver.CanTakeCOD === undefined) {
-            $scope.driver.CanTakeCOD = false;
+        if (typeof $scope.driver.DriverDetail.CanTakeCOD === 'undefined') {
+            $scope.driver.DriverDetail.CanTakeCOD = false;
         }
         var driver = {
-            CanTakeCOD: $scope.driver.CanTakeCOD,
+            CanTakeCOD: $scope.driver.DriverDetail.CanTakeCOD,
             Driver: {
-                FirstName: $scope.driver.Driver.FirstName,
-                LastName: $scope.driver.Driver.LastName,
-                Email: $scope.driver.Driver.Email,
-                PhoneNumber: $scope.driver.Driver.PhoneNumber,
-                StatusID: $scope.driver.Driver.StatusID,
+                FirstName: $scope.driver.FirstName,
+                LastName: $scope.driver.LastName,
+                Email: $scope.driver.Email,
+                PhoneNumber: $scope.driver.PhoneNumber,
+                StatusID: $scope.driver.StatusID,
             },
             FleetDriver: {
                 CompanyDetailID: $scope.company.CompanyDetailID,
                 FleetManagerID: $scope.company.User.UserID,
-                FleetManagerDriverID: $scope.driver.Driver.Driver.FleetManagerDriverID
+                FleetManagerDriverID: $scope.driver.Driver.FleetManagerDriverID
             }
         };
         $rootScope.$emit('startSpin');
@@ -236,9 +236,9 @@ angular.module('adminApp')
             id: $scope.id,
         }).$promise.then(function(data) {
             $scope.driver = data.data.Driver;
-            $scope.status = {key: $scope.driver.Driver.UserStatus.StatusName, value: $scope.driver.Driver.UserStatus.StatusId};
+            $scope.status = {key: $scope.driver.UserStatus.StatusName, value: $scope.driver.UserStatus.StatusId};
             $scope.company = lodash.find($scope.companies, {
-                CompanyDetailID: data.data.Driver.Driver.Driver.CompanyDetail.CompanyDetailID});
+                CompanyDetailID: data.data.Driver.Driver.CompanyDetail.CompanyDetailID});
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });

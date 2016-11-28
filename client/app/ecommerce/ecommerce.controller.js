@@ -5,7 +5,8 @@ angular.module('adminApp')
         function(
             $scope, 
             Auth, 
-            $rootScope, 
+            $rootScope,
+            Webstores, 
             Services,
             Services2,
             moment, 
@@ -15,6 +16,7 @@ angular.module('adminApp')
             $location, 
             $http, 
             $window,
+            $filter,
             $q
     ) {
 
@@ -36,42 +38,47 @@ angular.module('adminApp')
 
     $scope.webstores = [$scope.input.webstore];
 
+    $scope.input.pricingType = 1;
+
     $scope.percentage = {};
     $scope.defaultPrices = {};
     $scope.pickupTypes = [];
-    $scope.vehicleTypes = [];
 
     $scope.states = [];
     $scope.cities = [];
+    
+    $scope.table = {};
+    $scope.table.colHeaders = true;
+    $scope.table.beforeSafe = [];
+    $scope.table.error = '';
+    $scope.table.success = '';
 
-    $scope.gridOptions = {
-        flatEntityAccess: true,
-        enableCellEditOnFocus: true
+    var getTabs = function(pricingType, title, type, choose, init, arrayList) {
+        $scope.tabs.push({ 
+            title: title, 
+            type: type,
+            choose: choose,
+            model: init,
+            models: arrayList,
+            pricingType: pricingType
+        });
     };
 
-    $scope.tabs = [
-        { heading: 'Price / selected weight', value: 'price' },
-        {   
-            heading: 'Additional Price / kg', 
-            value: 'additional',
-            tooltip: 'Additional price is applied when package is heavier than available weight'
+    $scope.createTab = function(pricingType) {
+        if(pricingType == 1) {
+            getTabs(pricingType, 'By Weight', 'Weight', $scope.chooseWeight, $scope.input.weight, $scope.weight);
         }
-    ];
+        if (pricingType == 2) {
+            getTabs(pricingType, 'By Package Size', 'Package Size', $scope.choosePackageSize, $scope.input.packageSize, $scope.packageSize);
+        }
+    }
 
-    $scope.$watch(function () {
-        return $scope.input.weight;
-    }, function (weight) {
-        if (weight && weight.value !== $scope.maxWeight) {
-            $scope.tabs[1].hide = true;
-            $scope.tabs[0].active = true;
-        } else {
-            $scope.tabs[1].hide = false;
-        }   
-    });
+    $scope.chooseTab = function(pricingType){
+        $scope.input.pricingType = pricingType;
+        getPrices();
+    };
 
     $scope.filter = 'price';
-
-    $scope.blankCounter = 0;
 
     /**
      * Get default values from config
@@ -82,8 +89,12 @@ angular.module('adminApp')
         return $q(function (resolve) {
             $http.get('config/defaultValues.json').success(function(data) {
                 $scope.defaultPrices = data.defaultPrices;
-                $scope.pickupTypes = data.pickupTypes;
+                $scope.pickupTypes = _.filter(data.pickupTypes, function(pickupType) {
+                    return pickupType.value !== 3;
+                });
                 $scope.input.pickupTypes = $scope.pickupTypes[0];
+                $scope.packageSize = data.packageSize;
+                $scope.input.packageSize = $scope.packageSize[0];
                 $scope.weight = data.weight;
                 $scope.maxWeight = Math.max.apply(Math, $scope.weight.map(function(o){return o.value;}));
                 $scope.input.weight = $scope.weight[0];
@@ -106,20 +117,15 @@ angular.module('adminApp')
             pick: 'value',
             collection: 'webstores'
         },
-        'Vehicle': {
-            model: 'vehicle',
-            pick: 'VehicleID',
-            collection: 'vehicleTypes'
-        },
         'Weight': {
             model: 'weight',
             pick: 'value',
             collection: 'weight'
         },
-        'Discount': {
-            model: 'discount',
-            pick: 'id',
-            collection: 'discount'
+        'PackageSize': {
+            model: 'packageSize',
+            pick: 'value',
+            collection: 'packageSize'
         },
     };
 
@@ -127,13 +133,17 @@ angular.module('adminApp')
         /**
          * Assign url param when choosing an option
          * Generates:
-         * choosePickup, chooseWebstore, chooseVehicle, chooseWeight, chooseDiscount
+         * choosePickup, chooseWebstore, chooseWeight, choosePackage
          * 
          * @return {void}
          */
         $scope['choose' + key] = function (item) {
             $location.search(val.model, item[val.pick]);
-            getPrices();
+            if (key === 'Webstore') {
+                getWebstoreDetail(item[val.pick]);
+            } else {
+                getPrices();
+            }
         };
     });
 
@@ -154,14 +164,24 @@ angular.module('adminApp')
     };
 
     /**
-     * Get all vehicle
-     * @return {[type]} [description]
+     * Get webstore detail
+     * 
+     * @return {void}
      */
-    var getVehicles = function () {
+    var getWebstoreDetail = function(webstoreID) {
         return $q(function (resolve) {
-            Services2.getVehicles().$promise.then(function (result) {
-                $scope.vehicleTypes = $scope.vehicleTypes.concat(result.data.Vehicles);
-                $scope.input.vehicle = $scope.vehicleTypes[0];
+            if (!webstoreID) {
+                $scope.input.webstore = $scope.webstores[0];
+                getPrices();
+                return resolve();
+            };
+
+            Webstores.getWebstoreDetails({
+                id: webstoreID,
+            }).$promise.then(function(result) {
+                $scope.input.webstore = {key: result.data.User.FirstName.concat(' ', result.data.User.LastName), value: result.data.User.UserID};
+                $scope.input.pricingType = result.data.User.WebstoreCompany.PricingType;
+                getPrices();
                 resolve();
             });
         });
@@ -193,6 +213,7 @@ angular.module('adminApp')
      */
     var getPrices = function() {
         $rootScope.$emit('startSpin');
+        $scope.tabs = [];
 
         lodash.each(pickedVariables, function (val) {
             var value = $location.search()[val.model] || $scope.input[val.model][val.pick];
@@ -201,30 +222,44 @@ angular.module('adminApp')
             $scope.input[val.model] = lodash.find($scope[val.collection], findObject);
         });
 
+        if (!$scope.input.webstore || !$scope.input.webstore.value) {
+            $scope.input.webstore = $scope.webstores[0];
+            $scope.createTab(1);
+            $scope.createTab(2);
+        } else {
+            $scope.createTab($scope.input.pricingType);
+        }
+
+        lodash.each($scope.tabs, function (val, key) {
+            if (val.pricingType === $scope.input.pricingType) {
+                $scope.tabs[key].active = true;
+            }
+        });
+
         var params = {
-            webstoreUserID: $scope.input.webstore.value,
+            merchantID: $scope.input.webstore.value,
+            pricingType: $scope.input.pricingType,
             pickupType: $scope.input.pickup.value,
-            vehicleID: $scope.input.vehicle.VehicleID,
             maxWeight: $scope.input.weight.value,
-            discountID: $scope.input.discount.id
+            packageDimensionID: $scope.input.packageSize.value
         };
         var paramsMaster = {
-            webstoreUserID: 0,
+            merchantID: 0,
+            pricingType: $scope.input.pricingType,
             pickupType: $scope.input.pickup.value,
-            vehicleID: $scope.input.vehicle.VehicleID,
             maxWeight: $scope.input.weight.value,
-            discountID: $scope.input.discount.id
+            packageDimensionID: $scope.input.packageSize.value
         };
         // Get Master price
         Services2.getEcommercePrices(paramsMaster).$promise.then(function (result) {
-            $scope.masterPrices = result.data.Prices;
+            $scope.masterPrices = result.data;
             if ($scope.input.webstore.value === 0) {
                 buildDefault();
                 $rootScope.$emit('stopSpin');
             } else {
                 // Get webstore price
                 Services2.getEcommercePrices(params).$promise.then(function (result) {
-                    $scope.prices = result.data.Prices;
+                    $scope.prices = result.data;
                     buildDefault();
                     buildMatrix();
                     $rootScope.$emit('stopSpin');
@@ -236,30 +271,37 @@ angular.module('adminApp')
 
     /**
      * Save changed / added price
-     * @param  {number} originID - id of origin city
-     * @param  {number} destID   - id of destination city
-     * @param  {number} price    - new price value
      * 
      */
-    var savePrice = function(originID, destID, price, additional) {
+    $scope.savePrice = function() {
+        if (!$scope.table.beforeSafe) { 
+            return;
+        }
+
+        $scope.table.error = '';
+        $scope.table.success = '';
         $rootScope.$emit('startSpin');
         var params = {
-            webstoreUserID: $scope.input.webstore.value,
+            pricingType: $scope.input.pricingType,
             pickupType: $scope.input.pickup.value,
-            vehicleID: $scope.input.vehicle.VehicleID,
             maxWeight: $scope.input.weight.value,
-            discountID: $scope.input.discount.id,
-            originID: originID,
-            destinationID: destID,
+            packageDimensionID: $scope.input.packageSize.value,
+            prices: $scope.table.beforeSafe
         };
-        if (price) { params.price = price; }
-        if (additional) { params.additionalPrice = additional; }
-        Services2.saveEcommercePrice(params).$promise.then(function (result) {
+
+        Services2.saveEcommercePrice({
+            merchantID: $scope.input.webstore.value
+        }, params).$promise.then(function (result) {
             $rootScope.$emit('stopSpin');
             getPrices();
+            $scope.table.beforeSafe = [];
+            $scope.table.success = result.data.message;
+            if ($scope.table.startEdit) {
+                clearInterval($scope.table.startEdit);
+            }
         })
         .catch(function (error) {
-            alert('Error: ' + error);
+            $scope.table.error = error.data.error.message;
             $rootScope.$emit('stopSpin');
         });
     };
@@ -269,7 +311,6 @@ angular.module('adminApp')
         var params = {
             webstoreUserID: $scope.input.webstore.value,
             pickupType: $scope.input.pickup.value,
-            vehicleID: $scope.input.vehicle.VehicleID,
             maxWeight: $scope.input.weight.value,
             discountID: $scope.input.discount.id,
             originID: originID,
@@ -290,39 +331,14 @@ angular.module('adminApp')
      * 
      */
     var buildColumnDefs = function () {
-        var defs = [
-            {name: 'id', enableCellEdit: false, width: '4%', pinnedLeft: true, visible: false},
-            {name: 'origin', enableCellEdit: false, width: '13%', pinnedLeft: true, cellClass: 'text-left'},
-        ];
+        var colHeaders = ['Origin'];
+        var rowHeaders = [];
         $scope.cities.forEach(function (city) {
-            defs.push({
-                name: city.CityID.toString(),
-                displayName: city.Name,
-                width: '7%',
-                enableColumnMenu: false,
-                enableSorting: false,
-                cellClass: 'text-center',
-                cellTemplate:
-                    '<div class="ui-grid-cell-contents blank" title="TOOLTIP" ' +
-                        'ng-if="COL_FIELD CUSTOM_FILTERS.source === ' + "'nosource'" + '">' +
-                    '</div>' +
-                    '<div class="ui-grid-cell-contents" title="TOOLTIP" ' +
-                        'ng-if="COL_FIELD CUSTOM_FILTERS.source !== ' + "'nosource'" + '">' +
-                        '<div class="text-right" ng-if="COL_FIELD CUSTOM_FILTERS.source === ' + "'webstore'" + '">' +
-                            '{{COL_FIELD CUSTOM_FILTERS.price | number | localizenumber}}' + '</div>' +
-                        '<div class="red text-right" ng-if="COL_FIELD CUSTOM_FILTERS.source === ' + "'master'" + '">' +
-                            '{{COL_FIELD CUSTOM_FILTERS.price | number | localizenumber}}' + '</div>' +
-                    '</div>',
-                editableCellTemplate: 
-                    '<div>' +
-                      '<form name="inputForm">' +
-                        '<input  type="number" ng-class="' + "'colt'" + ' + col.uid" ui-grid-editor ' +
-                                'ng-model="MODEL_COL_FIELD.price"/>' +
-                      '</form>' +
-                    '</div>'
-            });
+            colHeaders.push(city.Name);
+            rowHeaders.push(city.Name);
         });
-        $scope.gridOptions.columnDefs = defs;
+        $scope.table.colHeaders = colHeaders;
+        $scope.table.rowHeaders = rowHeaders;
     };
     
     /**
@@ -331,37 +347,44 @@ angular.module('adminApp')
      * 
      */
     var buildDefault = function () {
-        $scope.gridOptions.data = [];
-        $scope.blankCounter = 0;
+        var columns = {};
+        $scope.table.data = [];
+        $scope.table.columns = [{
+            data: 0,
+            title: 'Origin',
+            readOnly: true
+        }];
+        var i = 0;
         $scope.cities.forEach(function (origin) {
-            var rowContent = {};
-            rowContent.id = origin.CityID;
-            rowContent.origin = origin.Name;
-            $scope.cities.forEach(function (dest) {
+            var rowContents = {};
+            rowContents[0] = origin.Name;
+            $scope.cities.forEach(function (dest, key) {
                 var data = lodash.find($scope.masterPrices, {
                     Origin: {CityID: origin.CityID}, Destination: {CityID: dest.CityID}});
                 var price = 0;
                 if (data) {
                     if ($scope.filter === 'price') {
-                        price = data.Price;
+                        price = $filter('number')(data.Price);
                     } else {
-                        price = data.AdditionalPrice;
+                        price = $filter('number')(data.AdditionalPrice);
                     }
-                    rowContent[dest.CityID] = {
-                        source: 'master',
-                        price: price,
-                        old: price
-                    };
+                    rowContents[dest.CityID] = '<p class="cell-red htPlaceholder">' + $filter('localizenumber')(price) + '</p>';
                 } else {
-                    rowContent[dest.CityID] = {
-                        source: 'nosource',
-                        price: '',
-                        old: ''
-                    };
-                    $scope.blankCounter++;
+                    rowContents[dest.CityID] = '';
                 }
+                if (i === 0) {
+                    columns = {
+                        data: dest.CityID,
+                        title: dest.Name,
+                        type: 'numeric',
+                        renderer: 'html'
+                    };
+                    $scope.table.columns.push(columns);
+                }
+                
             });
-            $scope.gridOptions.data.push(rowContent);
+            $scope.table.data.push(rowContents);
+            i++;
         });
     };
 
@@ -371,7 +394,7 @@ angular.module('adminApp')
      */
     var buildMatrix = function () {
         $scope.cities.forEach(function (origin, i) {
-            $scope.cities.forEach(function (dest) {
+            $scope.cities.forEach(function (dest, key) {
                 var data = lodash.find($scope.prices, {
                     Origin: {CityID: origin.CityID}, Destination: {CityID: dest.CityID}});
                 var price = 0;
@@ -381,49 +404,110 @@ angular.module('adminApp')
                     } else {
                         price = data.AdditionalPrice;
                     }
-                    $scope.gridOptions.data[i][dest.CityID] = {
-                        source: 'webstore',
-                        price: price,
-                        old: price
-                    };
+                    $scope.table.data[i][dest.CityID] = $filter('localizenumber')($filter('number')(price));
                 }
             });
         });
     };
 
     /**
-     * Function that run after a cell is edited
-     * @param  {[type]} gridApi - gridApi from ui.grid
+     * Do function before cell changed
+     * Check initial state is integer or not
+     */
+    $scope.beforeChange = function (changes, source) {
+        $.each(changes, function (index, element) {
+            var change = element;
+            if (!parseInt(change[3])) {
+                return changes[index][3] = change[3].replace(/<(?:.|\n)*?>/gm, '');
+            } else {
+                return false;
+            }
+        });
+    }
+
+    /**
+     * Do function after cell changed
      * 
      */
-    $scope.gridOptions.onRegisterApi = function(gridApi){
-        //set gridApi on scope
-        $scope.gridApi = gridApi;
-        gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef, newValue, oldValue){
-            // Because of templating in ui.grid.edit, oldValue is not working as it used to be
-            if (newValue) {
-                if (newValue.price !== newValue.old) {
-                    // If new value is a valid number
-                    var price = parseInt(newValue.price);
-                    if (price) {
-                        if ($scope.filter === 'price') {
-                            savePrice(rowEntity.id, colDef.name, price, null);
-                        } else {
-                            savePrice(rowEntity.id, colDef.name, null, price);
-                        }
-                    } else {
-                        if ($scope.input.webstore.value !== 0) {
-                            // if not a master, then delete the price
-                            deletePrice(rowEntity.id, colDef.name);
-                        } else {
-                            // if master
-                            alert('Empty or contains non number character');
-                            getPrices();
-                        }
-                    }
-                }
-            } 
+    $scope.afterChange = function (changes) {
+        if (!changes) {
+            return;
+        }
+
+        $.each(changes, function (index, element) {
+            var change = element;
+
+            var params = {
+                originID: $scope.table.columns[change[0] + 1].data,
+                destinationID: change[1],
+                price: change[3]
+            };
+
+            return collectDataBeforeSafe(params);
         });
+    }
+
+    /**
+     * Collect all changed Cell before push to Server
+     * 
+     */
+    function collectDataBeforeSafe(data) {
+        var isDataExist = false;
+        var indexKey;
+        
+        $scope.table.error = '';
+        
+        if (!parseInt(data.price) && data.price) {
+            $scope.table.error = 'Invalid Price Number';
+        };
+
+        isDataExist = lodash.find($scope.table.beforeSafe, function(val, key){ 
+            if(val.destinationID == data.destinationID && val.originID == data.originID){
+                indexKey = key;
+                return true;
+            }; 
+        });
+
+        if (!isDataExist) {
+            $scope.table.beforeSafe.push(data);
+        } else {
+            $scope.table.beforeSafe.splice(indexKey, 1, data);
+        }
+
+        if (!$scope.table.startEdit) {
+            $scope.table.startEdit = startTimer();
+        } else {
+            clearInterval($scope.table.startEdit);
+            $scope.table.startEdit = startTimer();
+        }
+    }
+
+    /**
+     * Push Data to server by time interval
+     * set every 2 minutes while idle and has not pushed to server
+     */
+    function startTimer(){
+        var interval = 1;
+        var timerID = -1; //hold the id
+        var duration = moment.duration({
+            'hour': 0,
+            'minutes': 2,
+            'seconds': 0 
+        });
+
+        var timer = setInterval(function () {
+            if (duration.asSeconds() <= 0) {
+                clearInterval(timerID);
+                $scope.table.startEdit = 0;
+                $scope.savePrice();
+            } else {
+                duration = moment.duration(duration.asSeconds() - interval, 'seconds');
+            }
+        }, 1000);
+
+        timerID = timer;
+
+        return timer;
     };
 
     $scope.filterTab = function (value) {
@@ -435,7 +519,6 @@ angular.module('adminApp')
     $rootScope.$emit('startSpin');
     getDefaultValues()
     .then(getWebstores)
-    .then(getVehicles)
     .then(getPlaces)
     .then(function () {
         buildColumnDefs();

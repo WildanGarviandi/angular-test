@@ -532,19 +532,37 @@
 </div>
 
 <script type="text/ng-template" id="importModal">
-    <div class="header-wrapper">
-        <h1>Import Orders</h1>
+    <div class="header-wrapper col-xs-12">
+        <h2>Import Orders</h2>
     </div>
     <div class="content-wrapper booking-popup notification-popup container-fluid">
-        <div class="row-fluid">              
-            <div class="label-import">
-                Pickup Time :
+        <div class="col-xs-12 no-padding uploadXls">
+            <div ngf-drop="uploadOrders($files)" 
+                ngf-select="uploadOrders($files)" 
+                ng-model="files" 
+                class="drop-box" 
+                ngf-drag-over-class="dragover" 
+                ngf-multiple="true" 
+                ngf-allow-dir="true" 
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+                ngf-pattern="'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'">
+                <div ng-hide="dataTemporary.title">
+                    Drop <strong>.xlsx</strong> here
+                </div>
+                <div ng-show="dataTemporary.title">
+                    {{dataTemporary.title}}
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 no-padding">            
+            <div class="col-md-4 col-xs-12 no-padding">
+                <p class="label-import-margin">Pickup Time :</p>
             </div>  
-            <p class="input-group">
+            <div class="col-md-8 col-xs-12 no-padding">
                 <div class="dropdown">
                     <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
-                        <div class="input-group dateinput-import input-import">
-                            <input type="text" class="form-control" data-ng-model="importedDatePicker" datetime="MM/dd/yyyy HH:mm:ss">
+                        <div class="input-group col-xs-12 no-padding">
+                            <input type="text" class="form-control" data-ng-model="importedDatePickerNow" datetime="MM/dd/yyyy HH:mm:ss">
                             <span class="input-group-addon">
                                 <i class="glyphicon glyphicon-calendar"></i>
                             </span>
@@ -558,70 +576,75 @@
                             data-on-set-time="onTimeSet(newDate, oldDate)"/>
                     </ul>
                 </div>
-            </p>
-        </div>
-        <div class="clearfix"></div>
-        <div class="row-fluid">                
-            <div class="label-import">
-                Merchant :
-            </div>  
-            <p class="input-group input-import">
-                <ui-select class="hub-field select-field" 
-                    ng-model="parent" 
-                    theme="selectize" 
-                    ng-disabled="disabled" 
-                    on-select="chooseMerchant($item)">
-                    <ui-select-match placeholder="Choose merchant">
-                        {{ $select.selected.key }}
-                    </ui-select-match>
-                    <ui-select-choices repeat="m in merchants | filter: $select.search track by $index" selected>
-                        <span ng-bind-html="m.key | highlight: $select.search"></span>
-                    </ui-select-choices>
-                </ui-select>
-            </p>
-        </div>
-        <div class="clearfix"></div>
-        <div class="row-fluid">                
-            <div class="label-import">
-                Fleet :
-                <p class="label-notes">
-                    *Set to 'All' to open orders to all logistic vendors
-                </p>
-            </div>  
-            <p class="input-group input-import">
-                <ui-select ng-model="fleet" 
-                    theme="selectize" 
-                    on-select="chooseCompanyOnModals($item)" 
-                    class="booking-order-type">
-                    <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
-                    <ui-select-choices repeat="f in fleets | filter: $select.search track by $index" selected>
-                        <span class="input-table" ng-bind-html="f.CompanyName | highlight: $select.search"></span>
-                    </ui-select-choices>
-                </ui-select>
-            </p>
-        </div>
-        <div class="clearfix"></div>
-        <div class="row-fluid uploadXls">
-            <div ngf-drop="uploadOrders($files)" 
-                ngf-select="uploadOrders($files)" 
-                ng-model="files" 
-                class="drop-box" 
-                ngf-drag-over-class="dragover" 
-                ngf-multiple="true" 
-                ngf-allow-dir="true" 
-                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
-                ngf-pattern="'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'">
-                Drop <strong>.xlsx</strong> or click here to upload
             </div>
         </div>
+        <div class="col-xs-12 no-padding">
+            <div class="col-md-4 col-xs-12 no-padding">
+            </div>  
+            <div class="col-md-8 col-xs-12 no-padding">
+                <div class="col-xs-12 no-padding margin-b-10">
+                    <p ng-click="isReadyForPickupOnImport()">
+                        <input type="checkbox" ng-model="readyForPickupOnImport">
+                        Ready for Pickup Now
+                    </p>
+                </div>
+                <div class="col-xs-12 no-padding margin-b-10">
+                    <p ng-click="isShowMerchantListOnImport()">
+                        <input type="checkbox" ng-model="showMerchantListOnImport">
+                        Set Merchant
+                        <div class="col-md-12 no-padding" ng-show="showMerchantListOnImport">
+                            <ui-select class="col-xs-12 no-padding" 
+                                ng-model="merchant" 
+                                theme="selectize" 
+                                tagging="tagHandler"
+                                ng-disabled="disabled" 
+                                on-select="chooseMerchant($item)">
+                                <ui-select-match placeholder="Choose merchant">
+                                    {{ $select.selected.key }}
+                                </ui-select-match>
+                                <ui-select-choices repeat="m in merchants | filter: $select.search track by $index" selected>
+                                    <span ng-bind-html="m.key | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                            <h5 class="text-orange" ng-if="merchant.value > 0">
+                                <i class="fa fa-info-circle"></i>
+                                <small>This will override the Merchant to <b>{{merchant.key}}</b></small>
+                            </h5>
+                        </div>
+                    </p>
+                </div>
+                <div class="col-xs-12 no-padding margin-b-10">
+                    <p ng-click="isShowFleetListOnImport()">
+                        <input type="checkbox" ng-model="showFleetListOnImport">
+                        Set Fleet
+                        <div class="col-md-12 no-padding" ng-show="showFleetListOnImport">
+                            <ui-select ng-model="fleet" 
+                                theme="selectize" 
+                                tagging="tagHandler"
+                                on-select="chooseCompanyOnModals($item)" 
+                                class="col-xs-12 no-padding">
+                                <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
+                                <ui-select-choices repeat="f in fleets | filter: $select.search track by $index" selected>
+                                    <span class="input-table" ng-bind-html="f.CompanyName | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                            <h5 class="text-orange" ng-if="fleet.User.UserID > 0">
+                                <i class="fa fa-info-circle"></i>
+                                <small>This will override the Fleet to <b>{{fleet.CompanyName}}</b></small>
+                            </h5>
+                        </div>
+                    </p>
+                </div>
+             </div>
+        </div>
         <div class="clearfix"></div>
-        <div class="row-fluid">
+        <div class="col-xs-12 no-padding">
             <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
         </div>
         <div class="clearfix"></div>
-        <div class="row-fluid" ng-if="error.length > 0 || uploaded.length > 0 || updated.length > 0">            
-            <div ng-if="error.length > 0">
-                <div ng-repeat="err in error track by $index">
+        <div class="col-xs-12 no-padding" ng-if="importOrderError.length > 0 || uploaded.length > 0 || updated.length > 0">            
+            <div ng-if="importOrderError.length > 0">
+                <div ng-repeat="err in importOrderError track by $index">
                     <uib-alert type="danger">
                         <span ng-if="err.row">
                             Row {{err.row}} :
@@ -646,6 +669,10 @@
                     </uib-alert>
                 </div>
             </div>
+            </div>
+        <div class="col-xs-12 no-padding">
+            <button class="btn btn-success col-xs-3 pull-right" ng-click="startUpload()">Import</button>
+        </div>
         <div class="clearfix"></div>
     </div>
 </script>

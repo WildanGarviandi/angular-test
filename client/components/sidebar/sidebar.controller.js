@@ -53,6 +53,9 @@ angular.module('adminApp')
             },
             fleets : {
                 routes: ['/fleets']
+            },
+            deliveryDistribution: {
+                routes: ['/deliveryDistribution']
             }
         };
 
@@ -119,6 +122,7 @@ angular.module('adminApp')
         }
 
         $scope.isMenuDisable = function() {
+            $scope.menus.deliveryDistribution.menu = config.features.deliveryDistribution.menu;
             $scope.menus.driverSchedule.menu = config.features.driverSchedule.menu;
         }
 
