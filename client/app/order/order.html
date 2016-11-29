@@ -208,6 +208,7 @@
                                 Due Time
                             </th>
                             <th>Status</th>
+                            <th>Current Route</th>
                             <th>Total Failed Attempts</th>
                             <th>Failed Attempt</th>
                             <th>First Attempt</th>
@@ -413,6 +414,8 @@
                             <th>
                             </th>
                             <th>
+                            </th>
+                            <th>
                                 <div class="filter-table">
                                     <ui-select ng-model="isAttempt" 
                                         theme="selectize" 
@@ -483,6 +486,7 @@
                             <td>{{order.CutOffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                             <td>{{order.DueTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                             <td>{{order.OrderStatus.OrderStatus}}</td>
+                            <td>{{order.CurrentRouteDetail}}</td>
                             <td>{{order.UserOrderAttempts.length}}</td>
                             <td>{{order.IsAttempt}}</td>
                             <td>{{order.Attempt[0] | date:'MM/dd/yyyy HH:mm:ss a'}}</td>

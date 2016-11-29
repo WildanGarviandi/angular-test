@@ -206,6 +206,7 @@ angular.module('adminApp')
             $scope.orderTypes = $scope.orderTypes.concat(data.userTypes);
             $scope.marketplaceType = (lodash.find($scope.orderTypes, {key: 'Marketplace'}));
             $scope.ecommerceType = (lodash.find($scope.orderTypes, {key: 'Ecommerce'}));
+            $scope.currentRouteOrderStatus = data.currentRouteOrderStatus;
         });
     };
 
@@ -360,6 +361,21 @@ angular.module('adminApp')
                     array[index].IsAttempt = 'No';
                     for (var i=0; i <= 1; i++) {
                         array[index].Attempt[i] = '-';
+                    }
+                }
+
+                array[index].CurrentRouteDetail = '-';
+                if (val.CurrentRoute && val.CurrentRoute.OrderStatus) {
+                    var route = val.CurrentRoute;
+                    var origin = ((route.OriginHub && route.OriginHub.Name) || "Merchant");
+                    var destination = ((route.DestinationHub && route.DestinationHub.Name) || "Dropoff");
+
+                    if ($scope.currentRouteOrderStatus.open.indexOf(route.OrderStatus.OrderStatusID) > -1) {
+                        array[index].CurrentRouteDetail = "Still on " + origin
+                    } else if ($scope.currentRouteOrderStatus.processed.indexOf(route.OrderStatus.OrderStatusID) > -1) {
+                        array[index].CurrentRouteDetail = "On the way to " + destination
+                    } else {
+                        array[index].CurrentRouteDetail = "Arrived at " + destination
                     }
                 }
             });
@@ -543,6 +559,20 @@ angular.module('adminApp')
                 $scope.noAction = true;
             }
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
+            $scope.order.CurrentRouteDetail = '-';
+            if ($scope.order.CurrentRoute && $scope.order.CurrentRoute.OrderStatus) {
+                var route = $scope.order.CurrentRoute;
+                var origin = ((route.OriginHub && route.OriginHub.Name) || "Merchant");
+                var destination = ((route.DestinationHub && route.DestinationHub.Name) || "Dropoff");
+
+                if ($scope.currentRouteOrderStatus.open.indexOf(route.OrderStatus.OrderStatusID) > -1) {
+                    $scope.order.CurrentRouteDetail = "Still on " + origin
+                } else if ($scope.currentRouteOrderStatus.processed.indexOf(route.OrderStatus.OrderStatusID) > -1) {
+                    $scope.order.CurrentRouteDetail = "On the way to " + destination
+                } else {
+                    $scope.order.CurrentRouteDetail = "Arrived at " + destination
+                }
+            }
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
