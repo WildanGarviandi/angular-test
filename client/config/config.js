@@ -53,6 +53,33 @@ function mainConfig() {
             var activeMerchant = [0, 0, 0, 0, 0, 0];
             var countryCode = '+63';
             break;
+        case 'admin|com':
+            var url = 'https://api2.etobee.com';
+            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
+            var currency = 'Rp';
+            var decimalSeparator = ',';
+            var zipLength = 5;
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
+            var countryCode = '+62';
+            break;
+        case 'admin|ph':
+            var url = 'http://api2.etobee.com.ph';
+            var defaultLocation = { Latitude: 14.5974875, Longitude: 120.9542445 };
+            var currency = '₱';
+            var decimalSeparator = '.';
+            var zipLength = 4;
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
+            var countryCode = '+63';
+            break;
+        case 'sandbox-v3|com':
+            var url = 'http://sandbox-v2.api2.etobee.com';
+            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
+            var currency = 'Rp';
+            var decimalSeparator = ',';
+            var zipLength = 5;
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
+            var countryCode = '+62';
+            break;
         default:
             var url = 'http://localhost:3001';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
