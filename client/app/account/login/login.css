@@ -78,3 +78,25 @@
   text-transform: uppercase;
   font-family: 'Avenir-Heavy';
 }
+
+.g-signin {
+    background-color: #df4a32;
+    color: #fff;
+    border-radius: 0;
+}
+
+.g-signin:hover, .g-signin:focus {
+    background-color: #bf3721;
+    color: #fff;
+}
+
+.g-icon {
+    background-color: #df4a32;
+    position: absolute;
+    z-index: 9;
+    left: 0;
+    height: 100%;
+    padding: 10px;
+    border-right: 2px solid #bf3721;
+    color: #fff;
+}

@@ -85,7 +85,8 @@ function mainConfig() {
             ReasonName: 'MANUAL_PROCESS',
             ReasonID: 11
         },
-        canChangeToPickup: [6]
+        canChangeToPickup: [6],
+        googleClientId: '196844091368-igtekd4ke8h75r03f0c9rf9k63n9ltc0.apps.googleusercontent.com'
     };
 }
 
