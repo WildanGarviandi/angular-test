@@ -7,7 +7,7 @@ angular.module('adminApp')
         return {
 
             /**
-            * Authenticate user and save token
+            * Authenticate token and save token
             *
             * @param  {Object}   user     - login info
             * @param  {Function} callback - optional
@@ -18,8 +18,7 @@ angular.module('adminApp')
                 var deferred = $q.defer();
 
                 $http.post(config.url + config.endpoints.signIn, {
-                    username: user.username,
-                    password: user.password
+                    token: user.token
                 }).
                 success(function(data) {
                     data = data.data.SignIn;

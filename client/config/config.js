@@ -61,7 +61,7 @@ function mainConfig() {
         zipLength: zipLength,
         url: url + '/v2/admin/',
         endpoints: {
-            signIn: 'sign-in'
+            signIn: 'sign-in-with-google'
         },
         defaultLocation: defaultLocation,
         notCancellableOrderStatus: [4, 5, 13, 16],
