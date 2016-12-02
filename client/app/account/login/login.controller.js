@@ -7,15 +7,11 @@ angular.module('adminApp')
     $scope.currentDate = new Date();
     $scope.googleClientId = config.googleClientId;
     $rootScope.$emit('stopSpin');
-
-    // This flag we use to show or hide the button in our HTML.
-    $scope.signedIn = false;
  
     // Here we do the authentication processing and error handling.
     // Note that authResult is a JSON object.
     $scope.processAuth = function(authResult) {
         // Do a check if authentication has been successful.
-        console.log(authResult['id_token']);
         if(authResult['id_token']) {
             Auth.login({
                 token: authResult['id_token']
@@ -29,9 +25,6 @@ angular.module('adminApp')
                 $scope.errors.other = err.error.message;
             });
         } else if(authResult['error']) {
-            // Error while signing in.
-            $scope.signedIn = false;
- 
             $scope.errors.other = authResult['error'];
         }
     };
