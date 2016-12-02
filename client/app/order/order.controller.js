@@ -851,8 +851,8 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.clearMessageUpdateTime = function () {
-        $scope.uploadedUpdateTime = [];
-        $scope.errorUploadUpdateTime = [];
+        $scope.uploadedUpdateTime = {};
+        $scope.errorUploadUpdateTime = {};
     }
 
     /**
