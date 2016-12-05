@@ -9,17 +9,23 @@ angular.module('adminApp')
             /**
             * Authenticate token and save token
             *
-            * @param  {Object}   user     - login info
+            * @param  {String}   type     - login type
+            * @param  {Object}   param     - login info
             * @param  {Function} callback - optional
             * @return {Promise}
             */
-            login: function(user, callback) {
+            login: function(type, param, callback) {
                 var cb = callback || angular.noop;
                 var deferred = $q.defer();
+                var url = config.url;
 
-                $http.post(config.url + config.endpoints.signIn, {
-                    token: user.token
-                }).
+                if (type === 'form') {
+                    url += config.endpoints.signIn;
+                } else if (type == 'google') {
+                    url += config.endpoints.signInWithGoogle;
+                }
+
+                $http.post(url, param).
                 success(function(data) {
                     data = data.data.SignIn;
                     $cookies.put('token', data.LoginSessionKey);
