@@ -1834,7 +1834,7 @@ angular.module('adminApp')
         var orders = '(' + orderNumbers.join(", ") + ')';
         var ordersFail = '(' + orderNumbersFail.join(", ") + ')';
 
-        if ($scope.selectedNonCancelableOrders()) {
+        if (orderNumbersFail.length > 0) {
             var notAllowedStatus = '';
             lodash.each($scope.statuses, function (val, key) {
                 if ($scope.notCancellableOrderStatus.indexOf(val.value) !== -1) {
@@ -1880,7 +1880,7 @@ angular.module('adminApp')
                         }
                     }
                     $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Order canceled successfully');
+                    SweetAlert.swal('Order cancelled successfully');
                     $state.reload();
                 }).catch(function (e) {
                     $rootScope.$emit('stopSpin');
