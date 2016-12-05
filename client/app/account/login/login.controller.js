@@ -16,7 +16,7 @@ angular.module('adminApp')
         // Note that authResult is a JSON object.
         $scope.processAuth = function(authResult) {
             // Do a check if authentication has been successful.
-            if(authResult['id_token']) {
+            if (authResult['id_token']) {
                 Auth.login(type, {
                     token: authResult['id_token']
                 })
@@ -33,7 +33,7 @@ angular.module('adminApp')
                 .catch( function(err) {
                     $scope.errors.other = err.error.message;
                 });
-            } else if(authResult['error']) {
+            } else if (authResult['error']) {
                 $scope.errors.other = authResult['error'];
             }
         };
@@ -69,7 +69,6 @@ angular.module('adminApp')
                     }, 100); 
                 })
                 .catch( function(err) {
-                    console.log(err)
                     $scope.errors.other = err.error.message;
                 });
             }

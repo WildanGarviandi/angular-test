@@ -17,12 +17,10 @@ angular.module('adminApp')
             login: function(type, param, callback) {
                 var cb = callback || angular.noop;
                 var deferred = $q.defer();
-                var url = config.url;
+                var url = config.url + config.endpoints.signIn;
 
-                if (type === 'form') {
-                    url += config.endpoints.signIn;
-                } else if (type == 'google') {
-                    url += config.endpoints.signInWithGoogle;
+                if (type === 'google') {
+                    url = config.url + config.endpoints.signInWithGoogle;
                 }
 
                 $http.post(url, param).
