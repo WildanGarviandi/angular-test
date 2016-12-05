@@ -373,7 +373,7 @@ angular.module('adminApp')
                     if ($scope.currentRouteOrderStatus.open.indexOf(route.OrderStatus.OrderStatusID) > -1) {
                         array[index].CurrentRouteDetail = "Still on " + origin
                     } else if ($scope.currentRouteOrderStatus.processed.indexOf(route.OrderStatus.OrderStatusID) > -1) {
-                        array[index].CurrentRouteDetail = "On the way to " + destination
+                        array[index].CurrentRouteDetail = "From" + origin + "On the way to " + destination
                     } else {
                         array[index].CurrentRouteDetail = "Arrived at " + destination
                     }
@@ -568,7 +568,7 @@ angular.module('adminApp')
                 if ($scope.currentRouteOrderStatus.open.indexOf(route.OrderStatus.OrderStatusID) > -1) {
                     $scope.order.CurrentRouteDetail = "Still on " + origin
                 } else if ($scope.currentRouteOrderStatus.processed.indexOf(route.OrderStatus.OrderStatusID) > -1) {
-                    $scope.order.CurrentRouteDetail = "On the way to " + destination
+                    $scope.order.CurrentRouteDetail = "From" + origin + "On the way to " + destination
                 } else {
                     $scope.order.CurrentRouteDetail = "Arrived at " + destination
                 }
