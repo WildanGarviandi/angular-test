@@ -366,14 +366,8 @@
                                 value="2" /> By Package Size
                         </label>
                         <div ng-if="webstore.PricingType == 2">
-                            <div ui-grid="packageDimensionGrid"
-                                ui-grid-edit
-                                ui-grid-auto-resize
-                                ui-grid-cellNav
-                                class="package-dimension-grid">
-                            </div>
                             <button class="btn btn-default"
-                                ng-disabled="packageDimensionGrid.data.length >= packageDimensionID.length"
+                                ng-disabled="packageDimensionGrid.data.length >= config.packageDimensionID.length"
                                 ng-click="addPackageDimensionRow()">
                                 Add New Size
                             </button>
@@ -382,6 +376,12 @@
                                 ng-click="deletePackageDimensionRow()">
                                 Delete Last Size
                             </button>
+                            <div ui-grid="packageDimensionGrid"
+                                ui-grid-edit
+                                ui-grid-auto-resize
+                                ui-grid-cellNav
+                                class="package-dimension-grid">
+                            </div>
                         </div>
                     </div>
                 </div>
