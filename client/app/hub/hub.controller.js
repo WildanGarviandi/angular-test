@@ -3,7 +3,8 @@
 angular.module('adminApp')
     .controller('HubCtrl', 
         function(
-            $scope, 
+            $scope,
+            config, 
             Auth, 
             $rootScope, 
             Services,
@@ -15,6 +16,7 @@ angular.module('adminApp')
             $location, 
             $http, 
             $window,
+            SweetAlert,
             $q
         ) {
 
@@ -48,6 +50,7 @@ angular.module('adminApp')
         key: 0,
         value: ''
     }];
+    $scope.deleteZipcodes = [];
     $scope.form = {};
 
     $scope.sumZipField = 1;
@@ -222,6 +225,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.deleteField = function(idx) {
+        $scope.deleteZipcodes.push($scope.zipcodes[idx].value);
         $scope.zipcodes.splice(idx, 1);
     }
 
@@ -564,29 +568,37 @@ angular.module('adminApp')
      */
     $scope.addZipCode = function() {
         $rootScope.$emit('startSpin');
-        var params = []
+        var paramsAdd = [];
+
         $scope.zipcodes.forEach(function(zip) {
-            var HubZipcodes = {};
-            HubZipcodes['HubID'] = $stateParams.hubID;
-            HubZipcodes['ZipCode'] = zip.value;
-            params.push(HubZipcodes);
-        }) 
-        Services2.saveZipcodes({
-            id: $stateParams.hubID,
-        }, {
-            params:params
-        }).$promise.then(function(data) {
-            if (data.data.Hubs) {
-                alert('Success');
-                window.location = '/update-hub/' + $stateParams.hubID;
-            } else {
-                alert('Failed');                 
-            }
-            $rootScope.$emit('stopSpin');
-        }).catch(function (e) {
-            $rootScope.$emit('stopSpin');
-            alert('Failed'); 
+            paramsAdd.push(zip.value);
         });
+
+        if ($scope.deleteZipcodes.length > 0) {
+            var url = config.url + 'hub/' + $stateParams.hubID + '/zipcode';
+            $http({
+                method: 'DELETE',
+                url: url,
+                data: {
+                    zipCodes: $scope.deleteZipcodes
+                }
+            });
+        }
+
+        if (paramsAdd.length > 0) {
+            Services2.saveZipcodes({
+                hubID: $stateParams.hubID,
+            }, {
+                zipCodes: paramsAdd
+            }).$promise.then(function(data) {
+                SweetAlert.swal('Success', 'Zip Code updated', 'success');
+                $rootScope.$emit('stopSpin');
+            }).catch(function (e) {
+                $rootScope.$emit('stopSpin');
+                alert('Failed');
+            });
+        }
+        
     }
 
     /**
