@@ -299,5 +299,36 @@
             "key": "Unavailable",
             "value": 2
         }
-    ]
+    ],
+    "currentRoute": [
+        {
+            "key": "pickup",
+            "value": "PU"
+        },
+        {
+            "key": "mother hub for pickup area",
+            "value": "MP"
+        },
+        {
+            "key": "local hub for pickup",
+            "value": "LP"
+        },
+        {
+            "key": "mother hub for dropoff area",
+            "value": "MD"
+        },
+        {
+            "key": "local hub for dropoff",
+            "value": "LD"
+        },
+        {
+            "key": "dropoff point",
+            "value": "DO"
+        }
+    ],
+    "currentRouteOrderStatus": {
+        "open": [1, 6, 9, 11],
+        "processed": [2, 3, 4, 7, 15],
+        "finished": [5, 8, 10, 12, 13, 16]
+    }
 }

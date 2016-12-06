@@ -525,3 +525,8 @@ td {
     top: 3px;
     width: 30px;
 }
+
+.hub-breadcrumb {
+    background: #7a4078;
+    color: #fff;
+}

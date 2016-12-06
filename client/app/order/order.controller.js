@@ -22,7 +22,8 @@ angular.module('adminApp')
             $q,
             SweetAlert,
             $httpParamSerializer,
-            $cookies
+            $cookies,
+            $timeout
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -216,6 +217,7 @@ angular.module('adminApp')
             $scope.orderTypes = $scope.orderTypes.concat(data.userTypes);
             $scope.marketplaceType = (lodash.find($scope.orderTypes, {key: 'Marketplace'}));
             $scope.ecommerceType = (lodash.find($scope.orderTypes, {key: 'Ecommerce'}));
+            $scope.currentRouteOrderStatus = data.currentRouteOrderStatus;
         });
     };
 
@@ -383,6 +385,21 @@ angular.module('adminApp')
                     array[index].IsAttempt = 'No';
                     for (var i=0; i <= 1; i++) {
                         array[index].Attempt[i] = '-';
+                    }
+                }
+
+                array[index].CurrentRouteDetail = '-';
+                if (val.CurrentRoute && val.CurrentRoute.OrderStatus) {
+                    var route = val.CurrentRoute;
+                    var origin = ((route.OriginHub && route.OriginHub.Name) || "Merchant");
+                    var destination = ((route.DestinationHub && route.DestinationHub.Name) || "Dropoff");
+
+                    if ($scope.currentRouteOrderStatus.open.indexOf(route.OrderStatus.OrderStatusID) > -1) {
+                        array[index].CurrentRouteDetail = "Still on " + origin
+                    } else if ($scope.currentRouteOrderStatus.processed.indexOf(route.OrderStatus.OrderStatusID) > -1) {
+                        array[index].CurrentRouteDetail = "From" + origin + "On the way to " + destination
+                    } else {
+                        array[index].CurrentRouteDetail = "Arrived at " + destination
                     }
                 }
             });
@@ -566,6 +583,20 @@ angular.module('adminApp')
                 $scope.noAction = true;
             }
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
+            $scope.order.CurrentRouteDetail = '-';
+            if ($scope.order.CurrentRoute && $scope.order.CurrentRoute.OrderStatus) {
+                var route = $scope.order.CurrentRoute;
+                var origin = ((route.OriginHub && route.OriginHub.Name) || "Merchant");
+                var destination = ((route.DestinationHub && route.DestinationHub.Name) || "Dropoff");
+
+                if ($scope.currentRouteOrderStatus.open.indexOf(route.OrderStatus.OrderStatusID) > -1) {
+                    $scope.order.CurrentRouteDetail = "Still on " + origin
+                } else if ($scope.currentRouteOrderStatus.processed.indexOf(route.OrderStatus.OrderStatusID) > -1) {
+                    $scope.order.CurrentRouteDetail = "From" + origin + "On the way to " + destination
+                } else {
+                    $scope.order.CurrentRouteDetail = "Arrived at " + destination
+                }
+            }
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
@@ -755,6 +786,28 @@ angular.module('adminApp')
     }
 
     /**
+     * Fet all hubs data
+     * 
+     */
+    function getHubs () {
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            var params = {
+                offset: 0
+            };
+            Services2.getHubs(params).$promise.then(function(data) {
+                var hubs = data.data.Hubs.rows;
+                $scope.hubs = []; 
+                hubs.forEach(function(hub) {
+                    $scope.hubs.push({name: hub.Name, id: hub.HubID});
+                });
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
+        });
+    }
+
+    /**
      * Show import orders modals
      * 
      * @return {void}
@@ -762,7 +815,7 @@ angular.module('adminApp')
     $scope.showImportOrders = function() {
         $scope.clearMessage();
         $scope.getMerchants();
-        getCompanies()
+        getCompanies(true)
         .then(function () {
             ngDialog.close()
             ngDialog.open({
@@ -1103,21 +1156,26 @@ angular.module('adminApp')
 
     /**
      * Get all companies
-     * 
-     * @return {Object} Promise
+     * @param  {boolean} withAllOption - if true, will add 'All' option or 'no fleet'
+     *      
      */
-    var getCompanies = function () {
+    var getCompanies = function (withAllOption) {
         $scope.companies = [{
             CompanyDetailID: 'all',
             CompanyName: 'All (search by name)'
         }];
 
-        $scope.fleets = [{
-            User: {
-                UserID: '0'
-            },
-            CompanyName: 'Choose Fleet'
-        }];
+        $scope.fleets = [];
+
+        if (withAllOption) {
+            $scope.fleets = [{
+                User: {
+                    UserID: '0'
+                },
+                CompanyName: 'All'
+            }];
+        }
+
         return $q(function (resolve) {
             $rootScope.$emit('startSpin');
             Services2.getAllCompanies().$promise.then(function(result) {
@@ -1213,7 +1271,7 @@ angular.module('adminApp')
      */
     $scope.reassignDriver = function () {
         $rootScope.$emit('startSpin');
-        getCompanies()
+        getCompanies(true)
         .then(function () {
             ngDialog.open({
                 template: 'reassignDriverTemplate',
@@ -1937,7 +1995,7 @@ angular.module('adminApp')
             SweetAlert.swal('Error', 'You have selected one or more orders which cannot be reassigned', 'error');
             return false;
         }
-        getCompanies()
+        getCompanies(true)
         .then(function () {
             ngDialog.close();
             return ngDialog.open({
@@ -2320,12 +2378,10 @@ angular.module('adminApp')
                 selectedOrder++;
             }
         });
-
         if (selectedOrder === 0) {
             SweetAlert.swal('No orders selected');
             return;
         }
-
         if (prohibitedIDs.length > 0) {            
             var messages = '';
             messages += 'This order has status which is prohibited <table align="center">';
@@ -2345,7 +2401,6 @@ angular.module('adminApp')
             });
             return;
         }
-
         SweetAlert.swal({
             title: 'Are you sure?',
             text: "Mark as PICKUP for " + totalSelected + " orders ?",
@@ -2404,6 +2459,157 @@ angular.module('adminApp')
                     });
                 });
             }
+        });
+    }
+
+
+    /**
+     * Set all seleted order to scope
+     */
+    function setSelectedOrder () {
+        $scope.selectedOrders = [];
+        $scope.displayed.forEach(function (order) {
+            if (order.Selected) {
+                $scope.selectedOrders.push(order);
+            }
+        });
+    }
+
+    /**
+     * Initialize reroute data and open modal
+     *
+     */
+    $scope.openRerouteModal = function () {
+        $scope.rerouteData = {
+            originHub: {},
+            destinationHub: {}
+        }
+        setSelectedOrder();
+        $scope.customFleet = false;
+        $scope.customFleetData = {
+            sender: '',
+            fee: 0,
+            transportation: '',
+            departureTime: moment().format(),
+            arrivalTime: moment().format(),
+            receipt: '',
+            awbNumber: ''
+        }
+        $scope.customFleetDateOptions = {
+            singleDatePicker: true,
+            timePicker: true,
+            drops: 'up',
+            locale: {
+                format: 'MM/DD/YYYY hh:mm A'
+            }
+        }
+
+        getCompanies(false)
+        .then(getHubs)
+        .then(function () {
+            ngDialog.open({
+                template: 'rerouteModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default reroute-modal',
+                closeByDocument: false
+            });
+        });
+    }
+
+    $scope.reroute = function () {
+        reroute();
+    }
+
+    /**
+     * Reroute / redirect order
+     * Send to the API
+     * 
+     */
+    function reroute () {
+        var orderIDs = [];
+        var userOrderNumbers = [];
+        $scope.selectedOrders.forEach(function (order) {
+            orderIDs.push(order.UserOrderID);
+            userOrderNumbers.push(order.UserOrderNumber);
+        });
+        SweetAlert.swal({
+            title: 'Summary',
+            text: 'Reroute orders ' + userOrderNumbers.join(', ') + ' from hub ' + $scope.rerouteData.originHub.name +
+                    ' to hub ' + $scope.rerouteData.destinationHub.name + 
+                    ' by ' + 
+                    (($scope.customFleet) ? ('third party logistic ' + $scope.customFleetData.sender) : 
+                        ('logistic vendor ' + $scope.fleet.CompanyName)) + ' ? ',
+            showCancelButton: true,
+            closeOnConfirm: false,
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.rerouteOrders({
+                    userOrderIDs: orderIDs,
+                    originHubID: $scope.rerouteData.originHub.id,
+                    destinationHubID: $scope.rerouteData.destinationHub.id,
+                    fleetID: (!$scope.customFleet) ? $scope.fleet.User.UserID : null,
+                    externalTripData: ($scope.customFleet) ? $scope.customFleetData : null
+                }).$promise.then(function (result) {
+                    $rootScope.$emit('stopSpin');
+                    ngDialog.closeAll();
+                    SweetAlert.swal({
+                        title: "Reroute Succeed!",
+                        text: "Order has been reroute to trip with ID " + result.data.tripID + " from Hub " +
+                                $scope.rerouteData.originHub.name + " to Hub " + 
+                                $scope.rerouteData.destinationHub.name + ".",
+                        type: "success"
+                    });
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    ngDialog.closeAll();
+                    SweetAlert.swal("Reroute Failed!", 'Please call tech support. Error message: ' + 
+                        e.data.error.message, "error");
+                });
+            }
+        });
+    }
+
+    /**
+     * Upload an image to the cloud, will return a url as a response
+     * @param  {File} file - image to be uploaded
+     * 
+     */
+    $scope.uploadPic = function (file) {
+        $rootScope.$emit('startSpin');
+        if (file) {
+            $scope.f = file;
+            file.upload = Upload.upload({
+                url: config.url + 'upload/picture',
+                data: {file: file}
+            })
+            .then(function (response) {
+                $timeout(function () {
+                    file.result = response.data;
+                    if (response.data.data && !response.data.error) {
+                        $scope.customFleetData.receipt = response.data.data.Location;
+                    } else {
+                        alert('Uploading picture failed. Please try again');
+                        $scope.errorMsg = 'Uploading picture failed. Please try again';
+                    }
+                    $rootScope.$emit('stopSpin');
+                });
+            }, function (response) {
+                if (response.status > 0) {
+                    $scope.errorMsg = response.status + ': ' + response.data;
+                }
+                $rootScope.$emit('stopSpin');
+            }, function (evt) {
+                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            });
+        }
+    };
+
+    $scope.openTracking = function (UserOrderNumber) {
+        Services2.getTrack().$promise.then(function (result) {
+            $window.open(config.webtrackingURL + '/?id=' + UserOrderNumber + '&t=' + result.data.token);
         });
     }
     

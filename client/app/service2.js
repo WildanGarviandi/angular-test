@@ -40,10 +40,20 @@ angular.module('adminApp')
         },
         saveZipcodes: {
             method: 'POST',
+            url: config.url + ':module/:hubID/:controller',
             params: {
                 module: 'hub',
-                controller: 'saveZipcodes',
-                id: null
+                controller: 'zipcode',
+                hubID: null
+            },
+        },
+        deleteZipcodes: {
+            method: 'DELETE',
+            url: config.url + ':module/:hubID/:controller',
+            params: {
+                module: 'hub',
+                controller: 'zipcode',
+                hubID: null
             },
         },
         getDistrict: {
@@ -621,6 +631,39 @@ angular.module('adminApp')
             params: {
                 module: 'order',
                 controller: 'bulk-pickup-orders'
+            }
+        },
+        createWebstoreChild: {
+            method: 'POST',
+            url: config.url + ':module/:id/:controller',
+            params: {
+                module: 'webstore',
+                id: null,
+                controller: 'parent',
+            },
+        },
+        deleteWebstoreChild: {
+            method: 'DELETE',
+            url: config.url + ':module/:childId/:controller/:parentId',
+            params: {
+                module: 'webstore',
+                childId: null,
+                controller: 'parent',
+                parentId: null
+            },
+        },
+        rerouteOrders: {
+            method: 'POST',
+            params: {
+                module: 'trip',
+                controller: 'redirect'
+            }
+        },
+        getTrack: {
+            method: 'GET',
+            params: {
+                module: 'webtrack',
+                controller: 'token'
             }
         }
     });

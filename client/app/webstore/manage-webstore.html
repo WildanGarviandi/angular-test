@@ -405,10 +405,13 @@
             </form>
         </div>
     </div>
-    <div class="col-md-4 hub-container pull-left" style="margin-left:10px">
-        <h5 ng-show="parentWebstore">
-            Webstore Parent :
-        </h5>
+    <div class="col-md-6 col-xs-12 pull-left no-padding webstore-info">
+
+        <div ng-show="parentWebstore" class="header-edit-webstore">
+            <h5>
+                <b>Webstore Parent</b>
+            </h5>
+        </div>
         <table ng-show="parentWebstore" t-table="parentWebstore" class="table table-hover webstore-table">
             <thead class="hubs-table-head">
                 <tr>
@@ -430,45 +433,111 @@
             </tbody>
         </table>
 
-        <h5 ng-show="childrenWebstore.length > 0">
-            Webstore Children : 
-            <span>{{childrenWebstore.length}} Children 
-                <button ng-hide="showChildren" ng-click="showChildren = true" class="btn btn-xs btn-default"><i class="fa fa-chevron-down"></i></button>
-                <button ng-show="showChildren" ng-click="showChildren = false" class="btn btn-xs btn-default"><i class="fa fa-chevron-up"></i></button>
-            </span>
-        </h5>
-        <table ng-show="showChildren && childrenWebstore.length > 0" t-table="childrenWebstore" class="table table-hover webstore-table">
-            <thead class="hubs-table-head">
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Mobile</th>
-                    <th>Payment</th>
-                    <th>Allow COD</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="children in childrenWebstore | limitTo: offset - childrenWebstore.length | limitTo: 5">
-                    <td>{{children.FirstName}} {{children.LastName}}</td>
-                    <td>{{children.Email}}</td>
-                    <td>{{children.PhoneNumber}}</td>
-                    <td class="webstore-cell">{{children.WebstoreCompany.PostPaidPayment ? "Postpaid" : "Prepaid"}}</td>
-                    <td class="webstore-cell">{{children.WebstoreCompany.AllowCOD ? "Yes" : "No"}}</td>
-                </tr>
-            </tbody>
-            <tfoot ng-show="childrenWebstore.length > 5">
-                <tr class="paginationBar">
-                    <td colspan="5">
-                        <button ng-click="paginationChildWebstore(0)" class="btn btn-sm btn-default">First</button>
-                        <button ng-click="paginationChildWebstore(offset-5)" ng-class="{disabled: offset == 0}" class="btn btn-sm btn-default"><</button>
-                        <button ng-repeat="n in childrenWebstore" ng-if="$index % 5 == 0" ng-class="{active: $index == offset}" class="btn btn-sm btn-default" ng-click="paginationChildWebstore($index)" ng-bind="($index/5) + 1">1</button>
-                        <button ng-click="paginationChildWebstore(offset+5)" ng-class="{disabled: offset >= (childrenWebstore.length - (childrenWebstore.length % 5))}" class="btn btn-sm btn-default">></button>
-                        <button ng-click="paginationChildWebstore(childrenWebstore.length - (childrenWebstore.length % 5))" class="btn btn-sm btn-default">Last</button>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-        <div id="maps" class="maps-webstore" style="margin:0 !important"></div>
+        <div ng-show="childrenWebstore.length > 0" class="header-edit-webstore">
+            <h5>
+                <b>Webstore Children</b> 
+                <span>({{childrenWebstore.length}} Children)</span>
+                <button 
+                    ng-hide="showCreateChild" 
+                    ng-click="showCreateChild = true" 
+                    class="btn btn-sm btn-default pull-right">Create Child</button>
+                <button 
+                    ng-show="showCreateChild" 
+                    ng-click="showCreateChild = false" 
+                    class="btn btn-sm btn-default pull-right">Cancel Create</button>
+            </h5>
+        </div>
+        <div ng-show="showCreateChild" class="row no-margin createWebstoreChild">
+            <div class="col-xs-12 no-padding">
+                <div class="form-group">
+                    <div class="form-label col-md-2">
+                        <p class="no-margin">Create Child</p>
+                    </div>
+                    <div class="form-input col-md-4">
+                        <input ng-model="input.merchantID" 
+                            type="text" 
+                            name="merchantID" 
+                            class="form-control input-md" 
+                            placeholder="Merchant ID" />
+                    </div>
+                    <div class="form-input col-md-4">
+                        <ui-select ng-model="newChild" 
+                            theme="selectize" 
+                            tagging="tagHandler"
+                            on-select="chooseWebstore($item)" 
+                            class="booking-order-type input-md">
+                            <ui-select-match class="input-table">{{$select.selected.text}}</ui-select-match>
+                            <ui-select-choices repeat="ot in allWebstores | filter: $select.search" selected>
+                                <span class="input-table" ng-bind-html="ot.text | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-md btn-default col-xs-12" ng-click="createChild()">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-show="childrenWebstore.length > 0" class="table table-responsive">
+            <table t-table="childrenWebstore" class="table table-hover webstore-table">
+                <thead class="hubs-table-head">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Payment</th>
+                        <th>Allow COD</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="children in childrenWebstore | limitTo: offset - childrenWebstore.length | limitTo: 5">
+                        <td>{{children.FirstName}} {{children.LastName}}</td>
+                        <td>{{children.Email}}</td>
+                        <td>{{children.PhoneNumber}}</td>
+                        <td class="webstore-cell">{{children.WebstoreCompany.PostPaidPayment ? "Postpaid" : "Prepaid"}}</td>
+                        <td class="webstore-cell">{{children.WebstoreCompany.AllowCOD ? "Yes" : "No"}}</td>
+                        <td>
+                            <button class="btn btn-danger btn-xs" 
+                                ng-click="deleteChild(children.UserID, children.FirstName + ' '+ children.LastName)">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot ng-show="childrenWebstore.length > 5">
+                    <tr class="paginationBar">
+                        <td colspan="5">
+                            <button 
+                                ng-click="paginationChildWebstore(0)" 
+                                class="btn btn-sm btn-default">First</button>
+                            <button 
+                                ng-click="paginationChildWebstore(offset-5)"
+                                ng-class="{disabled: offset == 0}" 
+                                class="btn btn-sm btn-default"><</button>
+                            <button 
+                                ng-repeat="n in childrenWebstore" 
+                                ng-if="$index % 5 == 0" 
+                                ng-class="{active: $index == offset}" 
+                                class="btn btn-sm btn-default" 
+                                ng-click="paginationChildWebstore($index)" 
+                                ng-bind="($index/5) + 1">1</button>
+                            <button 
+                                ng-click="paginationChildWebstore(offset+5)" 
+                                ng-class="{disabled: offset >= (childrenWebstore.length - (childrenWebstore.length % 5))}" 
+                                class="btn btn-sm btn-default">></button>
+                            <button 
+                                ng-click="paginationChildWebstore(childrenWebstore.length - (childrenWebstore.length % 5))"
+                                class="btn btn-sm btn-default">Last</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="header-edit-webstore">
+            <h5><b>Webstore Location</b></h5>
+        </div>
+        <div id="maps" class="maps-webstore maps-webstore-full-width" style="margin:0 !important"></div>
     </div>
 </div>
 

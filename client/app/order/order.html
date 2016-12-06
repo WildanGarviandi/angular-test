@@ -64,6 +64,10 @@
                 <li>
                     <a ng-show="features.order.bulk_set_pickup" ng-click="bulkSetPickupStatus()" class="">Mark as Pickup</a>
                 </li>
+                <li>
+                    <a ng-show="features.order.reroute" 
+                        ng-click="openRerouteModal()">Reroute</a>
+                </li>
             </ul>
         </div>
         <div class="first-row-separator first-row-element"></div>
@@ -231,6 +235,7 @@
                                 Due Time
                             </th>
                             <th>Status</th>
+                            <th>Current Route</th>
                             <th>Total Failed Attempts</th>
                             <th>Failed Attempt</th>
                             <th>First Attempt</th>
@@ -436,6 +441,8 @@
                             <th>
                             </th>
                             <th>
+                            </th>
+                            <th>
                                 <div class="filter-table">
                                     <ui-select ng-model="isAttempt" 
                                         theme="selectize" 
@@ -506,6 +513,7 @@
                             <td>{{order.CutOffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                             <td>{{order.DueTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                             <td>{{order.OrderStatus.OrderStatus}}</td>
+                            <td>{{order.CurrentRouteDetail}}</td>
                             <td>{{order.UserOrderAttempts.length}}</td>
                             <td>{{order.IsAttempt}}</td>
                             <td>{{order.Attempt[0] | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
@@ -907,6 +915,7 @@
         </div>
     </div>
 </script>
+
 <script type="text/ng-template" id="importDeliveryAttemptsModal">
     <div class="header-wrapper">
         <h1>Import Delivery Attempts</h1>
@@ -920,7 +929,7 @@
         </div>
         <div class="row-fluid uploadXls">
             <div ngf-drop="uploadDeliveryAttempts($files)" 
-                ngf-select="uploadDeliveryAttempts($files)" 
+                ngf-select="uploadDeliveryAttempts($files)"
                 ng-model="files" 
                 class="drop-box" 
                 ngf-drag-over-class="dragover" 
@@ -966,5 +975,118 @@
             </div>
         </div>
         <div class="clearfix"></div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="rerouteModal">
+    <div class="header-wrapper">
+        <h1>Reroute Orders</h1>
+    </div>
+    <div class="content-wrapper container-fluid">
+        <div class="row-fluid">                
+            <div class="label-import">
+                Origin Hub :
+            </div>  
+            <div class="input-group input-import">
+                <ui-select ng-model="rerouteData.originHub" 
+                    theme="selectize"
+                    class="booking-order-type">
+                    <ui-select-match class="input-table">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="h in hubs | filter: $select.search track by $index" selected>
+                        <span class="input-table" ng-bind-html="h.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <div class="label-import">
+                Destination Hub :
+            </div>  
+            <div class="input-group input-import">
+                <ui-select ng-model="rerouteData.destinationHub" 
+                    theme="selectize"
+                    class="booking-order-type">
+                    <ui-select-match class="input-table">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="h in hubs | filter: $select.search track by $index" selected>
+                        <span class="input-table" ng-bind-html="h.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <div class="label-import">
+                Fleet :
+            </div>
+            <div class="input-group input-import">
+                <form>
+                    <input type="radio" name="fleet" ng-model="$parent.customFleet" 
+                        uib-btn-radio="false" checked/> Fleet 
+                    <input type="radio" name="fleet" ng-model="$parent.customFleet" 
+                        uib-btn-radio="true"/> 3rd Party Logistic 
+                </form>
+                <ui-select ng-model="fleet" 
+                    ng-show="!customFleet"
+                    theme="selectize" ng-disabled="fleetDisabled"
+                    on-select="chooseCompanyOnModals($item)" 
+                    class="booking-order-type">
+                    <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
+                    <ui-select-choices repeat="f in fleets | filter: $select.search track by $index" selected>
+                        <span class="input-table" ng-bind-html="f.CompanyName | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <form class="form-horizontal" name="fleetForm" ng-show="customFleet" novalidate>
+            <div class="form-group">
+                <label class="control-label" for="sender">Sender : </label>
+                <input type="text" name="sender" class="form-control"
+                    ng-model="customFleetData.sender" required/>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="fee">Fee : </label>
+                <input type="text" name="fee" class="form-control"
+                    ng-model="customFleetData.fee" numbers-only required/>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="transportation">Transportation : </label>
+                <input type="text" name="transportation" class="form-control"
+                    ng-model="customFleetData.transportation" required />
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="awb">AWB Number : </label>
+                <input type="text" name="awb" class="form-control"
+                    ng-model="customFleetData.awbNumber" required />
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="departure">Departure Time: </label>
+                <input type="text" name="departure" class="form-control date-picker"
+                    ng-model="customFleetData.departureTime" date-range-picker required
+                    options="customFleetDateOptions" />
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="eta">ETA : </label>
+                <input type="text" name="eta" class="form-control date-picker"
+                    ng-model="customFleetData.arrivalTime" date-range-picker required
+                    options="customFleetDateOptions" />
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="receipt">Receipt : </label>
+                <div class="control">
+                    <a ng-if="customFleetData.receipt" href="{{customFleetData.receipt}}"
+                        target="_blank">Click to view</a>
+                    <button class="btn btn-default" ngf-select="uploadPic($file)" ng-model="file" 
+                        ngf-model-invalid="errorFile" type="file" accept="image/*">Upload</button>
+                </div>
+            </div>
+        </form>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <button class="btn btn-primary btn-block submit-btn" ng-click="reroute()"
+                ng-disabled="!rerouteData.originHub.id || !rerouteData.destinationHub.id || 
+                    (!customFleet && !fleet) || (customFleet && (fleetForm.$invalid || !customFleetData.receipt))"
+                    >Reroute</button>
+        </div>
     </div>
 </script>
