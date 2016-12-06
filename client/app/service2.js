@@ -641,6 +641,13 @@ angular.module('adminApp')
                 controller: 'parent',
                 parentId: null
             },
+        },
+        rerouteOrders: {
+            method: 'POST',
+            params: {
+                module: 'trip',
+                controller: 'redirect'
+            }
         }
     });
 });
