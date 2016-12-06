@@ -40,10 +40,20 @@ angular.module('adminApp')
         },
         saveZipcodes: {
             method: 'POST',
+            url: config.url + ':module/:hubID/:controller',
             params: {
                 module: 'hub',
-                controller: 'saveZipcodes',
-                id: null
+                controller: 'zipcode',
+                hubID: null
+            },
+        },
+        deleteZipcodes: {
+            method: 'DELETE',
+            url: config.url + ':module/:hubID/:controller',
+            params: {
+                module: 'hub',
+                controller: 'zipcode',
+                hubID: null
             },
         },
         getDistrict: {
