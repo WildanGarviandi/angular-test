@@ -622,6 +622,25 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'bulk-pickup-orders'
             }
+        },
+        createWebstoreChild: {
+            method: 'POST',
+            url: config.url + ':module/:id/:controller',
+            params: {
+                module: 'webstore',
+                id: null,
+                controller: 'parent',
+            },
+        },
+        deleteWebstoreChild: {
+            method: 'DELETE',
+            url: config.url + ':module/:childId/:controller/:parentId',
+            params: {
+                module: 'webstore',
+                childId: null,
+                controller: 'parent',
+                parentId: null
+            },
         }
     });
 });

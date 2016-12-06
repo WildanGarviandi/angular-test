@@ -119,3 +119,29 @@
     vertical-align: middle;
     margin: 0;
 }
+
+.createWebstoreChild {
+    background: #fff;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-bottom: 15px !important;
+}
+
+.webstore-info {
+    margin-left: 10px;
+    margin-top: 20px;
+}
+
+.header-edit-webstore {
+    color: #fff;
+    background: #7a4078;
+    padding: 10px 15px;
+}
+
+.header-edit-webstore button {
+    margin-top: -7px;
+}
+
+.maps-webstore-full-width {
+    width: 100%;
+}
