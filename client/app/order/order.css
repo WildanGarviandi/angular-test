@@ -504,4 +504,15 @@ a {
 
 .opacity-05 {
     opacity: 0.5 !important;
+}
+
+.header-background-order-detail {
+    text-align: left;
+    color: #fff;
+    background: #7a4078;
+    padding: 10px 15px;
+}
+
+.bg-white {
+    background-color: #fff;
 };
