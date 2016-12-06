@@ -2606,5 +2606,11 @@ angular.module('adminApp')
             });
         }
     };
+
+    $scope.openTracking = function (UserOrderNumber) {
+        Services2.getTrack().$promise.then(function (result) {
+            $window.open(config.webtrackingURL + '/?id=' + UserOrderNumber + '&t=' + result.data.token);
+        });
+    }
     
 });

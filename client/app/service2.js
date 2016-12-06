@@ -658,6 +658,13 @@ angular.module('adminApp')
                 module: 'trip',
                 controller: 'redirect'
             }
+        },
+        getTrack: {
+            method: 'GET',
+            params: {
+                module: 'webtrack',
+                controller: 'token'
+            }
         }
     });
 });
