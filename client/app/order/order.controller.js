@@ -1725,23 +1725,6 @@ angular.module('adminApp')
     };
 
     /**
-     * Check whether there is one or more non-cancelable orders selected.
-     * 
-     * @return {boolean}
-     */
-    $scope.selectedNonCancelableOrders = function() {
-        var checked = false;
-        $scope.orders.some(function(order) {
-            if (order.Selected && $scope.notCancellableOrderStatus.indexOf(order.OrderStatus.OrderStatusID) !== -1) {
-                checked = true;
-                return;
-            }
-        });
- 
-        return checked;
-    };
-
-    /**
      * Show set price modals
      * 
      * @return {void}
