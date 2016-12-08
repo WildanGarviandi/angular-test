@@ -219,6 +219,7 @@ angular.module('adminApp')
             $rootScope.$emit('stopSpin');
             if (response instanceof Array || response.constructor === Array) {
                 var callbackData = {
+                    status: false,
                     webstore : {
                         UserID : ''
                     }
@@ -226,6 +227,7 @@ angular.module('adminApp')
                 response.forEach(function(obj) {
                     if (obj.data.success) {
                         callbackData.webstore.UserID = obj.data.merchantID;
+                        callbackData.status = obj.data.success;
                     } else {
                         return callback('failed', {});
                     }
