@@ -622,6 +622,40 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'bulk-pickup-orders'
             }
+        },
+        getFleetZipCodes: {
+            method: 'GET',
+            params: {
+                module: 'fleet',
+                controller: 'zipcodes'
+            }
+        },
+        setFleetZipCodes: {
+            method: 'POST',
+            url: config.url + ':module/:fleetID/:controller',
+            params: {
+                module: 'fleet',
+                fleetID: null,
+                controller: 'zipcodes'
+            }
+        },
+        deleteFleetZipcodes: {
+            method: 'DELETE',
+            url: config.url + ':module/:fleetID/:controller',
+            params: {
+                module: 'fleet',
+                fleetID: null,
+                controller: 'zipcodes'
+            }
+        },
+        bulkSetFleetPrices: {
+            method: 'POST',
+            url: config.url + ':module/:fleetID/:controller',
+            params: {
+                module: 'fleet',
+                fleetID: null,
+                controller: 'bulk-price'
+            }
         }
     });
 });

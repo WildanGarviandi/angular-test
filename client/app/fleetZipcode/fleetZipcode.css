@@ -1,0 +1,12 @@
+.action-remove {
+    display: none;
+}
+
+.action-show-on-hover:hover .action-remove {
+    display: block;
+    color: #fe5960;
+}
+
+.selece-top-table {
+    z-index: 102;
+}

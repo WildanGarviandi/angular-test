@@ -449,5 +449,15 @@ angular.module('adminApp')
                 }
             },
             authenticate: true
+        })
+        .state('app.fleetZipcodes', {
+            url: 'fleetZipcodes',
+             views: {
+                'content@': {
+                    templateUrl: 'app/fleetZipcode/fleetZipcode.html',
+                    controller: 'FleetZipcodeCtrl',
+                }
+            },
+            authenticate: true
         });
     });
