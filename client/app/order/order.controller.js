@@ -115,17 +115,35 @@ angular.module('adminApp')
     $scope.isFetchingDrivers = false;
     $scope.urlToDownload = {};
     $scope.urlToDownload.templateDeliveryAttempts = '../../assets/template/importUserOrderAttempt.xlsx';
+    $scope.isNavigationOpen = true;
 
     /*
      * Style Responsive Height
      *
     */
-    $scope.tableHeight = $window.innerHeight - 345;
+    var orderNavigationHeight = $('#order-navigation').height();
+    $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + 260);
+    $scope.orderListHeight = $scope.tableHeight - 110;
     $(window).resize(function(){
         $scope.$apply(function(){
-            $scope.tableHeight = $window.innerHeight - 345;
+            orderNavigationHeight = $('#order-navigation').height();
+            $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + 235);
+            ///$scope.tableHeight = $window.innerHeight - 220;
+            $scope.orderListHeight = $scope.tableHeight - 110;
         });
     });
+
+    $scope.orderNavigation = function() {
+        $scope.isNavigationOpen = !$scope.isNavigationOpen;
+        var addHeight = 190;
+        if (!$scope.isNavigationOpen) {
+            $scope.tableHeight = $window.innerHeight - addHeight;
+        }
+        if ($scope.isNavigationOpen) {
+            $scope.tableHeight = $window.innerHeight - (addHeight + orderNavigationHeight + 70);
+        }
+        $scope.orderListHeight = $scope.tableHeight - 110;
+    }
 
     /*
      * Set picker name for filter
@@ -626,6 +644,19 @@ angular.module('adminApp')
 
     $scope.loadDetails();
     $scope.isCollapsed = true;
+
+    /**
+     * Show import button modal
+     * 
+     * @return {void}
+     */
+    $scope.showImportModal = function() {
+        ngDialog.open({
+            template: 'importModalTemplate',
+            scope: $scope,
+            className: 'ngdialog-theme-default edit-pickup-address-popup'
+        });
+    };
 
     /**
      * Show edit pickup address
