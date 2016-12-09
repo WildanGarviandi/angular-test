@@ -368,7 +368,7 @@ angular.module('adminApp')
                 if (val.WebstoreUser) {
                     array[index].CustomerName = val.WebstoreUser.FirstName + ' ' + val.WebstoreUser.LastName;
                 } else {
-                    array[index].CustomerName = val.User.FirstName + ' ' + val.User.LastName;
+                    array[index].CustomerName = val.User && `${val.User.FirstName} ${val.User.LastName}` || '';
                 }
 
                 array[index].Attempt = [];
