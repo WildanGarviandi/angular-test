@@ -665,6 +665,13 @@ angular.module('adminApp')
                 module: 'webtrack',
                 controller: 'token'
             }
+        },
+        bulkCancelOrderStatus: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-cancel'
+            }
         }
     });
 });

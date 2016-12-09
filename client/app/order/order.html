@@ -39,7 +39,8 @@
                 features.order.bulk_return_warehouse||
                 features.order.bulk_return_sender ||
                 features.order.bulk_set_pickup ||
-                features.order.bulk_reassign_driver" 
+                features.order.bulk_reassign_driver ||
+                features.order.bulk_cancel_order" 
                 ng-disabled="!isOrderSelected" 
                 class="order-buttons btn dropdown-toggle col-xs-12" 
                 type="button" 
@@ -53,6 +54,9 @@
                 <li><a ng-show="features.order.reassign_fleet" ng-click="showReassignFleet()" class="">Reassign Fleet</a></li>
                 <li>
                     <a ng-show="features.order.bulk_reassign_driver" ng-click="showReassignDriver()" class="">Reassign Driver</a>
+                </li>
+                <li>
+                    <a ng-show="features.order.bulk_cancel_order" ng-click="showBulkCancelOrder()" class="">Cancel Order</a>
                 </li>
                 <li><a ng-show="features.order.bulk_mark_delivered" ng-click="bulkSetDeliveredStatus()" class="">Mark as Delivered</a></li>
                 <li>
