@@ -117,6 +117,17 @@ angular.module('adminApp')
     $scope.urlToDownload.templateDeliveryAttempts = '../../assets/template/importUserOrderAttempt.xlsx';
 
     /*
+     * Style Responsive Height
+     *
+    */
+    $scope.tableHeight = $window.innerHeight - 345;
+    $(window).resize(function(){
+        $scope.$apply(function(){
+            $scope.tableHeight = $window.innerHeight - 345;
+        });
+    });
+
+    /*
      * Set picker name for filter
      * 
     */
