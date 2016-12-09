@@ -189,18 +189,21 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         Webstores.createWebstore(webstore).$promise
         .then(function(response) {
-            var packageDimension;
-            if (pricingType === 2) {
-                packageDimension = formatDimensionData($scope.packageDimensionGrid.data);
-            }
             if (response) {
-                if (response.data.pricingType === 1) {
-                    resolve(response);
+                if (pricingType === 1) {
+                    $rootScope.$emit('stopSpin');
+                    return callback(null, {
+                        webstore: {
+                            UserID: response.data.webstore.UserID
+                        },
+                        status: true
+                    });
                 } else {
+                    var packageDimension = formatDimensionData($scope.packageDimensionGrid.data);
                     var packageDimensionQueue = [];
                     packageDimension.forEach(function(obj) {
                         var params = {
-                            _id: $stateParams.webstoreID,
+                            _id: response.data.webstore.UserID,
                             packageDimensionID: obj.PackageSizeID,
                             length: obj.Length,
                             width: obj.Width,
@@ -209,30 +212,27 @@ angular.module('adminApp')
                         };
                         packageDimensionQueue.push(Webstores.updatePackageDimension(params).$promise);
                     });
-                    return $q.all(packageDimensionQueue);
+
+                    $q.all(packageDimensionQueue)
+                    .then(function (response) {
+                        $rootScope.$emit('stopSpin');
+                        var callbackData = {
+                            status: false,
+                            webstore : {
+                                UserID : ''
+                            }
+                        };
+                        response.forEach(function(obj) {
+                            if (obj.data.success) {
+                                callbackData.webstore.UserID = obj.data.merchantID;
+                                callbackData.status = obj.data.success;
+                            } else {
+                                return callback('failed', {});
+                            }
+                        });
+                        return callback(null, callbackData);
+                    });
                 }
-            } else {
-                reject({statusText: 'updatePricingType failed'});
-            }
-        })
-        .then(function(response) {
-            $rootScope.$emit('stopSpin');
-            if (response instanceof Array || response.constructor === Array) {
-                var callbackData = {
-                    webstore : {
-                        UserID : ''
-                    }
-                };
-                response.forEach(function(obj) {
-                    if (obj.data.success) {
-                        callbackData.webstore.UserID = obj.data.merchantID;
-                    } else {
-                        return callback('failed', {});
-                    }
-                });
-                return callback(null, callbackData);
-            } else if (response) {
-                return callback(null, response.data);
             } else {
                 return callback('failed', {});
             }
@@ -274,18 +274,21 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         Webstores.updateWebstore({_id: $stateParams.webstoreID, webstore: webstore}).$promise
         .then(function(response) {
-            var packageDimension;
-            if (pricingType === 2) {
-                packageDimension = formatDimensionData($scope.packageDimensionGrid.data);
-            }
             if (response) {
-                if (response.data.pricingType === 1) {
-                    resolve(response);
+                if (pricingType === 1) {
+                    $rootScope.$emit('stopSpin');
+                    return callback(null, {
+                        webstore: {
+                            UserID: response.data.webstore.UserID
+                        },
+                        status: true
+                    });
                 } else {
+                    var packageDimension = formatDimensionData($scope.packageDimensionGrid.data);
                     var packageDimensionQueue = [];
                     packageDimension.forEach(function(obj) {
                         var params = {
-                            _id: $stateParams.webstoreID,
+                            _id: response.data.webstore.UserID,
                             packageDimensionID: obj.PackageSizeID,
                             length: obj.Length,
                             width: obj.Width,
@@ -294,32 +297,27 @@ angular.module('adminApp')
                         };
                         packageDimensionQueue.push(Webstores.updatePackageDimension(params).$promise);
                     });
-                    return $q.all(packageDimensionQueue);
+
+                    $q.all(packageDimensionQueue)
+                    .then(function (response) {
+                        $rootScope.$emit('stopSpin');
+                        var callbackData = {
+                            status: false,
+                            webstore : {
+                                UserID : ''
+                            }
+                        };
+                        response.forEach(function(obj) {
+                            if (obj.data.success) {
+                                callbackData.webstore.UserID = obj.data.merchantID;
+                                callbackData.status = obj.data.success;
+                            } else {
+                                return callback('failed', {});
+                            }
+                        });
+                        return callback(null, callbackData);
+                    });
                 }
-            } else {
-                reject({statusText: 'updatePricingType failed'});
-            }
-        })
-        .then(function(response) {
-            $rootScope.$emit('stopSpin');
-            if (response instanceof Array || response.constructor === Array) {
-                var callbackData = {
-                    status: false,
-                    webstore : {
-                        UserID : ''
-                    }
-                };
-                response.forEach(function(obj) {
-                    if (obj.data.success) {
-                        callbackData.webstore.UserID = obj.data.merchantID;
-                        callbackData.status = obj.data.success;
-                    } else {
-                        return callback('failed', {});
-                    }
-                });
-                return callback(null, callbackData);
-            } else if (response) {
-                return callback(null, response.data);
             } else {
                 return callback('failed', {});
             }
@@ -761,7 +759,7 @@ angular.module('adminApp')
                 if ($scope.webstore.UserID === undefined) {
                     window.location = '/webstore';
                 }
-            }, 4000);
+            }, 10000);
             $scope.getAllWebstore();
             $scope.updatePage = true;
             $scope.addPage = false;

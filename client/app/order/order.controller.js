@@ -2043,6 +2043,88 @@ angular.module('adminApp')
     }
 
     /**
+     * Show bulk cancel order modals
+     * @return void
+     */
+    $scope.showBulkCancelOrder = function () {
+        var orderIDs = [],
+            orderNumbers = [],
+            orderNumbersFail = [];
+        $scope.selectedOrders.forEach(function(order) {
+            orderIDs.push(order.UserOrderID);
+            orderNumbers.push(order.UserOrderNumber);
+            if ($scope.notCancellableOrderStatus.indexOf(order.OrderStatus.OrderStatusID) !== -1) {
+                orderNumbersFail.push(order.UserOrderNumber);
+            }
+        });
+        var orders = '(' + orderNumbers.join(", ") + ')';
+        var ordersFail = '(' + orderNumbersFail.join(", ") + ')';
+
+        if (orderNumbersFail.length > 0) {
+            var notAllowedStatus = '';
+            lodash.each($scope.statuses, function (val, key) {
+                if ($scope.notCancellableOrderStatus.indexOf(val.value) !== -1) {
+                    notAllowedStatus += ' '+val.key;
+                }
+            });
+
+            var text = 'These order contain <p style="color:red; display: inline;">NOT ALLOWED</p> status<br><br>'
+                    + ordersFail 
+                    + '<br><br>Not Allowed Status<br>' 
+                    + notAllowedStatus;
+            SweetAlert.swal({
+                title: 'Error',
+                text: text,
+                html: true,
+                type: 'error'
+            });
+            return false;
+        }
+
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Want to Cancel these orders?<br>" + orders,
+            type: "warning",
+            html: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.bulkCancelOrderStatus({
+                    orderIDs: orderIDs
+                }).$promise.then(function (result) {
+                    if (result.data.error) {
+                        throw {
+                            data: {
+                                error: {
+                                    message: result.data.error[0].error.message
+                                }
+                            }
+                        }
+                    }
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Order cancelled successfully');
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                            title: 'Failed in cancelled order', 
+                            text: e.data.error.message, 
+                            type: "error"
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            $state.reload();
+                        }
+                    });
+                });
+            }
+        });
+    };
+
+    /**
      * Show set return warehouse modals
      * 
      * @return {void}

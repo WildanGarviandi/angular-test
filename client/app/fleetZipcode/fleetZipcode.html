@@ -1,0 +1,165 @@
+<div class="container-fluid container-hubs">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    Fleet Zipcodes
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <div class="hub-search">
+                    <div class="input-group">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container-content">
+        <div class="col-md-12 no-padding">
+            <div class="col-md-3 col-xs-12">
+                <div class="col-md-3 no-padding">
+                    <h5>Fleet</h5>
+                </div>
+                <div class="col-md-9 no-padding">
+                    <ui-select ng-model="fleet" 
+                        theme="selectize" 
+                        tagging="tagHandler"
+                        on-select="chooseFleet($item)" 
+                        class="col-xs-12 no-padding">
+                        <ui-select-match class="input-table">{{$select.selected.FleetName}}</ui-select-match>
+                        <ui-select-choices repeat="f in fleets | filter: $select.search track by $index" selected>
+                            <span class="input-table" ng-bind-html="f.FleetName | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+            <div class="col-md-9 col-xs-12">
+                <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 pull-right">
+                    <button 
+                        ng-disabled="!isFleetSelected" 
+                        class="order-buttons btn dropdown-toggle col-xs-12" 
+                        type="button" 
+                        data-toggle="dropdown" 
+                        disabled="disabled">
+                        Action
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu col-xs-12">
+                        <li><a ng-click="deleteZipCode('bulk')" class="">Bulk Delete Zip Code</a></li>
+                    </ul>
+                </div>
+                <button class="btn btn-primary pull-right" type="button" ng-click="showAddZipcodeModal()">Add / Edit Zip Code</button>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <table st-table="displayed" st-pipe="callServer" class="table table-hover">
+                <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
+                    <tr>
+                        <th class="zipcodeCheckbox checkbox-header">
+                            <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
+                        </th>
+                        <th>Fleet Name</th>
+                        <th>Zip Code</th>
+                        <th>Handling Price</th>
+                        <th>District</th>
+                        <th>City</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody ng-show="!isLoading && displayed.length == 0">
+                    <tr>
+                        <td colspan="7" class="text-center">
+                            No data found
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody ng-show="isLoading">
+                    <tr>
+                        <td colspan="7" class="text-center">Loading ... </td>
+                    </tr>
+                </tbody>
+                <tbody ng-show="!isLoading && displayed.length > 0">
+                    <tr ng-if="displayed"></tr>
+                    <tr class="action-show-on-hover" ng-repeat="fleet in displayed">
+                        <td ng-click="$event.stopPropagation()">
+                            <input type="checkbox" ng-change="prepareSelectedFleets()" ng-model="fleet.Selected" />
+                        </td>
+                        <td>{{fleet.FleetManager.CompanyDetail.CompanyName}}</td>
+                        <td>{{fleet.ZipCode}}</td>
+                        <td>{{fleet.FleetPrice.Price}}</td>
+                        <td>{{fleet.DistrictMasterZipCode.DistrictMaster.Name}}</td>
+                        <td>{{fleet.DistrictMasterZipCode.DistrictMaster.CityMaster.Name}}</td>
+                        <td><a class="action-remove" ng-click="deleteZipCode(fleet)"><i class="fa fa-trash"></i></a></td>
+                    </tr>
+                </tbody>
+                <tfoot ng-show="!isLoading && displayed.length > 0">
+                    <tr>
+                        <td colspan="1">
+                            <h5 class="text-primary"><strong>Total {{fleetZipCodesFound | number}} records found</strong></h5>
+                        </td>
+                        <td colspan="6" 
+                            class="text-center" 
+                            st-pagination="" 
+                            st-items-by-page="itemsByPage" 
+                            st-displayed-pages='9' st-template='components/table/pagination.html'>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/ng-template" id="addZipcodeModal">
+    <div class="header-wrapper">
+        <div class="col-md-12">
+            <h4>Add New Zip Code</h4>
+        </div>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid">
+        <div class="col-md-12 col-xs-12 no-padding">
+            <div class="col-md-3 no-padding">
+                <h5>Fleet</h5>
+            </div>
+            <div class="col-md-9 no-padding">
+                <ui-select ng-model="fleetOnModal" 
+                    theme="selectize" 
+                    tagging="tagHandler"
+                    on-select="chooseFleetOnModal($item)" 
+                    class="col-xs-12 no-padding selece-top-table">
+                    <ui-select-match class="input-table">{{$select.selected.FleetName}}</ui-select-match>
+                    <ui-select-choices repeat="f in fleets | filter: $select.search track by $index" selected>
+                        <span class="input-table" ng-bind-html="f.FleetName | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="col-md-12 no-padding" ng-show="fleetOnModal.FleetManagerID">
+            <button class="btn btn-default pull-right" ng-click="addNewRow()"><i class="fa fa-plus"></i> Row</button>
+            <button class="btn btn-default pull-right" ng-click="removeNewRow()"><i class="fa fa-minus"></i> Row</button>
+        </div>
+        <div class="col-md-12 col-xs-12 no-padding" ng-show="fleetOnModal.FleetManagerID">
+            <div class="bg-white pricing-grid">
+                <hot-table settings="{contextMenu: ['undo', 'redo'], stretchH: 'last', afterChange: afterChange, beforeChange: beforeChange}"
+                    col-headers="table.colHeaders"
+                    datarows="table.data"
+                    columns="table.columns">
+                    <hot-column data="zipcode" title="'ZIP CODE'" type="'numeric'" read-only></hot-column>
+                    <hot-column data="price" title="'HANDLING PRICE'" type="'numeric'" read-only></hot-column>
+                </hot-table>
+            </div>
+        </div>
+        <div class="col-md-12 col-xs-12 no-padding" ng-show="fleetOnModal.FleetManagerID">
+            <div class="col-md-6 col-xs-12 no-padding">
+                <button id="" class="btn btn-warning col-md-12" ng-click="closeAddZipcodeModal()">Cancel</button>
+            </div>
+            <div class="col-md-6 col-xs-12 no-padding">
+                <button id="saveNewZipCode" class="btn btn-success col-md-12" ng-click="addNewZipCode()">Save</button>
+            </div>
+        </div>
+    </div>
+</script>
