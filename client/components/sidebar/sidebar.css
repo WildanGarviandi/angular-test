@@ -397,6 +397,14 @@
     background-image: url('../../assets/images/nav-delivery-distribution-active.png');
 }
 
+.side-fleet-zipcode-image {
+    background-image: url('../../assets/images/nav-fleet-zipcode.png');
+}
+
+.side-fleet-zipcode-image.active {
+    background-image: url('../../assets/images/nav-fleet-zipcode-active.png');
+}
+
 #spinner-container {
     position: fixed;
     top: 0;

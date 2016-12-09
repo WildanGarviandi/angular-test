@@ -31,6 +31,9 @@ angular.module('adminApp')
             drivers: {
                 routes: ['/drivers']
             },
+            fleetZipcodes: {
+                routes: ['/fleetZipcodes']
+            },
             driverSchedule: {
                 routes: ['/driverSchedule']
             },

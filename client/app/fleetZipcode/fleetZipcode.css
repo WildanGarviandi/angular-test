@@ -1,0 +1,11 @@
+.action-remove, .action-remove:hover {
+    color: #fe5960;
+}
+
+.selece-top-table {
+    z-index: 102;
+}
+
+.zipcodeCheckbox {
+    width: 20px;
+}
