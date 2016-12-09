@@ -18,6 +18,7 @@ angular.module('adminApp')
             $q,
             config,
             ngDialog,
+            SweetAlert,
             $timeout
         ) {
 
@@ -28,7 +29,7 @@ angular.module('adminApp')
     $scope.fleet = [];
     $scope.fleetOnModal = [];
     var paramsAfterChange = [];
-
+    
     $scope.table = {};
     $scope.table.colHeaders = true;
     $scope.table.beforeSafe = [];
@@ -279,6 +280,119 @@ angular.module('adminApp')
     }
 
     /**
+     * Delete ZipCode 
+     * @param  {Array} zipCodes
+     *
+     */
+    function deleteZipCodes(fleetID, zipCodes) {
+        var urlToDelete = config.url + 'fleet/' + fleetID + '/zipcodes';
+        $http({
+            method: 'DELETE',
+            url: urlToDelete,
+            data: {zipCodes: zipCodes},
+            headers: {'Content-Type': 'application/json;charset=utf-8'}
+        }).then(function (result) {
+            ngDialog.closeAll();
+            $state.reload();
+        });
+    };
+    
+    /**
+     * Select all or unselect all fleets zipcode.
+     * 
+     * @return {void}
+     */
+    $scope.checkUncheckSelected = function() {
+        $scope.displayed.forEach(function(fleet) {
+            fleet.Selected = $scope.status.selectedAll;
+        });
+        $scope.prepareSelectedFleets();
+    };
+
+    /**
+     * Check whether there is one or more fleets zipcode selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedFleetExists = function() {
+        var checked = false;
+        $scope.displayed.some(function(fleet) {
+            if (fleet.Selected) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+ 
+    /**
+     * Prepare selected fleet zipcode.
+     * 
+     * @return {array}
+     */
+    $scope.prepareSelectedFleets = function() {            
+        var selectedFleets = [];
+        $scope.displayed.forEach(function (order) {
+            if (order.Selected) {
+                selectedFleets.push(order);
+            }
+        });
+ 
+        $scope.selectedFleets = selectedFleets;
+
+        $scope.isFleetSelected = false;
+        if ($scope.selectedFleetExists()) {
+            $scope.isFleetSelected = true;
+        }
+    };
+
+    $scope.deleteZipCode = function(fleet) {
+        var zipCode = [],
+            fleetName = (fleet.FleetManager && fleet.FleetManager.CompanyDetail) ? fleet.FleetManager.CompanyDetail.CompanyName : '-',
+            fleetID = fleet.FleetManagerID,
+            price = (fleet.FleetPrice) ? fleet.FleetPrice.Price : 0;
+            zipCode.push(fleet.ZipCode);
+        
+        var text = "<br><br>" + 'Vendor: '+ fleetName + '<br>' + 'Zip Code: ' + zipCode;
+
+        if (fleet === 'bulk') {
+            var listDelete = [];
+            var fleetID = [];
+            $scope.selectedFleets.forEach(function(fleet) {
+                var CompanyName = (fleet.FleetManager && fleet.FleetManager.CompanyDetail) ? fleet.FleetManager.CompanyDetail.CompanyName : '-';
+                if (typeof fleetID[fleet.FleetManagerID] === 'undefined') {
+                    fleetID[fleet.FleetManagerID] = [];
+                }
+
+                fleetID[fleet.FleetManagerID].push(fleet.ZipCode);
+                listDelete.push(CompanyName + ': ' + fleet.ZipCode);
+            });
+            text = "<br><br>" + '[' + listDelete.join("] [") + ']';
+        }
+
+        SweetAlert.swal({
+            title: "Warning",
+            text: "Are you sure want to delete this zipcode coverage from this vendor?" + text,
+            type: "warning",
+            html: true,
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Remove",
+        }, function (isConfirm) { 
+            if (isConfirm) {
+                if (fleetID.length > 0) {
+                    fleetID.forEach(function(zipCode, id) {
+                        deleteZipCodes(id, zipCode);
+                    });
+                } else {
+                    deleteZipCodes(fleetID, zipCode);
+                }
+            }
+        });
+    }
+
+    /**
      * Add, Edit and Delete for zipcode or price. all changed Cell to Server
      * 
      */
@@ -303,7 +417,6 @@ angular.module('adminApp')
                 zipCodesAdd.push(val.zipCode);
             }
         });
-
 
         var urlToDelete = config.url + 'fleet/' + $scope.fleetOnModal.FleetManagerID + '/zipcodes';
         var paramToDelete = {zipCodes: zipCodesDelete};

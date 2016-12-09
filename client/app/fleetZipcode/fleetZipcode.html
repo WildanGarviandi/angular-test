@@ -39,6 +39,20 @@
                 </div>
             </div>
             <div class="col-md-9 col-xs-12">
+                <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 pull-right">
+                    <button 
+                        ng-disabled="!isFleetSelected" 
+                        class="order-buttons btn dropdown-toggle col-xs-12" 
+                        type="button" 
+                        data-toggle="dropdown" 
+                        disabled="disabled">
+                        Action
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu col-xs-12">
+                        <li><a ng-click="deleteZipCode('bulk')" class="">Bulk Delete Zip Code</a></li>
+                    </ul>
+                </div>
                 <button class="btn btn-primary pull-right" type="button" ng-click="showAddZipcodeModal()">Add / Edit Zip Code</button>
             </div>
         </div>
@@ -46,11 +60,15 @@
             <table st-table="displayed" st-pipe="callServer" class="table table-hover">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
+                        <th class="zipcodeCheckbox checkbox-header">
+                            <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
+                        </th>
                         <th>Fleet Name</th>
                         <th>Zip Code</th>
                         <th>Handling Price</th>
                         <th>District</th>
                         <th>City</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
@@ -68,11 +86,15 @@
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
                     <tr class="action-show-on-hover" ng-repeat="fleet in displayed">
+                        <td ng-click="$event.stopPropagation()">
+                            <input type="checkbox" ng-change="prepareSelectedFleets()" ng-model="fleet.Selected" />
+                        </td>
                         <td>{{fleet.FleetManager.CompanyDetail.CompanyName}}</td>
                         <td>{{fleet.ZipCode}}</td>
                         <td>{{fleet.FleetPrice.Price}}</td>
                         <td>{{fleet.DistrictMasterZipCode.DistrictMaster.Name}}</td>
                         <td>{{fleet.DistrictMasterZipCode.DistrictMaster.CityMaster.Name}}</td>
+                        <td><a class="action-remove" ng-click="deleteZipCode(fleet)"><i class="fa fa-trash"></i></a></td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
