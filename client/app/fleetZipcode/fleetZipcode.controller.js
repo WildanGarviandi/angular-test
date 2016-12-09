@@ -27,6 +27,7 @@ angular.module('adminApp')
 
     $scope.fleet = [];
     $scope.fleetOnModal = [];
+    var paramsAfterChange = [];
 
     $scope.table = {};
     $scope.table.colHeaders = true;
@@ -43,60 +44,8 @@ angular.module('adminApp')
     $scope.offset = $location.search().offset || 0;
     $scope.isFirstLoaded = true;
 
-    // FLEET CRUD
-
     /**
-     * Calls creating fleet endpoint
-     * 
-     * @return {Object} - Promise of Fleet Data
-     */
-    function createFleet () {
-        return $q(function (resolve, reject) {
-            var fleet = {
-                CompanyName: $scope.fleet.CompanyDetail.CompanyName,
-                CompanyDescription: $scope.fleet.CompanyDetail.CompanyDescription,
-                VatNumber: $scope.fleet.CompanyDetail.VatNumber,
-                CCNNumber: $scope.fleet.CompanyDetail.CCNNumber,
-                WebsiteURL: $scope.fleet.CompanyDetail.WebsiteURL,
-
-                FirstName: $scope.fleet.FirstName,
-                LastName: $scope.fleet.LastName,
-                PhoneNumber: $scope.fleet.PhoneNumber,
-                Email: $scope.fleet.Email,
-                ProfilePicture: $scope.fleet.ProfilePicture,
-                Password: $scope.fleet.Password
-            };
-            $rootScope.$emit('startSpin');
-            Services2.createFleet({
-                id: $stateParams.fleetID
-            }, fleet).$promise.then(function (response) {
-                $rootScope.$emit('stopSpin');
-                resolve(response);
-            })
-            .catch(function (err) {
-                $rootScope.$emit('stopSpin');
-                reject(err);
-            });
-        });
-    }
-
-    /**
-     * Create single fleet
-     * 
-     * @return {void}
-     */
-    $scope.createFleet = function() {
-        createFleet().then(function (fleet) {
-            $window.alert(fleet.data.Fleet.FirstName + ' ' + fleet.data.Fleet.LastName + 
-                ' has been successfully created.');
-            $location.path('/fleets');
-        }).catch(function (err) {
-            $window.alert('Error: '+ err.data.error.message );
-        });
-    };
-
-    /**
-     * Get all companies
+     * Get all fleets
      * 
      * @return {Object} Promise
      */
@@ -222,8 +171,6 @@ angular.module('adminApp')
      */
     function getFleetZipCodesOnModal(fleetManagerID) {
         $rootScope.$emit('startSpin');
-        //$location.search('offset', $scope.offset);
-
 
         $scope.table.data = [];
         $scope.table.columns = [{
@@ -238,21 +185,22 @@ angular.module('adminApp')
         }];
 
         $scope.isLoading = true;
-        var params = {
-            //offset: $scope.offset,
-            //limit: $scope.itemsByPage,
-            fleetManagerID: fleetManagerID
-        };
+        var params = {};
+        params.fleetManagerID = fleetManagerID;
+        params.limit = 1;
         Services2.getFleetZipCodes(params).$promise.then(function(data) {
-            data.data.rows.forEach(function(val, idx) {
-                var rowContents = [];
-                rowContents[0] = val.ZipCode;
-                rowContents[1] = (val.FleetPrice) ? val.FleetPrice.Price : 0;
-                $scope.table.data.push(rowContents);
+            params.limit = data.data.count;
+            Services2.getFleetZipCodes(params).$promise.then(function(data) {
+                data.data.rows.forEach(function(val, idx) {
+                    var rowContents = [];
+                    rowContents[0] = val.ZipCode;
+                    rowContents[1] = (val.FleetPrice) ? val.FleetPrice.Price : 0;
+                    $scope.table.data.push(rowContents);
+                });
+                $scope.table.data.push([]);
+                $scope.isLoading = false;
+                $rootScope.$emit('stopSpin');
             });
-            $scope.table.data.push([]);
-            $scope.isLoading = false;
-            $rootScope.$emit('stopSpin');
         });
     }
 
@@ -272,7 +220,6 @@ angular.module('adminApp')
         return true;
     }
 
-    var paramsAfterChange = [];
     /**
      * Do function after cell changed
      * 
@@ -301,8 +248,6 @@ angular.module('adminApp')
                 collectDataBeforeSafe(params);
             }
         });
-        console.log($scope.table.beforeSafe);
-        //$scope.table.beforeSafe = paramsAfterChange;
     }
 
     /**
@@ -333,6 +278,10 @@ angular.module('adminApp')
         }
     }
 
+    /**
+     * Add, Edit and Delete for zipcode or price. all changed Cell to Server
+     * 
+     */
     $scope.addNewZipCode = function() {
         if (!$scope.table.beforeSafe) { 
             return;
@@ -383,35 +332,6 @@ angular.module('adminApp')
         });
     }
 
-    // REDIRECTING
-
-    /**
-     * Redirect to add fleet page
-     * 
-     * @return {void}
-     */
-    $scope.addFleet = function() {
-        $location.path('/add-fleet');
-    };
-
-    /**
-     * Redirect to edit fleet page
-     * 
-     * @return {void}
-     */
-    $scope.editFleet = function(id) {
-        window.location = '/update-fleet/' + id;
-    };
-
-    /**
-     * Redirect to previous page
-     * 
-     * @return {void}
-     */
-    $scope.backButton = function() {
-        $window.history.back();
-    };
-
     // MISCELLANEOUS
 
     // INITIATION
@@ -431,27 +351,5 @@ angular.module('adminApp')
         }
         getFleets().then(getFleetZipCodes);
     };
-
-    /**
-     * Load manage page (add/update page)
-     * 
-     * @return {void}
-     */
-    $scope.loadManagePage = function() {
-        if ($state.current.name === 'app.update-fleet') {
-            getFleetDetails();
-            setTimeout(function() {
-                if ($scope.fleet.UserID === undefined) {
-                    window.location = '/fleet';
-                }
-            }, 4000);
-            $scope.updatePage = true;
-            $scope.addPage = false;
-        } else if ($state.current.name === 'app.add-fleet') {
-            $scope.addPage = true;
-        }
-    };
-
-    $scope.loadManagePage();
 
 });

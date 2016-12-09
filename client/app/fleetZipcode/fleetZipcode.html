@@ -49,9 +49,8 @@
                         <th>Fleet Name</th>
                         <th>Zip Code</th>
                         <th>Handling Price</th>
-                        <th>Kecamatan</th>
-                        <th>Kota</th>
-                        <th></th>
+                        <th>District</th>
+                        <th>City</th>
                     </tr>
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
@@ -74,8 +73,6 @@
                         <td>{{fleet.FleetPrice.Price}}</td>
                         <td>{{fleet.DistrictMasterZipCode.DistrictMaster.Name}}</td>
                         <td>{{fleet.DistrictMasterZipCode.DistrictMaster.CityMaster.Name}}</td>
-                        <td>
-                        </td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
