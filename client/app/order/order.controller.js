@@ -122,27 +122,28 @@ angular.module('adminApp')
      *
     */
     var orderNavigationHeight = $('#order-navigation').height();
-    $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + 260);
-    $scope.orderListHeight = $scope.tableHeight - 110;
+    var addInitHeight = 260;
+    var minInitHeight = 110;
+    var externalHeightOnResize = 235;
+    $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + addInitHeight);
+    $scope.orderListHeight = $scope.tableHeight - minInitHeight;
     $(window).resize(function(){
         $scope.$apply(function(){
             orderNavigationHeight = $('#order-navigation').height();
-            $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + 235);
-            ///$scope.tableHeight = $window.innerHeight - 220;
-            $scope.orderListHeight = $scope.tableHeight - 110;
+            $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + externalHeightOnResize);
+            $scope.orderListHeight = $scope.tableHeight - minInitHeight;
         });
     });
 
-    $scope.orderNavigation = function() {
+    $scope.toggleOrderNavigation = function() {
         $scope.isNavigationOpen = !$scope.isNavigationOpen;
         var addHeight = 190;
-        if (!$scope.isNavigationOpen) {
+        if ($scope.isNavigationOpen) {
+            $scope.tableHeight = $window.innerHeight - (addInitHeight + orderNavigationHeight);
+        } else {
             $scope.tableHeight = $window.innerHeight - addHeight;
         }
-        if ($scope.isNavigationOpen) {
-            $scope.tableHeight = $window.innerHeight - (addHeight + orderNavigationHeight + 70);
-        }
-        $scope.orderListHeight = $scope.tableHeight - 110;
+        $scope.orderListHeight = $scope.tableHeight - minInitHeight;
     }
 
     /*

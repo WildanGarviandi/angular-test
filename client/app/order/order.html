@@ -126,8 +126,16 @@
                                 <span ng-if="!$parent.$parent.$parent.queryMultipleEDS">0</span> inserted.
                             </div>
                             <div class="text-danger" ng-if="orderNotFound.length > 0">
-                                <span ng-if="orderNotFound.length > 1">These orders <span ng-repeat="o in orderNotFound">{{o}}, </span> are not found.</span>
-                                <span ng-if="orderNotFound.length === 1">This order <span ng-repeat="o in orderNotFound">{{o}}</span> is not found.</span>
+                                <span ng-if="orderNotFound.length > 1">
+                                    These orders 
+                                    <span ng-repeat="o in orderNotFound">{{o}}, </span>
+                                    are not found.
+                                </span>
+                                <span ng-if="orderNotFound.length === 1">
+                                    This order 
+                                    <span ng-repeat="o in orderNotFound">{{o}}</span>
+                                    is not found.
+                                </span>
                             </div>
                         </div>
                         
@@ -145,12 +153,12 @@
             <button 
                 class="btn btn-sm btn-default"
                 ng-hide="isNavigationOpen"
-                ng-click="orderNavigation()">
+                ng-click="toggleOrderNavigation()">
                     <i class="fa fa-chevron-down"></i> Show Button</button>
             <button 
                 class="btn btn-sm btn-default"
                 ng-show="isNavigationOpen"
-                ng-click="orderNavigation()">
+                ng-click="toggleOrderNavigation()">
                     <i class="fa fa-chevron-up"></i> Hide Button</button>
         </div>
         <div class="clearfix"></div>
@@ -488,7 +496,11 @@
                             </th>
                         </tr>
                     </tbody>
-                    <tbody class="display-block order-table-list" ng-style="{height: orderListHeight+ 'px'}" style="max-height: {{orderListHeight}}px" ng-show="!isLoading && displayed.length > 0">
+                    <tbody
+                        class="display-block order-table-list"
+                        ng-style="{height: orderListHeight+ 'px'}"
+                        style="max-height: {{orderListHeight}}px"
+                        ng-show="!isLoading && displayed.length > 0">
                         <tr ng-if="displayed"></tr>
                         <tr ng-repeat="order in displayed">
                             <td class="checkbox-header" ng-click="$event.stopPropagation()">
