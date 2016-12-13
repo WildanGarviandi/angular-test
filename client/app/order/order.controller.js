@@ -307,7 +307,7 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.getOrder = function(type) {
+    $scope.getOrder = function(isFilterEDS) {
         $rootScope.$emit('startSpin');  
 
         var paramsQuery = {
@@ -349,7 +349,7 @@ angular.module('adminApp')
         $location.search('offset', $scope.offset);
         
         $scope.isLoading = true;
-        var params = $scope.getFilterParam(type);
+        var params = $scope.getFilterParam(isFilterEDS);
         if (!checkUrlLengthIsValid('order', params, 2047)) {
             $rootScope.$emit('stopSpin');
             return SweetAlert.swal('Error', 'too many filters', 'error');
@@ -1307,10 +1307,10 @@ angular.module('adminApp')
     /**
      * Get Filter Param
      * 
-     * @type {String} params - default null
+     * @isFilterEDS {Boolean} - default null
      * @return {void}
      */
-    $scope.getFilterParam = function(type) {
+    $scope.getFilterParam = function(isFilterEDS) {
         if ($scope.pickupDatePicker.startDate) {
             $scope.pickupDatePicker.startDate = new Date($scope.pickupDatePicker.startDate);
         }
@@ -1390,11 +1390,10 @@ angular.module('adminApp')
             $scope.isDefaultFilterActive = false;
         }
 
-        if (type === 'eds') {
+        if (isFilterEDS) {
             params = {
                 offset: $scope.offset,
                 limit: $scope.itemsByPage,
-                userOrderNumber: $scope.queryUserOrderNumber,
                 userOrderNumbers: JSON.stringify($scope.userOrderNumbers)
             };
         };
@@ -1702,8 +1701,8 @@ angular.module('adminApp')
 
     $scope.filterMultipleEDS = function () {
         getExistOrder();
-        var type = 'eds';
-        $scope.getOrder(type);
+        var isFilterEDS = true;
+        $scope.getOrder(isFilterEDS);
     };
 
     /**
