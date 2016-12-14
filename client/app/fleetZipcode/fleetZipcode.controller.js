@@ -266,7 +266,7 @@ angular.module('adminApp')
         };
 
         isDataExist = lodash.find($scope.table.beforeSafe, function(val, key){ 
-            if(val.zipcode == data.zipcode){
+            if(val.zipCode == data.zipCode){
                 indexKey = key;
                 return true;
             }; 
