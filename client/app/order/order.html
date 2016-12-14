@@ -1026,9 +1026,9 @@
             <div class="input-group input-import">
                 <form>
                     <input type="radio" name="fleet" ng-model="$parent.customFleet" 
-                        uib-btn-radio="false" checked value="fleet" /> Fleet 
+                        uib-btn-radio="false" id="reroute-fleet" checked /> Fleet 
                     <input type="radio" name="fleet" ng-model="$parent.customFleet" 
-                        uib-btn-radio="true" value="3rdparty" /> 3rd Party Logistic 
+                        uib-btn-radio="true" id="reroute-3rdparty" /> 3rd Party Logistic 
                 </form>
                 <ui-select ng-model="fleet" 
                     ng-show="!customFleet"
