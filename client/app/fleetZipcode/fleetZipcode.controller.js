@@ -145,7 +145,8 @@ angular.module('adminApp')
         $scope.fleetOnModal = $scope.fleetsOnModal[0];
         return ngDialog.open({
             template: 'addZipcodeModal',
-            scope: $scope
+            scope: $scope,
+            closeByDocument: false
         });
     }
 
@@ -194,7 +195,7 @@ angular.module('adminApp')
             Services2.getFleetZipCodes(params).$promise.then(function(data) {
                 data.data.rows.forEach(function(val, idx) {
                     var rowContents = [];
-                    rowContents[0] = val.ZipCode;
+                    rowContents[0] = parseInt(val.ZipCode);
                     rowContents[1] = (val.FleetPrice) ? val.FleetPrice.Price : 0;
                     $scope.table.data.push(rowContents);
                 });
@@ -218,6 +219,27 @@ angular.module('adminApp')
      * Check initial state is integer or not
      */
     $scope.beforeChange = function (changes, source) {
+        if (changes.length > 0) {
+            console.log(changes[0]);
+            var forbid = false;
+            var duplicates = [];
+            changes.forEach(function (val) {
+                if (val[3] && val[1] === 0 && lodash.find($scope.table.data, {0: val[3]})) {
+                    duplicates.push(val[3]);
+                }
+                if (val[3] === '' && val[1] === 0) {
+                    forbid = true;
+                }
+            });
+            if (duplicates.length > 0) {
+                alert('Duplicates: ' + duplicates.join(', '));
+                return false;
+            }
+            if (forbid) {
+                alert('You can only add zipcode, do not change or remove it');
+                return false;
+            }
+        }
         return true;
     }
 
@@ -242,7 +264,7 @@ angular.module('adminApp')
 
             if (change[1] === 1) {
                 paramsAfterChange[change[0]].price = change[3];
-                var params = {
+                var params = { 
                     zipCode: $scope.table.data[change[0]][0],
                     price: change[3]
                 };
