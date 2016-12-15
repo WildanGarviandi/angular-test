@@ -603,4 +603,8 @@ a {
 #toggle-navigation > button {
     border-radius: 0;
     border-top: 0px
+}
+
+.overflow-visible {
+    overflow: visible;
 };
