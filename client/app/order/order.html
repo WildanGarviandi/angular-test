@@ -450,7 +450,7 @@
                                 <div class="filter-table">
                                     <ui-select ng-model="isAttempt" 
                                         theme="selectize" 
-                                        on-select="chooseisAttempt($item)" 
+                                        on-select="chooseIsAttempt($item)" 
                                         class="booking-order-type">
                                         <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
                                         <ui-select-choices repeat="ot in isAttempts | filter: $select.search" selected>
@@ -873,27 +873,34 @@
         <h1>Return to Warehouse</h1>
     </div>
     <div class="content-wrapper booking-popup notification-popup container-fluid">
-        <div ng-repeat="order in orders">
-            <div ng-if="order.Selected" class="row-fluid">                
-                <div class="label-import">
-                    Reason {{order.UserOrderNumber}}:
-                </div>  
-                <p class="input-group input-import">
+        <div ng-repeat="order in selectedOrders track by $index">               
+            <div class="label-import">
+                Reason {{order.UserOrderNumber}}:
+            </div>  
+            <span class="input-group input-import">
+                <span ng-if="order.editReason">
                     <ui-select ng-model="reason" 
                         theme="selectize" 
-                        on-select="chooseReasonOnModals($item, order.UserOrderID)" 
+                        on-select="chooseReasonOnModals($item, $index)" 
                         class="booking-order-type">
                         <ui-select-match class="input-table">{{$select.selected.ReasonName}}</ui-select-match>
                         <ui-select-choices repeat="r in reasons | filter: $select.search track by $index" selected>
-                            <span class="input-table" ng-bind-html="r.ReasonName | highlight: $select.search"></span>
+                            <span class="input-table" 
+                                ng-bind-html="r.ReasonName | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
-                </p>
-            </div>
+                    <button class="btn btn-default return-warehouse-cancel-button" ng-if="order.hasAttempt"
+                        ng-click="order.editReason = false">Cancel</button>
+                </span>
+                <span ng-if="order.hasAttempt && !order.editReason">
+                    {{order.reasonReturn.ReasonName}}
+                    <button class="btn btn-default" ng-click="order.editReason = true">Change</button>
+                </span>
+            </span>
         </div>
         <div class="clearfix"></div>
         <div class="row-fluid">
-            <button class="btn btn-primary" ng-click="bulkReturnWarehouse()">Mark as Return Warehouse</button>              
+            <button class="btn btn-primary" ng-click="bulkReturnWarehouse()">Mark as Return Warehouse</button>
         </div>
     </div>
 </script>
@@ -905,14 +912,9 @@
         </div>
     </div>
     <div class="content-wrapper booking-popup notification-popup container-fluid">
-        <h4><b>{{(orders | filter: {Selected: true}).length}}</b> orders that will be affected</h4>
-        <div ng-repeat="order in orders">
-            <div ng-if="order.Selected" class="row-fluid">                
-                <div class="col-md-12 text-center">
-                    {{order.UserOrderNumber}}
-                </div>
-            </div>
-        </div>
+        <h4><b>{{(orders | filter: {Selected: true}).length}}</b> orders that will be affected: 
+            {{listUserOrderNumbersSelected.join(', ')}}
+        </h4
         <div class="clearfix"></div>
         <div class="row-fluid">
             <button class="btn btn-primary" ng-click="bulkReturnSender()">Mark as Return Sender</button>              

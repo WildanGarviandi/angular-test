@@ -553,3 +553,9 @@ a {
 .ngdialog {
     z-index: 900 !important;
 }
+
+.return-warehouse-cancel-button {
+    position: absolute;
+    right: -80px;
+    top: 1px;
+}
