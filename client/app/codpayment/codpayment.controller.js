@@ -194,8 +194,75 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getPayment = function() {
-        $scope.isLoading = false;
-        $rootScope.$emit('stopSpin');
+        $rootScope.$emit('startSpin');
+        $scope.isLoading = true;
+        if ($scope.createdDatePicker.startDate) {
+            $scope.createdDatePicker.startDate = new Date($scope.createdDatePicker.startDate);
+        }
+        if ($scope.createdDatePicker.endDate) {
+            $scope.createdDatePicker.endDate = new Date($scope.createdDatePicker.endDate);
+        }
+        if ($scope.paidDatePicker.startDate) {
+            $scope.paidDatePicker.startDate = new Date($scope.paidDatePicker.startDate);
+        }
+        if ($scope.paidDatePicker.endDate) {
+            $scope.paidDatePicker.endDate = new Date($scope.paidDatePicker.endDate);
+        }
+
+        var paramsQuery = {
+            'id': 'queryTransactionId',
+            'user': 'queryUser'
+        };
+        lodash.each(paramsQuery, function (val, key) {
+            $scope[val] = $location.search()[key] || $scope[val];
+        });
+
+        var paramsValue = {
+            'status': 'statuses',
+            'userType': 'userTypes',
+            'paymentMethod': 'paymentMethods'
+        };
+        lodash.each(paramsValue, function (val, key) {
+            var value = $location.search()[key] || $scope[key].value;
+            $scope[key] = lodash.find($scope[val], { 'value': (parseInt(value)) ? parseInt(value) : value });
+        });
+
+        ['Created', 'Paid'].forEach(function (data) {
+            $scope[data.toLowerCase() + 'DatePicker'].startDate = 
+                    ($location.search()['start' + data]) ?
+                    new Date($location.search()['start' + data]) :
+                    $scope[data.toLowerCase() + 'DatePicker'].startDate;
+            $scope[data.toLowerCase() + 'DatePicker'].endDate = 
+                    ($location.search()['end' + data]) ?
+                    new Date($location.search()['end' + data]) :
+                    $scope[data.toLowerCase() + 'DatePicker'].endDate;
+        });
+
+        $scope.isFirstSort = ($location.search().sortBy) ? false : true;
+        // exception for offset
+        $location.search('offset', $scope.offset);
+
+        var params = {
+            offset: $scope.offset,
+            limit: $scope.itemsByPage,
+            transactionId: $scope.queryTransactionId,
+            user: $scope.queryUser,
+            status: $scope.status.value,
+            paymentMethod: $scope.paymentMethod.value,
+            userType: $scope.userType.value,
+            startCreated: $scope.createdDatePicker.startDate,
+            endCreated: $scope.createdDatePicker.endDate,
+            startPaid: $scope.paidDatePicker.startDate,
+            endPaid: $scope.paidDatePicker.endDate,
+        }
+        Services2.getCODPayment(params).$promise.then(function(data) {
+            _.each(data.data.rows, processPayment);
+            $scope.displayed = data.data.rows;
+            $scope.isLoading = false;
+            $scope.tableState.pagination.numberOfPages = Math.ceil(
+                data.data.count / $scope.tableState.pagination.number);
+            $rootScope.$emit('stopSpin');
+        });
     }
 
     var variables = {
@@ -236,7 +303,7 @@ angular.module('adminApp')
         } else {
             $scope.offset = state.pagination.start;
         }
-        $scope.openCreateCODPaymentModal();
+        $scope.loadCODPayment();
     }
 
     $scope.detailsPage = function(id) {
@@ -361,6 +428,23 @@ angular.module('adminApp')
     $scope.openCreateCODPaymentModal = function () {
         $rootScope.$emit('startSpin');
         $scope.resetPaymentParams();
+        getCompanies()
+        .then(function () {
+            ngDialog.open({
+                template: 'createCODPaymentTemplate',
+                scope: $scope,
+                className: 'ngdialog-theme-default create-cod-payment-popup'
+            });
+        });
+    };
+
+    /**
+     * Load COD Payments
+     * @return void
+     */
+    $scope.loadCODPayment = function () {
+        $rootScope.$emit('startSpin');
+        $scope.resetPaymentParams();
 
         $scope.getCODOrdersNoPaymentAndUnpaid();
         getCompanies();
@@ -449,10 +533,6 @@ angular.module('adminApp')
     $scope.setLimit = function(item) {
         $location.search('limit', item);
         $scope.itemsByPage = item;
-    }
-
-    $scope.paginationCodOrdersNoPayment = function(value) {
-        $scope.offset = Math.ceil(value);
     }
 
     /**
