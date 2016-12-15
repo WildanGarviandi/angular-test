@@ -523,8 +523,8 @@ angular.module('adminApp')
         $scope.selectedUserID = userID;
         if (userID) {
             $scope.selectedFleetName = lodash.find($scope.companies, {User: {'UserID': userID}}).CompanyName;
-            $scope.selectedFleetAmount = lodash.find($scope.noPaymentSummary, {FleetManagerID: userID.toString()}) ? 
-                lodash.find($scope.noPaymentSummary, {FleetManagerID: userID.toString()}).TotalValue : 0;
+            var selectedNoPaymentSummary = lodash.find($scope.noPaymentSummary, {FleetManagerID: userID.toString()});
+            $scope.selectedFleetAmount = (selectedNoPaymentSummary) ? selectedNoPaymentSummary.TotalValue : 0; 
         }
         
         $scope.isFetchingOrders = true;
