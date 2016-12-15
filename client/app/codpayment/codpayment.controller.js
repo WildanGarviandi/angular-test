@@ -20,6 +20,7 @@ angular.module('adminApp')
             $timeout,
             SweetAlert,
             ngDialog,
+            $filter,
             $q
         ) {
 
@@ -30,6 +31,8 @@ angular.module('adminApp')
     $scope.itemsByPage = $location.search().limit || 10;
     $scope.offset = $location.search().offset || 0;
     $scope.isFirstLoaded = true;
+    $scope.isTableDisplayed = true;
+    $scope.limitPages = [$scope.itemsByPage, 25, 50, 100, 200];
 
     $scope.statuses = [
         {key: 'All', value: ''},
@@ -109,12 +112,14 @@ angular.module('adminApp')
     $scope.drivers = [];
 
     $scope.selectedUserID = 0;
+    $scope.selectedFleetName = '';
     $scope.selectedOrder = {};
     $scope.amountPaid = 0;
     $scope.transactionDate = new Date();
+    $scope.transactionDateString = moment($scope.transactionDate).format('MMM DD, HH:mm');
     $scope.transactionTypes = [
-        {key: 'Cash', value: 'Cash'},
-        {key: 'Bank Transfer', value: 'BankTransfer'}
+        {key: 'Bank Transfer', value: 'BankTransfer'},
+        {key: 'Cash', value: 'Cash'}
     ];
     $scope.transactionType = $scope.transactionTypes[0];
     $scope.transactionDetails = '';
@@ -189,75 +194,8 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getPayment = function() {
-        $rootScope.$emit('startSpin');
-        $scope.isLoading = true;
-        if ($scope.createdDatePicker.startDate) {
-            $scope.createdDatePicker.startDate = new Date($scope.createdDatePicker.startDate);
-        }
-        if ($scope.createdDatePicker.endDate) {
-            $scope.createdDatePicker.endDate = new Date($scope.createdDatePicker.endDate);
-        }
-        if ($scope.paidDatePicker.startDate) {
-            $scope.paidDatePicker.startDate = new Date($scope.paidDatePicker.startDate);
-        }
-        if ($scope.paidDatePicker.endDate) {
-            $scope.paidDatePicker.endDate = new Date($scope.paidDatePicker.endDate);
-        }
-
-        var paramsQuery = {
-            'id': 'queryTransactionId',
-            'user': 'queryUser'
-        };
-        lodash.each(paramsQuery, function (val, key) {
-            $scope[val] = $location.search()[key] || $scope[val];
-        });
-
-        var paramsValue = {
-            'status': 'statuses',
-            'userType': 'userTypes',
-            'paymentMethod': 'paymentMethods'
-        };
-        lodash.each(paramsValue, function (val, key) {
-            var value = $location.search()[key] || $scope[key].value;
-            $scope[key] = lodash.find($scope[val], { 'value': (parseInt(value)) ? parseInt(value) : value });
-        });
-
-        ['Created', 'Paid'].forEach(function (data) {
-            $scope[data.toLowerCase() + 'DatePicker'].startDate = 
-                    ($location.search()['start' + data]) ?
-                    new Date($location.search()['start' + data]) :
-                    $scope[data.toLowerCase() + 'DatePicker'].startDate;
-            $scope[data.toLowerCase() + 'DatePicker'].endDate = 
-                    ($location.search()['end' + data]) ?
-                    new Date($location.search()['end' + data]) :
-                    $scope[data.toLowerCase() + 'DatePicker'].endDate;
-        });
-
-        $scope.isFirstSort = ($location.search().sortBy) ? false : true;
-        // exception for offset
-        $location.search('offset', $scope.offset);
-
-        var params = {
-            offset: $scope.offset,
-            limit: $scope.itemsByPage,
-            transactionId: $scope.queryTransactionId,
-            user: $scope.queryUser,
-            status: $scope.status.value,
-            paymentMethod: $scope.paymentMethod.value,
-            userType: $scope.userType.value,
-            startCreated: $scope.createdDatePicker.startDate,
-            endCreated: $scope.createdDatePicker.endDate,
-            startPaid: $scope.paidDatePicker.startDate,
-            endPaid: $scope.paidDatePicker.endDate,
-        }
-        Services2.getCODPayment(params).$promise.then(function(data) {
-            _.each(data.data.rows, processPayment);
-            $scope.displayed = data.data.rows;
-            $scope.isLoading = false;
-            $scope.tableState.pagination.numberOfPages = Math.ceil(
-                data.data.count / $scope.tableState.pagination.number);
-            $rootScope.$emit('stopSpin');
-        });
+        $scope.isLoading = false;
+        $rootScope.$emit('stopSpin');
     }
 
     var variables = {
@@ -289,19 +227,20 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.callServer = function(state) {        
+    $scope.callServer = function(state) {
         $scope.tableState = state;
         if ($scope.isFirstLoaded) {
             $scope.tableState.pagination.start = $scope.offset;
+            $scope.isTableDisplayedFirstLoad = true;
             $scope.isFirstLoaded = false;
         } else {
             $scope.offset = state.pagination.start;
         }
-        $scope.getPayment();
+        $scope.openCreateCODPaymentModal();
     }
 
     $scope.detailsPage = function(id) {
-        window.location = '/codpayment/details/' + id;
+        $window.open('/order/details/' + id);
     };
 
     /**
@@ -343,13 +282,28 @@ angular.module('adminApp')
      * @return {Object} Promise
      */
     var getCompanies = function () {
+        $scope.companies = [
+            {
+                User: {
+                    UserID: 0
+                },
+                CompanyName: 'Select Fleet'
+            },
+            {
+                User: {
+                    UserID: 'all'
+                },
+                CompanyName: 'All Fleet'
+            }
+        ];
+
         return $q(function (resolve) {
             $rootScope.$emit('startSpin');
             Services2.getAllCompanies().$promise.then(function(result) {
                 var companies = lodash.sortBy(result.data.Companies, function (i) { 
                     return i.CompanyName.toLowerCase(); 
                 });
-                $scope.companies = companies;
+                $scope.companies = $scope.companies.concat(companies);
                 $scope.company = $scope.companies[0];
                 $rootScope.$emit('stopSpin');
                 resolve();
@@ -407,47 +361,99 @@ angular.module('adminApp')
     $scope.openCreateCODPaymentModal = function () {
         $rootScope.$emit('startSpin');
         $scope.resetPaymentParams();
-        getCompanies()
-        .then(function () {
-            ngDialog.open({
-                template: 'createCODPaymentTemplate',
-                scope: $scope,
-                className: 'ngdialog-theme-default create-cod-payment-popup'
-            });
-        });
+
+        $scope.getCODOrdersNoPaymentAndUnpaid();
+        getCompanies();
+
+        if ($scope.isTableDisplayedFirstLoad) {
+            $scope.isTableDisplayed = false;
+            $scope.isTableDisplayedFirstLoad = false;
+        };
     };
+
+    /**
+     * Open confirm payment modals
+     * @return void
+     */
+    $scope.openConfirmPaymentModal = function() {
+        ngDialog.open({
+            template: 'confirmPaymentTemplate',
+            scope: $scope,
+            className: 'ngdialog-theme-default create-cod-payment-popup'
+        });
+    }
 
     /**
      * Get all cod orders with no payment + Unpaid cod payments by userID
      * 
      * @return void
      */
-    $scope.getCODOrdersNoPaymentAndUnpaid = function (userID) {
+    $scope.getCODOrdersNoPaymentAndUnpaid = function (userID, isTableDisplayed) {
+        if (userID === 0) {
+            return;
+        }
+
+        var params = {};
+        params.limit = $scope.itemsByPage;
+        params.offset = $scope.offset;
+        params.userOrderNumbers = JSON.stringify($scope.userOrderNumbers);
+
+        if (params.offset) {
+            $scope.isTableDisplayed = true;
+        }
+
+        $scope.isTableDisplayed = !$scope.isTableDisplayedFirstLoad;
+
         $scope.selectedUserID = userID;
+        if (userID) {
+            $scope.selectedFleetName = lodash.find($scope.companies, {User: {'UserID': userID}}).CompanyName;
+        }
+        
         $scope.isFetchingOrders = true;
         $scope.resetSelectionParams();
+        $scope.transactionDetails = 'Transferred by ' + $scope.selectedFleetName;
         $rootScope.$emit('startSpin');
-        $q.all([
-            Services2.getCODOrdersNoPayment({
-                id: userID,
-                userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
-            }).$promise,
-            Services2.getCODPaymentsUnpaid({
-                id: userID
-            }).$promise
-        ])
+        if (userID !== 'all') {
+            params.id = userID;
+        } else {
+            $scope.transactionDetails = 'Transferred by ';
+        }
+
+        Services2.getCODOrdersNoPayment(params).$promise
         .then(function(responses) {
-            $scope.codOrdersNoPayment = responses[0].data.rows;
-            $scope.codPaymentsUnpaid = responses[1].data.rows;
+            $scope.codOrdersNoPayment = responses.data.rows;
+            $scope.codOrdersNoPaymentCount = responses.data.count;
             if ($scope.codOrdersNoPayment.length > 0){
                 $scope.formData.paymentType = 'manual';
             } else {
                 $scope.formData.paymentType = 'auto';
             }
+
+            $scope.selectedFleetAmount = 0;
+            if (responses.data.total) {
+                $scope.selectedFleetAmount = responses.data.total;
+            }
+
+            $scope.tableState.pagination.numberOfPages = Math.ceil(
+                responses.data.count / $scope.tableState.pagination.number);
             $scope.prepareSelectedOrdersOrPayment();
             $rootScope.$emit('stopSpin');
         });
     };
+
+    /**
+     * Set limit page
+     * 
+     * @return {void}
+     */
+    $scope.setLimit = function(item) {
+        $location.search('limit', item);
+        $scope.itemsByPage = item;
+    }
+
+    $scope.paginationCodOrdersNoPayment = function(value) {
+        $scope.offset = Math.ceil(value);
+    }
 
     /**
      * Select all or unselect all orders.
@@ -509,6 +515,7 @@ angular.module('adminApp')
     */
     $scope.onTimeSet = function (newDate, oldDate) {
         $scope.transactionDate = newDate;
+        $scope.transactionDateString = moment(newDate).format('MMM DD, HH:mm');
     }
 
     /**
@@ -519,7 +526,6 @@ angular.module('adminApp')
     $scope.resetPaymentParams = function () {
         $scope.clearTextArea();
         $scope.codOrdersNoPayment = [];
-        $scope.codPaymentsUnpaid = [];
         $scope.selectedUserID = 0;
         $scope.resetSelectionParams();
         $scope.isFetchingOrders = false;
@@ -539,11 +545,7 @@ angular.module('adminApp')
      * @return void
      */
     $scope.createCODPayment = function () {
-        if ($scope.formData.paymentType == 'manual'){
-            $scope.createCODPaymentManual();
-        } else if ($scope.formData.paymentType == 'auto'){
-            $scope.setCODPaymentManualPaid();
-        }
+        $scope.createCODPaymentManual();
     };
 
     /**
@@ -560,22 +562,37 @@ angular.module('adminApp')
             SweetAlert.swal('Error', 'Please input Transaction Details', 'error');
             return false;
         }
-        var orderIDs = [];
+        var selectedFleetWithOrder = [];
         var userID = $scope.selectedUserID;
         $scope.selectedOrders.forEach(function(order) {
-            orderIDs.push(order.UserOrderID);
+            var fleetManagerID = order.FleetManager.UserID;
+            if (!selectedFleetWithOrder[fleetManagerID]) {
+                selectedFleetWithOrder[fleetManagerID] = [];
+            }
+            selectedFleetWithOrder[fleetManagerID].push(order.UserOrderID);
         });
+
         var params = {
             userID: $scope.selectedUserID,
             paymentMethod: $scope.transactionType.value,
             transactionDetail: $scope.transactionDetails,
-            orderIDs: orderIDs,
             paidDate: $scope.transactionDate
         };
+        var text = "You will create COD Payment with total amount: " +
+                $scope.currency + 
+                $filter('localizenumber')( $filter('number')( $scope.amountPaid ) ) +
+                '<br>' +
+                'Transaction Time: ' +
+                $scope.transactionDateString +
+                '<br>' +
+                'Transaction Type: ' +
+                $scope.transactionType.key;
+                
         SweetAlert.swal({
             title: "Are you sure?",
-            text: "You will create COD Payment with total amount: " + $scope.amountPaid,
+            text: text,
             type: "warning",
+            html: true,
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "Yes, create it!",
@@ -584,61 +601,23 @@ angular.module('adminApp')
         function(isConfirm){
             if (isConfirm) {
                 $rootScope.$emit('startSpin');
-                Services2.createCODPayment(params).$promise.then(function(result) {
-                    SweetAlert.swal('Success', 'Your COD Payment has been created', 'success');
-                    ngDialog.close();
-                    $rootScope.$emit('stopSpin');
-                })
-                .catch(function(err) {
-                    SweetAlert.swal('Error', err.data.error.message, 'error');
-                    $rootScope.$emit('stopSpin');
-                });
-            } else {
-                return false;
-            }
-        });
-    };
-    
-    /**
-     * Change COD Payment status from 'Unpaid' to 'Paid'
-     * @return void
-     */
-    $scope.setCODPaymentManualPaid = function(){
-        var selectedPayment = $scope.formData.selectedPayment;
-        if (!selectedPayment){
-            SweetAlert.swal('Error', 'Please select one transaction to confirm', 'error');
-            return false;
-        }
-        if (!$scope.transactionDetails){
-            SweetAlert.swal('Error', 'Please input Transaction Details', 'error');
-            return false;
-        }
-        SweetAlert.swal({
-            title: "Are you sure?",
-            text: "You will confirm COD Payment with total amount: " + $scope.amountPaid,
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, confirm it!",
-            closeOnConfirm: false
-        },
-        function(isConfirm){
-            if (isConfirm) {
-                $rootScope.$emit('startSpin');
-                var params = {
-                    codPaymentID: selectedPayment.CODPaymentID,
-                    paymentMethod: $scope.transactionType.value,
-                    transactionDetail: $scope.transactionDetails,
-                    paidDate: $scope.transactionDate
-                };
-                Services2.setCODPaymentManualPaid(params).$promise.then(function(result) {
-                    SweetAlert.swal('Success', 'Your COD Payment has been confirmed', 'success');
-                    ngDialog.close();
-                    $rootScope.$emit('stopSpin');
-                })
-                .catch(function(err) {
-                    SweetAlert.swal('Error', err.data.error.message, 'error');
-                    $rootScope.$emit('stopSpin');
+                var errorResult = [];
+                var successResult = [];
+                selectedFleetWithOrder.forEach(function(val, key) {
+                    params.userID = key;
+                    params.orderIDs = val;
+                    Services2.createCODPayment(params).$promise.then(function(result) {
+                        successResult.push(result.data);
+                        SweetAlert.swal('Success', 'Your COD Payment has been created', 'success');
+                        ngDialog.close();
+                        $scope.getCODOrdersNoPaymentAndUnpaid($scope.selectedUserID, true);
+                        $rootScope.$emit('stopSpin');
+                    })
+                    .catch(function(err) {
+                        errorResult.push(err.data.error.message);
+                        SweetAlert.swal('Error', err.data.error.message, 'error');
+                        $rootScope.$emit('stopSpin');
+                    });
                 });
             } else {
                 return false;
@@ -683,7 +662,7 @@ angular.module('adminApp')
         $scope.queryMultipleEDS = '';
         if ($scope.userOrderNumbers.length > 0) {
             $scope.userOrderNumbers = [];
-            $scope.getCODOrdersNoPaymentAndUnpaid($scope.selectedUserID);
+            $scope.getCODOrdersNoPaymentAndUnpaid($scope.selectedUserID, true);
         }
     };
     
