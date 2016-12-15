@@ -108,6 +108,7 @@ angular.module('adminApp')
     $scope.currency = config.currency + " ";
     $scope.isFirstSort = true;
 
+    $scope.noPaymentSummary = [];
     $scope.companies = [];
     $scope.drivers = [];
 
@@ -166,6 +167,18 @@ angular.module('adminApp')
             $scope.getPayment(); 
         };
     });
+
+    var getNoPaymentSummary = function() {
+        $rootScope.$emit('startSpin');
+
+        return $q(function (resolve) {
+            Services2.getNoPaymentSummary().$promise.then(function(result) {
+                $scope.noPaymentSummary = result.data;
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
+        });
+    };
 
     $scope.chooseTransactionType = function(item) {
         $scope.transactionType = item;
@@ -349,6 +362,7 @@ angular.module('adminApp')
      * @return {Object} Promise
      */
     var getCompanies = function () {
+        $rootScope.$emit('startSpin');
         $scope.companies = [
             {
                 User: {
@@ -365,7 +379,6 @@ angular.module('adminApp')
         ];
 
         return $q(function (resolve) {
-            $rootScope.$emit('startSpin');
             Services2.getAllCompanies().$promise.then(function(result) {
                 var companies = lodash.sortBy(result.data.Companies, function (i) { 
                     return i.CompanyName.toLowerCase(); 
@@ -395,6 +408,16 @@ angular.module('adminApp')
             company: company.CompanyDetailID
         };
         $scope.getDrivers(params);
+    };
+
+    /**
+     * Call getCODOrdersNoPaymentAndUnpaid function when a fleet is choosen
+     * @param  {[type]} company [description]
+     * @return {Object} promise of data of all drivers
+     */
+    $scope.chooseFleet = function (company) {
+        $scope.company = company;
+        $scope.getCODOrdersNoPaymentAndUnpaid(company.User.UserID);
     };
 
     /**
@@ -447,6 +470,7 @@ angular.module('adminApp')
         $scope.resetPaymentParams();
 
         $scope.getCODOrdersNoPaymentAndUnpaid();
+        getNoPaymentSummary();
         getCompanies();
 
         if ($scope.isTableDisplayedFirstLoad) {
@@ -472,7 +496,7 @@ angular.module('adminApp')
      * 
      * @return void
      */
-    $scope.getCODOrdersNoPaymentAndUnpaid = function (userID, isTableDisplayed) {
+    $scope.getCODOrdersNoPaymentAndUnpaid = function (userID, isEDSFilter) {
         if (userID === 0) {
             return;
         }
@@ -485,12 +509,22 @@ angular.module('adminApp')
         if (params.offset) {
             $scope.isTableDisplayed = true;
         }
-
         $scope.isTableDisplayed = !$scope.isTableDisplayedFirstLoad;
+
+        if (isEDSFilter) {
+            $scope.company = $scope.companies[1];
+            userID = 'all';
+        } else {
+            $scope.queryMultipleEDS = '';
+            $scope.userOrderNumbers = [];
+            params.userOrderNumbers = '';
+        }
 
         $scope.selectedUserID = userID;
         if (userID) {
             $scope.selectedFleetName = lodash.find($scope.companies, {User: {'UserID': userID}}).CompanyName;
+            $scope.selectedFleetAmount = lodash.find($scope.noPaymentSummary, {FleetManagerID: userID.toString()}) ? 
+                lodash.find($scope.noPaymentSummary, {FleetManagerID: userID.toString()}).TotalValue : 0;
         }
         
         $scope.isFetchingOrders = true;
@@ -512,12 +546,6 @@ angular.module('adminApp')
             } else {
                 $scope.formData.paymentType = 'auto';
             }
-
-            $scope.selectedFleetAmount = 0;
-            if (responses.data.total) {
-                $scope.selectedFleetAmount = responses.data.total;
-            }
-
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 responses.data.count / $scope.tableState.pagination.number);
             $scope.prepareSelectedOrdersOrPayment();

@@ -27,9 +27,9 @@
                     <h5>Fleet</h5>
                 </div>
                 <div class="col-md-9 col-sm-9 no-padding">
-                    <ui-select ng-model="company" 
+                    <ui-select ng-model="$parent.company" 
                         theme="selectize" 
-                        on-select="getCODOrdersNoPaymentAndUnpaid($item.User.UserID, true)" 
+                        on-select="chooseFleet($item)" 
                         class="booking-order-type">
                         <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
                         <ui-select-choices repeat="c in companies | filter: $select.search track by $index" selected>
