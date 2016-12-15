@@ -21,7 +21,6 @@ angular.module('adminApp')
             Upload,
             $q,
             SweetAlert,
-            $httpParamSerializer,
             $cookies,
             $timeout
         ) {
@@ -293,15 +292,6 @@ angular.module('adminApp')
         $scope.getOrder(); 
     };
 
-    function checkUrlLengthIsValid(url, params, length) {
-        var urls = config.url + url + '?' + $httpParamSerializer(params);
-        var isValid = true;
-        if (urls.length > length) {
-            isValid = false;
-        }
-        return isValid;
-    }
-
     /**
      * Get all orders
      * 
@@ -350,10 +340,6 @@ angular.module('adminApp')
         
         $scope.isLoading = true;
         var params = $scope.getFilterParam(isFilterEDS);
-        if (!checkUrlLengthIsValid('order', params, 2047)) {
-            $rootScope.$emit('stopSpin');
-            return SweetAlert.swal('Error', 'too many filters', 'error');
-        }
         Services2.getOrder(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
