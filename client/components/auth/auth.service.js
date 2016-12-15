@@ -63,8 +63,18 @@ angular.module('adminApp')
             * @param  {Function}
             */
             logout: function() {
-                $cookies.remove('token');
-                $cookies.remove('techSupport');
+                $http.jsonp('https://accounts.google.com/o/oauth2/revoke?token=' + $cookies.get('access_token'));
+                var url = config.url + config.endpoints.signOut;
+
+                $http({
+                  method: 'POST',
+                  url: url,
+                  data: {token: $cookies.get('token')}
+                }).success(function() {
+                    $cookies.remove('token');
+                    $cookies.remove('techSupport');
+                })
+                //gapi.auth.signOut();
             },
 
             /**

@@ -62,7 +62,8 @@ function mainConfig() {
         url: url + '/v2/admin/',
         endpoints: {
             signIn: 'sign-in',
-            signInWithGoogle: 'sign-in-with-google'
+            signInWithGoogle: 'sign-in-with-google',
+            signOut: 'sign-out'
         },
         defaultLocation: defaultLocation,
         notCancellableOrderStatus: [4, 5, 13, 16],

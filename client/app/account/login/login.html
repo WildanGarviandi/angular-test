@@ -22,6 +22,15 @@
                             </button>
                         </span>
                     </span>
+                    <div class="form-group has-error">
+                        <p class="help-block" ng-show="form.username.$error.required && form.password.$error.required && submitted">
+                            Please enter your username/email and password.
+                        </p>
+                        <p class="help-block" ng-show="form.username.$error.username && submitted">
+                            Please enter a valid username/email.
+                        </p>
+                        <p class="help-block">{{ errors.other }}</p>
+                    </div>
                 </form>
             </div>
             <div class="login-content" ng-show="loginActive.form">
