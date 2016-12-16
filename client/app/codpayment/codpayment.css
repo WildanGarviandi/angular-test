@@ -51,3 +51,43 @@
 .panel-title > a:hover {
     color: #ABABAB;
 }
+
+.codpayment-header {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px !important;
+    padding-top: 10px !important;
+}
+
+.codpayment-header .border-right {
+    border-right: 1px solid #ccc;
+}
+
+#codpayment-navigation {
+    background: #7a4078;
+    color: #fff;
+}
+
+#codpayment-navigation .panel-heading {
+    padding: 8px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    background-color: #fff;
+}
+
+#codpayment-navigation #eds-textarea {
+    color: #000;
+}
+
+.table-border {
+    border: 2px solid #e8e8e8;
+}
+
+.no-padding-left {
+    padding-left: 0px !important;
+}
+
+#CODPaymentTable .checkbox-header {
+    width: 20px !important;
+}

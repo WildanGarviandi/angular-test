@@ -17,148 +17,146 @@
         </div>
     </div>
     
-    <div class="first-row">
-        <button class="btn order-buttons" ng-click="refresh()">Refresh</button>
-        <button class="btn order-buttons" ng-click="clearFilter()">
-            <i class="fa fa-refresh"></i> Reset Filter</button>
-        <button class="btn btn-primary" type="button" 
-            ng-click="openCreateCODPaymentModal()">Confirm Manual COD Payment</button>
+    <div id="codpayment-navigation" class="col-md-12 col-xs-12 no-padding codpayment-header">
+        <div class="col-xs-12">
+            <h4>Find Orders by</h4>
+        </div>
+        <div class="col-xs-12 no-padding">
+            <div class="col-md-5 col-sm-5">
+                <div class="col-md-3 col-sm-3 no-padding">
+                    <h5>Fleet</h5>
+                </div>
+                <div class="col-md-9 col-sm-9 no-padding">
+                    <ui-select ng-model="$parent.company" 
+                        theme="selectize" 
+                        on-select="chooseFleet($item)" 
+                        class="booking-order-type">
+                        <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
+                        <ui-select-choices repeat="c in companies | filter: $select.search track by $index" selected>
+                            <span class="input-table" ng-bind-html="c.CompanyName | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                    <small ng-class="{hide: selectedUserID === 'all' || !selectedUserID}">{{selectedFleetName}} has 
+                        <b>{{codOrdersNoPaymentCount}}</b> orders ( 
+                        <b>{{currency}}{{selectedFleetAmount | number | localizenumber}}</b> )</small>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-2 text-center">
+                <h5>or</h5>
+            </div>
+            <div class="col-md-5 col-sm-5">
+                <div class="col-md-3 col-sm-3 no-padding">
+                    <h5>AWB or Order ID</h5>
+                </div>
+                <div class="col-md-9 col-sm-9 no-padding">
+                    <uib-accordion>
+                        <uib-accordion-group is-open="areaFilter.open">
+                            <uib-accordion-heading>
+                                Insert ...
+                                <i class="pull-right glyphicon" 
+                                    ng-class="{'glyphicon-chevron-down': areaFilter.open, 'glyphicon-chevron-right': !areaFilter.open}">
+                                </i>
+                            </uib-accordion-heading>
+                            <textarea ng-model="$parent.$parent.$parent.queryMultipleEDS"
+                                id="eds-textarea"
+                                placeholder="Write/Paste EDS Number or Order ID here, separated with newline">
+                            </textarea>
+                            
+                            <div class="pull-right">
+                                <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
+                                <a class="btn btn-default" 
+                                    ng-click="areaFilter.open = false; clearTextArea()">Cancel</a>
+                                <a ng-click="getCODOrdersNoPaymentAndUnpaid(selectedUserID, true)" class="btn btn-success">Filter</a>
+                            </div>
+                        </uib-accordion-group>
+                    </uib-accordion>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="clearfix"></div>
+    <div class="col-md-12 col-xs-12 no-padding bg-white codpayment-header" ng-show="codOrdersNoPayment.length > 0 && isTableDisplayed">
+        <div class="col-xs-12">
+            <h4>Selected Orders</h4>
+        </div>
+        <div class="col-md-9 no-padding">
+            <div class="col-md-6 col-xs-6">
+                <div class="">
+                    <h3 class="no-margin"><small>Total</small> {{selectedOrders.length | number | localizenumber}} <small>Orders</small></h3>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-6">
+                <div class="">
+                    <h3 class="no-margin">{{currency}}{{amountPaid | number | localizenumber}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-xs-12">
+            <button 
+                class="btn btn-sm btn-success col-xs-12"
+                ng-disabled="!selectedOrders.length"
+                ng-click="openConfirmPaymentModal()">Close Payment</button>
+        </div>
+    </div>
 
-    <div class="container-content">
+    <div class="col-md-12 col-xs-12 no-padding bg-white codpayment-header" ng-show="isTableDisplayed">
         <div class="col-md-12">
-            <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
+            <div ng-show="codOrdersNoPayment.length == 0">
+                No Manual Payment found
+            </div>
+            <div class="col-lg-2 col-md-5 col-sm-4 col-xs-6 no-padding" ng-show="codOrdersNoPayment.length > 0">
+                <span class="first-row-element col-xs-12 no-padding">
+                    <ui-select ng-model="itemsByPage" 
+                        theme="selectize" 
+                        on-select="setLimit($item)" 
+                        class="content-choose-limit"
+                        style="width: 55px">
+                        <ui-select-match>{{$select.selected}}</ui-select-match>
+                        <ui-select-choices repeat="ot in limitPages" selected>
+                            <span ng-bind-html="ot"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                    <small class="label-limit">
+                        records per page
+                    </small>
+                </span>
+            </div>
+            <table id="CODPaymentTable" 
+                st-table="codOrdersNoPayment" 
+                class="table table-hover table-main-trip" 
+                st-pipe="callServer" 
+                ng-show="codOrdersNoPayment.length > 0">
                 <thead class="hubs-table-head">
                     <tr>
-                        <th>Transaction ID</th>
-                        <th>Created Time</th>
-                        <th>User Type</th>
-                        <th>User</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                        <th>Payment Method</th>
-                        <th>Paid Time</th>
+                        <th class="checkbox-header">
+                            <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
+                        </th>
+                        <th>AWB / WebOrderID</th>
+                        <th>Driver</th>
+                        <th class="text-right">COD Value</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryTransactionId" 
-                                    ng-keyup="searchPayment($event)">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    date-range-picker 
-                                    ng-model="createdDatePicker" 
-                                    options="optionsDatepicker"
-                                    ng-click="setPickerName('createdDatePicker')" />
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <ui-select ng-model="userType" 
-                                    theme="selectize" 
-                                    on-select="chooseUserType($item)" 
-                                    class="booking-order-type">
-                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
-                                    <ui-select-choices repeat="ot in userTypes | filter: $select.search" selected>
-                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    type="search" 
-                                    class="form-control input-table" 
-                                    value="" 
-                                    ng-model="queryUser" 
-                                    ng-keyup="searchUser($event)">
-                            </div>
-                        </th>
-                        <th></th>
-                        <th>
-                            <div class="filter-table">
-                                <ui-select ng-model="status" 
-                                    theme="selectize" 
-                                    on-select="chooseStatus($item)" 
-                                    class="booking-order-type">
-                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
-                                    <ui-select-choices repeat="ot in statuses | filter: $select.search" selected>
-                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <ui-select ng-model="paymentMethod" 
-                                    theme="selectize" 
-                                    on-select="choosePaymentMethod($item)" 
-                                    class="booking-order-type">
-                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
-                                    <ui-select-choices repeat="ot in paymentMethods | filter: $select.search" selected>
-                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-                        </th>
-                        <th>
-                            <div class="filter-table">
-                                <input 
-                                    id="date-picker" 
-                                    type="text" 
-                                    class="form-control input-table" 
-                                    date-range-picker 
-                                    ng-model="paidDatePicker" 
-                                    options="optionsDatepicker"
-                                    ng-click="setPickerName('paidDatePicker')" />
-                            </div>
-                        </th>
-                    </tr>
-                </tbody>
-                <tbody ng-show="!isLoading && displayed.length == 0">
-                    <tr>
-                        <td colspan="9" class="text-center">
-                            No data found
+                    <tr ng-repeat="order in codOrdersNoPayment" ng-class="{info: order.Selected}">
+                        <td class="checkbox-header">
+                            <input type="checkbox" ng-change="prepareSelectedOrdersOrPayment()" ng-model="order.Selected" />
                         </td>
+                        <td ng-click="detailsPage(order.UserOrderID)">{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
+                        <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
+                        <td class="text-right">{{order.TotalValue | number | localizenumber}}</td>
                     </tr>
                 </tbody>
-                <tbody ng-show="isLoading">
-                    <tr>
-                        <td colspan="9" class="text-center">Loading ... </td>
-                    </tr>
-                </tbody>
-                <tbody ng-show="!isLoading && displayed.length > 0">
-                    <tr ng-if="displayed"></tr>
-                    <tr ng-repeat="payment in displayed">
-                        <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.TransactionId}}</td>
-                        <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.CreatedDate | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-                        <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.User.UserType.Name}}</td>
-                        <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.User.FullName}}</td>
-                        <td class="text-right" ng-click="detailsPage(payment.CODPaymentID)">{{payment.TotalAmount | number | localizenumber}}</td>
-                        <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.Status}}</td>
-                        <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.PaymentMethod}}</td>
-                        <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.PaidDate | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-                    </tr>
-                </tbody>
-                <tfoot ng-show="!isLoading && displayed.length > 0">
-                    <tr>
-                        <td colspan="9" 
-                            class="text-center" 
+                <tfoot>
+                    <tr class="paginationBar">
+                        <td colspan="2">
+                            <div class="pull-left">
+                                <h6 class="text-primary">
+                                    <strong class="ng-binding">{{codOrdersNoPaymentCount}} Orders Found</strong>
+                                </h6>
+                            </div>
+                        </td>
+                        <td colspan="5" 
+                            class="text-right" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 
                             st-displayed-pages='9' st-template='components/table/pagination.html'>
@@ -168,239 +166,75 @@
             </table>
         </div>
     </div>
+
 </div>
 
-
-<script type="text/ng-template" id="createCODPaymentTemplate">
-    <div class="container-fluid" id="createCODPaymentModal">
-        <h3>Confirm Manual COD Payment</h3>
-        <div class="row-fluid">                    
-            <div class="label-payment">
-                Paid By :
-            </div> 
-            <div class="input-payment">
-                <input type="radio" name="paidBy" ng-change="resetPaymentParams()" ng-model="paidBy" value="driver">
-                    Driver
-                <input type="radio" name="paidBy" ng-change="resetPaymentParams()" ng-model="paidBy" value="company">
-                    Company
-            </div>
-        </div>
-        <div class="clearfix"></div>
-        <div ng-if="paidBy == 'driver'" class="animate-if">
-            <div class="row-fluid">                    
-                <div class="label-payment">
-                    Select Fleet :
-                </div> 
-                <div class="input-payment">
-                    <ui-select ng-model="company" 
-                        theme="selectize" 
-                        on-select="chooseCompany($item)" 
-                        class="booking-order-type">
-                        <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
-                        <ui-select-choices repeat="c in companies | filter: $select.search" selected>
-                            <span class="input-table" ng-bind-html="c.CompanyName | highlight: $select.search"></span>
-                        </ui-select-choices>
-                    </ui-select>
+<script type="text/ng-template" id="confirmPaymentTemplate">
+    <div class="header-wrapper col-xs-12">
+        <h3>Confirm Payment</h3>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid">
+        <div class="col-md-12 no-padding">
+            <p>You are about to pay 
+                <b class="text-success">{{currency}}{{amountPaid | number | localizenumber}}</b> 
+                    for 
+                <b>{{selectedOrders.length | number | localizenumber}}</b> 
+                    orders
+            </p>
+            <div class="row no-margin">
+                <div class="col-md-3 no-padding">
+                    Transaction Time
                 </div>
-            </div>
-            <div class="clearfix"></div>
-            <div class="row-fluid">                    
-                <div class="label-payment">
-                    Select Driver :
-                </div> 
-                <div class="input-payment">
-                    <div ng-if="drivers.length > 0 && isFetchingDrivers" class="animate-if">
-                        <ui-select ng-model="driver" 
-                            theme="selectize" 
-                            on-select="getCODOrdersNoPaymentAndUnpaid($item.key)" 
-                            class="booking-order-type">
-                            <ui-select-match class="input-table">{{$select.selected.value}}</ui-select-match>
-                            <ui-select-choices repeat="d in drivers | filter: $select.search" selected>
-                                <span class="input-table" ng-bind-html="d.value | highlight: $select.search"></span>
-                            </ui-select-choices>
-                        </ui-select>
-                    </div>
-                    <div ng-if="drivers.length == 0 && isFetchingDrivers" class="animate-if">
-                        No driver found
+                <div class="col-md-9 no-padding">
+                    <div class="col-xs-12 no-padding">
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" data-ng-model="transactionDateString" datetime="MM/dd/yyyy HH:mm:ss">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-calendar"></i>
+                                    </span>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <datetimepicker 
+                                    data-before-render="beforeRender($dates)"
+                                    data-ng-model="transactionDate" 
+                                    data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"
+                                    data-on-set-time="onTimeSet(newDate, oldDate)"/>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="clearfix"></div>
-        </div>
-        <div ng-if="paidBy == 'company'" class="animate-if">
-            <div class="row-fluid">                    
-                <div class="label-payment">
-                    Select Fleet :
-                </div>
-                <div class="input-payment"> 
-                    <ui-select ng-model="company" 
-                        theme="selectize" 
-                        on-select="getCODOrdersNoPaymentAndUnpaid($item.User.UserID)" 
-                        class="booking-order-type">
-                        <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
-                        <ui-select-choices repeat="c in companies | filter: $select.search" selected>
-                            <span class="input-table" ng-bind-html="c.CompanyName | highlight: $select.search"></span>
-                        </ui-select-choices>
-                    </ui-select>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-        </div>        
-        <div ng-show="isFetchingOrders" class="row">
-            <uib-accordion>
-                <uib-accordion-group is-open="areaFilter.open">
-                    <uib-accordion-heading>
-                        Multiple Filter by EDS / AWB / WebOrderID
-                        <i class="pull-right glyphicon" 
-                            ng-class="{'glyphicon-chevron-down': areaFilter.open, 'glyphicon-chevron-right': !areaFilter.open}">
-                        </i>
-                    </uib-accordion-heading>
-                    <textarea ng-model="$parent.$parent.$parent.$parent.queryMultipleEDS"
-                        id="eds-textarea"
-                        placeholder="Write/Paste EDS Number or Order ID here, separated with newline">
-                    </textarea>
-                    
-                    <div class="pull-right">
-                        <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
-                        <a class="btn btn-default" 
-                            ng-click="areaFilter.open = false; clearTextArea()">Cancel</a>
-                        <a ng-click="getCODOrdersNoPaymentAndUnpaid(selectedUserID)" class="btn btn-success">Filter</a>
-                    </div>
-                </uib-accordion-group>
-            </uib-accordion>
-        </div>
-        <div ng-show="isFetchingOrders && codOrdersNoPayment.length == 0 && codPaymentsUnpaid.length == 0">
-            No Unpaid COD Orders found
-        </div>
-        <div class="content-payment" ng-show="isFetchingOrders && (codOrdersNoPayment.length > 0 || codPaymentsUnpaid.length > 0)" >
-            <div class="row-fluid" ng-show="paidBy == 'driver'">                    
-                <div class="label-paymentType">
-                    Payment Type :
-                </div> 
-                <div class="input-paymentType">
-                    <input type="radio" name="paymentType" ng-change="onPaymentTypeChange()" ng-model="formData.paymentType" value="manual">
-                        Manual
-                    <input type="radio" name="paymentType" ng-change="onPaymentTypeChange()" ng-model="formData.paymentType" value="auto">
-                        Auto
-                </div>
-            </div>
-            <div class="clearfix"></div>
-            <div ng-show="formData.paymentType == 'manual'">
-                <div ng-show="codOrdersNoPayment.length == 0">
-                    No Manual Payment found
-                </div>
-                <table class="table table-hover table-main-trip" ng-show="codOrdersNoPayment.length > 0">
-                    <thead class="hubs-table-head">
-                        <tr>
-                            <th>
-                                <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
-                            </th>
-                            <th>AWB / WebOrderID</th>
-                            <th>Driver</th>
-                            <th>COD Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="order in codOrdersNoPayment">
-                            <td class="">
-                                <input type="checkbox" ng-change="prepareSelectedOrdersOrPayment()" ng-model="order.Selected" />
-                            </td>
-                            <td>{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
-                            <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
-                            <td class="text-right">{{order.TotalValue | number | localizenumber}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="clearfix"></div>
-            <div ng-show="formData.paymentType == 'auto'">
-                <div ng-show="codPaymentsUnpaid.length == 0">
-                    No Automatic Payment found
-                </div>
-                <table class="table table-hover table-main-trip" ng-show="codPaymentsUnpaid.length > 0">
-                    <thead class="hubs-table-head">
-                        <tr>
-                            <th></th>
-                            <th>Transaction ID</th>
-                            <th>Driver</th>
-                            <th>Total COD Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="payment in codPaymentsUnpaid">
-                            <td class="">
-                                <input type="radio" name="selectedAutoPayment" ng-change="prepareSelectedOrdersOrPayment()" ng-model="formData.selectedPayment" ng-value="payment" />
-                            </td>
-                            <td>{{payment.TransactionId}}</td>
-                            <td>{{payment.User.FirstName}} {{payment.User.LastName}}</td>
-                            <td class="text-right">{{payment.TotalAmount | number | localizenumber}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="clearfix"></div>
-            <div class="row-fluid">          
-                <div class="label-amount">
-                    Amount Paid
-                </div> 
-                <div class="text-amount text-right">
-                    {{amountPaid | number | localizenumber}}
-                </div>
-            </div>
-            <div class="clearfix"></div>
-            <div class="row-fluid">               
-                <div class="label-payment">
-                    Transaction Datetime :
-                </div> 
-                <div class="input-payment">
-                    <div class="dropdown">
-                        <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
-                            <div class="input-group">
-                                <input type="text" class="form-control" data-ng-model="transactionDate" datetime="MM/dd/yyyy HH:mm:ss">
-                                <span class="input-group-addon">
-                                    <i class="glyphicon glyphicon-calendar"></i>
-                                </span>
-                            </div>
-                        </a>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                            <datetimepicker 
-                                data-before-render="beforeRender($dates)"
-                                data-ng-model="transactionDate" 
-                                data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"
-                                data-on-set-time="onTimeSet(newDate, oldDate)"/>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-            <div class="row-fluid">          
-                <div class="label-payment">
+            <br>
+            <div class="row no-margin">
+                <div class="col-md-3 no-padding">
                     Transaction Type :
                 </div> 
-                <div class="input-payment">
-                <ui-select ng-model="transactionType" 
-                    theme="selectize" 
-                    on-select="chooseTransactionType($item)" 
-                    class="booking-order-type">
-                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
-                    <ui-select-choices repeat="ot in transactionTypes | filter: $select.search" selected>
-                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
-                    </ui-select-choices>
-                </ui-select>
-                </div>
-            <div class="clearfix"></div>
-            <div class="row-fluid">                    
-                <div class="label-payment">
-                    Details :
-                </div> 
-                <div class="input-payment">
-                    <textarea ng-model="$parent.transactionDetails" class="form-control">
-                    </textarea>
+                <div class="col-md-9 no-padding">
+                    <ui-select ng-model="transactionType" 
+                        theme="selectize" 
+                        on-select="chooseTransactionType($item)" 
+                        class="booking-order-type">
+                        <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                        <ui-select-choices repeat="ot in transactionTypes | filter: $select.search" selected>
+                            <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
                 </div>
             </div>
-            <div class="clearfix"></div>
+
+            <div class="row no-margin">
+                <div class="col-md-3 no-padding">
+                    Details / Remarks
+                </div>
+                <div class="col-md-9 no-padding">
+                    <textarea ng-model="$parent.transactionDetails" class="form-control"></textarea>
+                </div>
+            </div>
             <div class="row-fluid">
-                <a class="button-payment" ng-click="createCODPayment()">Confirm Manual COD Payment</a>
+                <a class="button-payment" ng-click="createCODPayment()">Confirm Payment</a>
                 <a class="button-payment" ng-click="cancelCODPayment()">Cancel</a>
             </div>
         </div>

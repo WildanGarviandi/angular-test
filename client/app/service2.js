@@ -520,6 +520,13 @@ angular.module('adminApp')
                 id: null
             }
         },
+        getNoPaymentSummary: {
+            method: 'GET',
+            params: {
+                module: 'codorder',
+                controller: 'nopayment-summary'
+            }
+        },
         getMainSLA: {
             method: 'GET',
             params: {
