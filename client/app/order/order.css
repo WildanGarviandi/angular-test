@@ -582,6 +582,7 @@ a {
 .order-table tfoot {
     position: absolute;
     bottom: -50px;
+    left: 0;
 }
 
 .display-block {
@@ -589,7 +590,7 @@ a {
 }
 
 .order-table-list {
-    overflow: auto;
+    overflow-y: scroll;
 }
 
 #order-navigation {
@@ -607,4 +608,8 @@ a {
 
 .overflow-visible {
     overflow: visible;
+}
+
+.overflow-y-hidden {
+    overflow-y: hidden;
 };
