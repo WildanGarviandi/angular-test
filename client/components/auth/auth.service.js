@@ -73,8 +73,8 @@ angular.module('adminApp')
                 }).success(function() {
                     $cookies.remove('token');
                     $cookies.remove('techSupport');
+                    $cookies.remove('access_token');
                 })
-                //gapi.auth.signOut();
             },
 
             /**

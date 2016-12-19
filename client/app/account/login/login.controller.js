@@ -16,7 +16,7 @@ angular.module('adminApp')
         // Note that authResult is a JSON object.
         $scope.processAuth = function(authResult) {
             // Do a check if authentication has been successful.
-            if( authResult.status.method !== "AUTO"){
+            if( authResult['error'] !== "immediate_failed"){
                 $cookies.put('access_token', authResult['access_token']);
                 if (authResult['id_token']) {
                     Auth.login(type, {
@@ -39,11 +39,13 @@ angular.module('adminApp')
                         }
                         $cookies.remove('token');
                         $cookies.remove('techSupport');
+                        $cookies.remove('access_token');
                     });
                 } else if (authResult['error']) {
                     $scope.errors.other = authResult['error'];
                     $cookies.remove('token');
                     $cookies.remove('techSupport');
+                    $cookies.remove('access_token');
                 }
             }
         };
