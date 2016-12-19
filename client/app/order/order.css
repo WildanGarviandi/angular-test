@@ -329,7 +329,14 @@
 }
 
 #order-page .table > thead > tr > th {
-    min-width: 150px;
+    border-bottom: 0px !important;
+}
+
+#order-page .table > thead > tr > th,
+#order-page .table > tbody > tr > th,
+#order-page .table > tbody > tr > td {
+    width: 200px;
+    min-width: 200px;
 }
 
 #order-page .row {
@@ -366,7 +373,8 @@
 }
 
 .checkbox-header {
-    min-width: 20px !important;
+    min-width: 30px !important;
+    width: 30px !important;
 }
 
 .order-buttons {
@@ -553,3 +561,55 @@ a {
 .ngdialog {
     z-index: 900 !important;
 }
+
+.order-table {
+     max-height: 550px;
+     margin-top: 20px;
+}
+
+.order-table table {
+     margin: 0px !important;
+}
+
+.order-table tfoot td {
+     border: 0px !important;
+}
+
+.order-table .pagination {
+     margin: 0px !important;
+}
+
+.order-table tfoot {
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+}
+
+.display-block {
+    display: block;
+}
+
+.order-table-list {
+    overflow-y: scroll;
+}
+
+#order-navigation {
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+    background: #fff;
+    border-top: 1px solid #c1c1c1;
+    border-bottom: 1px solid #c1c1c1;
+}
+
+#toggle-navigation > button {
+    border-radius: 0;
+    border-top: 0px
+}
+
+.overflow-visible {
+    overflow: visible;
+}
+
+.overflow-y-hidden {
+    overflow-y: hidden;
+};
