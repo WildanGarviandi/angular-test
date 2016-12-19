@@ -459,6 +459,14 @@ angular.module('adminApp')
                 controller: 'normal'
             }
         },
+        exportStandardFormat: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'combined'
+            },
+        },
         getZipcodes: {
             method: 'GET',
             params: {

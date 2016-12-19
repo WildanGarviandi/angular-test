@@ -1525,13 +1525,19 @@ angular.module('adminApp')
      */
     $scope.exportOrders = function(type) {
         var defaultFilter = $scope.defaultFilter;
-        delete defaultFilter['limit'];
-        delete defaultFilter['offset'];
+        if (type !== 'standard') {
+            delete defaultFilter['limit'];
+            delete defaultFilter['offset'];
 
-        var params = $scope.getExportParam();
+            var params = $scope.getExportParam();
+        } else {
+            var params = defaultFilter;
+        }
 
         if ($scope.isDefaultFilterActive || lodash.isEqual(defaultFilter, params)) {
-            return $scope.showExportOrders(type);
+            if (type !== 'standard') {
+                return $scope.showExportOrders(type);
+            }
         }
 
         if (type === 'normal') {
@@ -1540,6 +1546,8 @@ angular.module('adminApp')
             var url = 'order/export/uploadable';
         } else if (type === 'completed') {
             var url = 'order/export/completed';
+        } else if (type === 'standard') {
+            var url = 'order/export/combined';
         }
 
         
