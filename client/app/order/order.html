@@ -725,7 +725,7 @@
             <div ng-hide="exportDatePicker">
                 <p>Are you sure want to export all Orders ?</p>
                 <p><small>* it may take several minutes to complete, because there are {{orderFound | number}} Orders Found</small></p>
-                <button class="btn btn-info" ng-click="exportDatePicker = true">Arrange Date</button>
+                <button class="btn btn-info" ng-hide="exportType === 'standard'" ng-click="exportDatePicker = true">Arrange Date</button>
                 <button class="btn btn-success" ng-click="exportOrdersByDate(exportType, false)">Accept</button>
             </div>
         </div>

@@ -1568,19 +1568,13 @@ angular.module('adminApp')
      */
     $scope.exportOrders = function(type) {
         var defaultFilter = lodash.assign({}, $scope.defaultFilter);
-        if (type !== 'standard') {
-            delete defaultFilter['limit'];
-            delete defaultFilter['offset'];
+        delete defaultFilter['limit'];
+        delete defaultFilter['offset'];
 
-            var params = $scope.getExportParam();
-        } else {
-            var params = defaultFilter;
-        }
+        var params = $scope.getExportParam();
 
         if ($scope.isDefaultFilterActive || lodash.isEqual(defaultFilter, params)) {
-            if (type !== 'standard') {
-                return $scope.showExportOrders(type);
-            }
+            return $scope.showExportOrders(type);
         }
 
         if (type === 'normal') {
