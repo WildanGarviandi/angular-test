@@ -1524,7 +1524,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.exportOrders = function(type) {
-        var defaultFilter = $scope.defaultFilter;
+        var defaultFilter = lodash.assign({}, $scope.defaultFilter);
         if (type !== 'standard') {
             delete defaultFilter['limit'];
             delete defaultFilter['offset'];
