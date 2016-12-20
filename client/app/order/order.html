@@ -152,7 +152,7 @@
 
         <div class="clearfix"></div>
         <div id="order-page" class="col-md-12">
-            <div class="table-responsive">
+            <div class="table-responsive order-table" style="max-height: {{tableHeight}}px">
                 <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
                     <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                         <tr>
