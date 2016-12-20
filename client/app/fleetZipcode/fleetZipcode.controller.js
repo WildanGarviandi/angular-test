@@ -220,7 +220,6 @@ angular.module('adminApp')
      */
     $scope.beforeChange = function (changes, source) {
         if (changes.length > 0) {
-            console.log(changes[0]);
             var forbid = false;
             var duplicates = [];
             changes.forEach(function (val) {
