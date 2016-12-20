@@ -2153,7 +2153,8 @@ angular.module('adminApp')
             return ngDialog.open({
                 template: 'setReturnWarehouseModal',
                 scope: $scope,
-                className: 'ngdialog-theme-default reassign-fleet'
+                className: 'ngdialog-theme-default return-warehouse-modal',
+                closeByDocument: false
             });
         });
     }
