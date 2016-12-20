@@ -115,17 +115,36 @@ angular.module('adminApp')
     $scope.isFetchingDrivers = false;
     $scope.urlToDownload = {};
     $scope.urlToDownload.templateDeliveryAttempts = '../../assets/template/importUserOrderAttempt.xlsx';
+    $scope.isNavigationOpen = true;
 
     /*
      * Style Responsive Height
      *
     */
-    $scope.tableHeight = $window.innerHeight - 345;
+    var orderNavigationHeight = $('#order-navigation').height();
+    var addInitHeight = 260;
+    var minInitHeight = 110;
+    var externalHeightOnResize = 235;
+    $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + addInitHeight);
+    $scope.orderListHeight = $scope.tableHeight - minInitHeight;
     $(window).resize(function(){
         $scope.$apply(function(){
-            $scope.tableHeight = $window.innerHeight - 345;
+            orderNavigationHeight = $('#order-navigation').height();
+            $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + externalHeightOnResize);
+            $scope.orderListHeight = $scope.tableHeight - minInitHeight;
         });
     });
+
+    $scope.toggleOrderNavigation = function() {
+        $scope.isNavigationOpen = !$scope.isNavigationOpen;
+        var addHeight = 190;
+        if ($scope.isNavigationOpen) {
+            $scope.tableHeight = $window.innerHeight - (addInitHeight + orderNavigationHeight);
+        } else {
+            $scope.tableHeight = $window.innerHeight - addHeight;
+        }
+        $scope.orderListHeight = $scope.tableHeight - minInitHeight;
+    }
 
     /*
      * Set picker name for filter
@@ -626,6 +645,19 @@ angular.module('adminApp')
 
     $scope.loadDetails();
     $scope.isCollapsed = true;
+
+    /**
+     * Show import button modal
+     * 
+     * @return {void}
+     */
+    $scope.showImportModal = function() {
+        ngDialog.open({
+            template: 'importModalTemplate',
+            scope: $scope,
+            className: 'ngdialog-theme-default edit-pickup-address-popup'
+        });
+    };
 
     /**
      * Show edit pickup address
