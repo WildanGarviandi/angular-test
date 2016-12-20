@@ -21,7 +21,6 @@ angular.module('adminApp')
             Upload,
             $q,
             SweetAlert,
-            $httpParamSerializer,
             $cookies,
             $timeout
         ) {
@@ -323,21 +322,12 @@ angular.module('adminApp')
         $scope.getOrder(); 
     };
 
-    function checkUrlLengthIsValid(url, params, length) {
-        var urls = config.url + url + '?' + $httpParamSerializer(params);
-        var isValid = true;
-        if (urls.length > length) {
-            isValid = false;
-        }
-        return isValid;
-    }
-
     /**
      * Get all orders
      * 
      * @return {void}
      */
-    $scope.getOrder = function() {
+    $scope.getOrder = function(isFilterEDS) {
         $rootScope.$emit('startSpin');  
 
         var paramsQuery = {
@@ -379,11 +369,7 @@ angular.module('adminApp')
         $location.search('offset', $scope.offset);
         
         $scope.isLoading = true;
-        var params = $scope.getFilterParam();
-        if (!checkUrlLengthIsValid('order', params, 2047)) {
-            $rootScope.$emit('stopSpin');
-            return SweetAlert.swal('Error', 'too many filters', 'error');
-        }
+        var params = $scope.getFilterParam(isFilterEDS);
         Services2.getOrder(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
@@ -1350,9 +1336,10 @@ angular.module('adminApp')
     /**
      * Get Filter Param
      * 
+     * @isFilterEDS {Boolean} - default null
      * @return {void}
      */
-    $scope.getFilterParam = function() {
+    $scope.getFilterParam = function(isFilterEDS) {
         if ($scope.pickupDatePicker.startDate) {
             $scope.pickupDatePicker.startDate = new Date($scope.pickupDatePicker.startDate);
         }
@@ -1431,6 +1418,14 @@ angular.module('adminApp')
         } else {
             $scope.isDefaultFilterActive = false;
         }
+
+        if (isFilterEDS) {
+            params = {
+                offset: $scope.offset,
+                limit: $scope.itemsByPage,
+                userOrderNumbers: JSON.stringify($scope.userOrderNumbers)
+            };
+        };
 
         return params;
     }
@@ -1735,7 +1730,8 @@ angular.module('adminApp')
 
     $scope.filterMultipleEDS = function () {
         getExistOrder();
-        $scope.getOrder();
+        var isFilterEDS = true;
+        $scope.getOrder(isFilterEDS);
     };
 
     /**
