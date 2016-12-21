@@ -445,6 +445,14 @@
     width: 650px;
 }
 
+.ngdialog.ngdialog-theme-default.return-warehouse-modal .ngdialog-content {
+    width: 750px;
+}
+
+.ngdialog.ngdialog-theme-default.return-warehouse-modal .ngdialog-content .input-import {
+    width: 500px;
+}
+
 .ngdialog.ngdialog-theme-default.set-price .ngdialog-content {
     width: 650px;
 }
@@ -613,3 +621,9 @@ a {
 .overflow-y-hidden {
     overflow-y: hidden;
 };
+
+.return-warehouse-cancel-button {
+    position: absolute;
+    right: -80px;
+    top: 1px;
+}

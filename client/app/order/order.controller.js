@@ -287,6 +287,11 @@ angular.module('adminApp')
             pick: 'value',
             collection: 'orderTypes'
         },
+        'IsAttempt': {
+            model: 'isAttempt',
+            pick: 'value',
+            collection: 'isAttempts'
+        }
     };
 
     // Generates
@@ -321,6 +326,15 @@ angular.module('adminApp')
         $scope.tableState.pagination.start = 0;
         $scope.getOrder(); 
     };
+
+    function checkUrlLengthIsValid(url, params, length) {
+        var urls = config.url + url + '?' + $httpParamSerializer(params);
+        var isValid = true;
+        if (urls.length > length) {
+            isValid = false;
+        }
+        return isValid;
+    }
 
     /**
      * Get all orders
@@ -2176,17 +2190,23 @@ angular.module('adminApp')
             return false;
         }
 
+        setSelectedOrder();
         $scope.returnedOrders = [];
-        var selectedOrders = lodash.filter($scope.orders, { 'Selected': true });
-        selectedOrders.forEach(function(order) {
-            $scope.returnedOrders.push({OrderID: order.UserOrderID, ReasonID: $scope.defaultReturnReason.ReasonID});
+        $scope.listUserOrderNumbersSelected = $scope.selectedOrders.map(function (order, index, array) {
+            var attempsCount = order.UserOrderAttempts.length;
+            var reasonReturn = (attempsCount > 0) ? order.UserOrderAttempts[attempsCount - 1].ReasonReturn : 
+                $scope.defaultReturnReason;
+            array[index] = lodash.assign(order, {
+                reasonReturn: reasonReturn,
+                hasAttempt: (attempsCount > 0),
+                editReason: (attempsCount === 0)
+            });
+            $scope.returnedOrders.push({OrderID: order.UserOrderID, ReasonID: reasonReturn.ReasonID});
+            return order.UserOrderNumber;
         });
 
-        $scope.chooseReasonOnModals = function (reason, orderID) {
-            var matchedOrder = lodash.find($scope.returnedOrders, { 'OrderID': orderID });
-            if (matchedOrder) {
-                matchedOrder.ReasonID = reason.ReasonID;
-            }
+        $scope.chooseReasonOnModals = function (reason, index) {
+            $scope.returnedOrders[index].ReasonID = reason.ReasonID;
         };
 
         getReasons()
@@ -2195,7 +2215,8 @@ angular.module('adminApp')
             return ngDialog.open({
                 template: 'setReturnWarehouseModal',
                 scope: $scope,
-                className: 'ngdialog-theme-default reassign-fleet'
+                className: 'ngdialog-theme-default return-warehouse-modal',
+                closeByDocument: false
             });
         });
     }
@@ -2251,10 +2272,11 @@ angular.module('adminApp')
             return false;
         }
 
+        setSelectedOrder();
         $scope.returnedSenderOrders = [];
-        var selectedOrders = lodash.filter($scope.orders, { 'Selected': true });
-        selectedOrders.forEach(function(order) {
+        $scope.listUserOrderNumbersSelected = $scope.selectedOrders.map(function (order) {
             $scope.returnedSenderOrders.push(order.UserOrderID);
+            return order.UserOrderNumber;
         });
 
         ngDialog.close();
