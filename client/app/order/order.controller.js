@@ -110,6 +110,9 @@ angular.module('adminApp')
     $scope.showFleetListOnImport = false;
     $scope.readyForPickupOnImport = false;
 
+    $scope.urlToDownload = {};
+    $scope.urlToDownload.templateUpdateTime = '../../assets/template/templateUpdateTime.xlsx';
+
     $scope.drivers = [];
     $scope.isFetchingDrivers = false;
     $scope.urlToDownload = {};
@@ -882,6 +885,21 @@ angular.module('adminApp')
             className: 'ngdialog-theme-default import-orders'
         });
     }
+    
+    /**
+     * Show import update order time in modals
+     * 
+     * @return {void}
+    */
+    $scope.showUpdateOrderTime = function() {
+        $scope.clearMessageUpdateTime();
+        ngDialog.close();
+        ngDialog.open({
+            template: 'importUpdateOrderTimeModal',
+            scope: $scope,
+            className: 'ngdialog-theme-default import-orders'
+        });
+    }
 
     /**
      * Set imported date picker
@@ -1102,6 +1120,90 @@ angular.module('adminApp')
                     }).catch(function(error){
                         $rootScope.$emit('stopSpin');
                         $scope.clearMessageDeliveryAttempts();
+                    });
+                }
+            }
+        }
+    };
+
+    /**
+     * Clear message of update order time
+     * 
+     * @return {void}
+    */
+    $scope.clearMessageUpdateTime = function () {
+        $scope.uploadedUpdateTime = {};
+        $scope.errorUploadUpdateTime = {};
+    }
+
+    /**
+     * Upload order time
+     * 
+     * @return {void}
+    */
+    $scope.uploadUpdateTime = function(files) {
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                if (!file.$error) {
+                    $rootScope.$emit('startSpin');
+
+                    var style = '<link rel="stylesheet" href="app/app.css">';
+
+                    var output = '<div class="circleSpinnerloader" style="margin-top: 50px; margin-bottom: 50px">'+
+                                    '<div class="loadersanimation"></div>'+
+                                '</div>'+
+                                '<p style="text-align: center">You can do other things, while exporting in progress</p>';
+
+                    var popout = window.open();
+                        popout.document.write(style+output);
+
+                    Upload.upload({
+                        url: config.url + 'order/import/update-time',
+                        data: {
+                            file: file
+                        },
+                        responseType: 'arraybuffer'
+                    }).then(function(response) {
+                        $rootScope.$emit('stopSpin');
+                        $scope.clearMessageUpdateTime();
+
+                        var fileName = 'reportUpdateTime_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
+                        var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                        var blob = new Blob([response.data], { type: type });
+                        var URL = window.URL || window.webkitURL;
+                        var downloadUrl = window.URL.createObjectURL(blob);
+
+                        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                            window.navigator.msSaveBlob(blob, fileName);
+                        } else {
+                            if (fileName) {
+                                // use HTML5 a[download] attribute to specify filename
+                                var a = document.createElement("a");
+                                if (typeof a.download === 'undefined') {
+                                    popout.location.href = downloadUrl;
+                                } else {
+                                    a.href = downloadUrl;
+                                    a.download = fileName;
+                                    a.target = '_blank';
+                                    document.body.appendChild(a);
+                                    a.click();
+                                }
+                            } else {
+                                popout.location.href = downloadUrl;
+                            }
+
+                            setTimeout(function () { 
+                                popout.close();
+                            }, 1000); // cleanup
+                        }
+
+                        $scope.uploadedUpdateTime.link = downloadUrl;
+                        $scope.uploadedUpdateTime.fileName = fileName;
+                    }).catch(function(error){
+                        $rootScope.$emit('stopSpin');
+                        $scope.clearMessageUpdateTime();
+                        $scope.errorUploadUpdateTime.message = error.data.error.message;
                     });
                 }
             }
