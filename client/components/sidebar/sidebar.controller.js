@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('adminApp')
-    .controller('SidebarCtrl', function($scope, $location, $rootScope, usSpinnerService, localStorageService, Notification, config) {
+    .controller('SidebarCtrl', function($scope, $location, $rootScope, usSpinnerService, localStorageService, Notification, config, $cookies) {
 
         $scope.currentPath = $location.path();
         $scope.menus = {
@@ -59,6 +59,9 @@ angular.module('adminApp')
             },
             deliveryDistribution: {
                 routes: ['/deliveryDistribution']
+            },
+            admin: {
+                routes: ['/admin']
             }
         };
 
@@ -127,6 +130,7 @@ angular.module('adminApp')
         $scope.isMenuDisable = function() {
             $scope.menus.deliveryDistribution.menu = config.features.deliveryDistribution.menu;
             $scope.menus.driverSchedule.menu = config.features.driverSchedule.menu;
+            $scope.menus.admin.menu = $cookies.get('techSupport') === 'true';
         }
 
         $scope.isMenuDisable();

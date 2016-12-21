@@ -307,6 +307,17 @@
                     ng-class="{ expanded: expanded, active: menus.map.active }">Map</div>
             </a>
         </li>
+
+        <li class="row menu-admin"
+            ng-class="{ active: menus.admin.active }"
+            ng-show="menus.admin.menu">
+            <a ui-sref="app.admin" >
+                <div class="side-image side-admin-image"
+                    ng-class="{ expanded: expanded, active: menus.admin.active }"></div>
+                <div class="side-text"
+                    ng-class="{ expanded: expanded, active: menus.admin.active }">Admin</div>
+            </a>
+        </li>
     </ul>
     <div class="expand-button" ng-click="toggleExpand()">
         <span id="expand"
