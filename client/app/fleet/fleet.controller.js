@@ -110,6 +110,7 @@ angular.module('adminApp')
                 VatNumber: $scope.fleet.CompanyDetail.VatNumber,
                 CCNNumber: $scope.fleet.CompanyDetail.CCNNumber,
                 WebsiteURL: $scope.fleet.CompanyDetail.WebsiteURL,
+                OrderVolumeLimit: $scope.fleet.CompanyDetail.OrderVolumeLimit,
 
                 FirstName: $scope.fleet.FirstName,
                 LastName: $scope.fleet.LastName,
@@ -145,6 +146,7 @@ angular.module('adminApp')
                 VatNumber: $scope.fleet.CompanyDetail.VatNumber,
                 CCNNumber: $scope.fleet.CompanyDetail.CCNNumber,
                 WebsiteURL: $scope.fleet.CompanyDetail.WebsiteURL,
+                OrderVolumeLimit: $scope.fleet.CompanyDetail.OrderVolumeLimit,
 
                 FirstName: $scope.fleet.FirstName,
                 LastName: $scope.fleet.LastName,

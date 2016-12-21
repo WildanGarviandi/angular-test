@@ -21,7 +21,6 @@ angular.module('adminApp')
             Upload,
             $q,
             SweetAlert,
-            $httpParamSerializer,
             $cookies,
             $timeout
         ) {
@@ -115,6 +114,36 @@ angular.module('adminApp')
     $scope.isFetchingDrivers = false;
     $scope.urlToDownload = {};
     $scope.urlToDownload.templateDeliveryAttempts = '../../assets/template/importUserOrderAttempt.xlsx';
+    $scope.isNavigationOpen = true;
+
+    /*
+     * Style Responsive Height
+     *
+    */
+    var orderNavigationHeight = $('#order-navigation').height();
+    var addInitHeight = 260;
+    var minInitHeight = 110;
+    var externalHeightOnResize = 235;
+    $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + addInitHeight);
+    $scope.orderListHeight = $scope.tableHeight - minInitHeight;
+    $(window).resize(function(){
+        $scope.$apply(function(){
+            orderNavigationHeight = $('#order-navigation').height();
+            $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + externalHeightOnResize);
+            $scope.orderListHeight = $scope.tableHeight - minInitHeight;
+        });
+    });
+
+    $scope.toggleOrderNavigation = function() {
+        $scope.isNavigationOpen = !$scope.isNavigationOpen;
+        var addHeight = 190;
+        if ($scope.isNavigationOpen) {
+            $scope.tableHeight = $window.innerHeight - (addInitHeight + orderNavigationHeight);
+        } else {
+            $scope.tableHeight = $window.innerHeight - addHeight;
+        }
+        $scope.orderListHeight = $scope.tableHeight - minInitHeight;
+    }
 
     /*
      * Set picker name for filter
@@ -293,21 +322,12 @@ angular.module('adminApp')
         $scope.getOrder(); 
     };
 
-    function checkUrlLengthIsValid(url, params, length) {
-        var urls = config.url + url + '?' + $httpParamSerializer(params);
-        var isValid = true;
-        if (urls.length > length) {
-            isValid = false;
-        }
-        return isValid;
-    }
-
     /**
      * Get all orders
      * 
      * @return {void}
      */
-    $scope.getOrder = function() {
+    $scope.getOrder = function(isFilterEDS) {
         $rootScope.$emit('startSpin');  
 
         var paramsQuery = {
@@ -349,11 +369,7 @@ angular.module('adminApp')
         $location.search('offset', $scope.offset);
         
         $scope.isLoading = true;
-        var params = $scope.getFilterParam();
-        if (!checkUrlLengthIsValid('order', params, 2047)) {
-            $rootScope.$emit('stopSpin');
-            return SweetAlert.swal('Error', 'too many filters', 'error');
-        }
+        var params = $scope.getFilterParam(isFilterEDS);
         Services2.getOrder(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
@@ -615,6 +631,19 @@ angular.module('adminApp')
 
     $scope.loadDetails();
     $scope.isCollapsed = true;
+
+    /**
+     * Show import button modal
+     * 
+     * @return {void}
+     */
+    $scope.showImportModal = function() {
+        ngDialog.open({
+            template: 'importModalTemplate',
+            scope: $scope,
+            className: 'ngdialog-theme-default edit-pickup-address-popup'
+        });
+    };
 
     /**
      * Show edit pickup address
@@ -1307,9 +1336,10 @@ angular.module('adminApp')
     /**
      * Get Filter Param
      * 
+     * @isFilterEDS {Boolean} - default null
      * @return {void}
      */
-    $scope.getFilterParam = function() {
+    $scope.getFilterParam = function(isFilterEDS) {
         if ($scope.pickupDatePicker.startDate) {
             $scope.pickupDatePicker.startDate = new Date($scope.pickupDatePicker.startDate);
         }
@@ -1388,6 +1418,14 @@ angular.module('adminApp')
         } else {
             $scope.isDefaultFilterActive = false;
         }
+
+        if (isFilterEDS) {
+            params = {
+                offset: $scope.offset,
+                limit: $scope.itemsByPage,
+                userOrderNumbers: JSON.stringify($scope.userOrderNumbers)
+            };
+        };
 
         return params;
     }
@@ -1692,7 +1730,8 @@ angular.module('adminApp')
 
     $scope.filterMultipleEDS = function () {
         getExistOrder();
-        $scope.getOrder();
+        var isFilterEDS = true;
+        $scope.getOrder(isFilterEDS);
     };
 
     /**
