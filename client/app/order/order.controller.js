@@ -110,6 +110,9 @@ angular.module('adminApp')
     $scope.showFleetListOnImport = false;
     $scope.readyForPickupOnImport = false;
 
+    $scope.urlToDownload = {};
+    $scope.urlToDownload.templateUpdateTime = '../../assets/template/templateUpdateTime.xlsx';
+
     $scope.drivers = [];
     $scope.isFetchingDrivers = false;
     $scope.urlToDownload = {};
@@ -287,6 +290,11 @@ angular.module('adminApp')
             pick: 'value',
             collection: 'orderTypes'
         },
+        'IsAttempt': {
+            model: 'isAttempt',
+            pick: 'value',
+            collection: 'isAttempts'
+        }
     };
 
     // Generates
@@ -321,6 +329,15 @@ angular.module('adminApp')
         $scope.tableState.pagination.start = 0;
         $scope.getOrder(); 
     };
+
+    function checkUrlLengthIsValid(url, params, length) {
+        var urls = config.url + url + '?' + $httpParamSerializer(params);
+        var isValid = true;
+        if (urls.length > length) {
+            isValid = false;
+        }
+        return isValid;
+    }
 
     /**
      * Get all orders
@@ -868,6 +885,21 @@ angular.module('adminApp')
             className: 'ngdialog-theme-default import-orders'
         });
     }
+    
+    /**
+     * Show import update order time in modals
+     * 
+     * @return {void}
+    */
+    $scope.showUpdateOrderTime = function() {
+        $scope.clearMessageUpdateTime();
+        ngDialog.close();
+        ngDialog.open({
+            template: 'importUpdateOrderTimeModal',
+            scope: $scope,
+            className: 'ngdialog-theme-default import-orders'
+        });
+    }
 
     /**
      * Set imported date picker
@@ -1088,6 +1120,90 @@ angular.module('adminApp')
                     }).catch(function(error){
                         $rootScope.$emit('stopSpin');
                         $scope.clearMessageDeliveryAttempts();
+                    });
+                }
+            }
+        }
+    };
+
+    /**
+     * Clear message of update order time
+     * 
+     * @return {void}
+    */
+    $scope.clearMessageUpdateTime = function () {
+        $scope.uploadedUpdateTime = {};
+        $scope.errorUploadUpdateTime = {};
+    }
+
+    /**
+     * Upload order time
+     * 
+     * @return {void}
+    */
+    $scope.uploadUpdateTime = function(files) {
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                if (!file.$error) {
+                    $rootScope.$emit('startSpin');
+
+                    var style = '<link rel="stylesheet" href="app/app.css">';
+
+                    var output = '<div class="circleSpinnerloader" style="margin-top: 50px; margin-bottom: 50px">'+
+                                    '<div class="loadersanimation"></div>'+
+                                '</div>'+
+                                '<p style="text-align: center">You can do other things, while exporting in progress</p>';
+
+                    var popout = window.open();
+                        popout.document.write(style+output);
+
+                    Upload.upload({
+                        url: config.url + 'order/import/update-time',
+                        data: {
+                            file: file
+                        },
+                        responseType: 'arraybuffer'
+                    }).then(function(response) {
+                        $rootScope.$emit('stopSpin');
+                        $scope.clearMessageUpdateTime();
+
+                        var fileName = 'reportUpdateTime_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
+                        var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                        var blob = new Blob([response.data], { type: type });
+                        var URL = window.URL || window.webkitURL;
+                        var downloadUrl = window.URL.createObjectURL(blob);
+
+                        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                            window.navigator.msSaveBlob(blob, fileName);
+                        } else {
+                            if (fileName) {
+                                // use HTML5 a[download] attribute to specify filename
+                                var a = document.createElement("a");
+                                if (typeof a.download === 'undefined') {
+                                    popout.location.href = downloadUrl;
+                                } else {
+                                    a.href = downloadUrl;
+                                    a.download = fileName;
+                                    a.target = '_blank';
+                                    document.body.appendChild(a);
+                                    a.click();
+                                }
+                            } else {
+                                popout.location.href = downloadUrl;
+                            }
+
+                            setTimeout(function () { 
+                                popout.close();
+                            }, 1000); // cleanup
+                        }
+
+                        $scope.uploadedUpdateTime.link = downloadUrl;
+                        $scope.uploadedUpdateTime.fileName = fileName;
+                    }).catch(function(error){
+                        $rootScope.$emit('stopSpin');
+                        $scope.clearMessageUpdateTime();
+                        $scope.errorUploadUpdateTime.message = error.data.error.message;
                     });
                 }
             }
@@ -1562,7 +1678,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.exportOrders = function(type) {
-        var defaultFilter = $scope.defaultFilter;
+        var defaultFilter = lodash.assign({}, $scope.defaultFilter);
         delete defaultFilter['limit'];
         delete defaultFilter['offset'];
 
@@ -1578,6 +1694,8 @@ angular.module('adminApp')
             var url = 'order/export/uploadable';
         } else if (type === 'completed') {
             var url = 'order/export/completed';
+        } else if (type === 'standard') {
+            var url = 'order/export/combined';
         }
 
         
@@ -2174,17 +2292,23 @@ angular.module('adminApp')
             return false;
         }
 
+        setSelectedOrder();
         $scope.returnedOrders = [];
-        var selectedOrders = lodash.filter($scope.orders, { 'Selected': true });
-        selectedOrders.forEach(function(order) {
-            $scope.returnedOrders.push({OrderID: order.UserOrderID, ReasonID: $scope.defaultReturnReason.ReasonID});
+        $scope.listUserOrderNumbersSelected = $scope.selectedOrders.map(function (order, index, array) {
+            var attempsCount = order.UserOrderAttempts.length;
+            var reasonReturn = (attempsCount > 0) ? order.UserOrderAttempts[attempsCount - 1].ReasonReturn : 
+                $scope.defaultReturnReason;
+            array[index] = lodash.assign(order, {
+                reasonReturn: reasonReturn,
+                hasAttempt: (attempsCount > 0),
+                editReason: (attempsCount === 0)
+            });
+            $scope.returnedOrders.push({OrderID: order.UserOrderID, ReasonID: reasonReturn.ReasonID});
+            return order.UserOrderNumber;
         });
 
-        $scope.chooseReasonOnModals = function (reason, orderID) {
-            var matchedOrder = lodash.find($scope.returnedOrders, { 'OrderID': orderID });
-            if (matchedOrder) {
-                matchedOrder.ReasonID = reason.ReasonID;
-            }
+        $scope.chooseReasonOnModals = function (reason, index) {
+            $scope.returnedOrders[index].ReasonID = reason.ReasonID;
         };
 
         getReasons()
@@ -2193,7 +2317,8 @@ angular.module('adminApp')
             return ngDialog.open({
                 template: 'setReturnWarehouseModal',
                 scope: $scope,
-                className: 'ngdialog-theme-default reassign-fleet'
+                className: 'ngdialog-theme-default return-warehouse-modal',
+                closeByDocument: false
             });
         });
     }
@@ -2249,10 +2374,11 @@ angular.module('adminApp')
             return false;
         }
 
+        setSelectedOrder();
         $scope.returnedSenderOrders = [];
-        var selectedOrders = lodash.filter($scope.orders, { 'Selected': true });
-        selectedOrders.forEach(function(order) {
+        $scope.listUserOrderNumbersSelected = $scope.selectedOrders.map(function (order) {
             $scope.returnedSenderOrders.push(order.UserOrderID);
+            return order.UserOrderNumber;
         });
 
         ngDialog.close();
