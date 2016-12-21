@@ -1562,7 +1562,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.exportOrders = function(type) {
-        var defaultFilter = $scope.defaultFilter;
+        var defaultFilter = lodash.assign({}, $scope.defaultFilter);
         delete defaultFilter['limit'];
         delete defaultFilter['offset'];
 
@@ -1578,6 +1578,8 @@ angular.module('adminApp')
             var url = 'order/export/uploadable';
         } else if (type === 'completed') {
             var url = 'order/export/completed';
+        } else if (type === 'standard') {
+            var url = 'order/export/combined';
         }
 
         
