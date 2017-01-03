@@ -106,7 +106,9 @@ function mainConfig() {
         zipLength: zipLength,
         url: url + '/v2/admin/',
         endpoints: {
-            signIn: 'sign-in'
+            signIn: 'sign-in',
+            signInWithGoogle: 'sign-in-with-google',
+            signOut: 'sign-out'
         },
         defaultLocation: defaultLocation,
         notCancellableOrderStatus: [4, 5, 13, 16],
@@ -132,7 +134,8 @@ function mainConfig() {
         },
         packageDimensionID: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
         canChangeToPickup: [6],
-        webtrackingURL: webtrackingURL
+        webtrackingURL: webtrackingURL,
+        googleClientId: '196844091368-igtekd4ke8h75r03f0c9rf9k63n9ltc0.apps.googleusercontent.com'
     };
 }
 

@@ -4,7 +4,36 @@
     </div>
     <div class="row-fluid login-block">
         <div class="col-sm-12 ">
-            <div class="login-content">
+            <div class="login-content row" ng-show="loginActive.google">
+                <form class="form" name="form" ng-submit="login(form)" novalidate>
+                    <div class="login-form-header">
+                        Please login to admin account
+                    </div>
+                    <span id="googleSignIn" class="col-xs-12 no-padding">
+                        <span id="signInButton" class="col-xs-12 no-padding">
+                            <i class="fa fa-google-plus g-icon"></i>
+                            <button class="btn col-xs-12 g-signin"
+                                data-callback="signInCallback"
+                                data-clientid="{{googleClientId}}"
+                                data-cookiepolicy="single_host_origin"
+                                data-requestvisibleactions="http://schemas.google.com/AddActivity"
+                                data-scope="https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email">
+                                Sign in with Google
+                            </button>
+                        </span>
+                    </span>
+                    <div class="form-group has-error">
+                        <p class="help-block" ng-show="form.username.$error.required && form.password.$error.required && submitted">
+                            Please enter your username/email and password.
+                        </p>
+                        <p class="help-block" ng-show="form.username.$error.username && submitted">
+                            Please enter a valid username/email.
+                        </p>
+                        <p class="help-block">{{ errors.other }}</p>
+                    </div>
+                </form>
+            </div>
+            <div class="login-content" ng-show="loginActive.form">
                 <form class="form" name="form" ng-submit="login(form)" novalidate>
                     <div class="login-form-header">
                         Please login to admin account
@@ -48,3 +77,12 @@
         PT etobee Teknologi Indonesia. {{ currentDate | date:'yyyy' }}
     </div>
 </div>
+
+<script ng-show="loginActive.google">
+    (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/client:plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+    })();
+</script>
+<script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" async defer ng-show="loginActive.google"></script>
