@@ -446,7 +446,7 @@ angular.module('adminApp')
     };
 
     /**
-     *
+     * Get all order that exist on multiple EDS / WebOrderID searching
      *
      */
     $scope.filterByEDS = function (selectedUserID) {
@@ -537,10 +537,9 @@ angular.module('adminApp')
             .then(function(responses) {
                 $scope.codOrdersNoPayment = responses.data.rows;
                 $scope.codOrdersNoPaymentCount = responses.data.count;
+                $scope.formData.paymentType = 'auto';
                 if ($scope.codOrdersNoPayment.length > 0){
                     $scope.formData.paymentType = 'manual';
-                } else {
-                    $scope.formData.paymentType = 'auto';
                 }
 
                 if (parseInt(userID)) {
