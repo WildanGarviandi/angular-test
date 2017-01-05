@@ -28,11 +28,11 @@ angular.module('adminApp')
         $scope.user = data.profile;
     });
 
-    $scope.itemsByPage = $location.search().limit || 10;
+    $scope.itemsByPage = $location.search().limit || 50;
     $scope.offset = $location.search().offset || 0;
     $scope.isFirstLoaded = true;
     $scope.isTableDisplayed = true;
-    $scope.limitPages = [$scope.itemsByPage, 25, 50, 100, 200];
+    $scope.limitPages = [$scope.itemsByPage, 10, 25, 50, 100, 200];
 
     $scope.statuses = [
         {key: 'All', value: ''},
@@ -134,7 +134,7 @@ angular.module('adminApp')
         'queryMultipleEDS',
         function (newValue) {
             // Filter empty line(s)
-            $scope.userOrderNumbers = newValue.split('\n').filter(function (val) {
+            $scope.userOrderNumbers = newValue.split(/\s+/).filter(function (val) {
                 return val;
             });
         }
@@ -417,6 +417,7 @@ angular.module('adminApp')
      */
     $scope.chooseFleet = function (company) {
         $scope.company = company;
+        $location.search('id', company.User.UserID);
         $scope.getCODOrdersNoPaymentAndUnpaid(company.User.UserID);
     };
 
@@ -445,6 +446,14 @@ angular.module('adminApp')
     };
 
     /**
+     *
+     *
+     */
+    $scope.filterByEDS = function (selectedUserID) {
+        $scope.offset = 0;
+        $scope.getCODOrdersNoPaymentAndUnpaid(selectedUserID, true);
+    } 
+    /**
      * Open create COD Payment modals
      * @return void
      */
@@ -467,11 +476,9 @@ angular.module('adminApp')
      */
     $scope.loadCODPayment = function () {
         $rootScope.$emit('startSpin');
-        $scope.resetPaymentParams();
 
-        $scope.getCODOrdersNoPaymentAndUnpaid();
         getNoPaymentSummary();
-        getCompanies();
+        getCompanies().then($scope.getCODOrdersNoPaymentAndUnpaid);
 
         if ($scope.isTableDisplayedFirstLoad) {
             $scope.isTableDisplayed = false;
@@ -497,6 +504,7 @@ angular.module('adminApp')
      * @return void
      */
     $scope.getCODOrdersNoPaymentAndUnpaid = function (userID, isEDSFilter) {
+        userID = $location.search().id;
         if (userID === 0) {
             return;
         }
@@ -506,30 +514,15 @@ angular.module('adminApp')
         params.offset = $scope.offset;
         params.userOrderNumbers = JSON.stringify($scope.userOrderNumbers);
 
-        if (params.offset) {
+        $scope.isTableDisplayed = false;
+        if (userID) {
             $scope.isTableDisplayed = true;
-        }
-        $scope.isTableDisplayed = !$scope.isTableDisplayedFirstLoad;
-
-        if (isEDSFilter) {
-            $scope.company = $scope.companies[1];
-            userID = 'all';
-        } else {
-            $scope.queryMultipleEDS = '';
-            $scope.userOrderNumbers = [];
-            params.userOrderNumbers = '';
         }
 
         $scope.selectedUserID = userID;
-        if (userID) {
-            $scope.selectedFleetName = lodash.find($scope.companies, {User: {'UserID': userID}}).CompanyName;
-            var selectedNoPaymentSummary = lodash.find($scope.noPaymentSummary, {FleetManagerID: userID.toString()});
-            $scope.selectedFleetAmount = (selectedNoPaymentSummary) ? selectedNoPaymentSummary.TotalValue : 0; 
-        }
         
         $scope.isFetchingOrders = true;
         $scope.resetSelectionParams();
-        $scope.transactionDetails = 'Transferred by ' + $scope.selectedFleetName;
         $rootScope.$emit('startSpin');
         if (userID !== 'all') {
             params.id = userID;
@@ -537,19 +530,33 @@ angular.module('adminApp')
             $scope.transactionDetails = 'Transferred by ';
         }
 
-        Services2.getCODOrdersNoPayment(params).$promise
-        .then(function(responses) {
-            $scope.codOrdersNoPayment = responses.data.rows;
-            $scope.codOrdersNoPaymentCount = responses.data.count;
-            if ($scope.codOrdersNoPayment.length > 0){
-                $scope.formData.paymentType = 'manual';
-            } else {
-                $scope.formData.paymentType = 'auto';
-            }
-            $scope.tableState.pagination.numberOfPages = Math.ceil(
-                responses.data.count / $scope.tableState.pagination.number);
-            $scope.prepareSelectedOrdersOrPayment();
-            $rootScope.$emit('stopSpin');
+        $location.search('offset', $scope.offset);
+
+        return $q(function (resolve) {
+            Services2.getCODOrdersNoPayment(params).$promise
+            .then(function(responses) {
+                $scope.codOrdersNoPayment = responses.data.rows;
+                $scope.codOrdersNoPaymentCount = responses.data.count;
+                if ($scope.codOrdersNoPayment.length > 0){
+                    $scope.formData.paymentType = 'manual';
+                } else {
+                    $scope.formData.paymentType = 'auto';
+                }
+
+                if (parseInt(userID)) {
+                    $scope.company = lodash.find($scope.companies, {User: {'UserID': parseInt(userID)}});
+                    $scope.selectedFleetName = $scope.company.CompanyName;
+                    $scope.transactionDetails = 'Transferred by ' + $scope.selectedFleetName;
+                    var selectedNoPaymentSummary = lodash.find($scope.noPaymentSummary, {FleetManagerID: userID.toString()});
+                    $scope.selectedFleetAmount = (selectedNoPaymentSummary) ? selectedNoPaymentSummary.TotalValue : 0; 
+                }
+
+                $scope.tableState.pagination.numberOfPages = Math.ceil(
+                    responses.data.count / $scope.tableState.pagination.number);
+                $scope.prepareSelectedOrdersOrPayment();
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
         });
     };
 
