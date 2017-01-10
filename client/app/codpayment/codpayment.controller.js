@@ -779,5 +779,10 @@ angular.module('adminApp')
             $scope.getCODOrdersNoPaymentAndUnpaid($scope.selectedUserID, true);
         }
     };
+
+    //workaround for bug ui-select
+    $scope.tagHandler = function (tag){
+        return null;
+    }
     
 });
