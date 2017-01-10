@@ -30,6 +30,7 @@
                     <ui-select ng-model="$parent.company" 
                         theme="selectize" 
                         on-select="chooseFleet($item)" 
+                        tagging="tagHandler"
                         class="booking-order-type">
                         <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
                         <ui-select-choices repeat="c in companies | filter: $select.search track by $index" selected>
@@ -66,7 +67,7 @@
                                 <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
                                 <a class="btn btn-default" 
                                     ng-click="areaFilter.open = false; clearTextArea()">Cancel</a>
-                                <a ng-click="getCODOrdersNoPaymentAndUnpaid(selectedUserID, true)" class="btn btn-success">Filter</a>
+                                <a ng-click="filterByEDS(selectedUserID, true)" class="btn btn-success">Filter</a>
                             </div>
                         </uib-accordion-group>
                     </uib-accordion>
@@ -112,7 +113,7 @@
                         class="content-choose-limit"
                         style="width: 55px">
                         <ui-select-match>{{$select.selected}}</ui-select-match>
-                        <ui-select-choices repeat="ot in limitPages" selected>
+                        <ui-select-choices repeat="ot in limitPages | filter: $select.search track by $index" selected>
                             <span ng-bind-html="ot"></span>
                         </ui-select-choices>
                     </ui-select>
@@ -137,7 +138,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="order in codOrdersNoPayment" ng-class="{info: order.Selected}">
+                    <tr ng-repeat="order in codOrdersNoPayment track by $index" ng-class="{info: order.Selected}">
                         <td class="checkbox-header">
                             <input type="checkbox" ng-change="prepareSelectedOrdersOrPayment()" ng-model="order.Selected" />
                         </td>
@@ -218,8 +219,8 @@
                         on-select="chooseTransactionType($item)" 
                         class="booking-order-type">
                         <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
-                        <ui-select-choices repeat="ot in transactionTypes | filter: $select.search" selected>
-                            <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                        <ui-select-choices repeat="t in transactionTypes | filter: $select.search track by $index" selected>
+                            <span class="input-table" ng-bind-html="t.key | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
                 </div>
