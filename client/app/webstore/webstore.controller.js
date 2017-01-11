@@ -503,7 +503,8 @@ angular.module('adminApp')
 
             $scope.webstore.WebstoreCompany.CODCommission = Math.round($scope.webstore.WebstoreCompany.CODCommission*1000)/1000;
             $scope.webstore.PricingType = data.User.WebstoreCompany.PricingType;
-            data.User.PackageDimension.forEach(function(obj) {
+            
+            lodash.sortBy(data.User.PackageDimension, 'PackageDimensionID').forEach(function(obj) {
                 obj.PackageSizeID = config.packageDimensionID[obj.PackageDimensionID - 1];
                 $scope.packageDimensionGrid.data.push(obj);
             });
