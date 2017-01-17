@@ -144,8 +144,8 @@ function mainConfig() {
         // ACCEPTED, PICKUP, IN-TRANSIT
         reassignableFleet: [1, 3, 6, 9],
         // BOOKED, NOTASSIGNED, PREBOOKED
-        updatablePrice: [1, 6, 9],
-        // BOOKED, NOTASSIGNED, PREBOOKED
+        updatablePrice: [1, 6, 9, 2, 3, 4],
+        // BOOKED, NOTASSIGNED, PREBOOKED, ACCEPTED, PICKUP, IN-TRANSIT
         returnableWarehouse: [2, 3, 4],
         returnableSender: [15],
         defaultReturnReason : {

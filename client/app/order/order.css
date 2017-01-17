@@ -457,6 +457,28 @@
     width: 650px;
 }
 
+.ngdialog.ngdialog-theme-default.set-data-modal .ngdialog-content {
+    width: 500px;
+}
+
+.set-data-modal .content-wrapper .form-group {
+    position: relative;
+}
+
+.set-data-modal .content-wrapper .control-label {
+    width: 26%;
+}
+
+.set-data-modal .content-wrapper .form-control {
+    width: 65%;
+    display: inline-block;
+}
+
+.set-data-modal .checkbox {
+    position: absolute;
+    top: 5px;
+}
+
 .content-set-limit {
     margin-top: 10px;
 }
@@ -475,6 +497,11 @@
 
 .action-button {
     margin-left: -15px;
+}
+
+.action-button .dropdown-menu {
+    width: initial;
+    min-width: 200px;
 }
 
 a {
