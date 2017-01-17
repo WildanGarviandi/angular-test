@@ -2302,7 +2302,7 @@ angular.module('adminApp')
         }, function (isConfirm){ 
             if (isConfirm) {
                 $rootScope.$emit('startSpin');
-                Services2.bulkSetPrice({
+                Services2.bulkUpdateAll({
                     orderIDs: orderIDs,
                     price: ($scope.updateData.price.active) ? $scope.updateData.price.value : null,
                     pickupTime: ($scope.updateData.pickupTime.active) ? $scope.updateData.pickupTime.value : null
