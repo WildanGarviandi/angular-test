@@ -233,7 +233,23 @@ angular.module('adminApp')
     });
 
     $scope.orders = [];
-    $scope.newPrice = 0;
+    $scope.updateData = {
+        price: {
+            value: 0,
+            active: true
+        },
+        pickupTime: {
+            value: moment().format(),
+            active: true
+        }
+    };
+    $scope.updateDataDateOptions = {
+        singleDatePicker: true,
+        timePicker: true,
+        locale: {
+            format: 'MM/DD/YYYY hh:mm A'
+        }
+    };
     $scope.limitPages = [$scope.itemsByPage, 25, 50, 100, 200];
     $scope.isOrderSelected = false;
     $scope.techSupport = $cookies.get('techSupport') === 'true';
@@ -2044,7 +2060,7 @@ angular.module('adminApp')
      * 
      * @return {boolean}
      */
-    $scope.selectedNonUpdatablePriceExists = function() {
+    function selectedNonUpdatablePriceExists () {
         var checked = false;
         $scope.orders.some(function(order) {
             if (order.Selected && $scope.updatablePrice.indexOf(order.OrderStatus.OrderStatusID) === -1) {
@@ -2129,16 +2145,17 @@ angular.module('adminApp')
      * 
      * @return {void}
     */
-    $scope.showSetPrice = function() {
-        if ($scope.selectedNonUpdatablePriceExists()) {
+    $scope.showUpdateData = function() {
+        if (selectedNonUpdatablePriceExists()) {
             SweetAlert.swal('Error', 'You have selected one or more orders which cannot be updated', 'error');
             return false;
         }
         ngDialog.close()
         return ngDialog.open({
-            template: 'setPriceModal',
+            template: 'setDataModal',
             scope: $scope,
-            className: 'ngdialog-theme-default set-price'
+            className: 'ngdialog-theme-default set-data-modal',
+            closeByDocument: false
         });
     }
 
@@ -2434,19 +2451,14 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.setPrice = function() {
-        var regexNumber = /^[0-9]+$/;
-        if ((!regexNumber.test($scope.newPrice)) || ($scope.newPrice < 0)) {
-            SweetAlert.swal('Error', 'Price must be a positive number', 'error');
-            return false;
-        }
-        var orderIDs = []
-        $scope.selectedOrders.forEach(function(order) {
-            orderIDs.push(order.UserOrderID);
+    $scope.setData = function() {
+        var orderIDs = $scope.selectedOrders.map(function (order) {
+            return order.UserOrderID;
         });
+
         SweetAlert.swal({
             title: 'Are you sure?',
-            text: "Set price of these orders?",
+            text: "Update " + ((orderIDs.length > 1) ? 'these orders?' : 'this order?'),
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -2455,16 +2467,17 @@ angular.module('adminApp')
         }, function (isConfirm){ 
             if (isConfirm) {
                 $rootScope.$emit('startSpin');
-                Services2.bulkSetPrice({
+                Services2.bulkUpdateAll({
                     orderIDs: orderIDs,
-                    price: $scope.newPrice
+                    price: ($scope.updateData.price.active) ? $scope.updateData.price.value : null,
+                    pickupTime: ($scope.updateData.pickupTime.active) ? $scope.updateData.pickupTime.value : null
                 }).$promise.then(function (result) {
                     $rootScope.$emit('stopSpin');
-                    SweetAlert.swal(result.data.length + ' orders updated');
+                    SweetAlert.swal(result.data.length + ((result.data.length > 1) ? ' orders' : ' order') + ' updated');
                     ngDialog.closeAll();
                 }).catch(function (e) {
                     $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Failed in setting price', e.data.error.message);
+                    SweetAlert.swal('Failed in update data', e.data.error.message);
                     $state.reload();
                 });
             }

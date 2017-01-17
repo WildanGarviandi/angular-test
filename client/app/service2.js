@@ -565,11 +565,11 @@ angular.module('adminApp')
                 controller: 'mark-as-delivered'
             }
         },
-        bulkSetPrice: {
+        bulkUpdateAll: {
             method: 'POST',
             params: {
                 module: 'order',
-                controller: 'bulk-set-price'
+                controller: 'bulk-update-all'
             }
         },
         bulkReassignFleet: {
