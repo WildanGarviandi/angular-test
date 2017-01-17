@@ -7,7 +7,6 @@ function mainConfig() {
     var parts = location.split('.');
     var app = parts[0];
     var country = parts[parts.length - 1];
-    console.log(app, country)
     switch (app + '|' + country) {
         case 'staging|com':
             var url = 'http://staging.api2.etobee.com';
