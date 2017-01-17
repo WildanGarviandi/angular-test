@@ -7,6 +7,7 @@ function mainConfig() {
     var parts = location.split('.');
     var app = parts[0];
     var country = parts[parts.length - 1];
+    console.log(app, country)
     switch (app + '|' + country) {
         case 'staging|com':
             var url = 'http://staging.api2.etobee.com';
@@ -89,6 +90,16 @@ function mainConfig() {
             var webtrackingURL = 'http://staging.track.etobee.com';
             break;
         case 'dev-dbs-admin|com':
+            var url = 'https://dev-dbs-api.etobee.com';
+            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
+            var currency = 'Rp';
+            var decimalSeparator = ',';
+            var zipLength = 5;
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
+            var countryCode = '+62';
+            var webtrackingURL = 'http://staging.track.etobee.com';
+            break;
+        case 'dev-dbs-admin|com:444':
             var url = 'https://dev-dbs-api.etobee.com';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
