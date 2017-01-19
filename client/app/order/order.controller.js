@@ -1243,11 +1243,11 @@ angular.module('adminApp')
     };
 
     /**
-     * Pass driver, fleet manager and delivery fee value to request to reassign the order
+     * Pass driver and fleet manager to request to RETURN_CUSTOMER
      * @param  {[type]} driver [description]
      * @return {[type]}        [description]
      */
-    $scope.selectDriverToRetrunCustomer = function (driver) {
+    $scope.selectDriverToReturnCustomer = function (driver) {
         var params = {
             driverID : driver.Driver.UserID,
             fleetManagerID: driver.Driver.Driver.FleetManager.UserID
