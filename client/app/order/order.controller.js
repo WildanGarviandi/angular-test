@@ -1228,33 +1228,43 @@ angular.module('adminApp')
 
     /**
      * Change order status to RETURN_CUSTOMER
-     * 
+     * @return void
      */
     $scope.returnCustomer = function () {
-        SweetAlert.swal({
-            title: "Are you sure?",
-            text: "You will return this order to customer / sender ? This process can't be reversed.",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Return this order",
-        }, function (isConfirm) { 
-            if (isConfirm) {
-                $rootScope.$emit('startSpin');
-                return Services2.returnCustomer({
-                    id: $scope.order.UserOrderID
-                }, {}).$promise.then(function (result) {
-                    $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Order returned to sender');
-                    $state.reload();
-                }).catch(function (e) {
-                    $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Failed in returning order to sender', e.data.error.message);
-                    $state.reload();
-                });
-            } else {
-                $rootScope.$emit('stopSpin');
-            }
+        $rootScope.$emit('startSpin');
+        getCompanies(true)
+        .then(function () {
+            ngDialog.open({
+                template: 'returnCustomerTemplate',
+                scope: $scope,
+                className: 'ngdialog-theme-default reassign-driver-popup return-customer'
+            });
+        });
+    };
+
+    /**
+     * Pass driver, fleet manager and delivery fee value to request to reassign the order
+     * @param  {[type]} driver [description]
+     * @return {[type]}        [description]
+     */
+    $scope.selectDriverToRetrunCustomer = function (driver) {
+        var params = {
+            driverID : driver.Driver.UserID,
+            fleetManagerID: driver.Driver.Driver.FleetManager.UserID
+        };
+        $rootScope.$emit('startSpin');
+        ngDialog.close();
+        Services2.returnCustomer({
+            id: $scope.order.UserOrderID
+        }, params).$promise.then(function (result) {
+            $rootScope.$emit('stopSpin');
+            SweetAlert.swal('Order returned to sender');
+            $state.reload();
+        })
+        .catch(function (e) {
+            $rootScope.$emit('stopSpin');
+            SweetAlert.swal('Failed in returning order to sender', e.data.error.message);
+            $state.reload();
         });
     };
 

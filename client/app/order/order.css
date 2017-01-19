@@ -654,3 +654,11 @@ a {
     right: -80px;
     top: 1px;
 }
+
+.return-customer .ngdialog-content {
+    width: 550px !important;
+}
+
+.padding-tb-5 {
+    padding: 5px 0;
+}

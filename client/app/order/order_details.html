@@ -913,6 +913,47 @@
     </div>
 </script>
 
+<script type="text/ng-template" id="returnCustomerTemplate">
+    <div class="container-fluid" id="returnCustomerModal">
+        <h3>Return to Sender</h3>
+        <div>
+            <p>You will return this order to customer / sender ? This process can't be reversed.</p>
+        </div>
+        <ui-select ng-model="company" 
+            theme="selectize" 
+            on-select="chooseCompany($item)" 
+            class="booking-order-type">
+            <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
+            <ui-select-choices repeat="c in companies | filter: $select.search" selected>
+                <span class="input-table" ng-bind-html="c.CompanyName | highlight: $select.search"></span>
+            </ui-select-choices>
+        </ui-select>
+        <div class="row-fluid">
+            <div ng-if="company.CompanyDetailID === 'all'">
+                <div><input 
+                    type="search" 
+                    class="form-control input-table" 
+                    placeholder="search driver by name"
+                    ng-model="$parent.$parent.queryDriverName" 
+                    ng-keyup="searchDriverName($event)"></div>
+            </div>
+            <div class="modal-table">
+                <table class="col-md-12 no-padding">
+                    <tr ng-if="isLoading">
+                        <td class="text-center">Loading</td>
+                    </tr>
+                    <tr ng-if="!isLoading" ng-repeat="driver in displayed">
+                        <td class="text-center">{{driver.Driver.FirstName}} {{driver.Driver.LastName}}</td>
+                        <td class="text-center">{{driver.Driver.CountryCode}}-{{driver.Driver.PhoneNumber}}</td>
+                        <td class="padding-tb-5"><button class="btn btn-primary" 
+                                    ng-click="selectDriverToRetrunCustomer(driver)">Return this order</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</script>
+
 <script type="text/ng-template" id="editCodTemplate">
     <h3>Edit COD</h3>
     <div class="container-fluid">
