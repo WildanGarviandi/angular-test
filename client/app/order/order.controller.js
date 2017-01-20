@@ -2408,11 +2408,17 @@ angular.module('adminApp')
             return order.UserOrderNumber;
         });
 
-        ngDialog.close();
-        return ngDialog.open({
-            template: 'setReturnSenderModal',
-            scope: $scope,
-            className: 'ngdialog-theme-default reassign-fleet'
+        $rootScope.$emit('startSpin');
+        
+        getCompanies()
+        .then($scope.chooseCompanyReturnDrivers)
+        .then(function () {
+            ngDialog.close();
+            return ngDialog.open({
+                template: 'setReturnSenderModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default reassign-fleet'
+            });
         });
     }
 
@@ -2424,7 +2430,7 @@ angular.module('adminApp')
     $scope.bulkReturnSender = function() {
         SweetAlert.swal({
             title: 'Are you sure?',
-            text: "Set status to return sender for these orders?",
+            text: "Set status to return sender for " + (($scope.returnedSenderOrders.length > 1) ?  'these orders?' : 'this order?'),
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -2434,10 +2440,23 @@ angular.module('adminApp')
             if (isConfirm) {
                 $rootScope.$emit('startSpin');
                 ngDialog.closeAll();
+
+                var params = [];
+                var driverName = $scope.driver.value;
+                $scope.returnedSenderOrders.forEach(function(val) {
+                    var tempData = {
+                        orderID: val,
+                        driverID: $scope.driver.key,
+                        fleetManagerID: $scope.driver.fleetManagerID
+                    };
+                    params.push(tempData);
+                });
+
                 Services2.bulkSetReturnSender({
-                    orderIDs: $scope.returnedSenderOrders
+                    orderData: params
                 }).$promise.then(function (result) {
-                    var messages = '<table align="center" style="font-size: 12px;">';
+                    driverName = '<p>' + driverName + '</p>';
+                    var messages = driverName + '<table align="center" style="font-size: 12px;">';
                     result.data.forEach(function (o) {
                         messages += '<tr><td class="text-right">' + o.UserOrderNumber + 
                                     ' : </td><td class="text-left"> ' + o.message + '</td></tr>';
@@ -2450,6 +2469,10 @@ angular.module('adminApp')
                         html: true,
                         customClass: 'alert-big'
                     });
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Failed in return sender', e.data.error.message);
                     $state.reload();
                 });
             }
