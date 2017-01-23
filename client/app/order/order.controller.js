@@ -1465,6 +1465,26 @@ angular.module('adminApp')
         });
     }
 
+    var replacePhoneNumber = function(stringData) {
+        if (stringData) {
+            if (stringData.charAt(0) === '+') {
+                var result = stringData.substring(config.countryCode.length);
+                if (result.charAt(0) === '-') {
+                    result = result.substring(1);
+                }
+                return result;
+            }
+            if (stringData.charAt(0) !== '0') {
+                return stringData.substring(config.countryCode.length - 1);
+            }
+            if (stringData.charAt(0) === '0') {
+                return stringData.substring(1);
+            }
+        }
+
+        return stringData;
+    }
+
     /**
      * Get Filter Param
      * 
@@ -1523,11 +1543,11 @@ angular.module('adminApp')
             driver: $scope.queryDriver,
             merchant: $scope.queryMerchant,
             pickup: $scope.queryPickup,
-            sender: $scope.querySender,
+            sender: replacePhoneNumber($scope.querySender),
             dropoff: $scope.queryDropoff,
             pickupType: $scope.pickupType.value,
             userType: $scope.orderType.key,
-            recipient: $scope.queryRecipient,
+            recipient: replacePhoneNumber($scope.queryRecipient),
             status: $scope.status.value,
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
@@ -1574,11 +1594,11 @@ angular.module('adminApp')
             driver: $scope.queryDriver,
             merchant: $scope.queryMerchant,
             pickup: $scope.queryPickup,
-            sender: $scope.querySender,
+            sender: replacePhoneNumber($scope.querySender),
             dropoff: $scope.queryDropoff,
             pickupType: $scope.pickupType.value,
             userType: $scope.orderType.key,
-            recipient: $scope.queryRecipient,
+            recipient: replacePhoneNumber($scope.queryRecipient),
             status: $scope.status.value,
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
