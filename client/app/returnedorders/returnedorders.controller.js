@@ -266,6 +266,7 @@ angular.module('adminApp')
             limit: $scope.itemsByPage,
             userOrderNumber: $scope.queryUserOrderNumber,
             userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
+            fleetName: $scope.queryFleet,
             driver: $scope.queryDriver,
             merchant: $scope.queryMerchant,
             pickup: $scope.queryPickup,
@@ -284,17 +285,21 @@ angular.module('adminApp')
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
             $scope.displayed.forEach(function (val, index, array) {
-                array[index].UserOrder.PickupType = (lodash.find($scope.pickupTypes, {value: val.UserOrder.PickupType})).key;
-                if (val.UserOrder.User && val.UserOrder.User.UserType && 
+                if (val.UserOrder && val.UserOrder.PickupType) {
+                    array[index].UserOrder.PickupType = (lodash.find($scope.pickupTypes, {value: val.UserOrder.PickupType})).key;
+                }
+                if (val.UserOrder && val.UserOrder.User && val.UserOrder.User.UserType && 
                     $scope.marketplaceType.value.indexOf(val.UserOrder.User.UserType.UserTypeID) > -1) {
                     array[index].UserOrder.OrderType = $scope.marketplaceType.key;
                 } else {
-                    array[index].UserOrder.OrderType = $scope.ecommerceType.key;
+                    if (val.UserOrder) {
+                        array[index].UserOrder.OrderType = $scope.ecommerceType.key;
+                    }
                 }
-                if (val.UserOrder.WebstoreUser) {
+                if (val.UserOrder && val.UserOrder.WebstoreUser) {
                     array[index].UserOrder.CustomerName = val.UserOrder.WebstoreUser.FirstName + ' ' + val.UserOrder.WebstoreUser.LastName;
                 } else {
-                    if (val.UserOrder.User) {
+                    if (val.UserOrder && val.UserOrder.User) {
                         array[index].UserOrder.CustomerName = val.UserOrder.User.FirstName + ' ' + val.UserOrder.User.LastName;
                     }
                 }
@@ -310,6 +315,10 @@ angular.module('adminApp')
         'Order': {
             model: 'queryUserOrderNumber',
             param: 'id'
+        },
+        'Fleet': {
+            model: 'queryFleet',
+            param: 'fleet'
         },
         'Driver': {
             model: 'queryDriver',
@@ -339,7 +348,7 @@ angular.module('adminApp')
 
     // Generates:
     // searchOrder, searchDriver, searchMerchant, searchPickup, searchDropoff,
-    // searchSender, searchRecipient
+    // searchSender, searchRecipient, searchFleet,
     lodash.each(variables, function (val, key) {
         $scope['search' + key] = function(event){
             if ((event && event.keyCode === 13) || !event) {
