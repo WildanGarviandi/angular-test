@@ -213,8 +213,9 @@ angular.module('adminApp')
         'queryMultipleEDS',
         function (newValue) {
             // Filter empty line(s)
-            $scope.userOrderNumbers = newValue.split(/\s+/).filter(function (val) {
-                return val;
+            $scope.userOrderNumbers = [];
+            newValue.split('\n').forEach(function (val) {
+                $scope.userOrderNumbers.push(val.replace(/^\s+|\s+$/g, ''));
             });
         }
     );
@@ -1228,33 +1229,43 @@ angular.module('adminApp')
 
     /**
      * Change order status to RETURN_CUSTOMER
-     * 
+     * @return void
      */
     $scope.returnCustomer = function () {
-        SweetAlert.swal({
-            title: "Are you sure?",
-            text: "You will return this order to customer / sender ? This process can't be reversed.",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Return this order",
-        }, function (isConfirm) { 
-            if (isConfirm) {
-                $rootScope.$emit('startSpin');
-                return Services2.returnCustomer({
-                    id: $scope.order.UserOrderID
-                }, {}).$promise.then(function (result) {
-                    $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Order returned to sender');
-                    $state.reload();
-                }).catch(function (e) {
-                    $rootScope.$emit('stopSpin');
-                    SweetAlert.swal('Failed in returning order to sender', e.data.error.message);
-                    $state.reload();
-                });
-            } else {
-                $rootScope.$emit('stopSpin');
-            }
+        $rootScope.$emit('startSpin');
+        getCompanies(true)
+        .then(function () {
+            ngDialog.open({
+                template: 'returnCustomerTemplate',
+                scope: $scope,
+                className: 'ngdialog-theme-default reassign-driver-popup return-customer'
+            });
+        });
+    };
+
+    /**
+     * Pass driver and fleet manager to request to RETURN_CUSTOMER
+     * @param  {[type]} driver [description]
+     * @return {[type]}        [description]
+     */
+    $scope.selectDriverToReturnCustomer = function (driver) {
+        var params = {
+            driverID : driver.Driver.UserID,
+            fleetManagerID: driver.Driver.Driver.FleetManager.UserID
+        };
+        $rootScope.$emit('startSpin');
+        ngDialog.close();
+        Services2.returnCustomer({
+            id: $scope.order.UserOrderID
+        }, params).$promise.then(function (result) {
+            $rootScope.$emit('stopSpin');
+            SweetAlert.swal('Order returned to sender');
+            $state.reload();
+        })
+        .catch(function (e) {
+            $rootScope.$emit('stopSpin');
+            SweetAlert.swal('Failed in returning order to sender', e.data.error.message);
+            $state.reload();
         });
     };
 
@@ -1465,6 +1476,26 @@ angular.module('adminApp')
         });
     }
 
+    var replacePhoneNumber = function(stringData) {
+        if (stringData) {
+            if (stringData.charAt(0) === '+') {
+                var result = stringData.substring(config.countryCode.length);
+                if (result.charAt(0) === '-') {
+                    result = result.substring(1);
+                }
+                return result;
+            }
+            if (stringData.charAt(0) !== '0') {
+                return stringData.substring(config.countryCode.length - 1);
+            }
+            if (stringData.charAt(0) === '0') {
+                return stringData.substring(1);
+            }
+        }
+
+        return stringData;
+    }
+
     /**
      * Get Filter Param
      * 
@@ -1523,11 +1554,11 @@ angular.module('adminApp')
             driver: $scope.queryDriver,
             merchant: $scope.queryMerchant,
             pickup: $scope.queryPickup,
-            sender: $scope.querySender,
+            sender: replacePhoneNumber($scope.querySender),
             dropoff: $scope.queryDropoff,
             pickupType: $scope.pickupType.value,
             userType: $scope.orderType.key,
-            recipient: $scope.queryRecipient,
+            recipient: replacePhoneNumber($scope.queryRecipient),
             status: $scope.status.value,
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
@@ -1574,11 +1605,11 @@ angular.module('adminApp')
             driver: $scope.queryDriver,
             merchant: $scope.queryMerchant,
             pickup: $scope.queryPickup,
-            sender: $scope.querySender,
+            sender: replacePhoneNumber($scope.querySender),
             dropoff: $scope.queryDropoff,
             pickupType: $scope.pickupType.value,
             userType: $scope.orderType.key,
-            recipient: $scope.queryRecipient,
+            recipient: replacePhoneNumber($scope.queryRecipient),
             status: $scope.status.value,
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
@@ -2398,11 +2429,17 @@ angular.module('adminApp')
             return order.UserOrderNumber;
         });
 
-        ngDialog.close();
-        return ngDialog.open({
-            template: 'setReturnSenderModal',
-            scope: $scope,
-            className: 'ngdialog-theme-default reassign-fleet'
+        $rootScope.$emit('startSpin');
+        
+        getCompanies()
+        .then($scope.chooseCompanyReturnDrivers)
+        .then(function () {
+            ngDialog.close();
+            return ngDialog.open({
+                template: 'setReturnSenderModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default reassign-fleet'
+            });
         });
     }
 
@@ -2414,7 +2451,7 @@ angular.module('adminApp')
     $scope.bulkReturnSender = function() {
         SweetAlert.swal({
             title: 'Are you sure?',
-            text: "Set status to return sender for these orders?",
+            text: "Set status to return sender for " + (($scope.returnedSenderOrders.length > 1) ?  'these orders?' : 'this order?'),
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -2424,10 +2461,23 @@ angular.module('adminApp')
             if (isConfirm) {
                 $rootScope.$emit('startSpin');
                 ngDialog.closeAll();
+
+                var params = [];
+                var driverName = $scope.driver.value;
+                $scope.returnedSenderOrders.forEach(function(val) {
+                    var tempData = {
+                        orderID: val,
+                        driverID: $scope.driver.key,
+                        fleetManagerID: $scope.driver.fleetManagerID
+                    };
+                    params.push(tempData);
+                });
+
                 Services2.bulkSetReturnSender({
-                    orderIDs: $scope.returnedSenderOrders
+                    orderData: params
                 }).$promise.then(function (result) {
-                    var messages = '<table align="center" style="font-size: 12px;">';
+                    driverName = '<p>' + driverName + '</p>';
+                    var messages = driverName + '<table align="center" style="font-size: 12px;">';
                     result.data.forEach(function (o) {
                         messages += '<tr><td class="text-right">' + o.UserOrderNumber + 
                                     ' : </td><td class="text-left"> ' + o.message + '</td></tr>';
@@ -2440,6 +2490,10 @@ angular.module('adminApp')
                         html: true,
                         customClass: 'alert-big'
                     });
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Failed in return sender', e.data.error.message);
                     $state.reload();
                 });
             }
@@ -2510,7 +2564,7 @@ angular.module('adminApp')
                     fleetManagerID: $scope.fleet.User.UserID
                 }).$promise.then(function (result) {
                     $rootScope.$emit('stopSpin');
-                    SweetAlert.swal(result.data[0] + ' orders updated');
+                    SweetAlert.swal(result.data.length + ((result.data.length > 1) ? ' orders' : ' order') + ' updated');
                     ngDialog.closeAll();
                     $state.reload();
                 }).catch(function (e) {

@@ -958,8 +958,46 @@
     <div class="content-wrapper booking-popup notification-popup container-fluid">
         <h4><b>{{(orders | filter: {Selected: true}).length}}</b> orders that will be affected: 
             {{listUserOrderNumbersSelected.join(', ')}}
-        </h4
+        </h4>
         <div class="clearfix"></div>
+        <div class="row-fluid">                    
+            <div class="label-payment">
+                Select Fleet :
+            </div> 
+            <div class="col-xs-12 no-padding">
+                <ui-select ng-model="fleet" 
+                    theme="selectize" 
+                    on-select="chooseCompanyReturnDrivers($item)" 
+                    class="booking-order-type">
+                    <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
+                    <ui-select-choices repeat="f in fleets | filter: $select.search track by $index" selected>
+                        <span class="input-table" ng-bind-html="f.CompanyName | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">                    
+            <div class="label-payment">
+                Select Driver :
+            </div> 
+            <div class="col-xs-12 no-padding">
+                <div ng-if="drivers.length > 0 && isFetchingDrivers" class="animate-if">
+                    <ui-select ng-model="driver" 
+                        theme="selectize"
+                        on-select="chooseDriver($item)" 
+                        class="booking-order-type">
+                        <ui-select-match class="input-table">{{$select.selected.value}}</ui-select-match>
+                        <ui-select-choices repeat="d in drivers | filter: $select.search" selected>
+                            <span class="input-table" ng-bind-html="d.value | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div ng-if="drivers.length == 0 && isFetchingDrivers" class="animate-if">
+                    No driver found
+                </div>
+            </div>
+        </div>
         <div class="row-fluid">
             <button class="btn btn-primary" ng-click="bulkReturnSender()">Mark as Return Sender</button>              
         </div>

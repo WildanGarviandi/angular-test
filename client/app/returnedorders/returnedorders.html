@@ -34,12 +34,14 @@
                             <th>Sender</th>
                             <th>Dropoff Address</th>
                             <th>Recipient</th>
+                            <th>Fleet Manager</th>
                             <th>Driver</th>
                             <th>Customer</th>
                             <th>Pickup Type</th>
                             <th>Order Type</th>
                             <th>Current Status</th>
                             <th>Return Time</th>
+                            <th>Delivery Fee</th>
                         </tr>
                     </thead>
                     <tbody ng-show="!isLoading && displayed.length == 0">
@@ -135,6 +137,16 @@
                                         type="search" 
                                         class="form-control input-table" 
                                         value="" 
+                                        ng-model="queryFleet" 
+                                        ng-keyup="searchFleet($event)">
+                                </div>
+                            </th>
+                            <th>
+                                <div class="filter-table">
+                                    <input 
+                                        type="search" 
+                                        class="form-control input-table" 
+                                        value="" 
                                         ng-model="queryDriver" 
                                         ng-keyup="searchDriver($event)">
                                 </div>
@@ -199,6 +211,8 @@
                             </th>
                             <th>
                             </th>
+                            <th>
+                            </th>
                         </tr>
                     </tbody>
                     <tbody ng-show="!isLoading && displayed.length > 0">
@@ -217,12 +231,16 @@
                                 {{order.UserOrder.DropoffAddress.CountryCode}}-{{order.UserOrder.DropoffAddress.MobileNumber}} /
                                 {{order.UserOrder.DropoffAddress.EmailID}}
                             </td>
+                            <td>{{order.Driver.Driver.CompanyDetail.CompanyName}}</td>
                             <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                             <td>{{order.UserOrder.CustomerName}}</td>
-                            <td>{{order.UserOrder.PickupType}}</td>
-                            <td>{{order.UserOrder.OrderType}}</td>
+                            <td ng-if="order.UserOrder.PickupType">{{order.UserOrder.PickupType}}</td>
+                            <td ng-if="!order.UserOrder.PickupType">-</td>
+                            <td ng-if="order.UserOrder.OrderType">{{order.UserOrder.OrderType}}</td>
+                            <td ng-if="!order.UserOrder.OrderType">-</td>
                             <td>{{order.UserOrder.OrderStatus.OrderStatus}}</td>
                             <td>{{order.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                            <td class="text-right">{{order.DeliveryFee | number | localizenumber}}</td>
                         </tr>
                     </tbody>
                     <tfoot ng-show="!isLoading && displayed.length > 0">

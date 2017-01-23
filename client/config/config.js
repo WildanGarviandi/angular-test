@@ -140,10 +140,10 @@ function mainConfig() {
         countryCode: countryCode,
         deliverableOrderStatus: [2, 3, 4],
         // ACCEPTED, PICKUP, IN-TRANSIT
-        reassignableDriver: [2, 3, 4, 6],
-        // ACCEPTED, PICKUP, IN-TRANSIT
-        reassignableFleet: [1, 3, 6, 9],
-        // BOOKED, NOTASSIGNED, PREBOOKED
+        reassignableDriver: [2, 3, 4, 6, 15],
+        // ACCEPTED, PICKUP, IN-TRANSIT, RETURNED_WAREHOUSE
+        reassignableFleet: [1, 3, 6, 9, 15],
+        // BOOKED, NOTASSIGNED, PREBOOKED, RETURNED_WAREHOUSE
         updatablePrice: [1, 6, 9, 2, 3, 4],
         // BOOKED, NOTASSIGNED, PREBOOKED, ACCEPTED, PICKUP, IN-TRANSIT
         returnableWarehouse: [2, 3, 4],
