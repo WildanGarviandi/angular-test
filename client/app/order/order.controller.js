@@ -2543,7 +2543,7 @@ angular.module('adminApp')
                     fleetManagerID: $scope.fleet.User.UserID
                 }).$promise.then(function (result) {
                     $rootScope.$emit('stopSpin');
-                    SweetAlert.swal(result.data[0] + ' orders updated');
+                    SweetAlert.swal(result.data.length + ((result.data.length > 1) ? ' orders' : ' order') + ' updated');
                     ngDialog.closeAll();
                     $state.reload();
                 }).catch(function (e) {
