@@ -215,7 +215,10 @@ angular.module('adminApp')
             // Filter empty line(s)
             $scope.userOrderNumbers = [];
             newValue.split('\n').forEach(function (val) {
-                $scope.userOrderNumbers.push(val.replace(/^\s+|\s+$/g, ''));
+                var result = val.replace(/^\s+|\s+$/g, '');
+                if (result) {
+                    $scope.userOrderNumbers.push(result);
+                }
             });
         }
     );
