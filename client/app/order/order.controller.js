@@ -304,7 +304,7 @@ angular.module('adminApp')
         },
         'OrderType': {
             model: 'orderType',
-            pick: 'value',
+            pick: 'key',
             collection: 'orderTypes'
         },
         'IsAttempt': {
