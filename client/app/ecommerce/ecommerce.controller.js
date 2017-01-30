@@ -341,6 +341,18 @@ angular.module('adminApp')
         $scope.table.rowHeaders = rowHeaders;
     };
     
+    var priceRenderer = function(hotInstance, td, row, col, prop, value, cellProperties) {
+        if (value && typeof value === 'string') {
+            if (value.indexOf(' ') !== -1) {
+                value = value.replace(' ', '');
+                td.className = 'red';
+            }
+        }
+
+        value = $filter('localizenumber')($filter('number')(value));
+        td.innerHTML = value;
+    }
+
     /**
      * Build default data array,
      * all price is assigned to 0
@@ -364,11 +376,11 @@ angular.module('adminApp')
                 var price = 0;
                 if (data) {
                     if ($scope.filter === 'price') {
-                        price = $filter('number')(data.Price);
+                        price = data.Price;
                     } else {
-                        price = $filter('number')(data.AdditionalPrice);
+                        price = data.AdditionalPrice;
                     }
-                    rowContents[dest.CityID] = '<p class="cell-red htPlaceholder">' + $filter('localizenumber')(price) + '</p>';
+                    rowContents[dest.CityID] = price + ' ';
                 } else {
                     rowContents[dest.CityID] = '';
                 }
@@ -376,8 +388,7 @@ angular.module('adminApp')
                     columns = {
                         data: dest.CityID,
                         title: dest.Name,
-                        type: 'numeric',
-                        renderer: 'html'
+                        renderer: priceRenderer
                     };
                     $scope.table.columns.push(columns);
                 }
@@ -404,7 +415,7 @@ angular.module('adminApp')
                     } else {
                         price = data.AdditionalPrice;
                     }
-                    $scope.table.data[i][dest.CityID] = $filter('localizenumber')($filter('number')(price));
+                    $scope.table.data[i][dest.CityID] = price;
                 }
             });
         });
