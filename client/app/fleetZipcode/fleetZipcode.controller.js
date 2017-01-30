@@ -52,9 +52,7 @@ angular.module('adminApp')
      */
     var getFleets = function () {
         $scope.fleets = [{
-            User: {
-                FleetManagerID: '0'
-            },
+            FleetManagerID: 0,
             FleetName: 'All'
         }];
         $scope.fleetsOnModal = [{
@@ -87,17 +85,25 @@ angular.module('adminApp')
         });
     };
 
-    /**
-     * Choose fleet on list page
-     * @param  {[type]} fleet [description]
-     * @return {void}
-     */
-    $scope.chooseFleet = function (fleet) {
-        $scope.fleet = fleet;
-        $scope.offset = 0;
-        $scope.tableState.pagination.start = 0;
-        getFleetZipCodes();
+    var pickedVariables = {
+        'Fleet': {
+            model: 'fleet',
+            pick: 'FleetManagerID',
+            collection: 'fleets'
+        }
     };
+
+    // Generates:
+    // chooseFleet
+    lodash.each(pickedVariables, function (val, key) {
+        $scope['choose' + key] = function(item) {
+            $location.search(val.model, item[val.pick]);
+            $scope[val.model] = item;
+            $scope.offset = 0;
+            $scope.tableState.pagination.start = 0;
+            getFleetZipCodes(); 
+        };
+    });
 
     /**
      * Choose fleet on modal on list page
@@ -116,14 +122,27 @@ angular.module('adminApp')
      */
     function getFleetZipCodes () {
         $rootScope.$emit('startSpin');
+
+        lodash.each(pickedVariables, function (val, key) {
+            var value = $location.search()[val.model] || $scope[val.model][val.pick];
+            var findObject = {};
+            findObject[val.pick] = (parseInt(value)) ? parseInt(value) : value;
+            $scope[val.model] = lodash.find($scope[val.collection], findObject);
+        });
+
         $location.search('offset', $scope.offset);
 
         $scope.isLoading = true;
+
         var params = {
             offset: $scope.offset,
-            limit: $scope.itemsByPage,
-            fleetManagerID: $scope.fleet.FleetManagerID
+            limit: $scope.itemsByPage
         };
+        
+        if ($scope.fleet && $scope.fleet.FleetManagerID) {
+            params.fleetManagerID = $scope.fleet.FleetManagerID
+        };
+
         Services2.getFleetZipCodes(params).$promise.then(function(data) {
             $scope.fleetZipCodesFound = data.data.count;
             $scope.displayed = data.data.rows;
