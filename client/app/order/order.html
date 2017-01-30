@@ -628,7 +628,8 @@
             <div class="col-md-8 col-xs-12 no-padding">
                 <div class="col-xs-12 no-padding margin-b-10">
                     <p ng-click="isReadyForPickupOnImport()">
-                        <input type="checkbox" ng-model="readyForPickupOnImport">
+                        <input type="checkbox" ng-hide="showFleetListOnImport" ng-model="readyForPickupOnImport">
+                        <input type="checkbox" ng-show="showFleetListOnImport" ng-model="showFleetListOnImport" ng-disabled="showFleetListOnImport">
                         Ready for Pickup Now
                     </p>
                 </div>

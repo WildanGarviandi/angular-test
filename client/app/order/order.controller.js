@@ -947,6 +947,9 @@ angular.module('adminApp')
     */
     $scope.isShowFleetListOnImport = function() {
         $scope.showFleetListOnImport = !$scope.showFleetListOnImport;
+        if ($scope.showFleetListOnImport) {
+            $scope.readyForPickupOnImport = true;
+        }
     }
 
     /**
