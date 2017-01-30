@@ -89,7 +89,7 @@ function mainConfig() {
             var webtrackingURL = 'http://staging.track.etobee.com';
             break;
         case 'dev-dbs-admin|com':
-            var url = 'https://dev-dbs-api.etobee.com';
+            var url = 'https://dev-dbs-api2.etobee.com';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
             var decimalSeparator = ',';
@@ -99,7 +99,7 @@ function mainConfig() {
             var webtrackingURL = 'http://staging.track.etobee.com';
             break;
         case 'dev-dbs-admin|com:444':
-            var url = 'https://dev-dbs-api.etobee.com';
+            var url = 'https://dev-dbs-api2.etobee.com';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
             var decimalSeparator = ',';
