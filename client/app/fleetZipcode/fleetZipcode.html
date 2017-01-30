@@ -144,7 +144,7 @@
         </div>
         <div class="col-md-12 col-xs-12 no-padding" ng-show="fleetOnModal.FleetManagerID">
             <div class="bg-white pricing-grid">
-                <hot-table settings="{contextMenu: ['undo', 'redo'], stretchH: 'last', afterChange: afterChange, beforeChange: beforeChange}"
+                <hot-table ng-if="table.data" settings="{contextMenu: ['undo', 'redo'], stretchH: 'last', afterChange: afterChange, beforeChange: beforeChange}"
                     col-headers="table.colHeaders"
                     datarows="table.data"
                     columns="table.columns">
