@@ -721,6 +721,13 @@ angular.module('adminApp')
                 fleetID: null,
                 controller: 'bulk-price'
             }
+        },
+        bulkSetHub: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-set-hub'
+            }
         }
     });
 });

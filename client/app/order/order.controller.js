@@ -196,6 +196,7 @@ angular.module('adminApp')
     $scope.returnableSender = config.returnableSender;
     $scope.defaultReturnReason = config.defaultReturnReason;
     $scope.canChangeToPickup = config.canChangeToPickup;
+    $scope.canSetHub = config.canSetHub;
 
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
@@ -2930,6 +2931,111 @@ angular.module('adminApp')
     $scope.openTracking = function (UserOrderNumber) {
         Services2.getTrack().$promise.then(function (result) {
             $window.open(config.webtrackingURL + '/?id=' + UserOrderNumber + '&t=' + result.data.token);
+        });
+    }
+
+    /**
+     * Check whether there is one or more orders with cannot be returned set hub.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedNonSetHubExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected && $scope.canSetHub.indexOf(order.OrderStatus.OrderStatusID) === -1) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+
+    /**
+     * Show set next hub modals
+     * 
+     * @return {void}
+    */
+    $scope.showSetHub = function() {
+        $scope.rerouteHubData = {
+            destinationHub: {}
+        }
+        if ($scope.selectedNonSetHubExists()) {
+            SweetAlert.swal('Error', 'You have selected one or more orders which cannot be reroute hub', 'error');
+            return false;
+        }
+
+        setSelectedOrder();
+        $scope.setHubOrders = [];
+        $scope.listUserOrderNumbersSelected = $scope.selectedOrders.map(function (order) {
+            $scope.setHubOrders.push(order.UserOrderID);
+            return order.UserOrderNumber;
+        });
+
+        $rootScope.$emit('startSpin');
+        
+        getHubs()
+        .then(function () {
+            ngDialog.close();
+            return ngDialog.open({
+                template: 'setHubModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default set-hub'
+            });
+        });
+    }
+
+    /**
+     * Bulk set next hub
+     * 
+     * @return {void}
+     */
+    $scope.bulkSetHub = function() {
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Set next hub to " + $scope.rerouteHubData.destinationHub.name + " for " + (($scope.setHubOrders.length > 1) ?  'these orders?' : 'this order?'),
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                ngDialog.closeAll();
+
+                var params = [];
+                $scope.setHubOrders.forEach(function(val) {
+                    var tempData = {
+                        orderID: val,
+                        hubID: $scope.rerouteHubData.destinationHub.id
+                    };
+                    params.push(tempData);
+                });
+
+                Services2.bulkSetHub({
+                    orderData: params
+                }).$promise.then(function (result) {
+                    var messages = '<table align="center" style="font-size: 12px;">';
+                    result.data.forEach(function (o) {
+                        messages += '<tr><td class="text-right">' + o.UserOrderNumber + 
+                                    ' : </td><td class="text-left"> ' + o.message + '</td></tr>';
+                    })
+                    messages += '</table>';
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: 'Success reroute hub', 
+                        text: messages,
+                        html: true,
+                        customClass: 'alert-big'
+                    });
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Failed in reroute hub', e.data.error.message);
+                    $state.reload();
+                });
+            }
         });
     }
     
