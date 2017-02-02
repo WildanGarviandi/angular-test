@@ -3016,16 +3016,16 @@ angular.module('adminApp')
 
                 Services2.bulkSetHub({
                     Orders: params
-                }).$promise.then(function (result) {
+                }).$promise.then(function (result) {                    
                     var messages = '<table align="center" style="font-size: 12px;">';
                     result.data.forEach(function (o) {
-                        messages += '<tr><td class="text-right">' + o.UserOrderNumber + 
-                                    ' : </td><td class="text-left"> ' + o.message + '</td></tr>';
+                        messages += '<tr><td class="text-right">Order ID ' + o.OrderID + 
+                                    ' : </td><td class="text-left"> ' + (o.Success ? 'Success' : 'Failed') + '</td></tr>';
                     })
                     messages += '</table>';
                     $rootScope.$emit('stopSpin');
                     SweetAlert.swal({
-                        title: 'Success reroute hub', 
+                        title: 'Update hub report', 
                         text: messages,
                         html: true,
                         customClass: 'alert-big'
