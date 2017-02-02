@@ -662,3 +662,15 @@ a {
 .padding-tb-5 {
     padding: 5px 0;
 }
+
+.label-redirect {
+    float: left;
+    width: 140px;
+    margin-top: 5px;
+}
+
+.input-redirect {
+    float: left;
+    width: 230px;
+    margin-left: 10px;
+}

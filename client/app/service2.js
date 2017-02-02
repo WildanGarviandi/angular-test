@@ -726,7 +726,7 @@ angular.module('adminApp')
             method: 'POST',
             params: {
                 module: 'order',
-                controller: 'bulk-set-hub'
+                controller: 'redirect'
             }
         }
     });

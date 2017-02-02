@@ -3007,14 +3007,15 @@ angular.module('adminApp')
                 var params = [];
                 $scope.setHubOrders.forEach(function(val) {
                     var tempData = {
-                        orderID: val,
-                        hubID: $scope.rerouteHubData.destinationHub.id
+                        OrderID: val,
+                        OriginHubID: null,
+                        DestinationHubID: $scope.rerouteHubData.destinationHub.id
                     };
                     params.push(tempData);
                 });
 
                 Services2.bulkSetHub({
-                    orderData: params
+                    Orders: params
                 }).$promise.then(function (result) {
                     var messages = '<table align="center" style="font-size: 12px;">';
                     result.data.forEach(function (o) {
