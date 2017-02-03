@@ -156,7 +156,7 @@ function mainConfig() {
         canChangeToPickup: [6],
         webtrackingURL: webtrackingURL,
         googleClientId: '196844091368-igtekd4ke8h75r03f0c9rf9k63n9ltc0.apps.googleusercontent.com',
-        canSetHub: [1, 2]
+        canSetHub: [1, 2, 6]
     };
 }
 
