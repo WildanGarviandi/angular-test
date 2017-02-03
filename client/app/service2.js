@@ -718,13 +718,13 @@ angular.module('adminApp')
         getAdminList: {
             method: 'GET',
             params: {
-                module: 'admin',
+                module: 'admin'
             }
         },
         createAdmin: {
             method: 'POST',
             params: {
-                module: 'admin',
+                module: 'admin'
             }
         },
         updateAdmin: {

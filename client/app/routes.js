@@ -465,7 +465,7 @@ angular.module('adminApp')
              views: {
                 'content@': {
                     templateUrl: 'app/admin/admin.html',
-                    controller: 'AdminCtrl',
+                    controller: 'AdminCtrl'
                 }
             },
             authenticate: true
