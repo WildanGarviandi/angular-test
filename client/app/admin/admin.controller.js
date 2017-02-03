@@ -19,7 +19,7 @@ angular.module('adminApp')
             $q
         ) {
 
-    Auth.getCurrentUser().then(function(data) {
+    Auth.getCurrentUser().then(function (data) {
         $scope.user = data.profile;
     });
 
@@ -53,7 +53,7 @@ angular.module('adminApp')
      * 
      * @return {Object} Promise
      */
-    var getAdminRoles = function() {
+    var getAdminRoles = function () {
         $scope.roles = [{
             AdminRoleMasterID: 0,
             Name: 'CHOOSE ROLE'
@@ -61,7 +61,7 @@ angular.module('adminApp')
 
         return $q(function (resolve) {
             $rootScope.$emit('startSpin');
-            Services2.getAdminRoles().$promise.then(function(result) {
+            Services2.getAdminRoles().$promise.then(function (result) {
                 var roles = lodash.sortBy(result.data, function (i) { 
                     return i.Name.toLowerCase(); 
                 });
@@ -77,8 +77,8 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    var getDefaultValues = function() {
-        $http.get('config/defaultValues.json').success(function(data) {
+    var getDefaultValues = function () {
+        $http.get('config/defaultValues.json').success(function (data) {
             $scope.adminStatus = $scope.adminStatus.concat(data.adminStatus);
         });
     };
@@ -90,7 +90,7 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.chooseRole = function(item) {
+    $scope.chooseRole = function (item) {
         $scope.temp.roleID = item.AdminRoleMasterID;
         $scope.temp.role = item;
     }
@@ -100,7 +100,7 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.chooseStatus = function(item) {
+    $scope.chooseStatus = function (item) {
         $scope.temp.statusID = item.value;
         $scope.temp.status = item;
     }
@@ -110,7 +110,7 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.cancelAddOrUpdate = function() {
+    $scope.cancelAddOrUpdate = function () {
         $scope.isAdminCreate = false;
         $scope.isAdminEdit = false;
     }
@@ -138,7 +138,7 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.addAdmin = function() {
+    $scope.addAdmin = function () {
         $scope.resetTemp();
         $scope.formInValid = {};
         $scope.temp.role = $scope.roles[0];
@@ -151,7 +151,7 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.editAdmin = function(admin) {
+    $scope.editAdmin = function (admin) {
         $scope.cancelAddOrUpdate();
         $scope.isAdminEdit = true;
         $scope.resetTemp();
@@ -178,11 +178,11 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.backButton = function() {
+    $scope.backButton = function () {
         $window.history.back();
     } 
 
-    var formValidation = function(type) {
+    var formValidation = function (type) {
         var isValid = false;
         $scope.formInValid = {};
 
@@ -214,13 +214,13 @@ angular.module('adminApp')
         return isValid;
     }
 
-    var updateAdmin = function(callback) {
+    var updateAdmin = function (callback) {
         var admin = $scope.temp;
 
         $rootScope.$emit('startSpin');
         Services2.updateAdmin({
             id: admin.userID
-        }, admin).$promise.then(function(response, error) {
+        }, admin).$promise.then(function (response, error) {
             $rootScope.$emit('stopSpin');
             if (response) {
                 return callback(null, response);
@@ -228,7 +228,7 @@ angular.module('adminApp')
                 return callback(error);
             }
         })
-        .catch(function(err) {
+        .catch(function (err) {
             $rootScope.$emit('stopSpin');
             return callback(err);
         });
@@ -239,12 +239,12 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.updateAdmin = function() {
+    $scope.updateAdmin = function () {
         if (!formValidation('update')) {
             return;
         }
 
-        updateAdmin(function(err, admin) {
+        updateAdmin(function (err, admin) {
             if (err) {
                 SweetAlert.swal('Error', err.data.error.message, 'error');
             } else {
@@ -258,11 +258,11 @@ angular.module('adminApp')
         });
     }
 
-    var createAdmin = function(callback) {
+    var createAdmin = function (callback) {
         var admin = $scope.temp;
 
         $rootScope.$emit('startSpin');
-        Services2.createAdmin({}, admin).$promise.then(function(response, error) {
+        Services2.createAdmin({}, admin).$promise.then(function (response, error) {
             $rootScope.$emit('stopSpin');
             if (response) {
                 return callback(null, response);
@@ -270,7 +270,7 @@ angular.module('adminApp')
                 return callback(error);
             }
         })
-        .catch(function(err) {
+        .catch(function (err) {
             $rootScope.$emit('stopSpin');
             return callback(err);
         });
@@ -281,12 +281,12 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.createAdmin = function() {
+    $scope.createAdmin = function () {
         if (!formValidation('create')) {
             return;
         }
 
-        createAdmin(function(err, admin) {
+        createAdmin(function (err, admin) {
             if (err) {
                 SweetAlert.swal('Error', err.data.error.message, 'error');
             } else {
@@ -307,7 +307,7 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.getAdminList = function() {
+    $scope.getAdminList = function () {
         $rootScope.$emit('startSpin');
 
         $location.search('offset', $scope.offset);
@@ -316,9 +316,9 @@ angular.module('adminApp')
             offset: $scope.offset,
             limit: $scope.itemsByPage
         };
-        Services2.getAdminList(params).$promise.then(function(data) {
+        Services2.getAdminList(params).$promise.then(function (data) {
             $scope.displayed = data.data.rows;
-            $scope.displayed.forEach(function(object){
+            $scope.displayed.forEach(function (object){
                 object.Role = (object.AdminDetail) ? (lodash.find($scope.roles, {AdminRoleMasterID: object.AdminDetail.RoleID})).Name : '';
                 object.Status = (lodash.find($scope.adminStatus, {value: object.StatusID})).key;
             })
@@ -335,7 +335,7 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.callServer = function(state) {
+    $scope.callServer = function (state) {
         $scope.tableState = state;
         if ($scope.isFirstLoaded) {
             $scope.tableState.pagination.start = $scope.offset;
