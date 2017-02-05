@@ -575,7 +575,6 @@ angular.module('adminApp')
         });
 
         if ($scope.deleteZipcodes.length > 0) {
-            
             var url = config.url + 'hub/' + $stateParams.hubID + '/zipcode';
             $http({
                 method: 'DELETE',
