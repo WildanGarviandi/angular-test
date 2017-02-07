@@ -215,7 +215,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.addField = function() {
-        $scope.zipcodes.push({ key: $scope.sumZipField, value: '' });
+        $scope.zipcodes.push({ key: $scope.sumZipField, value: '', isNewRow: true });
         $scope.sumZipField++;
     }
 
