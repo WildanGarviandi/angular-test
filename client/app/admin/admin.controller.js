@@ -166,7 +166,7 @@ angular.module('adminApp')
             confirmPassword: '',
             email: admin.Email,
             statusID: admin.StatusID,
-            roleID: admin.roleID
+            roleID: roleID
         };
 
         $scope.temp.role = lodash.find($scope.roles, {AdminRoleMasterID: roleID});
