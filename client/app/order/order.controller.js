@@ -448,10 +448,11 @@ angular.module('adminApp')
                     var destination = ((route.DestinationHub && route.DestinationHub.Name) || "Dropoff");
 
                     if ($scope.currentRouteOrderStatus.open.indexOf(route.OrderStatus.OrderStatusID) > -1) {
-                        array[index].CurrentRouteDetail = "Still on " + origin
+                        array[index].CurrentRouteDetail = "Still on " + origin + ", bound for " + destination;
                     } else if ($scope.currentRouteOrderStatus.processed.indexOf(route.OrderStatus.OrderStatusID) > -1) {
-                        array[index].CurrentRouteDetail = "From" + origin + "On the way to " + destination
+                        array[index].CurrentRouteDetail = "From " + origin + " to " + destination
                     } else {
+                        destination = ((route.DestinationHub && route.DestinationHub.Name) || "DESTINATION");
                         array[index].CurrentRouteDetail = "Arrived at " + destination
                     }
                 }
@@ -643,11 +644,12 @@ angular.module('adminApp')
                 var destination = ((route.DestinationHub && route.DestinationHub.Name) || "Dropoff");
 
                 if ($scope.currentRouteOrderStatus.open.indexOf(route.OrderStatus.OrderStatusID) > -1) {
-                    $scope.order.CurrentRouteDetail = "Still on " + origin
+                    array[index].CurrentRouteDetail = "Still on " + origin + ", bound for " + destination;
                 } else if ($scope.currentRouteOrderStatus.processed.indexOf(route.OrderStatus.OrderStatusID) > -1) {
-                    $scope.order.CurrentRouteDetail = "From" + origin + "On the way to " + destination
+                    array[index].CurrentRouteDetail = "From " + origin + " to " + destination
                 } else {
-                    $scope.order.CurrentRouteDetail = "Arrived at " + destination
+                    destination = ((route.DestinationHub && route.DestinationHub.Name) || "DESTINATION");
+                    array[index].CurrentRouteDetail = "Arrived at " + destination
                 }
             }
             $scope.isLoading = false;
