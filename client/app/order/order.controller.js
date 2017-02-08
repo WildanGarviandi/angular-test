@@ -839,7 +839,7 @@ angular.module('adminApp')
         var params = {};
             params.status = 2;
 
-        Webstores.getWebstore(params).$promise.then(function(data) {
+        Webstores.getWebstore(params).$promise.then(function (data) {
             $scope.merchants = [{
                 key: 'Choose Merchant',
                 value: '0'

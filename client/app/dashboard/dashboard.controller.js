@@ -147,7 +147,7 @@ angular.module('adminApp')
             var params = {};
                 params.status = 2;
 
-            Webstores.getWebstore(params).$promise.then(function(data) { 
+            Webstores.getWebstore(params).$promise.then(function (data) { 
                 data.data.webstores.forEach(function(merchant) {
                     $scope.merchants.push({
                         key: merchant.webstore.UserID,

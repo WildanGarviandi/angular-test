@@ -177,7 +177,7 @@ angular.module('adminApp')
             var params = {};
                 params.status = 2;
 
-            Services2.getWebstores(params).$promise.then(function(data) {
+            Services2.getWebstores(params).$promise.then(function (data) {
                 $scope.webstores = data.data.webstores;
                 $scope.isLoading = false;
                 $rootScope.$emit('stopSpin');

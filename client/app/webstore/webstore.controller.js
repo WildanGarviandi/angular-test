@@ -580,7 +580,7 @@ angular.module('adminApp')
         var params = {};
             params.status = 2;
 
-        Webstores.getWebstore(params).$promise.then(function(data) {
+        Webstores.getWebstore(params).$promise.then(function (data) {
             _.each(data.data.webstores, function(webstore) {
                 var webstoreData = {
                     key: webstore.webstore.UserID,
