@@ -144,7 +144,10 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         $scope.isLoading = true;        
         return $q(function (resolve) {
-            Webstores.getWebstore().$promise.then(function(data) { 
+            var params = {};
+                params.status = 2;
+
+            Webstores.getWebstore(params).$promise.then(function(data) { 
                 data.data.webstores.forEach(function(merchant) {
                     $scope.merchants.push({
                         key: merchant.webstore.UserID,

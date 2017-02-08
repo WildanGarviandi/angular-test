@@ -52,7 +52,10 @@ angular.module('adminApp')
     $scope.getWebstores = function() {
         return $q(function (resolve) {
             $rootScope.$emit('startSpin');
-            Services2.getWebstores().$promise
+            var params = {};
+                params.status = 2;
+
+            Services2.getWebstores(params).$promise
             .then(function(data) {
                 var result = data.data.webstores;
                 result.forEach(function(webstore) {
