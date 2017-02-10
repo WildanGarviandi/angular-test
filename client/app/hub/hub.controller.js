@@ -594,8 +594,14 @@ angular.module('adminApp')
             }, {
                 zipCodes: paramsAdd
             }).$promise.then(function(data) {
-                SweetAlert.swal('Success', 'Zip Code updated', 'success');
-                $rootScope.$emit('stopSpin');
+                SweetAlert.swal({
+                    title: 'Success',
+                    text: "Zip Code updated",
+                    showCancelButton: false,
+                    confirmButtonText: "Ok"
+                }, function (isConfirm) {
+                    $state.reload();
+                });
             }).catch(function (e) {
                 $rootScope.$emit('stopSpin');
                 alert('Failed');
