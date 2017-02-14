@@ -235,6 +235,26 @@
                     </div>
                 </div>
                 <div class="clearfix"></div>
+                <div ng-show="updatePage" class="row-fluid">
+                    <div class="label-input">
+                        Fleet Status :
+                    </div>  
+                    <div class="hub-field text-left radio-button">
+                        <label>
+                            <input ng-model="fleet.StatusID"
+                                type="radio"
+                                name="statusID"
+                                value="2" /> Active
+                        </label>
+                        <label>
+                            <input ng-model="fleet.StatusID"
+                                type="radio"
+                                name="statusID"
+                                value="4" /> Inactive
+                        </label>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
                 <div ng-if="updatePage" class="row-fluid">
                     <button class="btn hub-buttons" ng-click="updateFleet()"
                         ng-disabled="fleetForm.$invalid">Update Fleet</button>

@@ -153,7 +153,8 @@ angular.module('adminApp')
                 PhoneNumber: $scope.fleet.PhoneNumber,
                 Email: $scope.fleet.Email,
                 ProfilePicture: $scope.fleet.ProfilePicture,
-                Password: $scope.fleet.Password
+                Password: $scope.fleet.Password,
+                statusID: $scope.fleet.StatusID
             };
             $rootScope.$emit('startSpin');
             Services2.updateFleet({
