@@ -836,7 +836,10 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getMerchants = function() {
-        Webstores.getWebstore().$promise.then(function(data) {
+        var params = {};
+            params.status = 2;
+
+        Webstores.getWebstore(params).$promise.then(function (data) {
             $scope.merchants = [{
                 key: 'Choose Merchant',
                 value: '0'
@@ -1460,7 +1463,10 @@ angular.module('adminApp')
     };
 
     var getWebstores = function () {
-        return Services2.getWebstores().$promise.then(function (result) {
+        var params = {};
+            params.status = 2;
+
+        return Services2.getWebstores(params).$promise.then(function (result) {
             $scope.merchants = result.data.webstores.map(function (val) {
                 return val.webstore.FirstName + ' ' + val.webstore.LastName;
             });

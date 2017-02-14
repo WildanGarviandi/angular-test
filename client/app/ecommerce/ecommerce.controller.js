@@ -154,7 +154,10 @@ angular.module('adminApp')
      */
     var getWebstores = function() {
         return $q(function (resolve) {
-            Services2.getWebstores().$promise.then(function(result) {
+            var params = {};
+                params.status = 2;
+
+            Services2.getWebstores(params).$promise.then(function (result) {
                 result.data.webstores.forEach(function(v) {
                     $scope.webstores.push({key: v.webstore.FirstName.concat(' ', v.webstore.LastName), value: v.webstore.UserID});
                 });
