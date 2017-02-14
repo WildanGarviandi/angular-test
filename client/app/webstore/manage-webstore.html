@@ -393,6 +393,26 @@
                         {{webstore.WebstoreCompany.Source ? webstore.WebstoreCompany.Source : "No referral"}}
                     </div>
                 </div>
+                <div class="clearfix"></div>
+                <div class="row-fluid" ng-show="updatePage">                    
+                    <div class="label-input">
+                        Webstore Status:
+                    </div>
+                    <div class="hub-field text-left pricing-type-field radio-button">
+                        <label>
+                            <input ng-model="webstore.StatusID"
+                                type="radio"
+                                name="statusID"
+                                value="2" /> Active
+                        </label>
+                        <label>
+                            <input ng-model="webstore.StatusID"
+                                type="radio"
+                                name="statusID"
+                                value="4" /> Inactive
+                        </label>
+                    </div>
+                </div>
                 <div ng-if="addPage" class="row-fluid">
                     <input type="submit" class="hub-buttons" value="Create Webstore" ng-click="createWebstore(hubForm)"></input>
                 </div>

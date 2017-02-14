@@ -33,7 +33,8 @@ angular.module('adminApp')
     $scope.statusList = [
         { key: '', text: 'ALL'}, 
         { key: 1, text: 'PENDING'}, 
-        { key: 2, text: 'ACTIVATED'}
+        { key: 2, text: 'ACTIVATED'},
+        { key: 4, text: 'BLOCKED'}
     ];
     $scope.statusFilter = $scope.statusList[0];
 
@@ -269,6 +270,7 @@ angular.module('adminApp')
             AverageWeights: $scope.webstore.WebstoreCompany.AverageWeights,
             PickupOptions: $scope.webstore.WebstoreCompany.PickupOptions,
             CODCommission: $scope.webstore.WebstoreCompany.CODCommission,
+            statusID: $scope.webstore.StatusID,
             PricingType: pricingType
         };
         $rootScope.$emit('startSpin');
