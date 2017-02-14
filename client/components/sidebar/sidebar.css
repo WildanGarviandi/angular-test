@@ -405,6 +405,26 @@
     background-image: url('../../assets/images/nav-fleet-zipcode-active.png');
 }
 
+.side-admin-image {
+    background-image: url('../../assets/images/nav-admin.png');
+}
+
+.side-admin-image.active {
+    background-image: url('../../assets/images/nav-admin.png');
+}
+
+.menu-admin {
+    background: #7a4078;
+}
+
+.menu-admin .side-text {
+    color: #fff;
+}
+
+.menu-admin.active{
+    background: #ff5a60;
+}
+
 #spinner-container {
     position: fixed;
     top: 0;

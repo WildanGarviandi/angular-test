@@ -459,5 +459,15 @@ angular.module('adminApp')
                 }
             },
             authenticate: true
+        })
+        .state('app.admin', {
+            url: 'admin',
+             views: {
+                'content@': {
+                    templateUrl: 'app/admin/admin.html',
+                    controller: 'AdminCtrl'
+                }
+            },
+            authenticate: true
         });
     });

@@ -721,6 +721,33 @@ angular.module('adminApp')
                 fleetID: null,
                 controller: 'bulk-price'
             }
+        },
+        getAdminRoles: {
+            method: 'GET',
+            params: {
+                module: 'admin',
+                controller: 'roles',
+                id: null
+            }
+        },
+        getAdminList: {
+            method: 'GET',
+            params: {
+                module: 'admin'
+            }
+        },
+        createAdmin: {
+            method: 'POST',
+            params: {
+                module: 'admin'
+            }
+        },
+        updateAdmin: {
+            method: 'POST',
+            params: {
+                module: 'admin',
+                id: null
+            }
         }
     });
 });

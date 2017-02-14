@@ -1,0 +1,169 @@
+<div class="container-fluid container-hubs">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    Admin Management
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+            <div class="col-md-3 col-sm-12">
+                <div class="hub-search">
+                    <div class="input-group">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="add-update-admin" ng-show="isAdminCreate || isAdminEdit" class="col-md-12 bg-white">
+        <div class="col-md-12 no-padding">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="firstname">First Name</label>
+                    <input type="text" class="form-control" id="firstname" ng-model="temp.firstName" placeholder="First Name">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="lastname">Last Name</label>
+                    <input type="text" class="form-control" id="lastname" ng-model="temp.lastName" placeholder="Last Name">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" ng-model="temp.email" placeholder="Email">
+                    <small ng-show="formInValid.email" class="text-danger">{{formInValid.email}}</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="number" min="0" class="form-control" id="phone" ng-model="temp.phoneNumber" placeholder="Phone Number">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 no-padding">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" ng-model="temp.password" placeholder="Password">
+                    <small ng-show="formInValid.password" class="text-danger">{{formInValid.password}}</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" ng-model="temp.confirmPassword" placeholder="Confirm Password">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <ui-select 
+                        ng-model="temp.status" 
+                        theme="selectize" 
+                        on-select="chooseStatus($item)" 
+                        class="col-xs-12 no-padding">
+                        <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                        <ui-select-choices repeat="a in adminStatus | filter: $select.search" selected>
+                            <span class="input-table" ng-bind-html="a.key | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <small ng-show="formInValid.status" class="text-danger">{{formInValid.status}}</small>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <ui-select 
+                        ng-model="temp.role" 
+                        theme="selectize" 
+                        on-select="chooseRole($item)" 
+                        class="col-xs-12 no-padding">
+                        <ui-select-match class="input-table">{{$select.selected.Name}}</ui-select-match>
+                        <ui-select-choices repeat="r in roles | filter: $select.search" selected>
+                            <span class="input-table" ng-bind-html="r.Name | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <small ng-show="formInValid.role" class="text-danger">{{formInValid.role}}</small>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-2 pull-right" ng-show="isAdminCreate">
+                <button type="button" class="btn btn-admin col-xs-12" ng-click="createAdmin()">Create</button>
+            </div>
+            <div class="col-md-2 pull-right" ng-show="isAdminEdit">
+                <button type="button" class="btn btn-admin col-xs-12" ng-click="updateAdmin()">Update</button>
+            </div>
+            <div class="col-md-2 pull-right">
+                <button type="button" class="btn btn-warning col-xs-12" ng-click="cancelAddOrUpdate()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12" ng-hide="isAdminCreate || isAdminEdit">
+        <br>
+        <button type="button" class="btn btn-primary col-md-2" ng-click="addAdmin()">Add Admin</button>
+    </div>
+    
+    <div class="col-md-12">
+        <table st-table="displayed" st-pipe="callServer" class="table table-hover">
+            <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Password</th>
+                    <th>Status</th>
+                    <th>Role</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody ng-show="!isLoading && displayed.length == 0">
+                <tr>
+                    <td colspan="7" class="text-center">
+                        No data found
+                    </td>
+                </tr>
+            </tbody>
+            <tbody ng-show="isLoading">
+                <tr>
+                    <td colspan="7" class="text-center">Loading ... </td>
+                </tr>
+            </tbody>
+            <tbody ng-show="!isLoading && displayed.length > 0">
+                <tr ng-if="displayed"></tr>
+                <tr ng-repeat="admin in displayed">
+                    <td>{{admin.FirstName}} {{admin.LastName}}</td>
+                    <td>{{admin.Email}}</td>
+                    <td>{{admin.PhoneNumber}}</td>
+                    <td>{{admin.UserLogin.Password}}</td>
+                    <td>{{admin.Status}}</td>
+                    <td>{{admin.Role}}</td>
+                    <td>
+                        <button class="btn btn-primary" type="button" ng-click="editAdmin(admin)">Edit</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot ng-show="!isLoading && displayed.length > 0">
+                <tr>
+                    <td colspan="1">
+                        <h5 class="text-primary"><strong>{{adminFound | number}} admin found</strong></h5>
+                    </td>
+                    <td colspan="6" 
+                        class="text-center" 
+                        st-pagination="" 
+                        st-items-by-page="itemsByPage" 
+                        st-displayed-pages='9' st-template='components/table/pagination.html'>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
