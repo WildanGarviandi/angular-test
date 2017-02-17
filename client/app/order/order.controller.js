@@ -644,12 +644,12 @@ angular.module('adminApp')
                 var destination = ((route.DestinationHub && route.DestinationHub.Name) || "Dropoff");
 
                 if ($scope.currentRouteOrderStatus.open.indexOf(route.OrderStatus.OrderStatusID) > -1) {
-                    array[index].CurrentRouteDetail = "Still on " + origin + ", bound for " + destination;
+                    $scope.order.CurrentRouteDetail = "Still on " + origin + ", bound for " + destination;
                 } else if ($scope.currentRouteOrderStatus.processed.indexOf(route.OrderStatus.OrderStatusID) > -1) {
-                    array[index].CurrentRouteDetail = "From " + origin + " to " + destination
+                    $scope.order.CurrentRouteDetail = "From " + origin + " to " + destination
                 } else {
                     destination = ((route.DestinationHub && route.DestinationHub.Name) || "DESTINATION");
-                    array[index].CurrentRouteDetail = "Arrived at " + destination
+                    $scope.order.CurrentRouteDetail = "Arrived at " + destination
                 }
             }
             $scope.isLoading = false;
