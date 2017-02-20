@@ -215,7 +215,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.addField = function() {
-        $scope.zipcodes.push({ key: $scope.sumZipField, value: '' });
+        $scope.zipcodes.push({ key: $scope.sumZipField, value: '', isNewRow: true });
         $scope.sumZipField++;
     }
 
@@ -579,6 +579,9 @@ angular.module('adminApp')
             $http({
                 method: 'DELETE',
                 url: url,
+                headers: {
+                    "Content-Type": "application/json"
+                },
                 data: {
                     zipCodes: $scope.deleteZipcodes
                 }
@@ -591,8 +594,14 @@ angular.module('adminApp')
             }, {
                 zipCodes: paramsAdd
             }).$promise.then(function(data) {
-                SweetAlert.swal('Success', 'Zip Code updated', 'success');
-                $rootScope.$emit('stopSpin');
+                SweetAlert.swal({
+                    title: 'Success',
+                    text: "Zip Code updated",
+                    showCancelButton: false,
+                    confirmButtonText: "Ok"
+                }, function (isConfirm) {
+                    $state.reload();
+                });
             }).catch(function (e) {
                 $rootScope.$emit('stopSpin');
                 alert('Failed');

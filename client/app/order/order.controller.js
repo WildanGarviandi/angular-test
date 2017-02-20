@@ -448,10 +448,11 @@ angular.module('adminApp')
                     var destination = ((route.DestinationHub && route.DestinationHub.Name) || "Dropoff");
 
                     if ($scope.currentRouteOrderStatus.open.indexOf(route.OrderStatus.OrderStatusID) > -1) {
-                        array[index].CurrentRouteDetail = "Still on " + origin
+                        array[index].CurrentRouteDetail = "Still on " + origin + ", bound for " + destination;
                     } else if ($scope.currentRouteOrderStatus.processed.indexOf(route.OrderStatus.OrderStatusID) > -1) {
-                        array[index].CurrentRouteDetail = "From" + origin + "On the way to " + destination
+                        array[index].CurrentRouteDetail = "From " + origin + " to " + destination
                     } else {
+                        destination = ((route.DestinationHub && route.DestinationHub.Name) || "DESTINATION");
                         array[index].CurrentRouteDetail = "Arrived at " + destination
                     }
                 }
@@ -643,10 +644,11 @@ angular.module('adminApp')
                 var destination = ((route.DestinationHub && route.DestinationHub.Name) || "Dropoff");
 
                 if ($scope.currentRouteOrderStatus.open.indexOf(route.OrderStatus.OrderStatusID) > -1) {
-                    $scope.order.CurrentRouteDetail = "Still on " + origin
+                    $scope.order.CurrentRouteDetail = "Still on " + origin + ", bound for " + destination;
                 } else if ($scope.currentRouteOrderStatus.processed.indexOf(route.OrderStatus.OrderStatusID) > -1) {
-                    $scope.order.CurrentRouteDetail = "From" + origin + "On the way to " + destination
+                    $scope.order.CurrentRouteDetail = "From " + origin + " to " + destination
                 } else {
+                    destination = ((route.DestinationHub && route.DestinationHub.Name) || "DESTINATION");
                     $scope.order.CurrentRouteDetail = "Arrived at " + destination
                 }
             }
@@ -836,7 +838,10 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.getMerchants = function() {
-        Webstores.getWebstore().$promise.then(function(data) {
+        var params = {};
+            params.status = 2;
+
+        Webstores.getWebstore(params).$promise.then(function (data) {
             $scope.merchants = [{
                 key: 'Choose Merchant',
                 value: '0'
@@ -1460,7 +1465,10 @@ angular.module('adminApp')
     };
 
     var getWebstores = function () {
-        return Services2.getWebstores().$promise.then(function (result) {
+        var params = {};
+            params.status = 2;
+
+        return Services2.getWebstores(params).$promise.then(function (result) {
             $scope.merchants = result.data.webstores.map(function (val) {
                 return val.webstore.FirstName + ' ' + val.webstore.LastName;
             });

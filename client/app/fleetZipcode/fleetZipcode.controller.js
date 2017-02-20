@@ -65,6 +65,7 @@ angular.module('adminApp')
             $rootScope.$emit('startSpin');
             var params = {};
             params.limit = 1;
+            params.status = 2;
 
             Services2.getFleets(params).$promise.then(function(result) {
                 params.limit = result.data.Fleets.count;
