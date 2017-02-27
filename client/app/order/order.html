@@ -72,6 +72,9 @@
                         <a ng-show="features.order.reroute" 
                             ng-click="openRerouteModal()">Reroute</a>
                     </li>
+                    <li>
+                        <a ng-show="features.order.reroute_hub" ng-click="showSetHub()">Update Hub</a>
+                    </li>
                 </ul>
             </div>
             <div class="first-row-separator first-row-element"></div>
@@ -1219,5 +1222,34 @@
             </uib-alert>
         </div>
         <div class="clearfix"></div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="setHubModal">
+    <div class="header-wrapper">
+        <h2>Update Hub</h2>
+    </div>
+    <div class="content-wrapper container-fluid">
+        <div class="row-fluid">
+            <div class="label-redirect">
+                Destination Hub :
+            </div>  
+            <div class="input-group input-redirect">
+                <ui-select ng-model="rerouteHubData.destinationHub" 
+                    theme="selectize"
+                    class="booking-order-type">
+                    <ui-select-match class="input-table">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="h in hubs | filter: $select.search track by $index" selected>
+                        <span class="input-table" ng-bind-html="h.name | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <button class="btn btn-primary btn-block submit-btn" ng-click="bulkSetHub()"
+                ng-disabled="!rerouteHubData.destinationHub.id"
+                    >Reroute Hub</button>
+        </div>
     </div>
 </script>
