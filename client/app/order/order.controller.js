@@ -196,6 +196,7 @@ angular.module('adminApp')
     $scope.returnableSender = config.returnableSender;
     $scope.defaultReturnReason = config.defaultReturnReason;
     $scope.canChangeToPickup = config.canChangeToPickup;
+    $scope.canChangeToMissing = config.canChangeToMissing;
 
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
@@ -2790,6 +2791,103 @@ angular.module('adminApp')
         });
     }
 
+    /**
+     * Set multiple order status to MISSING
+     * @return {void}
+     */
+    $scope.bulkSetMissing = function () {
+        var totalSelected = 0;
+        var selectedOrder = 0;
+        var orderIDs = [];
+        var prohibitedIDs = [];
+        $scope.displayed.forEach(function (val) {
+            if (val.Selected) { 
+                if ($scope.canChangeToMissing.indexOf(val.OrderStatus.OrderStatusID) >= 0) {
+                    totalSelected++; 
+                    orderIDs.push(val.UserOrderID);
+                } else {
+                    prohibitedIDs.push(val);
+                }
+                selectedOrder++;
+            }
+        });
+        if (selectedOrder === 0) {
+            SweetAlert.swal('No orders selected');
+            return;
+        }
+        if (prohibitedIDs.length > 0) {            
+            var messages = '';
+            messages += 'This order has status which is prohibited <table align="center">';
+            if (prohibitedIDs.length > 1) {
+                messages = 'These orders have status which are prohibited <table align="center">';
+            }
+            prohibitedIDs.forEach(function (e) {
+                messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
+                            ' : </td><td class="text-left"> ' + e.OrderStatus.OrderStatus + '</td></tr>';
+            })
+            messages += '</table>';
+            SweetAlert.swal({
+                title: 'Can not mark as MISSING',
+                text: messages,
+                type: 'error',
+                html: true
+            });
+            return;
+        }
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Mark as MISSING for " + totalSelected + " orders ?",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.bulkSetMissingStatus({
+                    orderIDs: orderIDs
+                }).$promise.then(function (result) {
+                    var messages = 'success';
+                    if (result.data.error) {
+                        messages = '<table align="center">';
+                        result.data.error.forEach(function (e) {
+                            messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
+                                        ' : </td><td class="text-left"> ' + e.error.message + '</td></tr>';
+                        })
+                        messages += '</table>';
+                        throw {
+                            data: {
+                                message: result.data.message,
+                                error: {
+                                    message: messages
+                                }
+                            }
+                        }
+                    }
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: 'Mark as Missing', 
+                        text: messages,
+                        html: true,
+                        customClass: 'alert-big'
+                    });
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: (e.data.message) ? e.data.message : 'Failed in marking status as MISSING', 
+                        text: e.data.error.message, 
+                        type: "error",
+                        html: true,
+                        customClass: 'alert-big'
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            $state.reload();
+                        }
+                    });
+                });
+            }
+        });
+    }
 
     /**
      * Set all seleted order to scope
