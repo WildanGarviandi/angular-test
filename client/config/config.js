@@ -154,6 +154,9 @@ function mainConfig() {
         },
         packageDimensionID: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
         canChangeToPickup: [6],
+        canChangeToClaimed: [17, 18, 19],
+        canChangeToClaimedMerchant: [17, 18],
+        canChangeToClaimedVendor: [17, 19],
         webtrackingURL: webtrackingURL,
         googleClientId: '196844091368-igtekd4ke8h75r03f0c9rf9k63n9ltc0.apps.googleusercontent.com'
     };

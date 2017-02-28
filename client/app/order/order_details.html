@@ -53,6 +53,11 @@
                         </li>
                         <li role="menuitem">
                             <a href="#"
+                            ng-click="setClaimed()"
+                            ng-if="canBeClaimed">Mark as Claimed</a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#"
                             ng-if="noAction">No action available</a>
                         </li>
                     </ul>
@@ -1001,5 +1006,41 @@
         <div class="row-fluid">
             <a class="address-buttons" ng-click="updateCod()">Update</a>
         </div>
+    </div>
+</script>
+<script type="text/ng-template" id="setMarkAsClaimedModal">
+    <div class="header-wrapper">
+        <h3 class="no-margin">Mark as Claimed</h3>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <form class="form-horizontal">
+            <br>
+            <div class="form-group no-margin">
+                <div class="col-md-12 no-padding">
+                    <p>Status:</p>
+                </div>
+                <div class="col-md-4 no-padding" ng-show="claimed.orderIDsVendor.length > 0">
+                    <p ng-click="setClaimedCheckbox()">
+                        <input type="checkbox" ng-model="claimed.vendor">
+                        Claimed Vendor
+                    </p>
+                </div>
+                <div class="col-md-4 no-padding" ng-show="claimed.orderIDsMerchant.length > 0">
+                    <p ng-click="setClaimedCheckbox()">
+                        <input type="checkbox" ng-model="claimed.merchant">
+                        Claimed Merchant
+                    </p>
+                </div>
+                <div class="col-md-4 no-padding">
+                    <p ng-click="setClaimedAllCheckbox()">
+                        <input type="checkbox" ng-model="claimed.all">
+                        Claimed All
+                    </p>
+                </div>
+                <div class="col-md-12 no-padding">
+                    <button class="btn btn-primary" ng-click="setMarkAsClaimed()">Submit</button>   
+                </div>
+            </div>
+        </form>
     </div>
 </script>
