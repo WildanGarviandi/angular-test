@@ -330,5 +330,11 @@
         "open": [1, 6, 9, 11],
         "processed": [2, 3, 4, 7, 15],
         "finished": [5, 8, 10, 12, 13, 16]
-    }
+    },
+    "financeFeature": [
+        {
+            "key": "Payout and invoicing",
+            "value": 1
+        }
+    ]
 }

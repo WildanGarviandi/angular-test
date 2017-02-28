@@ -1,0 +1,565 @@
+<div class="container-fluid container-hubs">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    Finance
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container-content">
+        <div class="col-md-12 no-padding mb10">
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                <ui-select ng-model="financeFeature"
+                    theme="selectize"
+                    ng-disabled="disabled"
+                    on-select="chooseFinanceFeature($item)">
+                    <ui-select-match placeholder="Choose finance feature ...">
+                        {{ $select.selected.key }}
+                    </ui-select-match>
+                    <ui-select-choices repeat="f in financeFeatures | filter: $select.search" selected>
+                        <span ng-bind-html="f.key | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="col-md-12 no-padding mb5" ng-show="actionPayoutAndInvoice.showFilter">
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                <p class="input-group date-picker-new"> 
+                    <input type="text"
+                        class="form-control border-right-none"
+                        ng-model="startDropoff"
+                        uib-datepicker-popup="d MMMM yyyy"
+                        date:'yyyy-MM-dd'
+                        is-open="isStartDropoffDatePickerOpen"
+                        placeholder="From"
+                        datepicker-options="datePickerOptions"
+                        show-button-bar="false"
+                        ng-click="isStartDropoffDatePickerOpen = !isStartDropoffDatePickerOpen" />
+                    <span class="input-group-btn">
+                        <button type="button"
+                            class="btn btn-default"
+                            ng-click="isStartDropoffDatePickerOpen = !isStartDropoffDatePickerOpen">
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                    </span>
+                </p>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                <p class="input-group date-picker-new"> 
+                    <input type="text"
+                        class="form-control border-right-none"
+                        ng-model="endDropoff"
+                        uib-datepicker-popup="d MMMM yyyy"
+                        date:'yyyy-MM-dd'
+                        is-open="isEndDropoffDatePickerOpen"
+                        placeholder="To"
+                        datepicker-options="datePickerOptions"
+                        show-button-bar="false"
+                        ng-click="isEndDropoffDatePickerOpen = !isEndDropoffDatePickerOpen" />
+                    <span class="input-group-btn">
+                        <button type="button"
+                            class="btn btn-default"
+                            ng-click="isEndDropoffDatePickerOpen = !isEndDropoffDatePickerOpen">
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                    </span>
+                </p>
+            </div>
+            <div class="col-lg-1 col-md-3 col-sm-4 col-xs-6">
+                <button class="btn btn-green col-xs-12" ng-click="filterDate()">Filter</button>
+            </div>
+        </div>
+        <div class="col-md-12 no-padding mb15" ng-show="actionPayoutAndInvoice.showTable">
+            <div class="col-lg-2 col-md-4 col-sm-4 col-xs-6">
+                <button
+                    class="btn btn-yellow col-xs-12"
+                    ng-click="export('payoutAndInvoice')">
+                    <i class="fa fa-custom-export"></i> EXPORT</button>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">
+                <button
+                    class="btn btn-blue col-xs-12"
+                    ng-click="modalTemplateGenerator('confirmation', 'AutoUpdateFee', '', '', updatePriceAuto)"
+                    ng-disabled="totalData == 0">
+                    <i class="fa fa-custom-auto-update"></i> AUTO UPDATE FEE</button>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">
+                <button class="btn btn-blue col-xs-12"
+                    ng-click="modalTemplateGenerator('confirmation', 'OrderCost', 'modalOrderDetailUpdate', 'BULK UPDATE DELIVERY FEE')"
+                    ng-disabled="!temp.isListSelected">
+                    <i class="fa fa-custom-bulk"></i> BULK UPDATE DELIVERY FEE</button>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">
+                <button
+                    class="btn btn-blue col-xs-12"
+                    ng-click="modalTemplateGenerator('confirmation', 'HandlingFee', 'modalOrderDetailUpdate', 'BULK UPDATE HANDLING FEE')"
+                    ng-disabled="!temp.isListSelected">
+                    <i class="fa fa-custom-bulk"></i> BULK UPDATE HANDLING FEE</button>
+            </div>
+        </div>
+        <div class="col-md-12" ng-show="actionPayoutAndInvoice.showTable">
+            <div ng-hide="temp.selectedAllListTable">
+                <small class="pull-left">All <b class="red">{{temp.selectedList.length}}</b> orders on this page are selected. 
+                    <a ng-click="checkUncheckSelectedAllInTable(true)">Select all <b class="red">{{totalData | number}}</b> orders in list</a>
+                </small>
+            </div>
+            <div ng-show="temp.selectedAllListTable">
+                <small class="pull-left">All <b class="red">{{totalData | number}}</b> orders are selected. 
+                    <a ng-click="checkUncheckSelectedAllInTable(false)">Clear Selection</a>
+                </small>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <table 
+                st-table="displayed"
+                st-pipe="callServer"
+                class="table table-bordered table-custom no-margin"
+                ng-show="actionPayoutAndInvoice.showTable">
+                <thead ng-show="!isLoading && displayed.length > 0">
+                    <tr>
+                        <th style="width: 50px">
+                            <input 
+                                id="item-all"
+                                type="checkbox" 
+                                ng-model="temp.selectedAllList" 
+                                ng-click="checkUncheckSelectedAll()" 
+                                class="table-checkbox" />
+                            <label for="item-all"></label>
+                        </th>
+                        <th>EDS ID /<br>WEB ORDER ID</th>
+                        <th>DROPOFF<br>DATE</th>
+                        <th>DROPOFF<br>DESTINATION</th>
+                        <th>STATUS</th>
+                        <th style="width: 100px">
+                            PICKUP<br>TYPE
+                        </th>
+                        <th>MERCHANT</th>
+                        <th style="width: 120px">
+                            FLEET
+                        </th>
+                        <th>Zip<br>Code</th>
+                        <th>WEIGHT<br>(kg)</th>
+                        <th>SHARE<br>(%)</th>
+                        <th>HANDLING<br>FEE (Rp)</th>
+                        <th>DELIVERY<br>FEE (Rp)</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody ng-show="!isLoading && displayed.length == 0">
+                    <tr>
+                        <td colspan="9" class="text-center">
+                            No data found
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody ng-show="isLoading">
+                    <tr>
+                        <td colspan="9" class="text-center">Loading ... </td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <th></th>
+                        <th>
+                            <select-with-checklist
+                                required
+                                ng-model="temp.selectedFilter['UserOrderNumber'].selectedList"
+                                default-text="Filter..."
+                                unique-field="UserOrderNumber"
+                                text-field="text"
+                                value-field="value"
+                                items="temp.selectedFilter['UserOrderNumber'].filtered">
+                            </select-with-checklist>
+                        </th>
+                        <th>
+                            <select-with-checklist
+                                required
+                                ng-model="temp.selectedFilter['DropoffTimeString'].selectedList"
+                                default-text="Filter..."
+                                unique-field="DropoffTimeString"
+                                text-field="text"
+                                value-field="value"
+                                items="temp.selectedFilter['DropoffTimeString'].filtered">
+                            </select-with-checklist>
+                        </th>
+                        <th>
+                            <select-with-checklist
+                                required
+                                ng-model="temp.selectedFilter['City'].selectedList"
+                                default-text="Filter..."
+                                unique-field="City"
+                                text-field="text"
+                                value-field="value"
+                                items="temp.selectedFilter['City'].filtered">
+                            </select-with-checklist>
+                        </th>
+                        <th>
+                            <select-with-checklist
+                                required
+                                ng-model="temp.selectedFilter['OrderStatusString'].selectedList"
+                                default-text="Filter..."
+                                unique-field="OrderStatusString"
+                                text-field="text"
+                                value-field="value"
+                                items="temp.selectedFilter['OrderStatusString'].filtered">
+                            </select-with-checklist>
+                        </th>
+                        <th>
+                            <select-with-checklist
+                                required
+                                ng-model="temp.selectedFilter['PickupTypeDesc'].selectedList"
+                                default-text="Filter..."
+                                unique-field="PickupTypeDesc"
+                                text-field="text"
+                                value-field="value"
+                                items="temp.selectedFilter['PickupTypeDesc'].filtered">
+                            </select-with-checklist>
+                        </th>
+                        <th>
+                            <select-with-checklist
+                                required
+                                ng-model="temp.selectedFilter['Merchant'].selectedList"
+                                default-text="Filter..."
+                                unique-field="Merchant"
+                                text-field="text"
+                                value-field="value"
+                                items="temp.selectedFilter['Merchant'].filtered">
+                            </select-with-checklist>
+                        </th>
+                        <th>
+                            <select-with-checklist
+                                required
+                                ng-model="temp.selectedFilter['FleetName'].selectedList"
+                                default-text="Filter..."
+                                unique-field="FleetName"
+                                text-field="text"
+                                value-field="value"
+                                items="temp.selectedFilter['FleetName'].filtered">
+                            </select-with-checklist>
+                        </th>
+                        <th>
+                            <select-with-checklist
+                                required
+                                ng-model="temp.selectedFilter['ZipCode'].selectedList"
+                                default-text="Filter..."
+                                unique-field="ZipCode"
+                                text-field="text"
+                                value-field="value"
+                                items="temp.selectedFilter['ZipCode'].filtered">
+                            </select-with-checklist>
+                        </th>
+                        <th>
+                            <select-with-checklist
+                                required
+                                ng-model="temp.selectedFilter['PackageWeight'].selectedList"
+                                default-text="Filter..."
+                                unique-field="PackageWeight"
+                                text-field="text"
+                                value-field="value"
+                                items="temp.selectedFilter['PackageWeight'].filtered">
+                            </select-with-checklist>
+                        </th>
+                        <th>
+                            <select-with-checklist
+                                required
+                                ng-model="temp.selectedFilter['LogisticShare'].selectedList"
+                                default-text="Filter..."
+                                unique-field="LogisticShare"
+                                text-field="text"
+                                value-field="value"
+                                items="temp.selectedFilter['LogisticShare'].filtered">
+                            </select-with-checklist>
+                        </th>
+                        <th>
+                            <select-with-checklist
+                                required
+                                ng-model="temp.selectedFilter['HandlingFee'].selectedList"
+                                default-text="Filter..."
+                                unique-field="HandlingFee"
+                                text-field="text"
+                                value-field="value"
+                                items="temp.selectedFilter['HandlingFee'].filtered">
+                            </select-with-checklist>
+                        </th>
+                        <th>
+                            <select-with-checklist
+                                required
+                                ng-model="temp.selectedFilter['OrderCost'].selectedList"
+                                default-text="Filter..."
+                                unique-field="OrderCost"
+                                text-field="text"
+                                value-field="value"
+                                items="temp.selectedFilter['OrderCost'].filtered">
+                            </select-with-checklist>
+                        </th>
+                        <th>
+                            <div class="col-xs-6 no-padding">
+                                <div class="pr5">
+                                    <button class="btn btn-green btn-sm col-xs-12 pl0 pr0" type="button" ng-click="searchList()">Filter</button>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 no-padding">
+                                <div class="">
+                                    <button class="btn btn-yellow btn-sm col-xs-12 pl0 pr0" type="button" ng-click="resetFilter()">Reset</button>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </tbody>
+                <tbody class="table-list" ng-show="!isLoading && displayed.length > 0">
+                    <tr ng-if="displayed"></tr>
+                    <tr ng-repeat="data in displayed" ng-class="{'selected': data.Selected}">
+                        <td class="bg-white">
+                            <input
+                                id="item-{{data.UserOrderID}}"
+                                type="checkbox"
+                                ng-change="prepareSelectedList()"
+                                ng-model="data.Selected"
+                                class="table-checkbox" />
+                            <label for="item-{{data.UserOrderID}}"></label>
+                        </td>
+                        <td class="link" ng-click="showDetailModal('modalOrderDetail', data)">{{data.UserOrderNumber}}<br>({{data.UserOrderID}})</td>
+                        <td>{{data.DropTime | date:'dd-MM-yyyy'}}</td>
+                        <td>{{data.DropoffAddress.City}}</td>
+                        <td>{{data.OrderStatus.OrderStatus}}</td>
+                        <td>{{data.PickupTypeDesc}}</td>
+                        <td>{{data.WebstoreUser.FirstName}} {{data.WebstoreUser.LastName}}</td>
+                        <td>{{data.FleetManager.CompanyDetail.CompanyName}}</td>
+                        <td>{{data.DropoffAddress.ZipCode}}</td>
+                        <td>{{data.PackageWeight}}</td>
+                        <td>{{data.LogisticShare}}</td>
+                        <td>{{data.HandlingFee}}</td>
+                        <td>{{data.OrderCost}}</td>
+                        <td>
+                            <button class="btn btn-blue col-xs-12" type="button" ng-click="showDetailModal('modalOrderDetailUpdate', data)">Update</button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot ng-show="!isLoading && displayed.length > 0">
+                    <tr>
+                        <td colspan="4" class="border-right-none">
+                            <p class="no-margin"><small>Showing {{totalData | number}} orders found</small></p>
+                        </td>
+                        <td colspan="10" 
+                            class="text-right border-left-none" 
+                            st-pagination="" 
+                            st-items-by-page="itemsByPage" 
+                            st-displayed-pages='9' st-template='components/table/pagination.html'>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="modalOrderDetail">
+    <div ng-hide="temp.data">
+        <div class="header-wrapper modal-header row no-margin">
+            <div class="col-md-12 no-padding">
+                <p class="title">Loading . . .</p>
+            </div>
+        </div>
+    </div>
+    <div ng-show="temp.data">
+        <div class="header-wrapper modal-header row no-margin">
+            <button class="btn btn-sm btn-blue button-custom" ng-click="showDetailModal('modalOrderDetailUpdate', temp.data)">Update</button>
+            <div class="col-md-12 no-padding">
+                <p class="title">{{temp.data.UserOrderNumber}}</p>
+            </div>
+        </div>
+        <div class="content-wrapper modal-body">
+            <div class="col-md-12 no-padding">
+                <div class="col-md-12">
+                    <div class="box">
+                        <p class="title">Package Number</p>
+                        <p class="info no-margin">{{temp.data.WebOrderID}}</p>
+                    </div>
+                </div>
+                <div class="col-md-12 no-padding mt15">
+                    <div class="col-md-8">
+                        <div class="box">
+                            <p class="title">Dropoff Address</p>
+                            <p class="info no-margin">{{temp.data.DropoffAddress.FullAddress}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 pl0">
+                        <div class="box">
+                            <p class="title">Zip Code</p>
+                            <p class="info no-margin">{{temp.data.DropoffAddress.ZipCode}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 no-padding mt15">
+                    <div class="col-md-6">
+                        <div class="box">
+                            <p class="title">Fleet Name</p>
+                            <p class="info no-margin">{{temp.data.FleetManager.CompanyDetail.CompanyName}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pl0">
+                        <div class="box">
+                            <p class="title">Driver's Name</p>
+                            <p class="info no-margin">{{temp.data.Driver.FirstName}} {{temp.data.Driver.LastName}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 no-padding mt15">
+                    <div class="col-md-6">
+                        <div class="box">
+                            <p class="title">User Type</p>
+                            <p class="info no-margin">{{temp.data.User.UserType.Name}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pl0">
+                        <div class="box">
+                            <p class="title">Pickup Type</p>
+                            <p class="info no-margin">{{temp.data.PickupType}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 no-padding mt15">
+                    <div class="col-md-4">
+                        <div class="box">
+                            <p class="title">Weight (kg)</p>
+                            <p class="info no-margin">{{temp.data.PackageWeight}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 pl0">
+                        <div class="box">
+                            <p class="title">Goods Price (Rp)</p>
+                            <p class="info no-margin">{{temp.data.PickupType}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 pl0">
+                        <div class="box">
+                            <p class="title">Delivery Fee (Rp)</p>
+                            <p class="info no-margin">{{temp.data.OrderCost}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 no-padding mt15">
+                    <div class="col-md-6">
+                        <div class="box">
+                            <p class="title">Etobee Share</p>
+                            <p class="info no-margin">{{temp.data.LogisticShare}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pl0">
+                        <div class="box">
+                            <p class="title">Handling Fee</p>
+                            <p class="info no-margin">{{temp.data.HandlingFee}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 no-padding mt15 mb15">
+                    <div class="col-md-12">
+                        <div class="box">
+                            <p class="title">Goods Description</p>
+                            <p class="info no-margin">{{temp.data.OrderMessage}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="modalOrderDetailUpdate">
+    <div class="header-wrapper modal-header row no-margin">
+        <div class="col-md-12 no-padding" ng-hide="modalTemplate.nextTitle && !temp.data.UserOrderNumber">
+            <p class="title no-margin">{{temp.data.UserOrderNumber}}</p>
+        </div>
+        <div class="col-md-12 no-padding" ng-show="modalTemplate.nextTitle && !temp.data.UserOrderNumber">
+            <p class="title no-margin">{{modalTemplate.nextTitle}}</p>
+        </div>
+    </div>
+    <div class="content-wrapper modal-body bg-grey-1 row no-margin">
+        <uib-tabset active="active" class="col-md-12 no-padding tabbing-2">
+            <uib-tab index="0" heading="Delivery Fee" active="tabs.active.deliveryFee" disable="tabs.disable.deliveryFee">
+                <div class="col-md-12 mt15" ng-hide="temp.dataUpdated.isJabodetabekAreaSelected">
+                    <p class="title">Base Delivery Fee (Rp)</p>
+                    <input type="number" class="form-control" ng-model="temp.dataUpdated.DeliveryFee" placeholder="Write here...">
+                </div>
+                <div class="col-md-12 mt15 no-padding" ng-show="temp.dataUpdated.isJabodetabekAreaSelected">
+                    <div class="col-md-6">
+                        <p class="title">Base Delivery Fee (Rp)</p>
+                        <input type="number" class="form-control" ng-model="temp.dataUpdated.DeliveryFee" placeholder="Write here...">
+                    </div>
+                    <div class="col-md-6 pl0">
+                        <p class="title">Logistic Share (%)</p>
+                        <input type="number" class="form-control" ng-model="temp.dataUpdated.LogisticShare" placeholder="Write here...">
+                    </div>
+                </div>
+                <div class="col-md-12 mt15">
+                    <input 
+                        id="calculate-by-weight"
+                        type="checkbox" 
+                        ng-model="temp.dataUpdated.isCalculateByWeight"
+                        class="table-checkbox" />
+                    <label for="calculate-by-weight" class="no-margin"></label>
+                    <small>Calculate by <b>WEIGHT</b></small>
+                </div>
+                <div class="col-md-12 mt15">
+                    <input 
+                        id="jabodetabek-area"
+                        type="checkbox" 
+                        ng-model="temp.dataUpdated.isJabodetabekAreaSelected"
+                        class="table-checkbox" />
+                    <label for="jabodetabek-area" class="no-margin"></label>
+                    <small><b>JABODETABEK</b> area</small>
+                </div>
+            </uib-tab>
+            <uib-tab index="1" heading="Handling Fee" active="tabs.active.handlingFee" disable="tabs.disable.handlingFee">
+                <div class="col-md-12 mt15">
+                    <p class="title">Base Handling Fee (Rp)</p>
+                    <input type="number" class="form-control" ng-model="temp.dataUpdated.HandlingFee" placeholder="Write here...">
+                </div>
+                <div class="col-md-12 mt15">
+                    <input 
+                        id="calculate-by-weight"
+                        type="checkbox" 
+                        ng-model="temp.dataUpdated.isCalculateByWeight"
+                        class="table-checkbox" />
+                    <label for="calculate-by-weight" class="no-margin"></label>
+                    <small>Calculate by <b>WEIGHT</b></small>
+                </div>
+            </uib-tab>
+        </uib-tabset>
+        <div class="col-md-12 no-padding mt15 mb15">
+            <div class="col-md-6">
+                <button class="btn btn-red col-xs-12" type="button" ng-click="closeModal()">Cancel</button>
+            </div>
+            <div class="col-md-6 pl0">
+                <button class="btn btn-green col-xs-12" type="button" ng-click="updatePriceManual()">Update</button>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="modalConfirmation">
+    <div class="header-wrapper modal-header row no-margin">
+        <div class="col-md-12 no-padding">
+            <p class="title no-margin" ng-bind-html="modalTemplate.title"></p>
+        </div>
+    </div>
+    <div class="content-wrapper modal-body row no-margin">
+        <div class="mt0" ng-bind-html="modalTemplate.description">
+        </div>
+        <div class="col-md-12 no-padding mt15 mb15">
+            <div class="col-md-6">
+                <button class="btn btn-red col-xs-12" type="button" ng-click="closeModal()">Cancel</button>
+            </div>
+            <div class="col-md-6 pl0">
+                <button class="btn btn-green col-xs-12" type="button" ng-click="onSubmitInTemplate()">Update</button>
+            </div>
+        </div>
+    </div>
+</script>

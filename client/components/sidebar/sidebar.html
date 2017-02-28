@@ -307,6 +307,15 @@
                     ng-class="{ expanded: expanded, active: menus.map.active }">Map</div>
             </a>
         </li>
+
+        <li class="row">
+            <a ui-sref="app.finance" >
+                <div class="side-image side-finance-image"
+                    ng-class="{ expanded: expanded, active: menus.finance.active }"></div>
+                <div class="side-text"
+                    ng-class="{ expanded: expanded, active: menus.finance.active }">Finance</div>
+            </a>
+        </li>
     </ul>
     <div class="expand-button" ng-click="toggleExpand()">
         <span id="expand"

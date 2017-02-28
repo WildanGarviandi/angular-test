@@ -1,0 +1,370 @@
+.btn-red {
+    background-color: #ff5a60;
+    color: #fff;
+    border-radius: 3px;
+    z-index: 9;
+}
+
+.btn-yellow {
+    background-color: #ffa500;
+    color: #fff;
+    border-radius: 3px;
+    z-index: 9;
+}
+
+.btn-green {
+    background-color: #38b393;
+    color: #fff;
+    border-radius: 3px;
+    z-index: 9;
+}
+
+.btn-blue {
+    background-color: #4a90e2;
+    color: #fff;
+    border-radius: 3px;
+    z-index: 9;
+}
+
+.bg-grey-1 {
+    background: #f1f1f1;
+}
+
+.btn-yellow:hover, .btn-green:hover, .btn-blue:hover, .btn-red:hover,
+.btn-yellow:focus, .btn-green:focus, .btn-blue:focus, .btn-red:focus {
+    color: #fff !important;
+}
+
+.border-right-none {
+    border-right: 0 !important;
+}
+
+.border-left-none {
+    border-left: 0 !important;
+}
+
+.date-picker-new ul {
+    width: 100%;
+}
+
+.date-picker-new table {
+    margin: 0 !important;
+    width: 100%;
+}
+
+.date-picker-new .dropdown-menu {
+    margin-top: -34px !important;
+}
+
+.date-picker-new table > thead small {
+    color: #000;
+    font-size: 10px;
+    font-weight: 100;
+}
+
+.date-picker-new .dropdown-menu li > div {
+    padding: 15px !important;
+}
+
+.date-picker-new table .btn {
+    border: none !important;
+}
+
+.date-picker-new table > tbody .btn {
+    padding-top: 25%;
+    padding-bottom: 25%;
+}
+
+.date-picker-new table > tbody .btn.active > span, .date-picker-new table > tbody .btn:hover > span {
+    color: #fff;
+}
+
+.date-picker-new table > tbody .btn.active, .date-picker-new table > tbody .btn:hover {
+    border-radius: 50%;
+    background: #4a90e2;
+}
+
+.table-custom thead {
+    font-size: 12px;
+}
+
+.table-custom thead th {
+    color: #000;
+    text-align: center;
+    text-transform: inherit;
+}
+
+.table-checkbox {
+    display: none;
+}
+
+.table-checkbox + label {
+    background-color: #fff;
+    border: 2px solid #bfbfbf;
+    padding: 9px;
+    border-radius: 3px;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    margin: 20%;
+    cursor: pointer;
+}
+
+.table-checkbox + label:active, .table-checkbox:checked + label:active {
+    background-color: #38b393;
+}
+
+.table-checkbox:checked + label {
+    background-color: #38b393;
+    border: 2px solid #38b393;
+    color: #fff;
+}
+
+.table-checkbox:checked + label:after {
+    content: '\2714';
+    font-size: 14px;
+    font-weight: normal;
+    position: absolute;
+    top: 0px;
+    left: 3px;
+    color: #fff;
+}
+
+.table-custom tbody td {
+    font-size: 12px;
+    text-align: center;
+}
+
+.table-custom tbody.table-list tr {
+    background-color: #f9f9f9;
+}
+
+.table-custom tbody.table-list tr.selected {
+    background-color: #fff;
+}
+
+.table-custom tfoot .pagination {
+    margin: 10px 0;
+}
+
+.table-custom tbody .link {
+    color: #4a90e2;
+    cursor: pointer;
+}
+
+.table-custom tbody .link:hover, .table-custom tbody .link:focus {
+    color: #4a90e2;
+}
+
+.fa-custom-bulk {
+    content: '';
+    display: inline-block;
+    background: url("/assets/images/icon-bulk.png") no-repeat;
+    width: 20px;
+    height: 20px;
+    vertical-align: bottom;
+    background-size: cover;
+}
+
+.fa-custom-auto-update {
+    content: '';
+    display: inline-block;
+    background: url("/assets/images/icon-auto-update.png") no-repeat;
+    width: 20px;
+    height: 20px;
+    vertical-align: bottom;
+    background-size: cover;
+}
+
+.fa-custom-export {
+    content: '';
+    display: inline-block;
+    background: url("/assets/images/icon-export.png") no-repeat;
+    width: 20px;
+    height: 20px;
+    vertical-align: bottom;
+    background-size: cover;
+}
+
+.pl0 {
+    padding-left: 0px;
+}
+
+.pr0 {
+    padding-right: 0px;
+}
+
+.pl5 {
+    padding-left: 5px;
+}
+
+.pr5 {
+    padding-right: 5px;
+}
+
+.ml0 {
+    margin-left: 0px;
+}
+
+.mt5 {
+    margin-top: 5px;
+}
+
+.mt10 {
+    margin-top: 10px;
+}
+
+.mt15 {
+    margin-top: 15px;
+}
+
+.mb5 {
+    margin-bottom: 5px;
+}
+
+.mb10 {
+    margin-bottom: 10px;
+}
+
+.mb15 {
+    margin-bottom: 15px;
+}
+
+.filter-custom {
+    position: relative;
+}
+
+.filter-dropdown-checkbox {
+    width: 117%;
+    position: absolute;
+    border: 1px solid #d0d0d0;
+    background: #ffffff;
+    margin: -1px 0 0 0;
+    border-top: 0 none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    -webkit-border-radius: 0 0 3px 3px;
+    -moz-border-radius: 0 0 3px 3px;
+    border-radius: 0 0 3px 3px;
+    color: #303030;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 18px;
+    -webkit-font-smoothing: inherit;
+}
+
+.filter-dropdown-checkbox label {
+    margin: 3px 0px 3px 3px;
+    padding: 6px; 
+}
+
+.filter-dropdown-checkbox .table-checkbox:checked + label:after {
+    top: -2px;
+    left: 0px;
+}
+
+.filter-dropdown-checkbox small {
+    font-weight: 100;
+    font-size: 10px;
+}
+
+.filter-dropdown-area {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.filter-dropdown-checkbox input {
+    border-radius: 0px;
+    padding: 5px;
+    font-size: 10px;
+    height: 25px;
+}
+
+.no-radius {
+    border-radius: 0px !important;
+}
+
+.modal-custom {
+    -webkit-box-align:center;
+    -webkit-box-pack:center;
+    display:-webkit-box;
+}
+
+.modal-custom .ngdialog-content {
+    width: 500px !important;
+    background: #fff !important;
+    padding: 0px !important;
+}
+
+.modal-custom .modal-header {
+    border-bottom: 0px;
+}
+
+.modal-custom .modal-header .button-custom {
+    position: absolute;
+}
+
+.modal-custom .modal-header .title {
+    text-align: center;
+    font-weight: bold;
+}
+
+.modal-custom .modal-body {
+    padding: 0px;
+    border-radius: 5px;
+}
+
+.modal-custom .modal-body .title {
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 12px;
+    margin: 0px;
+}
+
+.modal-custom .modal-body .info {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.modal-custom .box {
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+.modal-custom .ngdialog-close:before {
+    color: #777 !important;
+    right: 15px !important;
+    top: 15px !important;
+    font-size: 35px !important;
+}
+
+.tabbing-2 li {
+    width: 50%;
+    text-align: center;
+    background: #fff;
+    font-size: 14px;
+    border: 1px solid #bfbfbf;
+}
+
+.tabbing-2 li a {
+    border: none !important;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.tabbing-2 li.active {
+    border-bottom: 2px solid #4a90e2;
+}
+
+.tabbing-2 li.active a {
+    font-weight: bold;
+    color: #000;
+    border-bottom: 2px solid #4a90e2;
+}
+
+.img-center {
+    margin: auto;
+    display: inherit;
+}

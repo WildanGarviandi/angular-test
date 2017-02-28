@@ -59,6 +59,9 @@ angular.module('adminApp')
             },
             deliveryDistribution: {
                 routes: ['/deliveryDistribution']
+            },
+            finance: {
+                routes: ['/finance']
             }
         };
 
