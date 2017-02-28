@@ -748,6 +748,13 @@ angular.module('adminApp')
                 module: 'admin',
                 id: null
             }
+        },
+        bulkSetHub: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'redirect'
+            }
         }
     });
 });
