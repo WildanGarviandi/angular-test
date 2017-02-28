@@ -133,20 +133,20 @@ function mainConfig() {
         defaultLocation: defaultLocation,
         notCancellableOrderStatus: [4, 5, 13, 16],
         // INTRANSIT, DELIVERED, CANCELLED, RETURNED_SENDER
-        reassignableOrderStatus: [2, 6, 10, 12, 15, 3],
-        // ACCEPTED, NOTASSIGNED, NO-DRIVER, EXPIRED, RETURNED_WAREHOUSE, PICKUP
+        reassignableOrderStatus: [2, 6, 10, 12, 15, 3, 17],
+        // ACCEPTED, NOTASSIGNED, NO-DRIVER, EXPIRED, RETURNED_WAREHOUSE, PICKUP, MISSING
         activeGoal: 1500,
         activeMerchant: activeMerchant,
         countryCode: countryCode,
         deliverableOrderStatus: [2, 3, 4],
         // ACCEPTED, PICKUP, IN-TRANSIT
-        reassignableDriver: [2, 3, 4, 6, 15],
-        // ACCEPTED, PICKUP, IN-TRANSIT, RETURNED_WAREHOUSE
-        reassignableFleet: [1, 3, 6, 9, 15],
-        // BOOKED, NOTASSIGNED, PREBOOKED, RETURNED_WAREHOUSE
+        reassignableDriver: [2, 3, 4, 6, 15, 17],
+        // ACCEPTED, PICKUP, IN-TRANSIT, RETURNED_WAREHOUSE, MISSING
+        reassignableFleet: [1, 3, 6, 9, 15, 17],
+        // BOOKED, NOTASSIGNED, PREBOOKED, RETURNED_WAREHOUSE, MISSING
         updatablePrice: [1, 6, 9, 2, 3, 4],
         // BOOKED, NOTASSIGNED, PREBOOKED, ACCEPTED, PICKUP, IN-TRANSIT
-        returnableWarehouse: [2, 3, 4],
+        returnableWarehouse: [2, 3, 4, 17],
         returnableSender: [15],
         defaultReturnReason : {
             ReasonName: 'MANUAL_PROCESS',
