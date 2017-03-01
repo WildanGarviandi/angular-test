@@ -1726,6 +1726,8 @@ angular.module('adminApp')
             var url = 'order/export/uploadable';
         } else if (type === 'completed') {
             var url = 'order/export/completed';
+        } else if (type === 'standard') {
+            var url = 'order/export/combined';
         }
         
         var fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
