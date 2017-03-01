@@ -931,6 +931,18 @@
         <div>
             <p>You will return this order to customer / sender ? This process can't be reversed.</p>
         </div>
+        <div class="row no-margin">
+            <div class="label-payment">
+                POD :
+            </div>
+            <div class="col-xs-12 no-padding">
+                <a ng-if="urlUploadedPic" href="{{urlUploadedPic}}"
+                    target="_blank">Click to view</a>
+                <button class="btn btn-default" ngf-select="uploadPic($file)" ng-model="file" 
+                    ngf-model-invalid="errorFile" type="file" accept="image/*">Upload</button>
+            </div>
+        </div>
+        <br>
         <ui-select ng-model="company" 
             theme="selectize" 
             on-select="chooseCompany($item)" 

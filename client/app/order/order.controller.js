@@ -119,6 +119,9 @@ angular.module('adminApp')
     $scope.urlToDownload.templateDeliveryAttempts = '../../assets/template/importUserOrderAttempt.xlsx';
     $scope.isNavigationOpen = true;
 
+    $scope.isModalOpen = {};
+    $scope.urlUploadedPic = '';
+
     /*
      * Style Responsive Height
      *
@@ -1243,6 +1246,8 @@ angular.module('adminApp')
      * @return void
      */
     $scope.returnCustomer = function () {
+        $scope.isModalOpen = {};
+        $scope.isModalOpen.returnCustomer = true;
         $rootScope.$emit('startSpin');
         getCompanies(true)
         .then(function () {
@@ -1264,6 +1269,11 @@ angular.module('adminApp')
             driverID : driver.Driver.UserID,
             fleetManagerID: driver.Driver.Driver.FleetManager.UserID
         };
+
+        if ($scope.urlUploadedPic) {
+            params.pathPhotoPOD = $scope.urlUploadedPic;
+        }
+
         $rootScope.$emit('startSpin');
         ngDialog.close();
         Services2.returnCustomer({
@@ -2436,6 +2446,8 @@ angular.module('adminApp')
             return false;
         }
 
+        $scope.isModalOpen = {};
+        $scope.isModalOpen.returnSender = true;
         setSelectedOrder();
         $scope.returnedSenderOrders = [];
         $scope.listUserOrderNumbersSelected = $scope.selectedOrders.map(function (order) {
@@ -2484,6 +2496,10 @@ angular.module('adminApp')
                         driverID: $scope.driver.key,
                         fleetManagerID: $scope.driver.fleetManagerID
                     };
+
+                    if ($scope.urlUploadedPic) {
+                        tempData.pathPhotoPOD = $scope.urlUploadedPic;
+                    }
                     params.push(tempData);
                 });
 
@@ -2808,6 +2824,8 @@ angular.module('adminApp')
      *
      */
     $scope.openRerouteModal = function () {
+        $scope.isModalOpen = {};
+        $scope.isModalOpen.rerouteModal = true;
         $scope.rerouteData = {
             originHub: {},
             destinationHub: {}
@@ -2907,6 +2925,7 @@ angular.module('adminApp')
      */
     $scope.uploadPic = function (file) {
         $rootScope.$emit('startSpin');
+        $scope.urlUploadedPic = '';
         if (file) {
             $scope.f = file;
             file.upload = Upload.upload({
@@ -2917,7 +2936,10 @@ angular.module('adminApp')
                 $timeout(function () {
                     file.result = response.data;
                     if (response.data.data && !response.data.error) {
-                        $scope.customFleetData.receipt = response.data.data.Location;
+                        if ($scope.isModalOpen.rerouteModal) {
+                            $scope.customFleetData.receipt = response.data.data.Location;
+                        }
+                        $scope.urlUploadedPic = response.data.data.Location;
                     } else {
                         alert('Uploading picture failed. Please try again');
                         $scope.errorMsg = 'Uploading picture failed. Please try again';
