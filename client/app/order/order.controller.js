@@ -1265,6 +1265,14 @@ angular.module('adminApp')
      * @return {[type]}        [description]
      */
     $scope.selectDriverToReturnCustomer = function (driver) {
+        if (!$scope.urlUploadedPic) {
+            return SweetAlert.swal({
+                title: 'POD required',
+                text: 'POD cannot be empty',
+                type: 'error'
+            });
+        }
+
         var params = {
             driverID : driver.Driver.UserID,
             fleetManagerID: driver.Driver.Driver.FleetManager.UserID
@@ -2475,6 +2483,14 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.bulkReturnSender = function() {
+        if (!$scope.urlUploadedPic) {
+            return SweetAlert.swal({
+                title: 'POD required',
+                text: 'POD cannot be empty',
+                type: 'error'
+            });
+        }
+
         SweetAlert.swal({
             title: 'Are you sure?',
             text: "Set status to return sender for " + (($scope.returnedSenderOrders.length > 1) ?  'these orders?' : 'this order?'),
@@ -2496,15 +2512,12 @@ angular.module('adminApp')
                         driverID: $scope.driver.key,
                         fleetManagerID: $scope.driver.fleetManagerID
                     };
-
-                    if ($scope.urlUploadedPic) {
-                        tempData.pathPhotoPOD = $scope.urlUploadedPic;
-                    }
                     params.push(tempData);
                 });
 
                 Services2.bulkSetReturnSender({
-                    orderData: params
+                    orderData: params,
+                    pathPhotoPOD: $scope.urlUploadedPic
                 }).$promise.then(function (result) {
                     driverName = '<p>' + driverName + '</p>';
                     var messages = driverName + '<table align="center" style="font-size: 12px;">';
