@@ -351,26 +351,24 @@
                         </div>
                     </uib-accordion-group>   
                     </uib-accordion>                        
-                </div> 
-                <div ng-show="order.UserOrderReturneds.length > 0" ng-repeat="userOrderReturned in order.UserOrderReturneds" class="row-fluid order-detail-from-address">
+                </div>
+                <div ng-show="isCurrentStatus.returnedSender" class="row-fluid order-detail-from-address">
                     <uib-accordion>
-                        <uib-accordion-group heading="POD - {{order.OrderStatus.OrderStatus}} {{$index + 1}}:">
-                            <div class="order-status-container-body">
-                                <span>Staff Name</span> : {{userOrderReturned.RecipientName}}
-                            </div>
-                            <div class="order-status-container-body">
-                                <span>Date</span> : {{userOrderReturned.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}
-                            </div>
-                            <div class="order-status-container-body col-sm-6 text-center">
-                                Signature :
-                                <div>
-                                    <img class="failed-image" src="{{userOrderReturned.SignatureURL}}">
+                        <uib-accordion-group heading="POD - {{order.OrderStatus.OrderStatus}}:">
+                            <div class="row no-margin">
+                                <div class="col-sm-4 no-padding">
+                                    Date 
                                 </div>
-                            </div> 
-                            <div class="order-status-container-body col-sm-6 text-center">
-                                Photo :
-                                <div>
-                                    <img class="failed-image" src="{{userOrderReturned.ProofOfReturnURL}}">
+                                <div class="col-sm-8">
+                                    {{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                                </div>
+                            </div>
+                            <div class="row no-margin">
+                                <div class="col-sm-4 no-padding">
+                                    Photo 
+                                </div>
+                                <div class="col-sm-8">
+                                    <img class="failed-image" ng-if="order.PathPhotoPODReturnCustomer" src="{{order.PathPhotoPODReturnCustomer}}">
                                 </div>
                             </div>
                         </uib-accordion-group>
