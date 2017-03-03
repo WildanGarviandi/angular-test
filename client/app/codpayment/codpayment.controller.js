@@ -494,9 +494,9 @@ angular.module('adminApp')
      * @return void
      */
     $scope.createCODPayment = function () {
-        if ($scope.formData.paymentType == 'manual'){
+        if ($scope.formData.paymentType == 'manual') {
             $scope.createCODPaymentManual();
-        } else if ($scope.formData.paymentType == 'auto'){
+        } else if ($scope.formData.paymentType == 'auto') {
             $scope.setCODPaymentManualPaid();
         }
     };
