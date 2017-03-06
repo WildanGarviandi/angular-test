@@ -325,7 +325,7 @@
                                 class="table-checkbox" />
                             <label for="item-{{data.UserOrderID}}"></label>
                         </td>
-                        <td class="link" ng-click="showDetailModal('modalOrderDetail', data)">{{data.UserOrderNumber}}<br>({{data.UserOrderID}})</td>
+                        <td class="link" ng-click="showDetailModal('modalOrderDetail', data)">{{data.UserOrderNumber}}<br>({{data.WebOrderID}})</td>
                         <td>{{data.DropTime | date:'dd-MM-yyyy'}}</td>
                         <td>{{data.DropoffAddress.City}}</td>
                         <td>{{data.OrderStatus.OrderStatus}}</td>
@@ -435,7 +435,7 @@
                     <div class="col-md-4 pl0">
                         <div class="box">
                             <p class="title">Goods Price (Rp)</p>
-                            <p class="info no-margin">{{temp.data.PickupType}}</p>
+                            <p class="info no-margin">{{temp.data.TotalValue}}</p>
                         </div>
                     </div>
                     <div class="col-md-4 pl0">

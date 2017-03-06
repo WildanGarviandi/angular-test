@@ -237,7 +237,6 @@ angular.module('adminApp')
         var tempSelectedFilter = [];
         var isFirstLoadedParam = false;
         tableFilter.forEach(function (val) {
-            var paramUrl = $location.search()[val];
             paramFilter[val] = [];
             tempSelectedFilter[val] = [];
 
@@ -250,6 +249,7 @@ angular.module('adminApp')
                 $location.search(val, paramFilter[val]);
             }
 
+            var paramUrl = $location.search()[val];
             
             if (paramUrl && paramUrl.length) {
                 if (!$scope.isFirstLoadedParam) {
@@ -259,7 +259,7 @@ angular.module('adminApp')
 
                     if (typeof paramUrl !== 'string') {
                         paramUrl.forEach(function(data){
-                            dataFromUrl = parseInt(data);
+                            dataFromUrl = parseFloat(data);
                             if (isNaN(dataFromUrl)) {
                                 dataFromUrl = data;
                             }
@@ -270,7 +270,7 @@ angular.module('adminApp')
                     }
 
                     if (typeof paramUrl === 'string') {
-                        dataFromUrl = parseInt(paramUrl);
+                        dataFromUrl = parseFloat(paramUrl);
                         if (isNaN(dataFromUrl)) {
                             dataFromUrl = paramUrl;
                         }
@@ -308,8 +308,8 @@ angular.module('adminApp')
 
         if (type && type == 'post') {
             var params = {
-                offset: $scope.offset,
-                limit: $scope.itemsByPage,
+                offset: 0,
+                limit: $scope.totalData,
                 statuses: (paramFilter['OrderStatusString']) ? paramFilter['OrderStatusString'] : '',
                 pickupTypes: (paramFilter['PickupTypeDesc']) ? paramFilter['PickupTypeDesc'] : '',
                 merchants: (paramFilter['Merchant']) ? paramFilter['Merchant'] : '',

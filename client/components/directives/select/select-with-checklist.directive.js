@@ -72,7 +72,7 @@ angular.module('adminApp')
                 var found = false;
                 angular.forEach(scope.ngModel, function (item) {
                     if (!found) {
-                        if (_item && _item[valueField] && item[valueField]) {
+                        if (_item && _item[valueField].toString()) {
                             if (_item[valueField].toString() === item[valueField].toString()) {
                                 found = true;
                             }
