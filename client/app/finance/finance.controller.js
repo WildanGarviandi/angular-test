@@ -308,8 +308,6 @@ angular.module('adminApp')
 
         if (type && type == 'post') {
             var params = {
-                offset: 0,
-                limit: $scope.totalData,
                 statuses: (paramFilter['OrderStatusString']) ? paramFilter['OrderStatusString'] : '',
                 pickupTypes: (paramFilter['PickupTypeDesc']) ? paramFilter['PickupTypeDesc'] : '',
                 merchants: (paramFilter['Merchant']) ? paramFilter['Merchant'] : '',
