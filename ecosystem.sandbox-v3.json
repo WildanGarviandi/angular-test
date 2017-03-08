@@ -9,7 +9,8 @@
             "script" : "app.js",
             "env": {
                 "NODE_ENV": "sandbox"
-            }
+            },
+            "max_memory_restart" : "500M"
         }
     ],
 

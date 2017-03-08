@@ -9,7 +9,8 @@
             "script" : "app.js",
             "env": {
                 "NODE_ENV": "staging"
-            }
+            },
+            "max_memory_restart" : "500M"
         }
     ],
 
