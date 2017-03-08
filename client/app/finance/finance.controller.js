@@ -713,7 +713,7 @@ angular.module('adminApp')
         $scope.modalTemplate.nextTitle = nextTitle;
 
         $scope.onSubmitInTemplate = function () {
-            $scope.showDetailModal(nextTemplateName);
+            $scope.showDetailModal(nextTemplateName, $scope.data, true);
         };
 
         if (functionOnSubmit) {
