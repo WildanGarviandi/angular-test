@@ -154,7 +154,7 @@ function mainConfig() {
         },
         packageDimensionID: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
         canChangeToPickup: [6],
-        canChangeToMissing: [4],
+        canChangeToMissing: [3, 4],
         canChangeToClaimed: [17, 18, 19],
         canChangeToClaimedMerchant: [17, 18],
         canChangeToClaimedVendor: [17, 19],
