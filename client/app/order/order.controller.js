@@ -1082,8 +1082,12 @@ angular.module('adminApp')
         };
         
         lodash.forEach(data, function(val) {
-            val.merchantID = $scope.merchant.value;
-            val.fleetManagerID = $scope.fleet.User.UserID;
+            if ($scope.showMerchantListOnImport) {
+                val.merchantID = $scope.merchant.value;
+            }
+            if ($scope.showFleetListOnImport) {
+                val.fleetManagerID = $scope.fleet.User.UserID;
+            }
             if ($scope.readyForPickupOnImport) {
                 val.isReadyForPickup = true;
             }
