@@ -653,6 +653,8 @@ angular.module('adminApp')
                     $scope.order.CurrentRouteDetail = "Arrived at " + destination
                 }
             }
+            $scope.isCurrentStatus = {};
+            $scope.isCurrentStatus.returnedSender = ($scope.order.OrderStatus.OrderStatusID === 16);
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
