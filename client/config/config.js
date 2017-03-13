@@ -154,6 +154,7 @@ function mainConfig() {
         },
         packageDimensionID: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
         canChangeToPickup: [6],
+        canChangeToMissing: [4],
         webtrackingURL: webtrackingURL,
         googleClientId: '196844091368-igtekd4ke8h75r03f0c9rf9k63n9ltc0.apps.googleusercontent.com',
         canSetHub: [1, 2, 6]
