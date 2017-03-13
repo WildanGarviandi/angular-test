@@ -76,6 +76,14 @@ angular.module('adminApp')
         }
     ];
 
+    $scope.claimed = {};
+    $scope.claimed.all = false;
+    $scope.claimed.vendor = false;
+    $scope.claimed.merchant = false;
+    $scope.claimed.orderIDs = [];
+    $scope.claimed.orderIDsVendor = [];
+    $scope.claimed.orderIDsMerchant = [];
+
     $scope.pickupDatePicker = {
         startDate: $location.search().startPickup || null,
         endDate: $location.search().endPickup || null
@@ -201,6 +209,9 @@ angular.module('adminApp')
     $scope.canChangeToPickup = config.canChangeToPickup;
     $scope.canSetHub = config.canSetHub;
     $scope.canChangeToMissing = config.canChangeToMissing;
+    $scope.canChangeToClaimed = config.canChangeToClaimed;
+    $scope.canChangeToClaimedVendor = config.canChangeToClaimedVendor;
+    $scope.canChangeToClaimedMerchant = config.canChangeToClaimedMerchant;
 
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
@@ -617,6 +628,7 @@ angular.module('adminApp')
             $scope.order.PickupType = (lodash.find($scope.pickupTypes, {value: $scope.order.PickupType})).key;
             $scope.canBeReturned = ($scope.order.OrderStatus.OrderStatusID === 15 && $scope.features.order.return_sender);
             $scope.canBeCopied = ($scope.order.OrderStatus.OrderStatusID === 13 && $scope.features.order.copy_cancelled);
+            $scope.canBeClaimed = ($scope.canChangeToClaimed.indexOf($scope.order.OrderStatus.OrderStatusID) >= 0);
             $scope.canBeReassigned = false;
             $scope.reassignableOrderStatus.forEach(function (status) {
                 if ($scope.order.OrderStatus.OrderStatusID === status && $scope.features.order.reassign_driver) { 
@@ -638,7 +650,8 @@ angular.module('adminApp')
             if (!$scope.canBeCopied && 
                 !$scope.canBeReassigned && 
                 !$scope.canBeCancelled &&
-                !$scope.canBeDelivered) {
+                !$scope.canBeDelivered &&
+                !$scope.canBeClaimed) {
                 $scope.noAction = true;
             }
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
@@ -2829,6 +2842,7 @@ angular.module('adminApp')
      * Set multiple order status to MISSING
      * @return {void}
      */
+    
     $scope.bulkSetMissing = function () {
         var totalSelected = 0;
         var selectedOrder = 0;
@@ -2921,6 +2935,187 @@ angular.module('adminApp')
                 });
             }
         });
+    }
+
+    $scope.setClaimedAllCheckbox = function () {
+        $scope.claimed.vendor = $scope.claimed.all;
+        $scope.claimed.merchant = $scope.claimed.all;
+    }
+
+    $scope.setClaimedCheckbox = function () {
+        $scope.claimed.all = false;
+        if ($scope.claimed.merchant && $scope.claimed.vendor) {
+            $scope.claimed.all = true;
+        }
+    }
+
+    /**
+     * Check single order status to CLAIMED
+     * @return {void}
+     */
+    $scope.setClaimed = function () {
+        var singleData = $scope.order;
+        var orderIDs = [];
+        var orderIDsVendor = [];
+        var orderIDsMerchant = [];
+
+        orderIDs.push(singleData.UserOrderID);
+        if ($scope.canChangeToClaimedVendor.indexOf(singleData.OrderStatus.OrderStatusID) >= 0) {
+            orderIDsVendor.push(singleData.UserOrderID);
+        }
+        if ($scope.canChangeToClaimedMerchant.indexOf(singleData.OrderStatus.OrderStatusID) >= 0) {
+            orderIDsMerchant.push(singleData.UserOrderID);
+        }
+        $scope.claimed.orderIDs = orderIDs;
+        $scope.claimed.orderIDsVendor = orderIDsVendor;
+        $scope.claimed.orderIDsMerchant = orderIDsMerchant;
+        ngDialog.open({
+            template: 'setMarkAsClaimedModal',
+            scope: $scope,
+            className: 'ngdialog-theme-default reassign-fleet'
+        });
+    }
+
+    /**
+     * Check multiple order status to CLAIMED
+     * @return {void}
+     */
+    $scope.bulkSetClaimed = function () {
+        var totalSelected = 0;
+        var selectedOrder = 0;
+        var messages = '';
+        var orderIDs = [];
+        var orderIDsVendor = [];
+        var orderIDsMerchant = [];
+        var prohibitedIDs = [];
+
+        $scope.displayed.forEach(function (val) {
+            if (val.Selected) { 
+                if ($scope.canChangeToClaimed.indexOf(val.OrderStatus.OrderStatusID) >= 0) {
+                    totalSelected++; 
+                    orderIDs.push(val.UserOrderID);
+                    if ($scope.canChangeToClaimedVendor.indexOf(val.OrderStatus.OrderStatusID) >= 0) {
+                        orderIDsVendor.push(val.UserOrderID);
+                    }
+                    if ($scope.canChangeToClaimedMerchant.indexOf(val.OrderStatus.OrderStatusID) >= 0) {
+                        orderIDsMerchant.push(val.UserOrderID);
+                    }
+                } else {
+                    prohibitedIDs.push(val);
+                }
+                selectedOrder++;
+            }
+        });
+
+        $scope.claimed.orderIDs = orderIDs;
+        $scope.claimed.orderIDsVendor = orderIDsVendor;
+        $scope.claimed.orderIDsMerchant = orderIDsMerchant;
+        if (selectedOrder === 0) {
+            SweetAlert.swal('No orders selected');
+            return;
+        }
+        if (prohibitedIDs.length > 0) {
+            messages += 'This order has status which is prohibited <table align="center">';
+            if (prohibitedIDs.length > 1) {
+                messages = 'These orders have status which are prohibited <table align="center">';
+            }
+            prohibitedIDs.forEach(function (e) {
+                messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
+                            ' : </td><td class="text-left"> ' + e.OrderStatus.OrderStatus + '</td></tr>';
+            })
+            messages += '</table>';
+            SweetAlert.swal({
+                title: 'Can not mark as CLAIMED',
+                text: messages,
+                type: 'error',
+                html: true
+            });
+            return;
+        }
+
+        ngDialog.open({
+            template: 'setMarkAsClaimedModal',
+            scope: $scope,
+            className: 'ngdialog-theme-default reassign-fleet'
+        });
+    }
+
+    /**
+     * Set multiple order status to CLAIMED
+     * @return {void}
+     */
+    $scope.setMarkAsClaimed = function () {
+        if (!$scope.claimed.vendor && !$scope.claimed.merchant) {
+            return SweetAlert.swal({
+                title: 'Claimed Status',
+                text: 'Must choose at least one status',
+                type: 'error',
+                html: true
+            });
+        }
+
+        $rootScope.$emit('startSpin');
+        if ($scope.claimed.vendor) {
+            Services2.bulkSetClaimedVendor({
+                orderIDs: $scope.claimed.orderIDsVendor
+            }).$promise.then(function (result) {
+                if ($scope.claimed.merchant) {
+                    bulkSetClaimedMerchant();
+                } else {
+                    returnSuccessAfterClaimed();
+                }
+            }).catch(function (e) {
+                $rootScope.$emit('stopSpin');
+                SweetAlert.swal({
+                    title: (e.data.message) ? e.data.message : 'Failed in marking status as CLAIMED VENDOR', 
+                    text: e.data.error.message, 
+                    type: "error",
+                    html: true,
+                    customClass: 'alert-big'
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        ngDialog.closeAll();
+                        $state.reload();
+                    }
+                });
+            });
+        } else {
+            bulkSetClaimedMerchant();
+        }
+
+        function bulkSetClaimedMerchant () {
+            Services2.bulkSetClaimedMerchant({
+                orderIDs: $scope.claimed.orderIDsMerchant
+            }).$promise.then(function (result) {
+                returnSuccessAfterClaimed();
+            }).catch(function (e) {
+                $rootScope.$emit('stopSpin');
+                SweetAlert.swal({
+                    title: (e.data.message) ? e.data.message : 'Failed in marking status as CLAIMED MERCHANT', 
+                    text: e.data.error.message, 
+                    type: "error",
+                    html: true,
+                    customClass: 'alert-big'
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        ngDialog.closeAll();
+                        $state.reload();
+                    }
+                });
+            });
+        }
+
+        function returnSuccessAfterClaimed () {
+            $rootScope.$emit('stopSpin');
+            SweetAlert.swal({
+                title: 'Mark as Claimed', 
+                text: 'success',
+                html: true,
+                customClass: 'alert-big'
+            });
+            ngDialog.closeAll();
+            $state.reload();
+        }
     }
 
     /**
