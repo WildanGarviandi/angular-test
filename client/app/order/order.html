@@ -1002,6 +1002,19 @@
                 </div>
             </div>
         </div>
+        <div class="clearfix"></div>
+        <div class="row no-margin">
+            <div class="label-payment">
+                POD :
+            </div>
+            <div class="col-xs-12 no-padding">
+                <a ng-if="urlUploadedPic" href="{{urlUploadedPic}}"
+                    target="_blank">Click to view</a>
+                <button class="btn btn-default" ngf-select="uploadPic($file)" ng-model="file" 
+                    ngf-model-invalid="errorFile" type="file" accept="image/*">Upload</button>
+            </div>
+        </div>
+        <br>
         <div class="row-fluid">
             <button class="btn btn-primary" ng-click="bulkReturnSender()">Mark as Return Sender</button>              
         </div>

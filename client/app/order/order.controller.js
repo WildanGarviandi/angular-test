@@ -119,6 +119,9 @@ angular.module('adminApp')
     $scope.urlToDownload.templateDeliveryAttempts = '../../assets/template/importUserOrderAttempt.xlsx';
     $scope.isNavigationOpen = true;
 
+    $scope.isModalOpen = {};
+    $scope.urlUploadedPic = '';
+
     /*
      * Style Responsive Height
      *
@@ -1246,6 +1249,8 @@ angular.module('adminApp')
      * @return void
      */
     $scope.returnCustomer = function () {
+        $scope.isModalOpen = {};
+        $scope.isModalOpen.returnCustomer = true;
         $rootScope.$emit('startSpin');
         getCompanies(true)
         .then(function () {
@@ -1263,10 +1268,23 @@ angular.module('adminApp')
      * @return {[type]}        [description]
      */
     $scope.selectDriverToReturnCustomer = function (driver) {
+        if (!$scope.urlUploadedPic) {
+            return SweetAlert.swal({
+                title: 'POD required',
+                text: 'POD cannot be empty',
+                type: 'error'
+            });
+        }
+
         var params = {
             driverID : driver.Driver.UserID,
             fleetManagerID: driver.Driver.Driver.FleetManager.UserID
         };
+
+        if ($scope.urlUploadedPic) {
+            params.pathPhotoPOD = $scope.urlUploadedPic;
+        }
+
         $rootScope.$emit('startSpin');
         ngDialog.close();
         Services2.returnCustomer({
@@ -2441,6 +2459,8 @@ angular.module('adminApp')
             return false;
         }
 
+        $scope.isModalOpen = {};
+        $scope.isModalOpen.returnSender = true;
         setSelectedOrder();
         $scope.returnedSenderOrders = [];
         $scope.listUserOrderNumbersSelected = $scope.selectedOrders.map(function (order) {
@@ -2468,6 +2488,14 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.bulkReturnSender = function() {
+        if (!$scope.urlUploadedPic) {
+            return SweetAlert.swal({
+                title: 'POD required',
+                text: 'POD cannot be empty',
+                type: 'error'
+            });
+        }
+
         SweetAlert.swal({
             title: 'Are you sure?',
             text: "Set status to return sender for " + (($scope.returnedSenderOrders.length > 1) ?  'these orders?' : 'this order?'),
@@ -2493,7 +2521,8 @@ angular.module('adminApp')
                 });
 
                 Services2.bulkSetReturnSender({
-                    orderData: params
+                    orderData: params,
+                    pathPhotoPOD: $scope.urlUploadedPic
                 }).$promise.then(function (result) {
                     driverName = '<p>' + driverName + '</p>';
                     var messages = driverName + '<table align="center" style="font-size: 12px;">';
@@ -2813,6 +2842,8 @@ angular.module('adminApp')
      *
      */
     $scope.openRerouteModal = function () {
+        $scope.isModalOpen = {};
+        $scope.isModalOpen.rerouteModal = true;
         $scope.rerouteData = {
             originHub: {},
             destinationHub: {}
@@ -2912,6 +2943,7 @@ angular.module('adminApp')
      */
     $scope.uploadPic = function (file) {
         $rootScope.$emit('startSpin');
+        $scope.urlUploadedPic = '';
         if (file) {
             $scope.f = file;
             file.upload = Upload.upload({
@@ -2922,7 +2954,10 @@ angular.module('adminApp')
                 $timeout(function () {
                     file.result = response.data;
                     if (response.data.data && !response.data.error) {
-                        $scope.customFleetData.receipt = response.data.data.Location;
+                        if ($scope.isModalOpen.rerouteModal) {
+                            $scope.customFleetData.receipt = response.data.data.Location;
+                        }
+                        $scope.urlUploadedPic = response.data.data.Location;
                     } else {
                         alert('Uploading picture failed. Please try again');
                         $scope.errorMsg = 'Uploading picture failed. Please try again';
