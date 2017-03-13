@@ -440,6 +440,26 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.codmanual', {
+            url: 'codmanuals',
+             views: {
+                'content@': {
+                    templateUrl: 'app/codmanual/codmanual.html',
+                    controller: 'CODManualCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.codmanual-details', {
+            url: 'codmanual/details/:paymentID',
+             views: {
+                'content@': {
+                    templateUrl: 'app/codmanual/codmanual_details.html',
+                    controller: 'CODManualCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.deliveryDistribution', {
             url: 'deliveryDistribution',
              views: {
