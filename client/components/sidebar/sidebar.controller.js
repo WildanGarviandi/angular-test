@@ -52,6 +52,7 @@ angular.module('adminApp')
                     returnedorders: { routes: ['/returned-orders'] },
                     cod: { routes: ['/codorders'] },
                     codpayment: { routes: ['/codpayments'] },
+                    codmanual: { routes: ['/codmanuals'] },
                 }
             },
             fleets : {

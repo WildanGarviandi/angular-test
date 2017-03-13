@@ -69,6 +69,12 @@
                         <a ng-show="features.order.bulk_set_pickup" ng-click="bulkSetPickupStatus()" class="">Mark as Pickup</a>
                     </li>
                     <li>
+                        <a ng-show="features.order.bulk_set_missing" ng-click="bulkSetMissing()" class="">Mark as Missing</a>
+                    </li>
+                    <li>
+                        <a ng-show="features.order.bulk_set_claimed" ng-click="bulkSetClaimed()" class="">Mark as Claimed</a>
+                    </li>
+                    <li>
                         <a ng-show="features.order.reroute" 
                             ng-click="openRerouteModal()">Reroute</a>
                     </li>
@@ -617,7 +623,6 @@
                     </a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                         <datetimepicker 
-                            data-before-render="beforeRender($dates)"
                             data-ng-model="importedDatePicker" 
                             data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"
                             data-on-set-time="onTimeSet(newDate, oldDate)"/>
@@ -1002,6 +1007,19 @@
                 </div>
             </div>
         </div>
+        <div class="clearfix"></div>
+        <div class="row no-margin">
+            <div class="label-payment">
+                POD :
+            </div>
+            <div class="col-xs-12 no-padding">
+                <a ng-if="urlUploadedPic" href="{{urlUploadedPic}}"
+                    target="_blank">Click to view</a>
+                <button class="btn btn-default" ngf-select="uploadPic($file)" ng-model="file" 
+                    ngf-model-invalid="errorFile" type="file" accept="image/*">Upload</button>
+            </div>
+        </div>
+        <br>
         <div class="row-fluid">
             <button class="btn btn-primary" ng-click="bulkReturnSender()">Mark as Return Sender</button>              
         </div>
@@ -1251,5 +1269,42 @@
                 ng-disabled="!rerouteHubData.destinationHub.id"
                     >Reroute Hub</button>
         </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="setMarkAsClaimedModal">
+    <div class="header-wrapper">
+        <h3 class="no-margin">Mark as Claimed</h3>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <form class="form-horizontal">
+            <br>
+            <div class="form-group no-margin">
+                <div class="col-md-12 no-padding">
+                    <p>Status:</p>
+                </div>
+                <div class="col-md-4 no-padding">
+                    <p ng-click="setClaimedCheckbox()">
+                        <input type="checkbox" ng-model="claimed.vendor">
+                        Claimed Vendor
+                    </p>
+                </div>
+                <div class="col-md-4 no-padding">
+                    <p ng-click="setClaimedCheckbox()">
+                        <input type="checkbox" ng-model="claimed.merchant">
+                        Claimed Merchant
+                    </p>
+                </div>
+                <div class="col-md-4 no-padding">
+                    <p ng-click="setClaimedAllCheckbox()">
+                        <input type="checkbox" ng-model="claimed.all">
+                        Claimed All
+                    </p>
+                </div>
+                <div class="col-md-12 no-padding">
+                    <button class="btn btn-primary" ng-click="setMarkAsClaimed()">Submit</button>   
+                </div>
+            </div>
+        </form>
     </div>
 </script>

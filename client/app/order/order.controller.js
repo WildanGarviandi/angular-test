@@ -76,6 +76,14 @@ angular.module('adminApp')
         }
     ];
 
+    $scope.claimed = {};
+    $scope.claimed.all = false;
+    $scope.claimed.vendor = false;
+    $scope.claimed.merchant = false;
+    $scope.claimed.orderIDs = [];
+    $scope.claimed.orderIDsVendor = [];
+    $scope.claimed.orderIDsMerchant = [];
+
     $scope.pickupDatePicker = {
         startDate: $location.search().startPickup || null,
         endDate: $location.search().endPickup || null
@@ -118,6 +126,9 @@ angular.module('adminApp')
     $scope.urlToDownload = {};
     $scope.urlToDownload.templateDeliveryAttempts = '../../assets/template/importUserOrderAttempt.xlsx';
     $scope.isNavigationOpen = true;
+
+    $scope.isModalOpen = {};
+    $scope.urlUploadedPic = '';
 
     /*
      * Style Responsive Height
@@ -197,6 +208,10 @@ angular.module('adminApp')
     $scope.defaultReturnReason = config.defaultReturnReason;
     $scope.canChangeToPickup = config.canChangeToPickup;
     $scope.canSetHub = config.canSetHub;
+    $scope.canChangeToMissing = config.canChangeToMissing;
+    $scope.canChangeToClaimed = config.canChangeToClaimed;
+    $scope.canChangeToClaimedVendor = config.canChangeToClaimedVendor;
+    $scope.canChangeToClaimedMerchant = config.canChangeToClaimedMerchant;
 
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
@@ -613,6 +628,7 @@ angular.module('adminApp')
             $scope.order.PickupType = (lodash.find($scope.pickupTypes, {value: $scope.order.PickupType})).key;
             $scope.canBeReturned = ($scope.order.OrderStatus.OrderStatusID === 15 && $scope.features.order.return_sender);
             $scope.canBeCopied = ($scope.order.OrderStatus.OrderStatusID === 13 && $scope.features.order.copy_cancelled);
+            $scope.canBeClaimed = ($scope.canChangeToClaimed.indexOf($scope.order.OrderStatus.OrderStatusID) >= 0);
             $scope.canBeReassigned = false;
             $scope.reassignableOrderStatus.forEach(function (status) {
                 if ($scope.order.OrderStatus.OrderStatusID === status && $scope.features.order.reassign_driver) { 
@@ -634,7 +650,8 @@ angular.module('adminApp')
             if (!$scope.canBeCopied && 
                 !$scope.canBeReassigned && 
                 !$scope.canBeCancelled &&
-                !$scope.canBeDelivered) {
+                !$scope.canBeDelivered &&
+                !$scope.canBeClaimed) {
                 $scope.noAction = true;
             }
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
@@ -653,6 +670,8 @@ angular.module('adminApp')
                     $scope.order.CurrentRouteDetail = "Arrived at " + destination
                 }
             }
+            $scope.isCurrentStatus = {};
+            $scope.isCurrentStatus.returnedSender = ($scope.order.OrderStatus.OrderStatusID === 16);
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
@@ -1063,8 +1082,12 @@ angular.module('adminApp')
         };
         
         lodash.forEach(data, function(val) {
-            val.merchantID = $scope.merchant.value;
-            val.fleetManagerID = $scope.fleet.User.UserID;
+            if ($scope.showMerchantListOnImport) {
+                val.merchantID = $scope.merchant.value;
+            }
+            if ($scope.showFleetListOnImport) {
+                val.fleetManagerID = $scope.fleet.User.UserID;
+            }
             if ($scope.readyForPickupOnImport) {
                 val.isReadyForPickup = true;
             }
@@ -1244,6 +1267,8 @@ angular.module('adminApp')
      * @return void
      */
     $scope.returnCustomer = function () {
+        $scope.isModalOpen = {};
+        $scope.isModalOpen.returnCustomer = true;
         $rootScope.$emit('startSpin');
         getCompanies(true)
         .then(function () {
@@ -1261,10 +1286,23 @@ angular.module('adminApp')
      * @return {[type]}        [description]
      */
     $scope.selectDriverToReturnCustomer = function (driver) {
+        if (!$scope.urlUploadedPic) {
+            return SweetAlert.swal({
+                title: 'POD required',
+                text: 'POD cannot be empty',
+                type: 'error'
+            });
+        }
+
         var params = {
             driverID : driver.Driver.UserID,
             fleetManagerID: driver.Driver.Driver.FleetManager.UserID
         };
+
+        if ($scope.urlUploadedPic) {
+            params.pathPhotoPOD = $scope.urlUploadedPic;
+        }
+
         $rootScope.$emit('startSpin');
         ngDialog.close();
         Services2.returnCustomer({
@@ -2439,6 +2477,8 @@ angular.module('adminApp')
             return false;
         }
 
+        $scope.isModalOpen = {};
+        $scope.isModalOpen.returnSender = true;
         setSelectedOrder();
         $scope.returnedSenderOrders = [];
         $scope.listUserOrderNumbersSelected = $scope.selectedOrders.map(function (order) {
@@ -2466,6 +2506,14 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.bulkReturnSender = function() {
+        if (!$scope.urlUploadedPic) {
+            return SweetAlert.swal({
+                title: 'POD required',
+                text: 'POD cannot be empty',
+                type: 'error'
+            });
+        }
+
         SweetAlert.swal({
             title: 'Are you sure?',
             text: "Set status to return sender for " + (($scope.returnedSenderOrders.length > 1) ?  'these orders?' : 'this order?'),
@@ -2491,7 +2539,8 @@ angular.module('adminApp')
                 });
 
                 Services2.bulkSetReturnSender({
-                    orderData: params
+                    orderData: params,
+                    pathPhotoPOD: $scope.urlUploadedPic
                 }).$promise.then(function (result) {
                     driverName = '<p>' + driverName + '</p>';
                     var messages = driverName + '<table align="center" style="font-size: 12px;">';
@@ -2793,6 +2842,285 @@ angular.module('adminApp')
         });
     }
 
+    /**
+     * Set multiple order status to MISSING
+     * @return {void}
+     */
+    
+    $scope.bulkSetMissing = function () {
+        var totalSelected = 0;
+        var selectedOrder = 0;
+        var orderIDs = [];
+        var prohibitedIDs = [];
+        $scope.displayed.forEach(function (val) {
+            if (val.Selected) { 
+                if ($scope.canChangeToMissing.indexOf(val.OrderStatus.OrderStatusID) >= 0) {
+                    totalSelected++; 
+                    orderIDs.push(val.UserOrderID);
+                } else {
+                    prohibitedIDs.push(val);
+                }
+                selectedOrder++;
+            }
+        });
+        if (selectedOrder === 0) {
+            SweetAlert.swal('No orders selected');
+            return;
+        }
+        if (prohibitedIDs.length > 0) {            
+            var messages = '';
+            messages += 'This order has status which is prohibited <table align="center">';
+            if (prohibitedIDs.length > 1) {
+                messages = 'These orders have status which are prohibited <table align="center">';
+            }
+            prohibitedIDs.forEach(function (e) {
+                messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
+                            ' : </td><td class="text-left"> ' + e.OrderStatus.OrderStatus + '</td></tr>';
+            })
+            messages += '</table>';
+            SweetAlert.swal({
+                title: 'Can not mark as MISSING',
+                text: messages,
+                type: 'error',
+                html: true
+            });
+            return;
+        }
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Mark as MISSING for " + totalSelected + " orders ?",
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                Services2.bulkSetMissingStatus({
+                    orderIDs: orderIDs
+                }).$promise.then(function (result) {
+                    var messages = 'success';
+                    if (result.data.error) {
+                        messages = '<table align="center">';
+                        result.data.error.forEach(function (e) {
+                            messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
+                                        ' : </td><td class="text-left"> ' + e.error.message + '</td></tr>';
+                        })
+                        messages += '</table>';
+                        throw {
+                            data: {
+                                message: result.data.message,
+                                error: {
+                                    message: messages
+                                }
+                            }
+                        }
+                    }
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: 'Mark as Missing', 
+                        text: messages,
+                        html: true,
+                        customClass: 'alert-big'
+                    });
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: (e.data.message) ? e.data.message : 'Failed in marking status as MISSING', 
+                        text: e.data.error.message, 
+                        type: "error",
+                        html: true,
+                        customClass: 'alert-big'
+                    }, function (isConfirm) {
+                        if (isConfirm) {
+                            $state.reload();
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    $scope.setClaimedAllCheckbox = function () {
+        $scope.claimed.vendor = $scope.claimed.all;
+        $scope.claimed.merchant = $scope.claimed.all;
+    }
+
+    $scope.setClaimedCheckbox = function () {
+        $scope.claimed.all = false;
+        if ($scope.claimed.merchant && $scope.claimed.vendor) {
+            $scope.claimed.all = true;
+        }
+    }
+
+    /**
+     * Check single order status to CLAIMED
+     * @return {void}
+     */
+    $scope.setClaimed = function () {
+        var singleData = $scope.order;
+        var orderIDs = [];
+        var orderIDsVendor = [];
+        var orderIDsMerchant = [];
+
+        orderIDs.push(singleData.UserOrderID);
+        if ($scope.canChangeToClaimedVendor.indexOf(singleData.OrderStatus.OrderStatusID) >= 0) {
+            orderIDsVendor.push(singleData.UserOrderID);
+        }
+        if ($scope.canChangeToClaimedMerchant.indexOf(singleData.OrderStatus.OrderStatusID) >= 0) {
+            orderIDsMerchant.push(singleData.UserOrderID);
+        }
+        $scope.claimed.orderIDs = orderIDs;
+        $scope.claimed.orderIDsVendor = orderIDsVendor;
+        $scope.claimed.orderIDsMerchant = orderIDsMerchant;
+        ngDialog.open({
+            template: 'setMarkAsClaimedModal',
+            scope: $scope,
+            className: 'ngdialog-theme-default reassign-fleet'
+        });
+    }
+
+    /**
+     * Check multiple order status to CLAIMED
+     * @return {void}
+     */
+    $scope.bulkSetClaimed = function () {
+        var totalSelected = 0;
+        var selectedOrder = 0;
+        var messages = '';
+        var orderIDs = [];
+        var orderIDsVendor = [];
+        var orderIDsMerchant = [];
+        var prohibitedIDs = [];
+
+        $scope.displayed.forEach(function (val) {
+            if (val.Selected) { 
+                if ($scope.canChangeToClaimed.indexOf(val.OrderStatus.OrderStatusID) >= 0) {
+                    totalSelected++; 
+                    orderIDs.push(val.UserOrderID);
+                    if ($scope.canChangeToClaimedVendor.indexOf(val.OrderStatus.OrderStatusID) >= 0) {
+                        orderIDsVendor.push(val.UserOrderID);
+                    }
+                    if ($scope.canChangeToClaimedMerchant.indexOf(val.OrderStatus.OrderStatusID) >= 0) {
+                        orderIDsMerchant.push(val.UserOrderID);
+                    }
+                } else {
+                    prohibitedIDs.push(val);
+                }
+                selectedOrder++;
+            }
+        });
+
+        $scope.claimed.orderIDs = orderIDs;
+        $scope.claimed.orderIDsVendor = orderIDsVendor;
+        $scope.claimed.orderIDsMerchant = orderIDsMerchant;
+        if (selectedOrder === 0) {
+            SweetAlert.swal('No orders selected');
+            return;
+        }
+        if (prohibitedIDs.length > 0) {
+            messages += 'This order has status which is prohibited <table align="center">';
+            if (prohibitedIDs.length > 1) {
+                messages = 'These orders have status which are prohibited <table align="center">';
+            }
+            prohibitedIDs.forEach(function (e) {
+                messages += '<tr><td class="text-right">' + e.UserOrderNumber + 
+                            ' : </td><td class="text-left"> ' + e.OrderStatus.OrderStatus + '</td></tr>';
+            })
+            messages += '</table>';
+            SweetAlert.swal({
+                title: 'Can not mark as CLAIMED',
+                text: messages,
+                type: 'error',
+                html: true
+            });
+            return;
+        }
+
+        ngDialog.open({
+            template: 'setMarkAsClaimedModal',
+            scope: $scope,
+            className: 'ngdialog-theme-default reassign-fleet'
+        });
+    }
+
+    /**
+     * Set multiple order status to CLAIMED
+     * @return {void}
+     */
+    $scope.setMarkAsClaimed = function () {
+        if (!$scope.claimed.vendor && !$scope.claimed.merchant) {
+            return SweetAlert.swal({
+                title: 'Claimed Status',
+                text: 'Must choose at least one status',
+                type: 'error',
+                html: true
+            });
+        }
+
+        $rootScope.$emit('startSpin');
+        if ($scope.claimed.vendor) {
+            Services2.bulkSetClaimedVendor({
+                orderIDs: $scope.claimed.orderIDsVendor
+            }).$promise.then(function (result) {
+                if ($scope.claimed.merchant) {
+                    bulkSetClaimedMerchant();
+                } else {
+                    returnSuccessAfterClaimed();
+                }
+            }).catch(function (e) {
+                $rootScope.$emit('stopSpin');
+                SweetAlert.swal({
+                    title: (e.data.message) ? e.data.message : 'Failed in marking status as CLAIMED VENDOR', 
+                    text: e.data.error.message, 
+                    type: "error",
+                    html: true,
+                    customClass: 'alert-big'
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        ngDialog.closeAll();
+                        $state.reload();
+                    }
+                });
+            });
+        } else {
+            bulkSetClaimedMerchant();
+        }
+
+        function bulkSetClaimedMerchant () {
+            Services2.bulkSetClaimedMerchant({
+                orderIDs: $scope.claimed.orderIDsMerchant
+            }).$promise.then(function (result) {
+                returnSuccessAfterClaimed();
+            }).catch(function (e) {
+                $rootScope.$emit('stopSpin');
+                SweetAlert.swal({
+                    title: (e.data.message) ? e.data.message : 'Failed in marking status as CLAIMED MERCHANT', 
+                    text: e.data.error.message, 
+                    type: "error",
+                    html: true,
+                    customClass: 'alert-big'
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        ngDialog.closeAll();
+                        $state.reload();
+                    }
+                });
+            });
+        }
+
+        function returnSuccessAfterClaimed () {
+            $rootScope.$emit('stopSpin');
+            SweetAlert.swal({
+                title: 'Mark as Claimed', 
+                text: 'success',
+                html: true,
+                customClass: 'alert-big'
+            });
+            ngDialog.closeAll();
+            $state.reload();
+        }
+    }
 
     /**
      * Set all seleted order to scope
@@ -2811,6 +3139,8 @@ angular.module('adminApp')
      *
      */
     $scope.openRerouteModal = function () {
+        $scope.isModalOpen = {};
+        $scope.isModalOpen.rerouteModal = true;
         $scope.rerouteData = {
             originHub: {},
             destinationHub: {}
@@ -2910,6 +3240,7 @@ angular.module('adminApp')
      */
     $scope.uploadPic = function (file) {
         $rootScope.$emit('startSpin');
+        $scope.urlUploadedPic = '';
         if (file) {
             $scope.f = file;
             file.upload = Upload.upload({
@@ -2920,7 +3251,10 @@ angular.module('adminApp')
                 $timeout(function () {
                     file.result = response.data;
                     if (response.data.data && !response.data.error) {
-                        $scope.customFleetData.receipt = response.data.data.Location;
+                        if ($scope.isModalOpen.rerouteModal) {
+                            $scope.customFleetData.receipt = response.data.data.Location;
+                        }
+                        $scope.urlUploadedPic = response.data.data.Location;
                     } else {
                         alert('Uploading picture failed. Please try again');
                         $scope.errorMsg = 'Uploading picture failed. Please try again';

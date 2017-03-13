@@ -413,6 +413,14 @@
     background-image: url('../../assets/images/nav-admin.png');
 }
 
+.side-cod-manual-confirmation-image {
+    background-image: url('../../assets/images/nav-cod-manual-confirmation.png');
+}
+
+.side-cod-manual-confirmation-image.active {
+    background-image: url('../../assets/images/nav-cod-manual-confirmation-active.png');
+}
+
 .menu-admin {
     background: #7a4078;
 }

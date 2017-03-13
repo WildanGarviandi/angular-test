@@ -53,6 +53,11 @@
                         </li>
                         <li role="menuitem">
                             <a href="#"
+                            ng-click="setClaimed()"
+                            ng-if="canBeClaimed">Mark as Claimed</a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#"
                             ng-if="noAction">No action available</a>
                         </li>
                     </ul>
@@ -351,26 +356,24 @@
                         </div>
                     </uib-accordion-group>   
                     </uib-accordion>                        
-                </div> 
-                <div ng-show="order.UserOrderReturneds.length > 0" ng-repeat="userOrderReturned in order.UserOrderReturneds" class="row-fluid order-detail-from-address">
+                </div>
+                <div ng-show="isCurrentStatus.returnedSender" class="row-fluid order-detail-from-address">
                     <uib-accordion>
-                        <uib-accordion-group heading="POD - {{order.OrderStatus.OrderStatus}} {{$index + 1}}:">
-                            <div class="order-status-container-body">
-                                <span>Staff Name</span> : {{userOrderReturned.RecipientName}}
-                            </div>
-                            <div class="order-status-container-body">
-                                <span>Date</span> : {{userOrderReturned.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}
-                            </div>
-                            <div class="order-status-container-body col-sm-6 text-center">
-                                Signature :
-                                <div>
-                                    <img class="failed-image" src="{{userOrderReturned.SignatureURL}}">
+                        <uib-accordion-group heading="POD - {{order.OrderStatus.OrderStatus}}:">
+                            <div class="row no-margin">
+                                <div class="col-sm-4 no-padding">
+                                    Date 
                                 </div>
-                            </div> 
-                            <div class="order-status-container-body col-sm-6 text-center">
-                                Photo :
-                                <div>
-                                    <img class="failed-image" src="{{userOrderReturned.ProofOfReturnURL}}">
+                                <div class="col-sm-8">
+                                    {{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                                </div>
+                            </div>
+                            <div class="row no-margin">
+                                <div class="col-sm-4 no-padding">
+                                    Photo 
+                                </div>
+                                <div class="col-sm-8">
+                                    <img class="failed-image" ng-if="order.PathPhotoPODReturnCustomer" src="{{order.PathPhotoPODReturnCustomer}}">
                                 </div>
                             </div>
                         </uib-accordion-group>
@@ -931,6 +934,18 @@
         <div>
             <p>You will return this order to customer / sender ? This process can't be reversed.</p>
         </div>
+        <div class="row no-margin">
+            <div class="label-payment">
+                POD :
+            </div>
+            <div class="col-xs-12 no-padding">
+                <a ng-if="urlUploadedPic" href="{{urlUploadedPic}}"
+                    target="_blank">Click to view</a>
+                <button class="btn btn-default" ngf-select="uploadPic($file)" ng-model="file" 
+                    ngf-model-invalid="errorFile" type="file" accept="image/*">Upload</button>
+            </div>
+        </div>
+        <br>
         <ui-select ng-model="company" 
             theme="selectize" 
             on-select="chooseCompany($item)" 
@@ -1001,5 +1016,41 @@
         <div class="row-fluid">
             <a class="address-buttons" ng-click="updateCod()">Update</a>
         </div>
+    </div>
+</script>
+<script type="text/ng-template" id="setMarkAsClaimedModal">
+    <div class="header-wrapper">
+        <h3 class="no-margin">Mark as Claimed</h3>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <form class="form-horizontal">
+            <br>
+            <div class="form-group no-margin">
+                <div class="col-md-12 no-padding">
+                    <p>Status:</p>
+                </div>
+                <div class="col-md-4 no-padding" ng-show="claimed.orderIDsVendor.length > 0">
+                    <p ng-click="setClaimedCheckbox()">
+                        <input type="checkbox" ng-model="claimed.vendor">
+                        Claimed Vendor
+                    </p>
+                </div>
+                <div class="col-md-4 no-padding" ng-show="claimed.orderIDsMerchant.length > 0">
+                    <p ng-click="setClaimedCheckbox()">
+                        <input type="checkbox" ng-model="claimed.merchant">
+                        Claimed Merchant
+                    </p>
+                </div>
+                <div class="col-md-4 no-padding">
+                    <p ng-click="setClaimedAllCheckbox()">
+                        <input type="checkbox" ng-model="claimed.all">
+                        Claimed All
+                    </p>
+                </div>
+                <div class="col-md-12 no-padding">
+                    <button class="btn btn-primary" ng-click="setMarkAsClaimed()">Submit</button>   
+                </div>
+            </div>
+        </form>
     </div>
 </script>

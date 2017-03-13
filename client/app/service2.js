@@ -722,6 +722,27 @@ angular.module('adminApp')
                 controller: 'bulk-price'
             }
         },
+        bulkSetMissingStatus: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-missing'
+            }
+        },
+        bulkSetClaimedVendor: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-claimed-vendor'
+            }
+        },
+        bulkSetClaimedMerchant: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-claimed-merchant'
+            }
+        },
         getAdminRoles: {
             method: 'GET',
             params: {

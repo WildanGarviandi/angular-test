@@ -1,0 +1,93 @@
+.ngdialog.ngdialog-theme-default.create-cod-payment-popup .ngdialog-content {
+    width: 650px;
+    margin-top: -120px;
+}
+
+.label-payment {
+    float: left;
+    width: 170px;
+}
+
+.input-payment {
+    float: left;
+    width: 300px;
+    margin-left: 10px;
+}
+
+.label-amount {
+    float: left;
+    width: 100px;
+    margin-left: 300px;
+    margin-bottom: 20px;
+}
+
+.text-amount {
+    font-size: 40px;
+    float: left;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.button-payment {
+    margin-top: 20px;
+    padding: 10px;
+    text-decoration: none;
+    text-transform: uppercase;
+    text-align: center;
+    background: #ff5c61;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    padding-top: 10px;
+    font-size: 13px;
+    height: 35px;
+}
+
+.content-payment {
+    height: 380px;
+    overflow-y: scroll;
+}
+
+.panel-title > a:hover {
+    color: #ABABAB;
+}
+
+.codpayment-header {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px !important;
+    padding-top: 10px !important;
+}
+
+.codpayment-header .border-right {
+    border-right: 1px solid #ccc;
+}
+
+#codpayment-navigation {
+    background: #7a4078;
+    color: #fff;
+}
+
+#codpayment-navigation .panel-heading {
+    padding: 8px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    background-color: #fff;
+}
+
+#codpayment-navigation #eds-textarea {
+    color: #000;
+}
+
+.table-border {
+    border: 2px solid #e8e8e8;
+}
+
+.no-padding-left {
+    padding-left: 0px !important;
+}
+
+#CODPaymentTable .checkbox-header {
+    width: 20px !important;
+}
