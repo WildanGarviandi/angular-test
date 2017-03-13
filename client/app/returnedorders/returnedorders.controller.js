@@ -61,7 +61,30 @@ angular.module('adminApp')
         endDate: $location.search().endDropoff || null
     };
 
+    $scope.createdDatePicker = {
+        startDate: $location.search().startCreatedDate || null,
+        endDate: $location.search().endCreatedDate || null
+    };
+
     $scope.importedDatePicker = new Date();
+
+    /*
+     * Style Responsive Height
+     *
+    */
+    var orderNavigationHeight = $('#return-orders-navigation').height();
+    var addInitHeight = 170;
+    var minInitHeight = 110;
+    var externalHeightOnResize = 235;
+    $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + addInitHeight);
+    $scope.orderListHeight = $scope.tableHeight - minInitHeight;
+    $(window).resize(function(){
+        $scope.$apply(function(){
+            orderNavigationHeight = $('#return-orders-navigation').height();
+            $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + externalHeightOnResize);
+            $scope.orderListHeight = $scope.tableHeight - minInitHeight;
+        });
+    });
 
     /*
      * Set picker name for filter
@@ -112,10 +135,6 @@ angular.module('adminApp')
 
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
-    $scope.createdDatePicker = {
-        startDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() - 7),
-        endDate: new Date()
-    };
 
     $scope.maxExportDate = new Date();
  
@@ -123,9 +142,9 @@ angular.module('adminApp')
     $scope.isEndDatePicker = false;
 
     // Generated scope:
-    // PickupDatePicker, DropoffDatePicker
-    // startPickup, endPickup, startDropoff, endDropoff
-    ['Pickup', 'Dropoff'].forEach(function (val) {
+    // PickupDatePicker, DropoffDatePicker, CreatedDatePicker
+    // startPickup, endPickup, startDropoff, endDropoff, startCreatedDate, endCreatedDate
+    ['Pickup', 'Dropoff', 'Created'].forEach(function (val) {
         $scope.$watch(
             (val.toLowerCase() + 'DatePicker'),
             function (date) {
@@ -228,6 +247,12 @@ angular.module('adminApp')
         if ($scope.dropoffDatePicker.endDate) {
             $scope.dropoffDatePicker.endDate = new Date($scope.dropoffDatePicker.endDate);
         }
+        if ($scope.createdDatePicker.startDate) {
+            $scope.createdDatePicker.startDate = new Date($scope.createdDatePicker.startDate);     
+        }
+        if ($scope.createdDatePicker.endDate) {
+            $scope.createdDatePicker.endDate = new Date($scope.createdDatePicker.endDate);
+        }
 
         var paramsQuery = {
             'order': 'queryUserOrderNumber',
@@ -249,7 +274,7 @@ angular.module('adminApp')
             $scope[val.model] = lodash.find($scope[val.collection], findObject);
         });
 
-        ['Pickup', 'Dropoff'].forEach(function (data) {
+        ['Pickup', 'Dropoff', 'Created'].forEach(function (data) {
             $scope[data.toLowerCase() + 'DatePicker'].startDate = 
                     ($location.search()['start' + data]) ?
                     new Date($location.search()['start' + data]) :
@@ -279,7 +304,9 @@ angular.module('adminApp')
             startPickup: $scope.pickupDatePicker.startDate,
             endPickup: $scope.pickupDatePicker.endDate,
             startDropoff: $scope.dropoffDatePicker.startDate,
-            endDropoff: $scope.dropoffDatePicker.endDate
+            endDropoff: $scope.dropoffDatePicker.endDate,
+            startCreatedDate: $scope.createdDatePicker.startDate,
+            endCreatedDate: $scope.createdDatePicker.endDate
         }
         Services2.getReturnedOrders(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
