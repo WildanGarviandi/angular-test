@@ -453,7 +453,7 @@
             </tbody>
         </table>
 
-        <div ng-show="childrenWebstore.length > 0" class="header-edit-webstore">
+        <div ng-show="!parentWebstore" class="header-edit-webstore">
             <h5>
                 <b>Webstore Children</b> 
                 <span>({{childrenWebstore.length}} Children)</span>
@@ -498,10 +498,11 @@
                 </div>
             </div>
         </div>
-        <div ng-show="childrenWebstore.length > 0" class="table table-responsive">
+        <div ng-show="!parentWebstore" class="table table-responsive">
             <table t-table="childrenWebstore" class="table table-hover webstore-table">
                 <thead class="hubs-table-head">
                     <tr>
+                        <th>Webstore ID</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Mobile</th>
@@ -510,8 +511,14 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody ng-if="!childrenWebstore.length">
+                    <tr>
+                        <td colspan="7" class="text-center">No Record Found</td>
+                    </tr>
+                </tbody>
+                <tbody ng-if="childrenWebstore.length">
                     <tr ng-repeat="children in childrenWebstore | limitTo: offset - childrenWebstore.length | limitTo: 5">
+                        <td class="text-center">{{children.WebstoreCompany.WebstoreID}}</td>
                         <td>{{children.FirstName}} {{children.LastName}}</td>
                         <td>{{children.Email}}</td>
                         <td>{{children.PhoneNumber}}</td>
@@ -527,7 +534,7 @@
                 </tbody>
                 <tfoot ng-show="childrenWebstore.length > 5">
                     <tr class="paginationBar">
-                        <td colspan="5">
+                        <td colspan="7">
                             <button 
                                 ng-click="paginationChildWebstore(0)" 
                                 class="btn btn-sm btn-default">First</button>
