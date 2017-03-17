@@ -469,5 +469,15 @@ angular.module('adminApp')
                 }
             },
             authenticate: true
+        })
+        .state('app.export', {
+            url: 'export',
+             views: {
+                'content@': {
+                    templateUrl: 'app/export/export.html',
+                    controller: 'ExportCtrl'
+                }
+            },
+            authenticate: true
         });
     });

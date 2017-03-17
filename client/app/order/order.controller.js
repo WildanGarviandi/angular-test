@@ -22,7 +22,8 @@ angular.module('adminApp')
             $q,
             SweetAlert,
             $cookies,
-            $timeout
+            $timeout,
+            $httpParamSerializer
         ) {
 
     Auth.getCurrentUser().then(function(data) {
@@ -1730,6 +1731,12 @@ angular.module('adminApp')
             var url = 'order/export/combined';
         }
         
+        if (type == 'standard' || type == 'uploadable') {
+            var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + $scope.orderFound;
+            $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+            return;
+        }
+
         var fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
         var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
            
@@ -1762,6 +1769,11 @@ angular.module('adminApp')
             var url = 'order/export/combined';
         }
 
+        if (type == 'standard' || type == 'uploadable') {
+            var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + $scope.orderFound;
+            $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+            return;
+        }
         
         var fileName = 'export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
         var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';

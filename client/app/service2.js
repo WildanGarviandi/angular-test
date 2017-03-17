@@ -755,6 +755,22 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'redirect'
             }
+        },
+        exportStandardFormatJson: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'combinedJson'
+            }
+        },
+        exportUploadableFormatJson: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'uploadableJson'
+            }
         }
     });
 });
