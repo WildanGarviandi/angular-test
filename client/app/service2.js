@@ -776,6 +776,15 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'redirect'
             }
+        },
+        setRecpientPhoto: {
+            method: 'POST',
+            url: config.url + ':module/:controller/:orderID',
+            params: {
+                module: 'order',
+                controller: 'upload-pod',
+                orderID: null
+            }
         }
     });
 });

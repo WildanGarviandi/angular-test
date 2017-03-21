@@ -629,6 +629,7 @@ angular.module('adminApp')
             $scope.canBeReturned = ($scope.order.OrderStatus.OrderStatusID === 15 && $scope.features.order.return_sender);
             $scope.canBeCopied = ($scope.order.OrderStatus.OrderStatusID === 13 && $scope.features.order.copy_cancelled);
             $scope.canBeClaimed = ($scope.canChangeToClaimed.indexOf($scope.order.OrderStatus.OrderStatusID) >= 0);
+            $scope.canUploadPOD = ($scope.order.OrderStatus.OrderStatusID === 5 && $scope.features.order.uploadPOD);
             $scope.canBeReassigned = false;
             $scope.reassignableOrderStatus.forEach(function (status) {
                 if ($scope.order.OrderStatus.OrderStatusID === status && $scope.features.order.reassign_driver) { 
@@ -651,7 +652,8 @@ angular.module('adminApp')
                 !$scope.canBeReassigned && 
                 !$scope.canBeCancelled &&
                 !$scope.canBeDelivered &&
-                !$scope.canBeClaimed) {
+                !$scope.canBeClaimed &&
+                !$scope.canUploadPOD) {
                 $scope.noAction = true;
             }
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
@@ -1267,6 +1269,7 @@ angular.module('adminApp')
      * @return void
      */
     $scope.returnCustomer = function () {
+        $scope.urlUploadedPic = '';
         $scope.isModalOpen = {};
         $scope.isModalOpen.returnCustomer = true;
         $rootScope.$emit('startSpin');
@@ -3121,6 +3124,52 @@ angular.module('adminApp')
             $state.reload();
         }
     }
+
+    /**
+     * Modal to Add POD of single order status is DELIVERED 
+     * @return {void}
+     */
+    $scope.openUploadPODmodal = function () {
+        $scope.urlUploadedPic = '';
+        ngDialog.open({
+            template: 'uploadPODModal',
+            scope: $scope,
+            className: 'ngdialog-theme-default reassign-fleet'
+        });
+    }
+
+    /**
+     * Pass RecipientPhoto to request to create or update RecipientPhoto in Order Detail
+     * @return {[type]}        [description]
+     */
+    $scope.uploadPOD = function () {
+        if (!$scope.urlUploadedPic) {
+            return SweetAlert.swal({
+                title: 'POD required',
+                text: 'POD cannot be empty',
+                type: 'error'
+            });
+        }
+
+        var params = {
+            podUrl: $scope.urlUploadedPic
+        };
+
+        $rootScope.$emit('startSpin');
+        ngDialog.close();
+        Services2.setRecpientPhoto({
+            orderID: $scope.order.UserOrderID
+        }, params).$promise.then(function (result) {
+            $rootScope.$emit('stopSpin');
+            SweetAlert.swal('POD uploaded successfully');
+            $state.reload();
+        })
+        .catch(function (e) {
+            $rootScope.$emit('stopSpin');
+            SweetAlert.swal('Failed in upload POD', e.data.error.message);
+            $state.reload();
+        });
+    };
 
     /**
      * Set all seleted order to scope
