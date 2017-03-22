@@ -1076,8 +1076,27 @@ angular.module('adminApp')
 
         var errorFunction = function(error) {
             var errorMessage = error.data.error.message;
-            if (!(errorMessage instanceof Array)) {
-                $scope.importOrderError.push({list: [error.data.error.message]});
+            try {
+                var errorMessageParse = JSON.parse(errorMessage);
+                
+                if (errorMessageParse && errorMessageParse.length > 0) {
+                    errorMessageParse.forEach(function(order, index){
+                        var row = index + 2;
+                        $scope.importOrderError.push({row: row, list: order.error});
+                    });
+                }
+            } catch (e) {
+                if (errorMessage instanceof Array) {
+                    errorMessage.forEach(function(order, index){
+                        if (order.order) {
+                            $scope.importOrderError.push({order: order.order, reason: order.reason});
+                        }
+                    });
+                }
+
+                if (!(errorMessage instanceof Array)) {
+                    $scope.importOrderError.push({format: errorMessage});
+                }
             }
         };
         
