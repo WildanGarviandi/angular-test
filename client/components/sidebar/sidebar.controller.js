@@ -63,6 +63,9 @@ angular.module('adminApp')
             },
             admin: {
                 routes: ['/admin']
+            },
+            finance: {
+                routes: ['/finance']
             }
         };
 

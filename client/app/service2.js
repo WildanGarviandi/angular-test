@@ -776,6 +776,36 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'redirect'
             }
+        },
+        getListPayoutAndInvoice: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'order-completed'
+            }
+        },
+        getDetailPayoutAndInvoice: {
+            method: 'GET',
+            url: config.url + ':module/:controller/:orderID',
+            params: {
+                module: 'order',
+                controller: 'order-complete-detail',
+                orderID: null
+            }
+        },
+        orderUpdatePriceAuto: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'update-price-auto'
+            }
+        },
+        orderUpdatePriceManual: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'update-price-manual'
+            }
         }
     });
 });

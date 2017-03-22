@@ -340,5 +340,11 @@
             "key": "DELETED",
             "value": 3
         }
+    ],
+    "financeFeature": [
+        {
+            "key": "Payout and invoicing",
+            "value": 1
+        }
     ]
 }

@@ -1,0 +1,45 @@
+<div class="btn-group col-md-12 no-padding">
+    <button
+        class="btn btn-sm button-label btn-default col-md-12 dropdown-toggle pl0"
+        data-toggle="dropdown"
+        style="padding-right: 22px;">
+        {{currentItemLabel}}
+    </button>
+    <button
+        class="btn btn-sm btn-default dropdown-toggle"
+        data-toggle="dropdown"
+        style="position: absolute; right: 0px">
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu filter-dropdown-checkbox no-padding" style="max-height:300px;overflow-y:scroll">
+        <li ng-click="cancelClose($event)" class="col-md-12 no-padding">
+            <input 
+                type="search"
+                class="form-control input-table"
+                value=""
+                ng-model="filtered"
+                placeholder="Search">
+        </li>
+        <li ng-click="cancelClose($event)">
+            <input 
+                id="{{uniqueField}}-all"
+                type="checkbox"
+                ng-checked="setCheckboxChecked()" 
+                ng-click="selectVal()"
+                ng-model="selectAll"
+                class="table-checkbox" />
+            <label for="{{uniqueField}}-all"></label>
+            <small>Select All</small>
+        </li>
+        <li ng-repeat="item in itemsAfterSearch = (items | filter: filtered | unique: textField) | orderBy: textField" ng-click="cancelClose($event)">
+            <input 
+                id="{{uniqueField}}-{{$index}}"
+                type="checkbox"
+                ng-checked="setCheckboxChecked(item)" 
+                ng-click="selectVal(item,$index)"
+                class="table-checkbox" />
+            <label for="{{uniqueField}}-{{$index}}"></label>
+            <small>{{item[textField]}}</small>
+        </li>
+    </ul>
+</div>
