@@ -489,5 +489,15 @@ angular.module('adminApp')
                 }
             },
             authenticate: true
+        })
+        .state('app.finance', {
+            url: 'finance',
+             views: {
+                'content@': {
+                    templateUrl: 'app/finance/finance.html',
+                    controller: 'FinanceCtrl'
+                }
+            },
+            authenticate: true
         });
     });

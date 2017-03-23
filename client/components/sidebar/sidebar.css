@@ -433,6 +433,14 @@
     background: #ff5a60;
 }
 
+.side-finance-image {
+    background-image: url('../../assets/images/nav-finance.png');
+}
+
+.side-finance-image.active {
+    background-image: url('../../assets/images/nav-finance-active.png');
+}
+
 #spinner-container {
     position: fixed;
     top: 0;
