@@ -108,6 +108,16 @@ function mainConfig() {
             var countryCode = '+62';
             var webtrackingURL = 'http://staging.track.etobee.com';
             break;
+        case 'dbs-admin|com':
+            var url = 'https://dbs-api2.etobee.com';
+            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
+            var currency = 'Rp';
+            var decimalSeparator = ',';
+            var zipLength = 5;
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
+            var countryCode = '+62';
+            var webtrackingURL = 'http://staging.track.etobee.com';
+            break;
         default:
             var url = 'http://localhost:3001';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
