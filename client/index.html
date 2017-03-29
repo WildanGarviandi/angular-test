@@ -67,6 +67,7 @@
     <link rel="stylesheet" href="app/dashboard/dashboard.css">
     <link rel="stylesheet" href="app/fleet/fleet.css">
     <link rel="stylesheet" href="app/fleetZipcode/fleetZipcode.css">
+    <link rel="stylesheet" href="app/import/import.css">
     <link rel="stylesheet" href="components/modal/modal.css">
     <link rel="stylesheet" href="components/sidebar/sidebar.css">
     <link rel="stylesheet" href="components/user/user.css">
@@ -177,6 +178,8 @@
     <script src="bower_components/angular-ui-notification/dist/angular-ui-notification.min.js"></script>
     <script src="bower_components/handsontable/dist/handsontable.full.js"></script>
     <script src="bower_components/ngHandsontable/dist/ngHandsontable.js"></script>
+    <script src="bower_components/socket.io-client/dist/socket.io.min.js"></script>
+    <script src="bower_components/js-xlsx/dist/xlsx.core.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:js({.tmp,client}) app/app.js -->
@@ -214,6 +217,7 @@
     <script src="app/deliveryDistribution/deliveryDistribution.controller.js"></script>
     <script src="app/driverSchedule/driverSchedule.controller.js"></script>
     <script src="app/admin/admin.controller.js"></script>
+    <script src="app/import/import.controller.js"></script>
     <script src="components/auth/auth.service.js"></script>
     <script src="components/auth/user.service.js"></script>
     <script src="components/sidebar/sidebar.controller.js"></script>
@@ -221,8 +225,10 @@
     <script src="components/directives/numbers-only.directive.js"></script>
     <script src="components/directives/email-validate.directive.js"></script>
     <script src="components/directives/phone-validate.directive.js"></script>
+    <script src="components/directives/excel-to-json.directive.js"></script>
     <script src="components/filters/localize-number.js"></script>
     <script src="components/filters/math.js"></script>
+    <script src="components/angular-socket.js"></script>
     <!-- endinjector -->
     <!-- endbuild -->
     

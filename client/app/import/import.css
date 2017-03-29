@@ -1,0 +1,176 @@
+.import-area {
+    position: absolute;
+    z-index: 9;
+    width: 100%;
+}
+
+.import-table {
+    background-color: #f1f1f1;
+    overflow: hidden;
+}
+
+.input-excel {
+    padding-top: 17px;
+    padding-bottom: 16px;
+    border-left: 1px solid #c1c1c1;
+    font-size: 12px;
+}
+
+.border-top-bottom {
+    border-top: 1px solid #c1c1c1;
+    border-bottom: 1px solid #c1c1c1;
+}
+
+.btn-red {
+    background-color: #ff5a60;
+    color: #fff;
+    border-radius: 3px;
+    z-index: 9;
+}
+
+.btn-yellow {
+    background-color: #ffa500;
+    color: #fff;
+    border-radius: 3px;
+    z-index: 9;
+}
+
+.btn-green {
+    background-color: #38b393;
+    color: #fff;
+    border-radius: 3px;
+    z-index: 9;
+}
+
+.btn-blue {
+    background-color: #4a90e2;
+    color: #fff;
+    border-radius: 3px;
+    z-index: 9;
+}
+
+.btn-yellow:hover, .btn-green:hover, .btn-blue:hover, .btn-red:hover,
+.btn-yellow:focus, .btn-green:focus, .btn-blue:focus, .btn-red:focus {
+    color: #fff !important;
+}
+
+.text-purple {
+    color: #7a4078;
+}
+
+.text-yellow {
+    color: #ffa500;
+}
+
+.text-green {
+    color: #38b393;
+}
+
+.text-blue {
+    color: #4990e2;
+}
+
+.text-red {
+    color: #ff5a60;
+}
+
+.bg-purple {
+    background: #7a4078;
+    color: #fff;
+}
+
+.bg-yellow {
+    background-color: #ffa500;
+    color: #fff;
+}
+
+.bg-green {
+    background-color: #38b393;
+    color: #fff;
+}
+
+.bg-blue {
+    background: #4990e2;
+    color: #fff;
+}
+
+.bg-red {
+    background-color: #ff5a60;
+    color: #fff;
+}
+
+.select-import-area {
+    display: flex;
+    z-index: 104;
+}
+
+.select-import-area > div {
+    padding: 17px 8px;
+    border: 0px;
+    border-radius: 0px;
+    border-right: 1px solid #c1c1c1;
+}
+
+.submit-import-button {
+    border-left: 1px solid #c1c1c1;
+    border-right: 1px solid #c1c1c1;
+}
+
+.submit-import-button > button {
+    border: 0;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    border-radius: 0;
+}
+
+.import-progress {
+    height: 5px;
+    border: 0px;
+    border-radius: 0;
+}
+
+.import-tools {
+    border: 0;
+    padding: 0;
+    padding-top: 9px;
+    padding-bottom: 10px;
+    border-radius: 0;
+    font-size: 12px;
+}
+
+.mt15 {
+    margin-top: 15px;
+}
+
+.mb15 {
+    margin-bottom: 15px;
+}
+
+.import-modal .ngdialog-content {
+    margin-top: 50px !important;
+    background-color: #fff !important;
+    padding: 0px !important;
+}
+
+.import-modal .ngdialog-close {
+    top: 10px !important;
+    right: 10px !important;
+}
+
+.import-modal .modal-body p {
+    font-size: 12px;
+}
+
+.import-loading-little .spinning {
+    -webkit-animation: spin 3s infinite linear;
+}
+
+.import-loading-little {
+    padding-top: 17px;
+    padding-bottom: 16px;
+}
+
+@-webkit-keyframes spin {
+    0%  {-webkit-transform: rotate(0deg);}
+    100% {-webkit-transform: rotate(360deg);}   
+}

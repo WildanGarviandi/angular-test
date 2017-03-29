@@ -489,5 +489,15 @@ angular.module('adminApp')
                 }
             },
             authenticate: true
+        })
+        .state('app.import', {
+            url: 'import',
+             views: {
+                'content@': {
+                    templateUrl: 'app/import/import.html',
+                    controller: 'ImportCtrl'
+                }
+            },
+            authenticate: true
         });
     });
