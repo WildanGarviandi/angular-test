@@ -110,12 +110,12 @@
             <div class="col-md-11 col-sm-10">
                 <p class="no-margin">
                     <small>info: 
-                        <a href="#" ng-click="import.listOfError()" ng-show="temp.listOfError.length" class="text-red">show row error</a>
-                        <b ng-show="temp.listOfError.length && temp.listOfSuccess.length"> | </b> 
-                        <a href="#" ng-click="import.listOfSuccess()" ng-show="temp.listOfSuccess.length" class="text-green">show row imported</a>
+                        <a href="#" ng-click="import.listOfError()" ng-show="temp.listOfError.length && import.info" class="text-red">show row error</a>
+                        <b ng-show="temp.listOfError.length && temp.listOfSuccess.length && import.info"> | </b> 
+                        <a href="#" ng-click="import.listOfSuccess()" ng-show="temp.listOfSuccess.length && import.info" class="text-green">show row imported</a>
                     </small>
                 </p>
-                <p class="no-margin"><small ng-bind-html="import.info"></small></p>
+                <p class="no-margin" ng-bind-html="import.info"></p>
             </div>
             <div class="col-md-1 col-sm-2 no-padding submit-import-button">
                 <button class="btn btn-blue col-md-12 col-sm-12" ng-click="openModal('modalGenerator')">import</button>

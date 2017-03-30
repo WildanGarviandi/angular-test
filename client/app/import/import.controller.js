@@ -340,6 +340,9 @@ angular.module('adminApp')
                         data: $scope.temp.data
                     }).$promise.then(function (result) {
                         ngDialog.close();
+                        $scope.temp.listOfError = [];
+                        $scope.temp.listOfSuccess = $scope.temp.data;
+                        $scope.clearSheet();
                         $scope.import.processMessage = 'finish importing';
                         $scope.import.info = 'success ' + $scope.temp.count + ' row imported';
                     })
@@ -349,7 +352,11 @@ angular.module('adminApp')
                         $scope.table.error = e.data.error.message.errorList;
 
                         if ($scope.table.error) {
-                            $scope.import.info = ($scope.temp.count - $scope.table.error.length) + ' row imported, ' + $scope.table.error.length + ' row error';
+                            $scope.import.info = '<span class="text-green">'
+                                + ($scope.temp.count - $scope.table.error.length) 
+                                + ' row imported </span>, <span class="text-red">' 
+                                + $scope.table.error.length 
+                                + ' row error </span>';
                             deliveredErrorComment();
                         } else {
                             $scope.import.info = e.data.error.message;
@@ -531,6 +538,7 @@ angular.module('adminApp')
         }
 
         $scope.table.data = tempData;
+        $scope.import.info = '';
         return;
     }
 
