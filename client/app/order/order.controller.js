@@ -612,6 +612,10 @@ angular.module('adminApp')
         $window.open('/order/details/' + id);
     };
 
+    $scope.importPage = function(type) {
+        $window.open('/import?importType=' + type);
+    };
+
     /**
      * Get single order
      * 

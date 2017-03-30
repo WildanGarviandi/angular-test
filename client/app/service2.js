@@ -806,6 +806,13 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'update-price-manual'
             }
+        },
+        bulkMarkAsDelivered: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-mark-as-delivered'
+            }
         }
     });
 });

@@ -87,7 +87,7 @@
                     ng-if="table.data"
                     settings="{
                         contextMenu: true,
-                        stretchH: 'all',
+                        stretchH: 'last',
                         afterInit: table.settings.afterInit,
                         afterChange: table.settings.afterChange,
                         beforeChange: table.settings.beforeChange,
@@ -108,7 +108,14 @@
                 </uib-progressbar>
             </div>
             <div class="col-md-11 col-sm-10">
-                <small>info:</small>
+                <p class="no-margin">
+                    <small>info: 
+                        <a href="#" ng-click="import.listOfError()" ng-show="temp.listOfError.length" class="text-red">show row error</a>
+                        <b ng-show="temp.listOfError.length && temp.listOfSuccess.length"> | </b> 
+                        <a href="#" ng-click="import.listOfSuccess()" ng-show="temp.listOfSuccess.length" class="text-green">show row imported</a>
+                    </small>
+                </p>
+                <p class="no-margin"><small ng-bind-html="import.info"></small></p>
             </div>
             <div class="col-md-1 col-sm-2 no-padding submit-import-button">
                 <button class="btn btn-blue col-md-12 col-sm-12" ng-click="openModal('modalGenerator')">import</button>

@@ -140,7 +140,7 @@ angular.module('adminApp')
         return ngDialog.open({
             template: template,
             scope: $scope,
-            className: 'ngdialog-theme-default modal-custom no-padding import-modal'
+            className: 'ngdialog-theme-default no-padding import-modal'
         });
     }
 
@@ -271,8 +271,97 @@ angular.module('adminApp')
                 $scope.import.isUsingSocket = false;
                 $scope.import.isHaveParam = false;
                 $scope.import.onSubmit = function () {
+                    var commentsPlugin = $scope.hotInstance.getPlugin('comments');
+                    if ($scope.temp.error) {
+                        lodash.forEach($scope.temp.error, function (error) {
+                            commentsPlugin.removeCommentAtCell(error.row, error.column);
+                        });
+                    }
 
+                    $scope.temp.data = lodash.filter($scope.table.data, function(data) {
+                        var check = lodash.keys(data).every(function(key) {
+                            return data[key] == '';
+                        });
+
+                        if (!check) {
+                            return data;
+                        }
+                    });
+
+                    function deliveredErrorComment () {
+                        $q(function (resolve) {
+                            var i = 0;
+                            $scope.temp.error = [];
+                            $scope.temp.listOfError = [];
+                            $scope.temp.listOfSuccess = [];
+                            lodash.forEach($scope.table.error, function (value, index) {
+                                if (value.error) {
+                                    var errorData = value.error;
+                                    var idx = value.row - 1;
+                                    var row = i;
+
+                                    $scope.temp.listOfError.push($scope.temp.data[idx]);
+
+                                    lodash.forEach(lodash.keys(errorData), function (key) {
+                                        var column = $scope.table.headerNames.indexOf(key);
+                                        var comment = errorData[key];
+                                        var cellError = {
+                                            row: row,
+                                            column: column,
+                                            comment: errorData[key]
+                                        };
+                                        $scope.temp.error.push(cellError);
+                                    });
+                                    i++;
+                                }
+                            });
+                            resolve();
+                        }).then(function () {
+                            $scope.temp.listOfSuccess = lodash.difference($scope.temp.data, $scope.temp.listOfError);
+                            $scope.table.data = lodash.difference($scope.table.data, $scope.temp.listOfSuccess);
+                            $scope.hotInstance.loadData($scope.table.data);
+
+                            lodash.forEach($scope.temp.error, function (error) {
+                                $scope.hotInstance.getCellMeta(error.row, error.column).comment = error.comment;
+                                commentsPlugin.showAtCell(error.row, error.column);
+                                commentsPlugin.saveCommentAtCell(error.row, error.column);
+                            });
+
+                            $scope.hotInstance.render();
+                            
+                            $(".htCommentTextArea").attr("disabled","disabled");
+                        });
+                    };
+
+                    $scope.import.info = '';
+                    $scope.table.error = [];
+                    $scope.import.processMessage = 'importing data ...';
+                    Services2.bulkMarkAsDelivered({
+                        data: $scope.temp.data
+                    }).$promise.then(function (result) {
+                        ngDialog.close();
+                        $scope.import.processMessage = 'finish importing';
+                        $scope.import.info = 'success ' + $scope.temp.count + ' row imported';
+                    })
+                    .catch(function (e) {
+                        ngDialog.close();
+                        $scope.import.processMessage = 'finish importing';
+                        $scope.table.error = e.data.error.message.errorList;
+
+                        if ($scope.table.error) {
+                            $scope.import.info = ($scope.temp.count - $scope.table.error.length) + ' row imported, ' + $scope.table.error.length + ' row error';
+                            deliveredErrorComment();
+                        } else {
+                            $scope.import.info = e.data.error.message;
+                        }
+                    });
                 };
+                $scope.import.listOfError = function () {
+                    $scope.table.data = $scope.temp.listOfError;
+                }
+                $scope.import.listOfSuccess = function () {
+                    $scope.table.data = $scope.temp.listOfSuccess;
+                }
                 $scope.import.modal = generateModal('Mark as Delivered', false, '<p>Are You Sure Want to Import Now ?</p>', {submit: 'Submit'}, $scope.import.onSubmit);
                 $scope.import.customValidator = [
                     {
