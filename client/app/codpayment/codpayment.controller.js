@@ -114,8 +114,12 @@ angular.module('adminApp')
         'queryMultipleEDS',
         function (newValue) {
             // Filter empty line(s)
-            $scope.userOrderNumbers = newValue.split('\n').filter(function (val) {
-                return val;
+            $scope.userOrderNumbers = [];
+            newValue.split('\n').forEach(function (val) {
+                var result = val.replace(/^\s+|\s+$/g, '');
+                if (result) {
+                    $scope.userOrderNumbers.push(result);
+                }
             });
         }
     );
