@@ -777,6 +777,7 @@ angular.module('adminApp')
                 controller: 'redirect'
             }
         },
+<<<<<<< HEAD
         getListPayoutAndInvoice: {
             method: 'GET',
             params: {
@@ -805,6 +806,22 @@ angular.module('adminApp')
             params: {
                 module: 'order',
                 controller: 'update-price-manual'
+            }
+        },
+        exportStandardFormatJson: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'combinedJson'
+            }
+        },
+        exportUploadableFormatJson: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'uploadableJson'
             }
         }
     });

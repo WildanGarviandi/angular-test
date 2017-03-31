@@ -1,0 +1,23 @@
+<div class="container-fluid container-order" id="">
+    <div class="export-area">
+        <div class="row">
+            <div excel-export></div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 col-sm-2 col-xs-12"></div>
+            <div class="export-info col-md-6 col-sm-8 col-xs-12">
+                <div class="logo-center" style="height: 75px"></div>
+                <br>
+                <br>
+                <p class="text-center"><small>exporting: {{progress.percentage | number: 2}} %</small></p>
+                <uib-progressbar max="progress.maxExport" value="progress.export" style="border-radius: 0; border: 0; height: 5px;">
+                </uib-progressbar>
+                <p class="text-center"><small>{{progress.message}}</small></p>
+            </div>
+            <div class="col-md-3 col-sm-2 col-xs-12"></div>
+        </div>
+        <div class="row">
+            <p class="text-center"><b><small>You can do other things while exporting in progress, but don't close this section</small></b></p>
+        </div>
+    </div>
+</div>
