@@ -20,12 +20,15 @@
     z-index:10;
     top: 0;
     left: 0;
+    height: 100%;
 }
 
 .side-panel > ul {
     display: table;
     width: 200px;
     padding-left: 0px;
+    padding-top: 10px;
+    padding-bottom: 90px;
 }
 
 /* Sidebar Menu */
@@ -53,6 +56,9 @@
 
 .side-panel > ul > li > a {
     color: #8E7A8D;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
 }
 
 .side-panel > ul > li > a:hover {
@@ -76,6 +82,9 @@
 
 .side-panel > ul > li > ul > li > a {
     color: #8E7A8D;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
 }
 
 .side-panel > ul > li > ul> li > a:hover {
@@ -188,7 +197,6 @@
 .side-logo {
     background-color: #462445;
     height: 90px;
-    margin-bottom: 10px;
     width: inherit;
 }
 
