@@ -1,0 +1,128 @@
+'use strict';
+
+angular.module('adminApp')
+    .controller('ExportCtrl', 
+        function(
+            $scope, 
+            Auth, 
+            $rootScope,
+            Services2,
+            $location, 
+            $window,
+            $filter,
+            $q
+        ) {
+
+    Auth.getCurrentUser().then(function(data) {
+        $scope.user = data.profile;
+    });
+
+    var dataArray = [];
+    var type = $location.search()['exportType'];
+    var maxExport = $location.search()['maxExport'];
+    var params = $location.search();
+    delete params['exportType'];
+    delete params['maxExport'];
+
+    /** settings **/
+    var limit = 200;
+    var batch = Math.ceil(maxExport / limit);
+    var batchPosition = 0;
+    var fetchingRow = 0;
+
+    /** report for user **/
+    $scope.progress = {};
+    $scope.progress.maxExport = maxExport;
+    $scope.progress.export = 0;
+    $scope.progress.percentage = 0;
+    $scope.progress.message = 'initialize ...';
+
+    var buildArray = function (data, batchPosition) {
+        if (data && data.data && data.data.length) {
+            if (batchPosition == 0) {
+                var header = Object.keys(data.data[0]);
+                dataArray.push(header);
+            }
+
+            angular.forEach(data.data, function (val, key) {
+                var datas = Object.values(val);
+                dataArray.push(datas);
+            });
+        } else {
+            return buildExcel(type);
+        }
+    }
+
+    var successFunction = function (data) {
+        $scope.progress.export += params.limit;
+        $scope.progress.percentage = ($scope.progress.export / maxExport) * 100;
+
+        buildArray(data, batchPosition);
+
+        batchPosition++;
+
+        if (batchPosition < batch) {
+            getDataJson(params.limit * batchPosition);
+        } else {
+            return buildExcel(type);
+        }
+    }
+
+    var getDataJson = function (offset) {
+        fetchingRow = offset + limit;
+        params.offset = offset;
+        if (!offset) {
+            params.offset = 0;
+            fetchingRow = limit;
+        }
+
+        if ((params.offset + limit) > maxExport) {
+            params.limit = maxExport - params.offset;
+            fetchingRow = maxExport;
+        }
+            
+        fetchingRow = $filter('localizenumber')($filter('number')(fetchingRow));
+        var totalRow = $filter('localizenumber')($filter('number')(maxExport));
+
+        $scope.progress.message = 'fetching ' + fetchingRow + ' orders from ' + totalRow;
+
+        if (type == 'standard') {
+            return Services2.exportStandardFormatJson(params).$promise
+            .then(function(data) {
+                successFunction(data);
+            }).catch(function (e) {
+                getDataJson(offset);
+            });
+        }
+
+        if (type == 'uploadable') {
+            return Services2.exportUploadableFormatJson(params).$promise
+            .then(function(data) {
+                successFunction(data);
+            }).catch(function (e) {
+                getDataJson(offset);
+            });
+        }
+    }
+
+    var fetchDataJson = function (type) {
+        /** initialize **/
+        params.limit = limit;
+        params.offset = 0;
+
+        getDataJson();
+    };
+
+    var buildExcel = function(type) {
+        $scope.progress.message = 'building Excel File';
+        
+        var result = {};
+        result.fileName = 'export_'+ $filter('date')(new Date(), 'dd-MM-yyyy HH:mm:ss').replace(':', '-');
+        result.sheetName = type;
+        result.dataExcel = dataArray;
+
+        $rootScope.$emit('downloadExcel', result);
+    };
+
+    fetchDataJson(type);
+});
