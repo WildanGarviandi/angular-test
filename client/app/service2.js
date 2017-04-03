@@ -777,7 +777,6 @@ angular.module('adminApp')
                 controller: 'redirect'
             }
         },
-<<<<<<< HEAD
         getListPayoutAndInvoice: {
             method: 'GET',
             params: {
