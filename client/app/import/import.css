@@ -54,23 +54,23 @@
     color: #fff !important;
 }
 
-.text-purple {
+.text-purple, .text-purple:hover {
     color: #7a4078;
 }
 
-.text-yellow {
+.text-yellow, .text-yellow:hover {
     color: #ffa500;
 }
 
-.text-green {
+.text-green, .text-green:hover {
     color: #38b393;
 }
 
-.text-blue {
+.text-blue, .text-blue:hover {
     color: #4990e2;
 }
 
-.text-red {
+.text-red, .text-red:hover {
     color: #ff5a60;
 }
 

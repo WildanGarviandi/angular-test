@@ -831,6 +831,13 @@ angular.module('adminApp')
                 controller: 'upload-pod',
                 orderID: null
             }
+        },
+        bulkMarkAsDelivered: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-mark-as-delivered'
+            }
         }
     });
 });
