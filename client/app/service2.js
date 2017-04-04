@@ -777,7 +777,6 @@ angular.module('adminApp')
                 controller: 'redirect'
             }
         },
-<<<<<<< HEAD
         getListPayoutAndInvoice: {
             method: 'GET',
             params: {
@@ -822,6 +821,15 @@ angular.module('adminApp')
                 module: 'order',
                 submodule: 'export',
                 controller: 'uploadableJson'
+            }
+        },
+        setRecpientPhoto: {
+            method: 'POST',
+            url: config.url + ':module/:controller/:orderID',
+            params: {
+                module: 'order',
+                controller: 'upload-pod',
+                orderID: null
             }
         }
     });
