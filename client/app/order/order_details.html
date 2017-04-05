@@ -58,6 +58,11 @@
                         </li>
                         <li role="menuitem">
                             <a href="#"
+                            ng-click="openUploadPODmodal()"
+                            ng-if="canUploadPOD">Upload POD</a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#"
                             ng-if="noAction">No action available</a>
                         </li>
                     </ul>
@@ -646,6 +651,35 @@
             </div>
         </div>
     </div>
+
+    <div class="row box-order-details">
+        <div class="col-md-12 order-details">
+            <div class="row-fluid order-details-main-header">
+                Order Track History
+            </div>
+            <div class="clearfix"></div>
+            <div ng-repeat="track in order.UserTrackOrders" class="row-fluid order-detail-from-address">
+                <div class="row-fluid">
+                    <div class="col-md-2">
+                        Status: {{ track.OrderStatus.OrderStatus }}
+                    </div>
+                    <div class="col-md-2">
+                        Time: {{ track.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}} 
+                    </div>
+                    <div class="col-md-2">
+                        User: {{ track.User.Email }} 
+                    </div>
+                    <div class="col-md-2">
+                        Latitude: {{ track.Latitude }} 
+                    </div>
+                    <div class="col-md-2">
+                        Longitude: {{ track.Longitude }} 
+                    </div>
+                    <div class="clearfix"></div>
+                </div>      
+            </div>
+        </div>
+    </div>
 </div>
 
 <script type="text/ng-template" id="editPickupAddressTemplate">
@@ -1018,6 +1052,7 @@
         </div>
     </div>
 </script>
+
 <script type="text/ng-template" id="setMarkAsClaimedModal">
     <div class="header-wrapper">
         <h3 class="no-margin">Mark as Claimed</h3>
@@ -1052,5 +1087,31 @@
                 </div>
             </div>
         </form>
+    </div>
+</script>
+
+<script type="text/ng-template" id="uploadPODModal">
+    <div class="container-fluid">
+        <h4>Upload POD</h4>
+        <div class="row no-margin">
+            <div class="label-payment">
+                POD :
+            </div>
+            <div class="col-xs-12 no-padding">
+                <div class="col-md-5 no-padding">
+                    <img class="col-xs-12 no-padding" ng-hide="!order.RecipientPhoto || urlUploadedPic" src="{{order.RecipientPhoto}}">
+                    <img class="col-xs-12 no-padding" ng-show="urlUploadedPic" src="{{urlUploadedPic}}">
+                    <p ng-hide="order.RecipientPhoto"><small class="red">No POD Added</small></p>
+                </div>
+                <div class="col-md-7">
+                    <button class="btn btn-default" ngf-select="uploadPic($file)" ng-model="file" 
+                        ngf-model-invalid="errorFile" type="file" accept="image/*">Upload POD</button>
+                </div>
+            </div>
+        </div>
+        <div class="row no-margin">
+            <br>
+            <button class="btn btn-primary" ng-disabled="!urlUploadedPic" ng-click="uploadPOD()">Submit</button>
+        </div>
     </div>
 </script>

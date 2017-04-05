@@ -10,6 +10,7 @@ function mainConfig() {
     switch (app + '|' + country) {
         case 'staging|com':
             var url = 'http://staging.api2.etobee.com';
+            var urlSocket = 'http://localhost:3099';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
             var decimalSeparator = ',';
@@ -20,6 +21,7 @@ function mainConfig() {
             break;   
         case 'sandbox-v3|com':
             var url = 'http://sandbox-v2.api2.etobee.com';
+            var urlSocket = 'http://localhost:3099';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
             var decimalSeparator = ',';
@@ -30,6 +32,7 @@ function mainConfig() {
             break;        
         case 'admin2|com':
             var url = 'https://api2.etobee.com';
+            var urlSocket = 'http://localhost:3099';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
             var decimalSeparator = ',';
@@ -40,6 +43,7 @@ function mainConfig() {
             break;    
         case 'staging|ph':
             var url = 'http://staging.api2.etobee.com';
+            var urlSocket = 'http://localhost:3099';
             var defaultLocation = { Latitude: 14.5974875, Longitude: 120.9542445 };
             var currency = '₱';
             var decimalSeparator = '.';
@@ -50,6 +54,7 @@ function mainConfig() {
             break;    
         case 'admin2|ph':
             var url = 'http://api2.etobee.com.ph';
+            var urlSocket = 'http://localhost:3099';
             var defaultLocation = { Latitude: 14.5974875, Longitude: 120.9542445 };
             var currency = '₱';
             var decimalSeparator = '.';
@@ -60,6 +65,7 @@ function mainConfig() {
             break;
         case 'admin|com':
             var url = 'https://api2.etobee.com';
+            var urlSocket = 'http://localhost:3099';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
             var decimalSeparator = ',';
@@ -70,6 +76,7 @@ function mainConfig() {
             break;
         case 'admin|ph':
             var url = 'http://api2.etobee.com.ph';
+            var urlSocket = 'http://localhost:3099';
             var defaultLocation = { Latitude: 14.5974875, Longitude: 120.9542445 };
             var currency = '₱';
             var decimalSeparator = '.';
@@ -80,6 +87,7 @@ function mainConfig() {
             break;
         case 'sandbox-v3|com':
             var url = 'http://sandbox-v2.api2.etobee.com';
+            var urlSocket = 'http://localhost:3099';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
             var decimalSeparator = ',';
@@ -90,6 +98,7 @@ function mainConfig() {
             break;
         case 'dev-dbs-admin|com':
             var url = 'https://dev-dbs-api2.etobee.com';
+            var urlSocket = 'http://localhost:3099';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
             var decimalSeparator = ',';
@@ -100,6 +109,7 @@ function mainConfig() {
             break;
         case 'dev-dbs-admin|com:444':
             var url = 'https://dev-dbs-api2.etobee.com';
+            var urlSocket = 'http://localhost:3099';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
             var decimalSeparator = ',';
@@ -120,6 +130,7 @@ function mainConfig() {
             break;
         default:
             var url = 'http://localhost:3001';
+            var urlSocket = 'http://localhost:3099';
             var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
             var currency = 'Rp';
             var decimalSeparator = ',';
@@ -135,6 +146,7 @@ function mainConfig() {
         decimalSeparator: decimalSeparator,
         zipLength: zipLength,
         url: url + '/v2/admin/',
+        urlSocket: urlSocket,
         endpoints: {
             signIn: 'sign-in',
             signInWithGoogle: 'sign-in-with-google',

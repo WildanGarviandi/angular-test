@@ -58,7 +58,6 @@
                     <li>
                         <a ng-show="features.order.bulk_cancel_order" ng-click="showBulkCancelOrder()" class="">Cancel Order</a>
                     </li>
-                    <li><a ng-show="features.order.bulk_mark_delivered" ng-click="bulkSetDeliveredStatus()" class="">Mark as Delivered</a></li>
                     <li>
                         <a ng-show="features.order.bulk_return_warehouse" ng-click="showReturnWarehouse()" class="">Mark as Return Warehouse</a>
                     </li>
@@ -581,6 +580,9 @@
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <button class="btn order-buttons col-xs-12" ng-click="showImportDeliveryAttempts()">Import Attempts</button>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <button class="btn order-buttons col-xs-12" ng-click="importPage('delivered')">Import Delivered</button>
         </div>
     </div>
 </script>

@@ -1,0 +1,151 @@
+<div class="container-fluid container-order" id="">
+    <div class="import-area" ng-style="{height: style.importArea + 'px'}">
+        <div id="header-area" class="col-md-12 col-sm-12 no-padding border-top-bottom bg-white">
+            <div class="col-lg-2 col-md-3 col-sm-4 no-padding">
+                <ui-select ng-model="importType"
+                    theme="selectize"
+                    class="select-import-area"
+                    ng-disabled="disabled"
+                    on-select="chooseImportType($item)">
+                    <ui-select-match placeholder="Choose import type ...">
+                        {{ $select.selected.key }}
+                    </ui-select-match>
+                    <ui-select-choices repeat="f in importTypes | filter: $select.search" selected>
+                        <span ng-bind-html="f.key | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 no-padding">
+                <div class="col-md-4 col-sm-4 no-padding">
+                    <button 
+                        ng-click="readExcel(import.template)"
+                        ng-disabled="!import.template" 
+                        class="btn btn-default col-md-12 col-sm-12 text-green import-tools">
+                        Load<br>Template
+                    </button>
+                </div>
+                <div class="col-md-4 col-sm-4 no-padding">
+                    <a href="{{import.template}}" target="_blank">
+                        <button 
+                            ng-disabled="!import.template" 
+                            class="btn btn-default col-md-12 col-sm-12 text-yellow import-tools">
+                            Download<br>Template
+                        </button>
+                    </a>
+                </div>
+                <div class="col-md-4 col-sm-4 no-padding">
+                    <button
+                        ng-click="clearSheet()"
+                        ng-disabled="!import.template" 
+                        class="btn btn-default col-md-12 col-sm-12 text-red import-tools">
+                        Clear<br>Sheet
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-7 col-md-5 col-sm-3 no-padding">
+                <excel-to-json method="importExcel">
+                    <input 
+                        id="load-excel-file"
+                        type="file"
+                        name="image"
+                        class="col-md-12 input-excel" 
+                        accept=".xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                        title=" "/>
+                </excel-to-json>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 no-padding">
+                <div class="col-md-6 no-padding">
+                </div>
+                <div class="col-md-6 no-padding">
+                    <div class="text-center no-margin text-center import-loading-little">
+                        <div>
+                            <i ng-show="import.isOnProcess" class="fa fa-refresh spinning"></i>
+                            <i ng-show="" class="fa fa-info"></i>
+                            <i ng-show="" class="fa fa-exclamation"></i>
+                            <i ng-show="" class="fa fa-question"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="body-area" class="col-md-12 col-sm-12 no-padding bg-white">
+            <div ng-show="import.isOnProcess || !import.isExcelValid" class="import-table col-md-12 col-sm-12" style="height: {{style.importTable}}px">
+                <div ng-show="import.isOnProcess">
+                    <br/>
+                    <p><small>{{import.processMessage}}</small></p>
+                </div>
+                <div ng-show="!import.isExcelValid && !import.isOnProcess">
+                    <br/>
+                    <p><small>{{import.message}}</small></p>
+                </div>
+            </div>
+            <div class="import-table col-md-12 col-sm-12 no-padding"
+                ng-if="import.isExcelValid && !import.isOnProcess"
+                style="height: {{style.importTable}}px">
+                <hot-table
+                    hot-id="import-excel"
+                    ng-if="table.data"
+                    settings="{
+                        contextMenu: true,
+                        stretchH: 'last',
+                        afterInit: table.settings.afterInit,
+                        afterChange: table.settings.afterChange,
+                        beforeChange: table.settings.beforeChange,
+                        comments: true
+                    }"
+                    row-headers="true"
+                    col-headers="table.headerNames"
+                    datarows="table.data"
+                    columns="table.columns">
+                </hot-table>
+            </div>
+        </div>
+        <div id="footer-area" class="col-md-12 col-sm-12 no-padding border-top-bottom bg-white">
+            <div class="col-md-12 col-sm-12 no-padding">
+                <uib-progressbar
+                    class="progress-striped active import-progress" 
+                    value="import.progress">
+                </uib-progressbar>
+            </div>
+            <div class="col-md-11 col-sm-10">
+                <p class="no-margin">
+                    <small>info: 
+                        <a href="#" ng-click="import.listOfError()" ng-show="temp.listOfError.length && import.info" class="text-red">show row error</a>
+                        <b ng-show="temp.listOfError.length && temp.listOfSuccess.length && import.info"> | </b> 
+                        <a href="#" ng-click="import.listOfSuccess()" ng-show="temp.listOfSuccess.length && import.info" class="text-green">show row imported</a>
+                    </small>
+                </p>
+                <p class="no-margin" ng-bind-html="import.info"></p>
+            </div>
+            <div class="col-md-1 col-sm-2 no-padding submit-import-button">
+                <button class="btn btn-blue col-md-12 col-sm-12" ng-click="openModal('modalGenerator')">import</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="modalGenerator">
+    <div class="header-wrapper modal-header row no-margin">
+        <div class="col-md-12 no-padding" ng-bind-html="modal.header">
+        </div>
+    </div>
+    <div class="content-wrapper modal-body row no-margin no-padding">
+        <div class="col-md-12 mt15">
+            <p class="no-margin">Total Row: {{temp.count}}</p>
+        </div>
+        <div class="col-md-12 mt15" ng-bind-html="modal.body" ng-if="!modal.isUsingTemplate">
+        </div>
+        <div class="col-md-12 mt15" ng-include src="modal.body" ng-if="modal.isUsingTemplate">
+        </div>
+        <div class="col-md-12 mt15 mb15">
+            <div class="col-md-5 no-padding">
+                <button class="btn btn-red col-xs-12" type="button" ng-click="modal.close()">Cancel</button>
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-5 no-padding">
+                <button class="btn btn-green col-xs-12" type="button" ng-click="modal.onSubmit()">{{modal.text.submit}}</button>
+            </div>
+        </div>
+    </div>
+</script>

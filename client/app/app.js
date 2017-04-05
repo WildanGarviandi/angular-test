@@ -30,7 +30,8 @@ angular.module('adminApp', [
     'dynamicNumber',
     'xeditable',
     'ui-notification',
-    'ngHandsontable'
+    'ngHandsontable',
+    'socket.io'
 ])
     .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
         $urlRouterProvider

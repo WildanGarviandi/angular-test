@@ -822,6 +822,22 @@ angular.module('adminApp')
                 submodule: 'export',
                 controller: 'uploadableJson'
             }
+        },
+        setRecpientPhoto: {
+            method: 'POST',
+            url: config.url + ':module/:controller/:orderID',
+            params: {
+                module: 'order',
+                controller: 'upload-pod',
+                orderID: null
+            }
+        },
+        bulkMarkAsDelivered: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-mark-as-delivered'
+            }
         }
     });
 });
