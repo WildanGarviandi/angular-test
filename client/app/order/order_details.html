@@ -651,6 +651,35 @@
             </div>
         </div>
     </div>
+
+    <div class="row box-order-details">
+        <div class="col-md-12 order-details">
+            <div class="row-fluid order-details-main-header">
+                Order Track History
+            </div>
+            <div class="clearfix"></div>
+            <div ng-repeat="track in order.UserTrackOrders" class="row-fluid order-detail-from-address">
+                <div class="row-fluid">
+                    <div class="col-md-2">
+                        Status: {{ track.OrderStatus.OrderStatus }}
+                    </div>
+                    <div class="col-md-2">
+                        Time: {{ track.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}} 
+                    </div>
+                    <div class="col-md-2">
+                        User: {{ track.User.Email }} 
+                    </div>
+                    <div class="col-md-2">
+                        Latitude: {{ track.Latitude }} 
+                    </div>
+                    <div class="col-md-2">
+                        Longitude: {{ track.Longitude }} 
+                    </div>
+                    <div class="clearfix"></div>
+                </div>      
+            </div>
+        </div>
+    </div>
 </div>
 
 <script type="text/ng-template" id="editPickupAddressTemplate">
