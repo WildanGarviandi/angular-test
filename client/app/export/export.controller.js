@@ -10,6 +10,9 @@ angular.module('adminApp')
             $location, 
             $window,
             $filter,
+            lodash,
+            moment,
+            SweetAlert,
             $q
         ) {
 
@@ -25,6 +28,8 @@ angular.module('adminApp')
     delete params['maxExport'];
 
     /** settings **/
+    var limitError = 5;
+    var batchError = 0;
     var limit = 200;
     var batch = Math.ceil(maxExport / limit);
     var batchPosition = 0;
@@ -68,6 +73,14 @@ angular.module('adminApp')
         }
     }
 
+    var errorFunction = function (text) {
+        return SweetAlert.swal({
+            title: 'Error',
+            text: text,
+            type: 'error'
+        });
+    }
+
     var getDataJson = function (offset) {
         fetchingRow = offset + limit;
         params.offset = offset;
@@ -89,8 +102,13 @@ angular.module('adminApp')
         if (type == 'standard') {
             return Services2.exportStandardFormatJson(params).$promise
             .then(function(data) {
+                batchError = 0;
                 successFunction(data);
             }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
                 getDataJson(offset);
             });
         }
@@ -98,8 +116,13 @@ angular.module('adminApp')
         if (type == 'uploadable') {
             return Services2.exportUploadableFormatJson(params).$promise
             .then(function(data) {
+                batchError = 0;
                 successFunction(data);
             }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
                 getDataJson(offset);
             });
         }
@@ -109,6 +132,13 @@ angular.module('adminApp')
         /** initialize **/
         params.limit = limit;
         params.offset = 0;
+
+        lodash.map(params, function (value, index) {
+            var dateMoment = moment(value);
+            if (dateMoment.isValid()) {
+                params[index] = new Date(value);
+            }
+        });
 
         getDataJson();
     };
