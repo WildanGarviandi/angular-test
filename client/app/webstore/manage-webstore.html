@@ -518,7 +518,7 @@
                 </tbody>
                 <tbody ng-if="childrenWebstore.length">
                     <tr ng-repeat="children in childrenWebstore | limitTo: offset - childrenWebstore.length | limitTo: 5">
-                        <td class="text-center">{{children.WebstoreCompany.WebstoreID}}</td>
+                        <td class="text-center">{{children.WebstoreMerchantID}}</td>
                         <td>{{children.FirstName}} {{children.LastName}}</td>
                         <td>{{children.Email}}</td>
                         <td>{{children.PhoneNumber}}</td>
