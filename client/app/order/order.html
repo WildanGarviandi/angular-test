@@ -56,10 +56,10 @@
                         <a ng-show="features.order.bulk_reassign_driver" ng-click="showReassignDriver()" class="">Reassign Driver</a>
                     </li>
                     <li>
-                        <a ng-show="features.order.bulk_cancel_order" ng-click="showBulkCancelOrder()" class="">Cancel Order</a>
+                        <a ng-show="features.order.bulk_return_warehouse" ng-click="showReturnWarehouse()" class="">Mark as Return Warehouse</a>
                     </li>
                     <li>
-                        <a ng-show="features.order.bulk_return_warehouse" ng-click="showReturnWarehouse()" class="">Mark as Return Warehouse</a>
+                        <a ng-show="features.order.bulk_return_warehouse" ng-click="showUpdateReturnWarehouse()" class="">Update Return Warehouse Location</a>
                     </li>
                     <li>
                         <a ng-show="features.order.bulk_return_sender" ng-click="showReturnSender()" class="">Mark as Return Sender</a>
@@ -79,6 +79,9 @@
                     </li>
                     <li>
                         <a ng-show="features.order.reroute_hub" ng-click="showSetHub()">Update Hub</a>
+                    </li>
+                    <li>
+                        <a ng-show="features.order.bulk_cancel_order" ng-click="showBulkCancelOrder()" class="">Cancel Order</a>
                     </li>
                 </ul>
             </div>
@@ -526,7 +529,8 @@
                             <td>{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName ||
                                     order.FleetManager.CompanyDetail.CompanyName}}</td>
                             <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
-                            <td>{{order.OrderStatus.OrderStatus}}</td>
+                            <td tooltip-placement="top" 
+                                uib-tooltip="{{order.locationReturnWarehouse}}">{{order.OrderStatus.OrderStatus}}</td>
                             <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                             <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                             <td>{{order.PickupAddress.Address1}}</td>
@@ -941,6 +945,41 @@
         <h2>Return to Warehouse</h2>
     </div>
     <div class="content-wrapper booking-popup notification-popup container-fluid">
+        <div class="col-xs-12 no-padding margin-b-10">
+            <p>
+                <input type="radio" name="returnWarehouse" ng-model="$parent.showFleetListOnReturnWarehouse" 
+                    uib-btn-radio="false" id="returnWarehouse-hub" checked /> Set Hub
+                <div class="col-md-12 no-padding" ng-show="!showFleetListOnReturnWarehouse">
+                    <ui-select ng-model="returnWarehouseLocation"
+                        theme="selectize" 
+                        tagging="tagHandler"
+                        on-select="chooseReturnWarehouseLocation($item)"
+                        class="col-xs-12 no-padding">
+                        <ui-select-match class="input-table">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="h in hubs | filter: $select.search track by $index" selected>
+                            <span class="input-table" ng-bind-html="h.name | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </p>
+            <p>
+                <input type="radio" name="returnWarehouse" ng-model="$parent.showFleetListOnReturnWarehouse" 
+                    uib-btn-radio="true" id="returnWarehouse-fleet" /> Set Fleet
+                <div class="col-md-12 no-padding" ng-show="showFleetListOnReturnWarehouse">
+                    <ui-select ng-model="returnWarehouseLocation"
+                        theme="selectize" 
+                        tagging="tagHandler"
+                        on-select="chooseReturnWarehouseLocation($item)"
+                        class="col-xs-12 no-padding">
+                        <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
+                        <ui-select-choices repeat="f in fleets | filter: $select.search track by $index" selected>
+                            <span class="input-table" ng-bind-html="f.CompanyName | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </p>
+        </div>
+        <div class="clearfix"></div>
         <div ng-repeat="order in selectedOrders track by $index">               
             <div class="label-import">
                 Reason {{order.UserOrderNumber}}:
@@ -968,7 +1007,60 @@
         </div>
         <div class="clearfix"></div>
         <div class="row-fluid">
-            <button class="btn btn-primary" ng-click="bulkReturnWarehouse()">Mark as Return Warehouse</button>
+            <button class="btn btn-primary" ng-disabled="returnWarehouseHub && returnWarehouseFleet"
+                ng-click="bulkReturnWarehouse()">Mark as Return Warehouse</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="updateReturnWarehouseModal">
+    <div class="header-wrapper">
+        <h2>Update Return Warehouse Location</h2>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid">
+        <div class="col-xs-12 no-padding margin-b-10">
+            <p>
+                <input type="radio" name="updateReturnWarehouse" ng-model="$parent.showFleetListOnUpdateReturnWarehouse" 
+                    uib-btn-radio="false" id="updateReturnWarehouse-hub" checked /> Set Hub
+                <div class="col-md-12 no-padding" ng-show="!showFleetListOnUpdateReturnWarehouse">
+                    <ui-select ng-model="updateReturnWarehouseLocation"
+                        theme="selectize" 
+                        tagging="tagHandler"
+                        on-select="chooseUpdateReturnWarehouseLocation($item)"
+                        class="col-xs-12 no-padding">
+                        <ui-select-match class="input-table">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="h in hubs | filter: $select.search track by $index" selected>
+                            <span class="input-table" ng-bind-html="h.name | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </p>
+            <p>
+                <input type="radio" name="updateReturnWarehouse" ng-model="$parent.showFleetListOnUpdateReturnWarehouse" 
+                    uib-btn-radio="true" id="updateReturnWarehouse-fleet" /> Set Fleet
+                <div class="col-md-12 no-padding" ng-show="showFleetListOnUpdateReturnWarehouse">
+                    <ui-select ng-model="updateReturnWarehouseLocation"
+                        theme="selectize" 
+                        tagging="tagHandler"
+                        on-select="chooseUpdateReturnWarehouseLocation($item)"
+                        class="col-xs-12 no-padding">
+                        <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
+                        <ui-select-choices repeat="f in fleets | filter: $select.search track by $index" selected>
+                            <span class="input-table" ng-bind-html="f.CompanyName | highlight: $select.search"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </p>
+        </div>
+        <div class="clearfix"></div>
+        <p>List of Orders</p>
+        <div ng-repeat="order in selectedOrders track by $index">               
+            <p><small>{{order.UserOrderNumber}}</small></p>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row-fluid">
+            <button class="btn btn-primary" ng-disabled="returnWarehouseHub && returnWarehouseFleet"
+                ng-click="bulkUpdateReturnWarehouse()">Update Return Warehouse Location</button>
         </div>
     </div>
 </script>

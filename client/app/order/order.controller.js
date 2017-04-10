@@ -205,6 +205,7 @@ angular.module('adminApp')
     $scope.updatablePrice = config.updatablePrice;
     $scope.features = config.features;
     $scope.returnableWarehouse = config.returnableWarehouse;
+    $scope.updateReturnableWarehouse = config.updateReturnableWarehouse;
     $scope.returnableSender = config.returnableSender;
     $scope.defaultReturnReason = config.defaultReturnReason;
     $scope.canChangeToPickup = config.canChangeToPickup;
@@ -472,6 +473,10 @@ angular.module('adminApp')
                         destination = ((route.DestinationHub && route.DestinationHub.Name) || "DESTINATION");
                         array[index].CurrentRouteDetail = "Arrived at " + destination
                     }
+                }
+
+                if (val.UserOrderReturneds && val.UserOrderReturneds[0] && val.UserOrderReturneds[0].Location) {
+                    array[index].locationReturnWarehouse = val.UserOrderReturneds[0].Location.FirstName + ' ' + val.UserOrderReturneds[0].Location.LastName;
                 }
             });
             $rootScope.$emit('stopSpin');
@@ -2248,6 +2253,23 @@ angular.module('adminApp')
     };
 
     /**
+     * Check whether there is one or more orders with cannot be update returned warehouse location selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedNonUpdateReturnWarehouseExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected && $scope.updateReturnableWarehouse.indexOf(order.OrderStatus.OrderStatusID) === -1) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+
+    /**
      * Check whether there is one or more orders with cannot be returned to sender selected.
      * 
      * @return {boolean}
@@ -2452,7 +2474,12 @@ angular.module('adminApp')
             $scope.returnedOrders[index].ReasonID = reason.ReasonID;
         };
 
+        $scope.returnWarehouseLocation = {};
+        $scope.showFleetListOnReturnWarehouse = false;
+
         getReasons()
+        .then(getHubs)
+        .then(getCompanies)
         .then(function () {
             ngDialog.close();
             return ngDialog.open({
@@ -2464,12 +2491,31 @@ angular.module('adminApp')
         });
     }
 
+    $scope.chooseReturnWarehouseLocation = function (location) {
+        $scope.returnWarehouseLocation = {};
+        $scope.returnWarehouseLocation = location;
+    }
+
     /**
      * Bulk set return warehouse
      * 
      * @return {void}
      */
     $scope.bulkReturnWarehouse = function() {
+        if (!Object.keys($scope.returnWarehouseLocation).length) {
+            SweetAlert.swal('Error', 'You must select hub or fleet', 'error');
+            return false;
+        }
+
+        var params = {};
+        params.orders = $scope.returnedOrders;
+        if ($scope.returnWarehouseLocation.id) {
+            params.hubID = $scope.returnWarehouseLocation.id;
+        }
+        if ($scope.returnWarehouseLocation.User) {
+            params.fleetManagerID = $scope.returnWarehouseLocation.User.UserID;
+        }
+
         SweetAlert.swal({
             title: 'Are you sure?',
             text: "Set status to return warehouse for these orders?",
@@ -2482,9 +2528,7 @@ angular.module('adminApp')
             if (isConfirm) {
                 $rootScope.$emit('startSpin');
                 ngDialog.closeAll();
-                Services2.bulkSetReturnWarehouse({
-                    orders: $scope.returnedOrders
-                }).$promise.then(function (result) {
+                Services2.bulkSetReturnWarehouse(params).$promise.then(function (result) {
                     var messages = '<table align="center" style="font-size: 12px;">';
                     result.data.forEach(function (o) {
                         messages += '<tr><td class="text-right">' + o.UserOrderNumber + 
@@ -2494,6 +2538,92 @@ angular.module('adminApp')
                     $rootScope.$emit('stopSpin');
                     SweetAlert.swal({
                         title: 'Mark as Returned Warehouse', 
+                        text: messages,
+                        html: true,
+                        customClass: 'alert-big'
+                    });
+                    $state.reload();
+                });
+            }
+        });
+    }
+
+    /**
+     * Show update return warehouse modals
+     * 
+     * @return {void}
+    */
+    $scope.showUpdateReturnWarehouse = function() {
+        if ($scope.selectedNonUpdateReturnWarehouseExists()) {
+            SweetAlert.swal('Error', 'You have selected one or more orders which cannot be update returned warehouse location', 'error');
+            return false;
+        }
+
+        setSelectedOrder();
+        $scope.updateReturnedOrders = [];
+        $scope.listUserOrderNumbersSelected = $scope.selectedOrders.map(function (order) {
+            $scope.updateReturnedOrders.push(order.UserOrderID);
+            return order.UserOrderNumber;
+        });
+
+        $scope.updateReturnWarehouseLocation = {};
+        $scope.showFleetListOnUpdateReturnWarehouse = false;
+
+        getCompanies()
+        .then(getHubs)
+        .then(function () {
+            ngDialog.close();
+            return ngDialog.open({
+                template: 'updateReturnWarehouseModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default return-warehouse-modal',
+                closeByDocument: false
+            });
+        });
+    }
+
+    $scope.chooseUpdateReturnWarehouseLocation = function (location) {
+        $scope.updateReturnWarehouseLocation = {};
+        $scope.updateReturnWarehouseLocation = location;
+    }
+
+    /**
+     * Bulk update return warehouse
+     * 
+     * @return {void}
+     */
+    $scope.bulkUpdateReturnWarehouse = function() {
+        if (!Object.keys($scope.updateReturnWarehouseLocation).length) {
+            SweetAlert.swal('Error', 'You must select hub or fleet', 'error');
+            return false;
+        }
+
+        var params = {};
+        params.orderIDs = $scope.updateReturnedOrders;
+        if ($scope.updateReturnWarehouseLocation.id) {
+            params.hubID = $scope.updateReturnWarehouseLocation.id;
+        }
+        if ($scope.updateReturnWarehouseLocation.User) {
+            params.fleetManagerID = $scope.updateReturnWarehouseLocation.User.UserID;
+        }
+
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Set status to update returned warehouse location for these orders?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                ngDialog.closeAll();
+                Services2.bulkUpdateReturnWarehouse(params).$promise.then(function (result) {
+                    var messages = 'Success';
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: 'Update Returned Warehouse Location', 
                         text: messages,
                         html: true,
                         customClass: 'alert-big'
