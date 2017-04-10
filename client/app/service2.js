@@ -838,6 +838,13 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'bulk-mark-as-delivered'
             }
-        }
+        },
+        getAvailableDriversForDriverSchedule: {
+            method: 'GET',
+            params: {
+                module: 'driverschedule',
+                controller: 'available-drivers'
+            }
+        },
     });
 });

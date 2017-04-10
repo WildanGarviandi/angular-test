@@ -102,21 +102,28 @@ angular.module('adminApp')
 
     /**
      * Call getDrivers function when a company is choosen
-     * @param  {[type]} company [description]
+     * @param  {Object}  company [description]
+     * @param  {Boolean} availableOnly
      * @return {Object} promise of data of all drivers
      */
-    $scope.chooseCompany = function (company) {
+    $scope.chooseCompany = function (company, availableOnly) {
         $scope.company = company;
         $scope.drivers = [];
         $scope.isFetchingDrivers = true;
-        var params = {
-            offset: 0,
-            limit: 0,
-            status: 'All',
-            codStatus: 'all',
-            company: company.CompanyDetailID
-        };
-        $scope.getDrivers(params);
+
+        if (!availableOnly) {
+
+            var params = {
+                offset: 0,
+                limit: 0,
+                status: 'All',
+                codStatus: 'all',
+                company: company.CompanyDetailID
+            };
+            $scope.getDrivers(params);
+        } else {
+            $scope.getAvailableDrivers();
+        }
     };
 
     /**
@@ -378,6 +385,35 @@ angular.module('adminApp')
         });
     }
 
+    $scope.getAvailableDrivers = function() {
+        $scope.drivers = [];
+        $scope.isFetchingDrivers = true;
+        var params = {
+            offset: 0,
+            limit: 0,
+            fleetManagerID: $scope.company.User.UserID,
+            startTime: $scope.driverSchedule.StartDate,
+            endTime: $scope.driverSchedule.EndDate,
+        };
+
+        $rootScope.$emit('startSpin');
+        Services2.getAvailableDriversForDriverSchedule(params).$promise.then(function(result) {
+
+            var drivers = [];
+            result.data.Drivers.forEach(function(driver){
+                drivers.push({key: driver.UserID, value: driver.FirstName + ' ' + driver.LastName})
+            });
+            drivers = lodash.sortBy(drivers, function (i) { 
+                return i.value.toLowerCase(); 
+            });
+
+            $scope.drivers = drivers;
+            $scope.drivers.unshift($scope.driverDetail);
+
+            $rootScope.$emit('stopSpin');
+        });
+    }
+
     /**
      * Get single driver
      * 
@@ -396,6 +432,7 @@ angular.module('adminApp')
                 CompanyDetailID: data.data.Driver.Driver.CompanyDetail.CompanyDetailID
             });
             $scope.chooseCompany($scope.company);
+            $scope.getAvailableDrivers();
         });
     }
 
@@ -521,7 +558,7 @@ angular.module('adminApp')
                     messages += '<br>' 
                         + 'please see this link to see overlapping schedule'
                         + '<br>'
-                        + '<a href="' + baseUrl + '/update-driverSchedule/' + getLastStringBy(':', messages) + '" target="_blank">Click Here</a>';
+                        + '<a href="' + baseUrl + '/update-driverSchedule/' + messages.match(/(DriverScheduleID: )(\d+)/)[2] + '" target="_blank">Click Here</a>';
                 };
 
                 SweetAlert.swal({
