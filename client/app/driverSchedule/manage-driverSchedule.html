@@ -64,7 +64,7 @@
                         <ui-select 
                             ng-model="company" 
                             theme="selectize" 
-                            on-select="chooseCompany($item)" 
+                            on-select="chooseCompany($item, true)" 
                             class="col-md-7 col-xs-9 no-padding"
                             ng-disabled="isOrder === false">
                             <ui-select-match class="input-table">{{$select.selected.CompanyName}}</ui-select-match>
