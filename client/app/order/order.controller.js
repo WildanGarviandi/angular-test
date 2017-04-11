@@ -446,16 +446,11 @@ angular.module('adminApp')
                     array[index].IsAttempt = 'Yes';
                     for (var i=0; i <= 1; i++) {
                         if (val.UserOrderAttempts[i]) {
-                            array[index].Attempt[i] = val.UserOrderAttempts[i].CreatedDate;
-                        } else {
-                            array[index].Attempt[i] = '-';
+                            array[index].Attempt[i] = val.UserOrderAttempts[i];
                         }
                     }
                 } else {
                     array[index].IsAttempt = 'No';
-                    for (var i=0; i <= 1; i++) {
-                        array[index].Attempt[i] = '-';
-                    }
                 }
 
                 array[index].CurrentRouteDetail = '-';
