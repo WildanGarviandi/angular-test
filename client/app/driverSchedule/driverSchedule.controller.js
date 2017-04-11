@@ -431,8 +431,7 @@ angular.module('adminApp')
             $scope.company = lodash.find($scope.companies, {
                 CompanyDetailID: data.data.Driver.Driver.CompanyDetail.CompanyDetailID
             });
-            $scope.chooseCompany($scope.company);
-            $scope.getAvailableDrivers();
+            $scope.chooseCompany($scope.company, true);
         });
     }
 
