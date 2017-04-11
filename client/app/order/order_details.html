@@ -164,6 +164,16 @@
                     <div class="col-sm-4"></div>
                 </div>
                 <div class="clearfix"></div>
+                <div class="row-fluid" ng-if="order.OrderStatus.OrderStatusID == 15">
+                    <div class="col-sm-4">
+                        Return Warehouse Location
+                    </div>
+                    <div class="col-sm-8 summary-from">
+                        {{order.UserOrderReturneds[0].Location.FirstName}} {{order.UserOrderReturneds[0].Location.LastName}}
+                    </div>
+                    <div class="col-sm-4"></div>
+                </div>
+                <div class="clearfix"></div>
                 <div class="row-fluid">
                     <div class="col-sm-4">
                         Pickup Time
