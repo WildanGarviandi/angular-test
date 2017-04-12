@@ -845,6 +845,13 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'bulk-change-return-warehouse'
             }
+        },
+        getAllFleets: {
+            method: 'GET',
+            params: {
+                module: 'company',
+                controller: 'fleet'
+            }
         }
     });
 });

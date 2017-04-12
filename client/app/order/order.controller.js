@@ -475,8 +475,14 @@ angular.module('adminApp')
                     }
                 }
 
+                array[index].ReturnedWarehouseLocation = '';
                 if (val.UserOrderReturneds && val.UserOrderReturneds[0] && val.UserOrderReturneds[0].Location) {
-                    array[index].locationReturnWarehouse = val.UserOrderReturneds[0].Location.FirstName + ' ' + val.UserOrderReturneds[0].Location.LastName;
+                    if (val.UserOrderReturneds[0].Location.CompanyDetail) {
+                        array[index].ReturnedWarehouseLocation = val.UserOrderReturneds[0].Location.CompanyDetail.CompanyName;
+                    }
+                    if (val.UserOrderReturneds[0].Location.Hub) {
+                        array[index].ReturnedWarehouseLocation = val.UserOrderReturneds[0].Location.Hub.Name;
+                    }
                 }
             });
             $rootScope.$emit('stopSpin');
@@ -1439,6 +1445,37 @@ angular.module('adminApp')
                 $scope.companies = $scope.companies.concat(companies);
                 $scope.company = $scope.companies[0];                
                 $scope.fleets = $scope.fleets.concat(companies);
+                $scope.fleet = $scope.fleets[0];   
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
+        });
+    };
+
+    /**
+     * Get all fleets without hub
+     * @param  {boolean} withAllOption - if true, will add 'All' option or 'no fleet'
+     *      
+     */
+    var getAllFleets = function (withAllOption) {
+        $scope.fleets = [];
+
+        if (withAllOption) {
+            $scope.fleets = [{
+                User: {
+                    UserID: '0'
+                },
+                CompanyName: 'All'
+            }];
+        }
+
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            Services2.getAllFleets().$promise.then(function(result) {
+                var fleets = lodash.sortBy(result.data, function (i) { 
+                    return i.CompanyName.toLowerCase(); 
+                });            
+                $scope.fleets = $scope.fleets.concat(fleets);
                 $scope.fleet = $scope.fleets[0];   
                 $rootScope.$emit('stopSpin');
                 resolve();
@@ -2479,7 +2516,7 @@ angular.module('adminApp')
 
         getReasons()
         .then(getHubs)
-        .then(getCompanies)
+        .then(getAllFleets)
         .then(function () {
             ngDialog.close();
             return ngDialog.open({
@@ -2569,7 +2606,7 @@ angular.module('adminApp')
         $scope.updateReturnWarehouseLocation = {};
         $scope.showFleetListOnUpdateReturnWarehouse = false;
 
-        getCompanies()
+        getAllFleets()
         .then(getHubs)
         .then(function () {
             ngDialog.close();
