@@ -677,6 +677,15 @@ angular.module('adminApp')
                     $scope.order.CurrentRouteDetail = "Arrived at " + destination
                 }
             }
+            $scope.order.ReturnedWarehouseLocation = '';
+            if ($scope.order.UserOrderReturneds && $scope.order.UserOrderReturneds[0] && $scope.order.UserOrderReturneds[0].Location) {
+                if ($scope.order.UserOrderReturneds[0].Location.CompanyDetail) {
+                    $scope.order.ReturnedWarehouseLocation = $scope.order.UserOrderReturneds[0].Location.CompanyDetail.CompanyName;
+                }
+                if ($scope.order.UserOrderReturneds[0].Location.Hub) {
+                    $scope.order.ReturnedWarehouseLocation = $scope.order.UserOrderReturneds[0].Location.Hub.Name;
+                }
+            }
             $scope.isCurrentStatus = {};
             $scope.isCurrentStatus.returnedSender = ($scope.order.OrderStatus.OrderStatusID === 16);
             $scope.isLoading = false;
