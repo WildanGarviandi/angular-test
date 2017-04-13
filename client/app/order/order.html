@@ -206,6 +206,7 @@
                                 Driver
                             </th>
                             <th>Status</th>
+                            <th>Current Route</th>
                             <th class="sortable-column"
                                 ng-if="sortBy !== 'PickupTime' || isFirstSort"
                                 ng-click="sortColumn('PickupTime', 'ASC')">
@@ -265,7 +266,6 @@
                                 <span class="caret" ></span>
                                 Due Time
                             </th>
-                            <th>Current Route</th>
                             <th>Total Failed Attempts</th>
                             <th>Failed Attempt</th>
                             <th>First Attempt</th>
@@ -331,6 +331,8 @@
                                         </ui-select-choices>
                                     </ui-select>
                                 </div>
+                            </th>
+                            <th>
                             </th>
                             <th>
                                 <div class="filter-table">
@@ -471,8 +473,6 @@
                             <th>
                             </th>
                             <th>
-                            </th>
-                            <th>
                                 <div class="filter-table">
                                     <ui-select ng-model="isAttempt" 
                                         theme="selectize" 
@@ -531,6 +531,7 @@
                             <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                             <td tooltip-placement="top" 
                                 uib-tooltip="{{order.ReturnedWarehouseLocation}}">{{order.OrderStatus.OrderStatus}}</td>
+                            <td>{{order.CurrentRouteDetail}}</td>
                             <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                             <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                             <td>{{order.PickupAddress.Address1}}</td>
@@ -548,7 +549,6 @@
                             <td>{{order.OrderType}}</td>
                             <td>{{order.CutOffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                             <td>{{order.DueTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
-                            <td>{{order.CurrentRouteDetail}}</td>
                             <td>{{order.UserOrderAttempts.length}}</td>
                             <td>{{order.IsAttempt}}</td>
                             <td>{{order.Attempt[0] | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
