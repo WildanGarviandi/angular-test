@@ -838,6 +838,20 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'bulk-mark-as-delivered'
             }
+        },
+        bulkUpdateReturnWarehouse: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-change-return-warehouse'
+            }
+        },
+        getAllFleets: {
+            method: 'GET',
+            params: {
+                module: 'company',
+                controller: 'fleet'
+            }
         }
     });
 });
