@@ -49,7 +49,7 @@
                     Action
                     <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu col-xs-12">
+                <ul class="dropdown-menu col-xs-12 dropdown-action">
                     <li><a ng-show="features.order.set_price" ng-click="showUpdateData()" class="">Update Data</a></li>
                     <li><a ng-show="features.order.reassign_fleet" ng-click="showReassignFleet()" class="">Reassign Fleet</a></li>
                     <li>
@@ -93,7 +93,7 @@
                 <button class="btn order-buttons first-row-element col-xs-12" ng-click="clearFilter()">
                 <i class="fa fa-refresh"></i> Reset Filter</button>
             </div>
-            <div class="col-lg-2 col-md-5 col-sm-4 col-xs-6">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
                 <span class="first-row-element col-xs-12 no-padding">
                     <ui-select ng-model="itemsByPage" 
                         theme="selectize" 
@@ -121,7 +121,7 @@
                     <li><a ng-click="showUpdateOrderTime()" class="">Update Order Time</a></li>
                 </ul>
             </div>
-            <div class="col-md-4 col-xs-12">
+            <div class="col-lg-4 col-md-3 col-sm-8 col-xs-12">
                 <uib-accordion>
                     <uib-accordion-group is-open="areaFilter.open">
                         <uib-accordion-heading>
