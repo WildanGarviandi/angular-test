@@ -169,6 +169,8 @@ function mainConfig() {
         updatablePrice: [1, 6, 9, 2, 3, 4],
         // BOOKED, NOTASSIGNED, PREBOOKED, ACCEPTED, PICKUP, IN-TRANSIT
         returnableWarehouse: [2, 3, 4, 17],
+        // RETURNED_WAREHOUSE
+        updateReturnableWarehouse: [15],
         returnableSender: [15],
         defaultReturnReason : {
             ReasonName: 'MANUAL_PROCESS',
