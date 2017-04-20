@@ -135,7 +135,7 @@ angular.module('adminApp')
 
         lodash.map(params, function (value, index) {
             var dateMoment = moment(value);
-            if (dateMoment.isValid()) {
+            if (dateMoment.isValid() && !isFinite(value)) {
                 params[index] = new Date(value);
             }
         });
