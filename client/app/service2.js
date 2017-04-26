@@ -846,5 +846,12 @@ angular.module('adminApp')
                 controller: 'available-drivers'
             }
         },
+        bulkSetDestroyed: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-destroyed'
+            }
+        },
     });
 });

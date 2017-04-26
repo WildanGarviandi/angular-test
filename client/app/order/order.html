@@ -74,6 +74,9 @@
                         <a ng-show="features.order.bulk_set_claimed" ng-click="bulkSetClaimed()" class="">Mark as Claimed</a>
                     </li>
                     <li>
+                        <a ng-show="features.order.bulk_set_destroyed" ng-click="showSetDestroyed()">Mark as Destroyed</a>
+                    </li>
+                    <li>
                         <a ng-show="features.order.reroute" 
                             ng-click="openRerouteModal()">Reroute</a>
                     </li>
