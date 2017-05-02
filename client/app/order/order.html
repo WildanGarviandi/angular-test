@@ -74,6 +74,9 @@
                         <a ng-show="features.order.bulk_set_claimed" ng-click="bulkSetClaimed()" class="">Mark as Claimed</a>
                     </li>
                     <li>
+                        <a ng-show="features.order.bulk_set_destroyed" ng-click="showSetDestroyed()">Mark as Destroyed</a>
+                    </li>
+                    <li>
                         <a ng-show="features.order.reroute" 
                             ng-click="openRerouteModal()">Reroute</a>
                     </li>
@@ -551,8 +554,8 @@
                             <td>{{order.DueTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                             <td>{{order.UserOrderAttempts.length}}</td>
                             <td>{{order.IsAttempt}}</td>
-                            <td>{{order.Attempt[0] | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
-                            <td>{{order.Attempt[1] | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                            <td>{{order.Attempt[0].ReasonReturn.ReasonName}}<br/>{{order.Attempt[0].CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                            <td>{{order.Attempt[1].ReasonReturn.ReasonName}}<br/>{{order.Attempt[1].CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         </tr>
                     </tbody>
                     <tfoot ng-show="!isLoading && displayed.length > 0">

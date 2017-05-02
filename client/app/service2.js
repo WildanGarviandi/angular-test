@@ -839,6 +839,20 @@ angular.module('adminApp')
                 controller: 'bulk-mark-as-delivered'
             }
         },
+        getAvailableDriversForDriverSchedule: {
+            method: 'GET',
+            params: {
+                module: 'driverschedule',
+                controller: 'available-drivers'
+            }
+        },
+        bulkSetDestroyed: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-destroyed'
+            }
+        },
         bulkUpdateReturnWarehouse: {
             method: 'POST',
             params: {

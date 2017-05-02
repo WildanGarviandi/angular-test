@@ -210,6 +210,7 @@ angular.module('adminApp')
     $scope.defaultReturnReason = config.defaultReturnReason;
     $scope.canChangeToPickup = config.canChangeToPickup;
     $scope.canSetHub = config.canSetHub;
+    $scope.canChangeToDestroyed = config.canChangeToDestroyed;
     $scope.canChangeToMissing = config.canChangeToMissing;
     $scope.canChangeToClaimed = config.canChangeToClaimed;
     $scope.canChangeToClaimedVendor = config.canChangeToClaimedVendor;
@@ -447,16 +448,11 @@ angular.module('adminApp')
                     array[index].IsAttempt = 'Yes';
                     for (var i=0; i <= 1; i++) {
                         if (val.UserOrderAttempts[i]) {
-                            array[index].Attempt[i] = val.UserOrderAttempts[i].CreatedDate;
-                        } else {
-                            array[index].Attempt[i] = '-';
+                            array[index].Attempt[i] = val.UserOrderAttempts[i];
                         }
                     }
                 } else {
                     array[index].IsAttempt = 'No';
-                    for (var i=0; i <= 1; i++) {
-                        array[index].Attempt[i] = '-';
-                    }
                 }
 
                 array[index].CurrentRouteDetail = '-';
@@ -3638,6 +3634,74 @@ angular.module('adminApp')
                 }).catch(function (e) {
                     $rootScope.$emit('stopSpin');
                     SweetAlert.swal('Failed in reroute hub', e.data.error.message);
+                    $state.reload();
+                });
+            }
+        });
+    }
+    
+    /**
+     * Check whether there is one or more orders with cannot be set as destroyed.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedNonSetDestroyedExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected && $scope.canChangeToDestroyed.indexOf(order.OrderStatus.OrderStatusID) === -1) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+
+    /**
+     * Show set mark as destroyed modals and action
+     * 
+     * @return {void}
+    */
+    $scope.showSetDestroyed = function() {
+        if ($scope.selectedNonSetDestroyedExists()) {
+            SweetAlert.swal('Error', 'You have selected one or more orders which cannot be Mark as DESTROYED', 'error');
+            return false;
+        }
+
+        setSelectedOrder();
+        var orderIDs = [];
+        $scope.selectedOrders.forEach(function(order) {
+            orderIDs.push(order.UserOrderID);
+        });
+        
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Mark as Destroyed for " + orderIDs.length + ((orderIDs.length > 1) ? ' orders?' : ' order?'),
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                ngDialog.closeAll();
+
+                Services2.bulkSetDestroyed({
+                    orderIDs: orderIDs
+                }).$promise.then(function (result) {
+                    var messages = '<p>success</p>';
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: 'Update Mark as Destroyed', 
+                        text: messages,
+                        html: true,
+                        customClass: 'alert-big'
+                    });
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Failed in mark as destroyed', e.data.error.message);
                     $state.reload();
                 });
             }
