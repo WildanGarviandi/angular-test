@@ -205,10 +205,12 @@ angular.module('adminApp')
     $scope.updatablePrice = config.updatablePrice;
     $scope.features = config.features;
     $scope.returnableWarehouse = config.returnableWarehouse;
+    $scope.updateReturnableWarehouse = config.updateReturnableWarehouse;
     $scope.returnableSender = config.returnableSender;
     $scope.defaultReturnReason = config.defaultReturnReason;
     $scope.canChangeToPickup = config.canChangeToPickup;
     $scope.canSetHub = config.canSetHub;
+    $scope.canChangeToDestroyed = config.canChangeToDestroyed;
     $scope.canChangeToMissing = config.canChangeToMissing;
     $scope.canChangeToClaimed = config.canChangeToClaimed;
     $scope.canChangeToClaimedVendor = config.canChangeToClaimedVendor;
@@ -468,6 +470,16 @@ angular.module('adminApp')
                         array[index].CurrentRouteDetail = "Arrived at " + destination
                     }
                 }
+
+                array[index].ReturnedWarehouseLocation = '';
+                if (val.UserOrderReturneds && val.UserOrderReturneds[0] && val.UserOrderReturneds[0].Location) {
+                    if (val.UserOrderReturneds[0].Location.CompanyDetail) {
+                        array[index].ReturnedWarehouseLocation = val.UserOrderReturneds[0].Location.CompanyDetail.CompanyName;
+                    }
+                    if (val.UserOrderReturneds[0].Location.Hub) {
+                        array[index].ReturnedWarehouseLocation = val.UserOrderReturneds[0].Location.Hub.Name;
+                    }
+                }
             });
             $rootScope.$emit('stopSpin');
             $scope.isLoading = false;
@@ -670,6 +682,15 @@ angular.module('adminApp')
                 } else {
                     destination = ((route.DestinationHub && route.DestinationHub.Name) || "DESTINATION");
                     $scope.order.CurrentRouteDetail = "Arrived at " + destination
+                }
+            }
+            $scope.order.ReturnedWarehouseLocation = '';
+            if ($scope.order.UserOrderReturneds && $scope.order.UserOrderReturneds[0] && $scope.order.UserOrderReturneds[0].Location) {
+                if ($scope.order.UserOrderReturneds[0].Location.CompanyDetail) {
+                    $scope.order.ReturnedWarehouseLocation = $scope.order.UserOrderReturneds[0].Location.CompanyDetail.CompanyName;
+                }
+                if ($scope.order.UserOrderReturneds[0].Location.Hub) {
+                    $scope.order.ReturnedWarehouseLocation = $scope.order.UserOrderReturneds[0].Location.Hub.Name;
                 }
             }
             $scope.isCurrentStatus = {};
@@ -1429,6 +1450,37 @@ angular.module('adminApp')
                 $scope.companies = $scope.companies.concat(companies);
                 $scope.company = $scope.companies[0];                
                 $scope.fleets = $scope.fleets.concat(companies);
+                $scope.fleet = $scope.fleets[0];   
+                $rootScope.$emit('stopSpin');
+                resolve();
+            });
+        });
+    };
+
+    /**
+     * Get all fleets without hub
+     * @param  {boolean} withAllOption - if true, will add 'All' option or 'no fleet'
+     *      
+     */
+    var getAllFleets = function (withAllOption) {
+        $scope.fleets = [];
+
+        if (withAllOption) {
+            $scope.fleets = [{
+                User: {
+                    UserID: '0'
+                },
+                CompanyName: 'All'
+            }];
+        }
+
+        return $q(function (resolve) {
+            $rootScope.$emit('startSpin');
+            Services2.getAllFleets().$promise.then(function(result) {
+                var fleets = lodash.sortBy(result.data, function (i) { 
+                    return i.CompanyName.toLowerCase(); 
+                });            
+                $scope.fleets = $scope.fleets.concat(fleets);
                 $scope.fleet = $scope.fleets[0];   
                 $rootScope.$emit('stopSpin');
                 resolve();
@@ -2243,6 +2295,23 @@ angular.module('adminApp')
     };
 
     /**
+     * Check whether there is one or more orders with cannot be update returned warehouse location selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedNonUpdateReturnWarehouseExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected && $scope.updateReturnableWarehouse.indexOf(order.OrderStatus.OrderStatusID) === -1) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+
+    /**
      * Check whether there is one or more orders with cannot be returned to sender selected.
      * 
      * @return {boolean}
@@ -2447,7 +2516,12 @@ angular.module('adminApp')
             $scope.returnedOrders[index].ReasonID = reason.ReasonID;
         };
 
+        $scope.returnWarehouseLocation = {};
+        $scope.showFleetListOnReturnWarehouse = false;
+
         getReasons()
+        .then(getHubs)
+        .then(getAllFleets)
         .then(function () {
             ngDialog.close();
             return ngDialog.open({
@@ -2459,12 +2533,31 @@ angular.module('adminApp')
         });
     }
 
+    $scope.chooseReturnWarehouseLocation = function (location) {
+        $scope.returnWarehouseLocation = {};
+        $scope.returnWarehouseLocation = location;
+    }
+
     /**
      * Bulk set return warehouse
      * 
      * @return {void}
      */
     $scope.bulkReturnWarehouse = function() {
+        if (!Object.keys($scope.returnWarehouseLocation).length) {
+            SweetAlert.swal('Error', 'You must select hub or fleet', 'error');
+            return false;
+        }
+
+        var params = {};
+        params.orders = $scope.returnedOrders;
+        if ($scope.returnWarehouseLocation.id) {
+            params.hubID = $scope.returnWarehouseLocation.id;
+        }
+        if ($scope.returnWarehouseLocation.User) {
+            params.fleetManagerID = $scope.returnWarehouseLocation.User.UserID;
+        }
+
         SweetAlert.swal({
             title: 'Are you sure?',
             text: "Set status to return warehouse for these orders?",
@@ -2477,9 +2570,7 @@ angular.module('adminApp')
             if (isConfirm) {
                 $rootScope.$emit('startSpin');
                 ngDialog.closeAll();
-                Services2.bulkSetReturnWarehouse({
-                    orders: $scope.returnedOrders
-                }).$promise.then(function (result) {
+                Services2.bulkSetReturnWarehouse(params).$promise.then(function (result) {
                     var messages = '<table align="center" style="font-size: 12px;">';
                     result.data.forEach(function (o) {
                         messages += '<tr><td class="text-right">' + o.UserOrderNumber + 
@@ -2489,6 +2580,92 @@ angular.module('adminApp')
                     $rootScope.$emit('stopSpin');
                     SweetAlert.swal({
                         title: 'Mark as Returned Warehouse', 
+                        text: messages,
+                        html: true,
+                        customClass: 'alert-big'
+                    });
+                    $state.reload();
+                });
+            }
+        });
+    }
+
+    /**
+     * Show update return warehouse modals
+     * 
+     * @return {void}
+    */
+    $scope.showUpdateReturnWarehouse = function() {
+        if ($scope.selectedNonUpdateReturnWarehouseExists()) {
+            SweetAlert.swal('Error', 'You have selected one or more orders which cannot be update returned warehouse location', 'error');
+            return false;
+        }
+
+        setSelectedOrder();
+        $scope.updateReturnedOrders = [];
+        $scope.listUserOrderNumbersSelected = $scope.selectedOrders.map(function (order) {
+            $scope.updateReturnedOrders.push(order.UserOrderID);
+            return order.UserOrderNumber;
+        });
+
+        $scope.updateReturnWarehouseLocation = {};
+        $scope.showFleetListOnUpdateReturnWarehouse = false;
+
+        getAllFleets()
+        .then(getHubs)
+        .then(function () {
+            ngDialog.close();
+            return ngDialog.open({
+                template: 'updateReturnWarehouseModal',
+                scope: $scope,
+                className: 'ngdialog-theme-default return-warehouse-modal',
+                closeByDocument: false
+            });
+        });
+    }
+
+    $scope.chooseUpdateReturnWarehouseLocation = function (location) {
+        $scope.updateReturnWarehouseLocation = {};
+        $scope.updateReturnWarehouseLocation = location;
+    }
+
+    /**
+     * Bulk update return warehouse
+     * 
+     * @return {void}
+     */
+    $scope.bulkUpdateReturnWarehouse = function() {
+        if (!Object.keys($scope.updateReturnWarehouseLocation).length) {
+            SweetAlert.swal('Error', 'You must select hub or fleet', 'error');
+            return false;
+        }
+
+        var params = {};
+        params.orderIDs = $scope.updateReturnedOrders;
+        if ($scope.updateReturnWarehouseLocation.id) {
+            params.hubID = $scope.updateReturnWarehouseLocation.id;
+        }
+        if ($scope.updateReturnWarehouseLocation.User) {
+            params.fleetManagerID = $scope.updateReturnWarehouseLocation.User.UserID;
+        }
+
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Set status to update returned warehouse location for these orders?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                ngDialog.closeAll();
+                Services2.bulkUpdateReturnWarehouse(params).$promise.then(function (result) {
+                    var messages = 'Success';
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: 'Update Returned Warehouse Location', 
                         text: messages,
                         html: true,
                         customClass: 'alert-big'
@@ -3457,6 +3634,74 @@ angular.module('adminApp')
                 }).catch(function (e) {
                     $rootScope.$emit('stopSpin');
                     SweetAlert.swal('Failed in reroute hub', e.data.error.message);
+                    $state.reload();
+                });
+            }
+        });
+    }
+    
+    /**
+     * Check whether there is one or more orders with cannot be set as destroyed.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedNonSetDestroyedExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected && $scope.canChangeToDestroyed.indexOf(order.OrderStatus.OrderStatusID) === -1) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+
+    /**
+     * Show set mark as destroyed modals and action
+     * 
+     * @return {void}
+    */
+    $scope.showSetDestroyed = function() {
+        if ($scope.selectedNonSetDestroyedExists()) {
+            SweetAlert.swal('Error', 'You have selected one or more orders which cannot be Mark as DESTROYED', 'error');
+            return false;
+        }
+
+        setSelectedOrder();
+        var orderIDs = [];
+        $scope.selectedOrders.forEach(function(order) {
+            orderIDs.push(order.UserOrderID);
+        });
+        
+        SweetAlert.swal({
+            title: 'Are you sure?',
+            text: "Mark as Destroyed for " + orderIDs.length + ((orderIDs.length > 1) ? ' orders?' : ' order?'),
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            cancelButtonText: 'No'
+        }, function (isConfirm){ 
+            if (isConfirm) {
+                $rootScope.$emit('startSpin');
+                ngDialog.closeAll();
+
+                Services2.bulkSetDestroyed({
+                    orderIDs: orderIDs
+                }).$promise.then(function (result) {
+                    var messages = '<p>success</p>';
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal({
+                        title: 'Update Mark as Destroyed', 
+                        text: messages,
+                        html: true,
+                        customClass: 'alert-big'
+                    });
+                    $state.reload();
+                }).catch(function (e) {
+                    $rootScope.$emit('stopSpin');
+                    SweetAlert.swal('Failed in mark as destroyed', e.data.error.message);
                     $state.reload();
                 });
             }

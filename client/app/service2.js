@@ -846,5 +846,26 @@ angular.module('adminApp')
                 controller: 'available-drivers'
             }
         },
+        bulkSetDestroyed: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-destroyed'
+            }
+        },
+        bulkUpdateReturnWarehouse: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'bulk-change-return-warehouse'
+            }
+        },
+        getAllFleets: {
+            method: 'GET',
+            params: {
+                module: 'company',
+                controller: 'fleet'
+            }
+        }
     });
 });

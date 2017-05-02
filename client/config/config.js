@@ -169,6 +169,8 @@ function mainConfig() {
         updatablePrice: [1, 6, 9, 2, 3, 4],
         // BOOKED, NOTASSIGNED, PREBOOKED, ACCEPTED, PICKUP, IN-TRANSIT
         returnableWarehouse: [2, 3, 4, 17],
+        // RETURNED_WAREHOUSE
+        updateReturnableWarehouse: [15],
         returnableSender: [15],
         defaultReturnReason : {
             ReasonName: 'MANUAL_PROCESS',
@@ -182,7 +184,8 @@ function mainConfig() {
         canChangeToClaimedVendor: [17, 19],
         webtrackingURL: webtrackingURL,
         googleClientId: '196844091368-igtekd4ke8h75r03f0c9rf9k63n9ltc0.apps.googleusercontent.com',
-        canSetHub: [1, 2, 6]
+        canSetHub: [1, 2, 6],
+        canChangeToDestroyed: [15]
     };
 }
 
