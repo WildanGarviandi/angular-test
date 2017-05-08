@@ -106,6 +106,7 @@
                         ng-model="company" 
                         theme="selectize" 
                         ng-disabled="disabled" 
+                        tagging="tagHandler"
                         on-select="chooseCompanyEdit($item)">
                         <ui-select-match placeholder="Choose status">
                             {{ $select.selected.CompanyName }}
