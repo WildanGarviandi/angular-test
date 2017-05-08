@@ -2015,6 +2015,7 @@ angular.module('adminApp')
     $scope.getCustomers = function (val) {
         var userLimit = 50;
         return Services2.getUsers({
+            userType: 5,
             search: val,
             limit: userLimit
         }).$promise.then(function (result) {
