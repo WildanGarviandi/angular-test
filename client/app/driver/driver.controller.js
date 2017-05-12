@@ -8,6 +8,7 @@ angular.module('adminApp')
             $rootScope, 
             Services, 
             Services2,
+            SweetAlert,
             moment, 
             lodash, 
             $state, 
@@ -64,6 +65,14 @@ angular.module('adminApp')
 
 
     var updateDriver = function(callback) {
+        if (!($scope.company && $scope.company.CompanyDetailID && $scope.company.User && $scope.company.User.UserID)) {
+            SweetAlert.swal({
+                title: 'Failed Update',
+                text: 'Fleet Company Required',
+                type: 'error',
+                html: true
+            });
+        }
         if (typeof $scope.driver.DriverDetail.CanTakeCOD === 'undefined') {
             $scope.driver.DriverDetail.CanTakeCOD = false;
         }
@@ -74,7 +83,7 @@ angular.module('adminApp')
                 LastName: $scope.driver.LastName,
                 Email: $scope.driver.Email,
                 PhoneNumber: $scope.driver.PhoneNumber,
-                StatusID: $scope.driver.StatusID,
+                StatusID: $scope.driver.Driver.StatusID,
             },
             FleetDriver: {
                 CompanyDetailID: $scope.company.CompanyDetailID,
@@ -215,10 +224,21 @@ angular.module('adminApp')
     $scope.updateDriver = function() {
         updateDriver(function(err, driver) {
             if (err) {
-                alert('Error: '+ err.data.error.message );
+                SweetAlert.swal({
+                    title: 'Failed',
+                    text: 'Error: '+ err.data.error.message,
+                    type: 'error',
+                    html: true
+                });
             } else {
-                alert('Your driver ID:' + driver.data.Driver.UserID + ' has been successfully updated.');
-                $location.path('/drivers');
+                SweetAlert.swal({
+                    title: 'Success',
+                    text: 'Your driver ID:' + driver.data.Driver.UserID + ' has been successfully updated.',
+                    type: 'success',
+                    html: true
+                }, function (isConfirm){
+                    $location.path('/drivers');
+                });
             } 
         });
     }   
@@ -344,15 +364,16 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.loadManagePage = function() {
-        getCompanies();
-        if ($stateParams.driverID !== undefined) {
-            $scope.getDriverDetails();
-            $scope.getStatus();
-            $scope.updatePage = true;
-            $scope.addPage = false;
-        } else {
-            $scope.addPage = true;
-        }
+        getCompanies().then(function () {
+            if ($stateParams.driverID !== undefined) {
+                $scope.getDriverDetails();
+                $scope.getStatus();
+                $scope.updatePage = true;
+                $scope.addPage = false;
+            } else {
+                $scope.addPage = true;
+            }
+        });
     }
 
     $scope.loadManagePage();
