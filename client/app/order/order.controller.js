@@ -126,6 +126,7 @@ angular.module('adminApp')
     $scope.isFetchingDrivers = false;
     $scope.urlToDownload = {};
     $scope.urlToDownload.templateDeliveryAttempts = '../../assets/template/importUserOrderAttempt.xlsx';
+    $scope.urlToDownload.templateImportOrders = '../../assets/template/templateImportOrders.xlsx';
     $scope.isNavigationOpen = true;
 
     $scope.isModalOpen = {};
