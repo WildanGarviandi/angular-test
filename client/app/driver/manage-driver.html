@@ -102,18 +102,22 @@
                     <div class="label-input-driver">
                         Fleet Company :
                     </div>  
-                    <ui-select class="driver-field select-field" 
+                    <div class="driver-field select-field">
+                    <ui-select class="col-md-12 no-padding" 
                         ng-model="company" 
                         theme="selectize" 
                         ng-disabled="disabled" 
+                        tagging="tagHandler"
                         on-select="chooseCompanyEdit($item)">
-                        <ui-select-match placeholder="Choose status">
+                        <ui-select-match placeholder="Choose Fleet Company">
                             {{ $select.selected.CompanyName }}
                         </ui-select-match>
                         <ui-select-choices repeat="c in companies" selected>
                             <span ng-bind-html="c.CompanyName"></span>
                         </ui-select-choices>
                     </ui-select>
+                    <span><small class="text-danger"><i class="fa fa-info-circle"></i> before: {{driver.Driver.CompanyDetail.CompanyName}}</small></span>
+                    </div>
                 </div>
                 <div class="clearfix"></div>                
                 <div class="row-fluid-driver">                    

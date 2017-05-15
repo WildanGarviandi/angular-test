@@ -126,6 +126,7 @@ angular.module('adminApp')
     $scope.isFetchingDrivers = false;
     $scope.urlToDownload = {};
     $scope.urlToDownload.templateDeliveryAttempts = '../../assets/template/importUserOrderAttempt.xlsx';
+    $scope.urlToDownload.templateImportOrders = '../../assets/template/templateImportOrders.xlsx';
     $scope.isNavigationOpen = true;
 
     $scope.isModalOpen = {};
@@ -2015,6 +2016,7 @@ angular.module('adminApp')
     $scope.getCustomers = function (val) {
         var userLimit = 50;
         return Services2.getUsers({
+            userType: 5,
             search: val,
             limit: userLimit
         }).$promise.then(function (result) {
