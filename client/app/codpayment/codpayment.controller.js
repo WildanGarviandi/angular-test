@@ -95,7 +95,6 @@ angular.module('adminApp')
     $scope.isFirstSort = true;
     $scope.companies = [];
     $scope.drivers = [];
-    $scope.selectedUserID = [];
     $scope.selectedOrder = {};
     $scope.amountPaid = 0;
     $scope.transactionDate = new Date();
