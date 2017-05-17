@@ -721,8 +721,19 @@ angular.module('adminApp')
                     params.userID = key;
                     params.orderIDs = val;
                     Services2.createCODPayment(params).$promise.then(function(result) {
+                        var resultInvalid = '';
+                        var invalidLength = 0;
+                        if (result.data.invalid && result.data.invalid.length) {
+                            invalidLength = result.data.invalid.length;
+                            resultInvalid += '\n invalid for: ';
+                            lodash.forEach(result.data.invalid, function (invalid) {
+                                resultInvalid += '\n ' + invalid.orderId + ' : ' + invalid.message;
+                            });
+                        }
+                        var resultSummary = '\n Success for closing payment : ' + val.length - invalidLength + ' Order';
+                        var resultSummary = '\n Invalid for closing payment : ' + invalidLength  + ' Order';
                         successResult.push(result.data);
-                        SweetAlert.swal('Success', 'Your COD Payment has been created', 'success');
+                        SweetAlert.swal('Success', 'Close Payment' + resultSummary + resultInvalid, 'success');
                         ngDialog.close();
                         $scope.getCODOrdersNoPaymentAndUnpaid($scope.selectedUserID, true);
                         $rootScope.$emit('stopSpin');
