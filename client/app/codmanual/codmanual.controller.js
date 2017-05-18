@@ -731,7 +731,7 @@ angular.module('adminApp')
                             });
                         }
                         var resultSummary = '\n Success for closing payment : ' + val.length - invalidLength + ' Order';
-                        var resultSummary = '\n Invalid for closing payment : ' + invalidLength  + ' Order';
+                        var resultInvalid = '\n Invalid for closing payment : ' + invalidLength  + ' Order';
                         successResult.push(result.data);
                         SweetAlert.swal('Success', 'Close Payment' + resultSummary + resultInvalid, 'success');
                         ngDialog.close();
