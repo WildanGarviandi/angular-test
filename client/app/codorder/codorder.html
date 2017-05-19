@@ -213,7 +213,7 @@
                         <td class="text-right" ng-click="detailsPage(order.UserOrderID)">{{order.TotalValue | number | localizenumber}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.OrderStatus.OrderStatus}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" 
-                            ng-class="order.UnpaidClass">{{order.CODPaymentUserOrder.CODPayment.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                            ng-class="order.UnpaidClass">{{order.CODPaymentUserOrder.CODPayment.PaidDate | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.CODPaymentUserOrder.CODPayment.Status || 'Unpaid'}}</td>
                     </tr>
                 </tbody>

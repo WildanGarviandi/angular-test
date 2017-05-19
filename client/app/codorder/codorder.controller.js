@@ -139,6 +139,7 @@ angular.module('adminApp')
 
     $scope.filterMultipleEDS = function () {
         var isFilterEDS = true;
+        $scope.offset = 0;
         $scope.getOrder(isFilterEDS);
     };
 
@@ -260,10 +261,10 @@ angular.module('adminApp')
             endDropoff: $scope.dropoffDatePicker.endDate,
             sortBy: $scope.sortBy,
             sortCriteria: $scope.sortCriteria,
+            userOrderNumbers: JSON.stringify($scope.userOrderNumbers)
         }
         if (isFilterEDS) {
             $scope.orderNotFound = 0;
-            params.userOrderNumbers = JSON.stringify($scope.userOrderNumbers);
         }
         Services2.getCODOrder(params).$promise.then(function(data) {
             // modify data, add DeliveredTime
