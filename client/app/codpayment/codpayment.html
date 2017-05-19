@@ -10,28 +10,24 @@
             <div class="col-md-3 col-sm-5 pull-right">
                 <div class="hub" ng-include="'components/user/user.html'"></div>
             </div>
-            <div class="col-md-3 col-sm-12">
-                <div class="hub-search">
-                </div>
-            </div>
         </div>
     </div>
     
     <div class="col-xs-12 no-padding mt15">
         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-            <button class="btn order-buttons col-md-12" ng-click="refresh()">Refresh</button>
+            <button class="btn order-buttons col-xs-12" ng-click="refresh()">Refresh</button>
         </div>
         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-            <button class="btn order-buttons col-md-12" ng-click="clearFilter()">
+            <button class="btn order-buttons col-xs-12" ng-click="clearFilter()">
                 <i class="fa fa-refresh"></i> Reset Filter</button>
         </div>
-        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-            <button class="btn btn-primary col-md-12" type="button" 
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">
+            <button class="btn btn-primary col-xs-12" type="button" 
                 ng-click="openCreateCODPaymentModal()">Confirm COD Payment</button>
         </div>
     </div>
     <div class="clearfix"></div>
-    <div class="container-content">
+    <div class="row no-margin">
         <div class="col-md-12">
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
                 <thead class="hubs-table-head">
@@ -204,7 +200,7 @@
                             class="form-control input-table" 
                             placeholder="type name of fleet or driver" 
                             value="" 
-                            ng-model="$parent.$parent.userName">
+                            ng-model="$parent.userName">
                     </div>
                 </div>
             </div>
@@ -262,10 +258,7 @@
         <div class="content-payments" ng-show="isFetchingOrders && (codOrdersNoPayment.length > 0 || codPaymentsUnpaid.length > 0)" >
             <div class="clearfix"></div>
             <div ng-show="formData.paymentType == 'manual'">
-                <div ng-show="codOrdersNoPayment.length == 0">
-                    No Manual Payment found
-                </div>
-                <table class="table table-hover table-main-trip no-margin" ng-show="codOrdersNoPayment.length > 0">
+                <table class="table table-hover table-main-trip no-margin">
                     <thead class="hubs-table-head">
                         <tr>
                             <th>
@@ -281,7 +274,10 @@
                         <tr ng-show="loading['manual']">
                             <td colspan="5" class="text-center">loading ...</td>
                         </tr>
-                        <tr ng-repeat="order in codOrdersNoPayment" ng-show="!loading['manual']">
+                        <tr ng-show="!loading['manual'] && codOrdersNoPayment.length == 0">
+                            <td colspan="5" class="text-center">No Manual Payment found</td>
+                        </tr>
+                        <tr ng-repeat="order in codOrdersNoPayment" ng-show="!loading['manual'] && codOrdersNoPayment.length > 0">
                             <td class="">
                                 <input type="checkbox" ng-change="prepareSelectedOrdersOrPayment()" ng-model="order.Selected" />
                             </td>
@@ -321,10 +317,7 @@
             </div>
             <div class="clearfix"></div>
             <div ng-show="formData.paymentType == 'auto'">
-                <div ng-show="codPaymentsUnpaid.length == 0">
-                    No Automatic Payment found
-                </div>
-                <table class="table table-hover table-main-trip no-margin" ng-show="codPaymentsUnpaid.length > 0">
+                <table class="table table-hover table-main-trip no-margin">
                     <thead class="hubs-table-head">
                         <tr>
                             <th></th>
@@ -335,7 +328,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="payment in codPaymentsUnpaid">
+                        <tr ng-show="loading['auto']">
+                            <td colspan="5" class="text-center">loading ...</td>
+                        </tr>
+                        <tr ng-show="!loading['auto'] && codPaymentsUnpaid.length == 0">
+                            <td colspan="5" class="text-center">No Automatic Payment found</td>
+                        </tr>
+                        <tr ng-repeat="payment in codPaymentsUnpaid" ng-show="!loading['auto'] && codPaymentsUnpaid.length > 0">
                             <td class="">
                                 <input type="radio" name="selectedAutoPayment" ng-change="prepareSelectedOrdersOrPayment()" ng-model="formData.selectedPayment" ng-value="payment" />
                             </td>

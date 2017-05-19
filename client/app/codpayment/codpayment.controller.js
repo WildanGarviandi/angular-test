@@ -384,6 +384,8 @@ angular.module('adminApp')
         $scope.resetPaymentParams();
         $scope.userTypeOnModal = $scope.userTypes[0];
         $scope.paidBy = 'company';
+        $scope.customPagination = [];
+        $scope.userName = '';
 
         ngDialog.open({
             template: 'createCODPaymentTemplate',
@@ -395,7 +397,6 @@ angular.module('adminApp')
         getCODOrdersType('manual')
         .then(getCODOrdersType('auto'));
     };
-    $scope.customPagination = [];
     /**
      * Get all cod orders Data with type manual or auto
      * 
@@ -492,8 +493,11 @@ angular.module('adminApp')
         $scope.resetSelectionParams();
         $rootScope.$emit('startSpin');
 
-        getCODOrdersType('manual');
-        getCODOrdersType('auto');
+        if ($scope.userOrderNumbers && $scope.userOrderNumbers.length > 0) {
+            $scope.customPagination = [];
+        }
+        getCODOrdersType('manual')
+        .then(getCODOrdersType('auto'));
     }
     /**
      * Get cod orders with criteria no payment (manual) / Unpaid (auto) cod payments
