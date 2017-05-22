@@ -535,6 +535,13 @@ angular.module('adminApp')
                 controller: 'nopayment-summary'
             }
         },
+        bulkMarkAsPaidToVendor: {
+            method: 'POST',
+            params: {
+                module: 'codorder',
+                controller: 'bulk-paid-vendor'
+            }
+        },
         getMainSLA: {
             method: 'GET',
             params: {
