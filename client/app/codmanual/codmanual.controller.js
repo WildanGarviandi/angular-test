@@ -724,17 +724,18 @@ angular.module('adminApp')
                     Services2.createCODPayment(params).$promise.then(function(result) {
                         var resultSummary = '';
                         var resultInvalid = '';
+                        var listInvalidOrder = '';
                         var invalidLength = 0;
                         if (result.data.invalid && result.data.invalid.length) {
                             invalidLength = result.data.invalid.length;
-                            resultInvalid += '\n invalid for: ';
+                            listInvalidOrder += '\n invalid for: ';
                             lodash.forEach(result.data.invalid, function (invalid) {
-                                resultInvalid += '\n ' + invalid.orderId + ' : ' + invalid.message;
+                                listInvalidOrder += '\n ' + invalid.orderId + ' : ' + invalid.message;
                             });
                         }
                         var successLength = val.length - invalidLength;
-                        var resultSummary = '\n Success for closing payment : ' + successLength + ' Order';
-                        var resultInvalid = '\n Invalid for closing payment : ' + invalidLength  + ' Order';
+                            resultSummary = '\n Success for closing payment : ' + successLength + ' Order';
+                            resultInvalid = '\n Invalid for closing payment : ' + invalidLength  + ' Order' + listInvalidOrder;
                         successResult.push(result.data);
 
                         if (result.data.status == 'confirmation') {
