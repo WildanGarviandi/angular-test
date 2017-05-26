@@ -43,9 +43,9 @@
     height: 35px;
 }
 
-.content-payment {
-    height: 380px;
-    overflow-y: scroll;
+.content-payments {
+    max-height: 460px;
+    overflow-y: auto;
 }
 
 .panel-title > a:hover {
@@ -90,4 +90,8 @@
 
 #CODPaymentTable .checkbox-header {
     width: 20px !important;
+}
+
+.btn-codpayment-filter {
+    height: 75px;
 }
