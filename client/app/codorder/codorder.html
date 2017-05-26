@@ -16,17 +16,67 @@
             </div>
         </div>
     </div>
-    
-    <div class="first-row">
-        <button class="btn order-buttons" ng-click="refresh()">Refresh</button>
-        <button class="btn order-buttons" ng-click="clearFilter()">
+
+    <div class="col-xs-12 no-padding mt15">
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <button class="btn order-buttons col-md-12" ng-click="refresh()">Refresh</button>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <button class="btn order-buttons col-md-12" ng-click="clearFilter()">
             <i class="fa fa-refresh"></i> Reset Filter</button>
-        <button class="btn btn-primary" type="button" ng-click="exportCsv()">Export CSV</button>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <button class="btn btn-primary col-md-12" type="button" ng-click="exportCsv()">Export CSV</button>
+        </div>
+    </div>
+    <div class="col-xs-12 no-padding mt15">
+        <div class="col-lg-4 col-md-3 col-sm-8 col-xs-12">
+            <uib-accordion>
+                <uib-accordion-group is-open="areaFilter.open">
+                    <uib-accordion-heading>
+                        Multiple Filter by EDS / AWB / WebOrderID
+                        <i class="pull-right glyphicon" 
+                            ng-class="{'glyphicon-chevron-down': areaFilter.open, 'glyphicon-chevron-right': !areaFilter.open}">
+                        </i>
+                    </uib-accordion-heading>
+                    <textarea ng-model="$parent.$parent.$parent.queryMultipleEDS"
+                        id="eds-textarea"
+                        placeholder="Write/Paste EDS Number or Order ID here, separated with newline">
+                    </textarea>
+                    <div class="col-md-9">
+                        <div>
+                            <span ng-if="$parent.$parent.$parent.queryMultipleEDS !== ''">
+                                {{userOrderNumbers.length}} </span> 
+                            <span ng-if="!$parent.$parent.$parent.queryMultipleEDS">0</span> inserted.
+                        </div>
+                        <div class="text-danger" ng-if="orderNotFound.length > 0">
+                            <span ng-if="orderNotFound.length > 1">
+                                These orders 
+                                <span ng-repeat="o in orderNotFound">{{o}}, </span>
+                                are not found.
+                            </span>
+                            <span ng-if="orderNotFound.length === 1">
+                                This order 
+                                <span ng-repeat="o in orderNotFound">{{o}}</span>
+                                is not found.
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="pull-right">
+                        <a class="btn btn-default" ng-click="clearTextArea()">Clear</a>
+                        <a class="btn btn-default" 
+                            ng-click="areaFilter.open = false; clearTextArea()">Cancel</a>
+                        <a ng-click="filterMultipleEDS()" class="btn btn-success">Filter</a>
+                    </div>
+                </uib-accordion-group>
+            </uib-accordion>
+        </div>
     </div>
     
     <div class="clearfix"></div>
 
-    <div class="container-content">
+    <div class="row no-margin">
         <div class="col-md-12">
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
                 <thead class="hubs-table-head">
@@ -39,7 +89,7 @@
                         <th>Fleet Manager</th>
                         <th>COD Value</th>
                         <th>Order Status</th>
-                        <th>Delivered Time</th>
+                        <th>Paid Time</th>
                         <th>Driver/Logistic Transfer</th>
                     </tr>
                 </thead>
@@ -162,13 +212,17 @@
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName || order.FleetManager.CompanyDetail.CompanyName}}</td>
                         <td class="text-right" ng-click="detailsPage(order.UserOrderID)">{{order.TotalValue | number | localizenumber}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.OrderStatus.OrderStatus}}</td>
-                        <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.DeliveredTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)" 
+                            ng-class="order.UnpaidClass">{{order.CODPaymentUserOrder.CODPayment.PaidDate | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.CODPaymentUserOrder.CODPayment.Status || 'Unpaid'}}</td>
                     </tr>
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
                     <tr>
-                        <td colspan="10" 
+                        <td colspan="2">
+                            <h5 class="text-primary"><strong>{{orderFound | number}} orders found</strong></h5>
+                        </td>
+                        <td colspan="8" 
                             class="text-center" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 

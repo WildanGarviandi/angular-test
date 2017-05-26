@@ -666,7 +666,7 @@ angular.module('adminApp')
      * Create COD Payment with manual PaymentMethod
      * @return void
      */
-    $scope.createCODPaymentManual = function(){
+    $scope.createCODPaymentManual = function(isForce){
         var checked = $scope.selectedOrderExists();
         if (!checked) {
             SweetAlert.swal('Error', 'Please select at least one order before confirm payment', 'error');
@@ -720,9 +720,55 @@ angular.module('adminApp')
                 selectedFleetWithOrder.forEach(function(val, key) {
                     params.userID = key;
                     params.orderIDs = val;
+                    params.force = isForce || false;
                     Services2.createCODPayment(params).$promise.then(function(result) {
+                        var resultSummary = '';
+                        var resultInvalid = '';
+                        var listInvalidOrder = '';
+                        var invalidLength = 0;
+                        if (result.data.invalid && result.data.invalid.length) {
+                            invalidLength = result.data.invalid.length;
+                            listInvalidOrder += '\n invalid for: ';
+                            lodash.forEach(result.data.invalid, function (invalid) {
+                                listInvalidOrder += '\n ' + invalid.orderId + ' : ' + invalid.message;
+                            });
+                        }
+                        var successLength = val.length - invalidLength;
+                            resultSummary = '\n Success for closing payment : ' + successLength + ' Order';
+                            resultInvalid = '\n Invalid for closing payment : ' + invalidLength  + ' Order' + listInvalidOrder;
                         successResult.push(result.data);
-                        SweetAlert.swal('Success', 'Your COD Payment has been created', 'success');
+
+                        if (result.data.status == 'confirmation') {
+                            return SweetAlert.swal({
+                                title: "Are you sure?",
+                                text: 'Invalid order Found <br>' + resultInvalid + '<br> Only successful order will be processed <br>' + resultSummary,
+                                type: "warning",
+                                html: true,
+                                showCancelButton: true,
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "Yes, create it!",
+                                closeOnConfirm: false
+                            },
+                            function(isConfirm){
+                                if (isConfirm) {
+                                    return $scope.createCODPaymentManual(true);
+                                } else {
+                                    return false;
+                                }
+                            });
+                        }
+
+                        if (result.data.status == 'success') {
+                            var successMessage = '';
+                                successMessage = '\n Created COD Payment with total amount : ' + $scope.currency + 
+                                    $filter('localizenumber')( $filter('number')( result.data.CODPayment.TotalAmount ) ) + 
+                                    '\n Transaction ID: ' + result.data.CODPayment.TransactionId;
+                            SweetAlert.swal('Success', 'Close Payment' + successMessage + '\n' + resultSummary + resultInvalid, 'success');
+                        }
+
+                        if (result.data.status == 'failed') {
+                            SweetAlert.swal('Error', 'Close Payment' + resultSummary + resultInvalid, 'error');
+                        }
                         ngDialog.close();
                         $scope.getCODOrdersNoPaymentAndUnpaid($scope.selectedUserID, true);
                         $rootScope.$emit('stopSpin');
