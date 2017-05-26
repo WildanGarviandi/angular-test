@@ -34,8 +34,9 @@
             <table st-table="displayed" st-pipe="callServer" class="table table-hover">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
-                        <th>Appointment Time</th>
+                        <th>Reference Code</th>
                         <th>Customer</th>
+                        <th>Visit Customer</th>
                         <th>Driver</th>
                         <th>Start Date</th>
                         <th>End Date</th>
@@ -59,8 +60,36 @@
                 </tbody>
                 <tbody>
                     <tr>
-                        <th></th>
-                        <th></th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    type="search" 
+                                    class="form-control input-table" 
+                                    value="" 
+                                    ng-model="queryReferenceCode" 
+                                    ng-keyup="searchReferenceCode($event)">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    type="search" 
+                                    class="form-control input-table" 
+                                    value="" 
+                                    ng-model="queryCustomer" 
+                                    ng-keyup="searchCustomer($event)">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
+                                <input 
+                                    type="search" 
+                                    class="form-control input-table" 
+                                    value="" 
+                                    ng-model="queryVisitCustomer" 
+                                    ng-keyup="searchVisitCustomer($event)">
+                            </div>
+                        </th>
                         <th>
                             <div class="filter-table">
                                 <input 
@@ -128,9 +157,10 @@
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="driver in displayed">
-                        <td>{{driver.UserOrder.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
-                        <td>{{driver.UserOrder.User.FirstName}} {{driver.UserOrder.User.LastName}} / 
-                            {{driver.UserOrder.User.CountryCode}} {{driver.UserOrder.User.PhoneNumber}}</td>
+                        <td>{{driver.ReferenceCode}}</td>
+                        <td>{{driver.UserOrder.User.FirstName}} {{driver.UserOrder.User.LastName}}</td>
+                        <td>{{driver.UserOrder.DropoffAddress.FirstName}} {{driver.UserOrder.DropoffAddress.LastName}} / 
+                            {{driver.UserOrder.DropoffAddress.CountryCode}} {{driver.UserOrder.DropoffAddress.PhoneNumber}}</td>
                         <td>{{driver.User.FirstName}} {{driver.User.LastName}} / 
                             {{driver.User.CountryCode}} {{driver.User.PhoneNumber}}</td>
                         <td>{{driver.StartDate | date:'MM/dd/yyyy HH:mm:ss a'}}</td>

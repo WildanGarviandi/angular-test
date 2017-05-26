@@ -308,6 +308,18 @@ angular.module('adminApp')
         'Driver': {
             model: 'queryDriver',
             param: 'name'
+        },
+        'ReferenceCode': {
+            model: 'queryReferenceCode',
+            param: 'referenceCode'
+        },
+        'Customer': {
+            model: 'queryCustomer',
+            param: 'customer'
+        },
+        'VisitCustomer': {
+            model: 'queryVisitCustomer',
+            param: 'visitCustomer'
         }
     };
 
@@ -446,7 +458,10 @@ angular.module('adminApp')
             $scope.reqSearchString = $stateParams.query;
         }
         var paramsQuery = {
-            'driver': 'queryDriver'
+            'driver': 'queryDriver',
+            'referenceCode': 'queryReferenceCode',
+            'customer': 'queryCustomer',
+            'visitCustomer': 'queryVisitCustomer'
         };
         lodash.each(paramsQuery, function (val, key) {
             $scope[val] = $location.search()[key] || $scope[val];
@@ -482,6 +497,9 @@ angular.module('adminApp')
             minEndDate: $scope.endDatePicker.startDate,
             maxEndDate: $scope.endDatePicker.endDate,
             orderStatus: $scope.status.value,
+            referenceCode: $scope.queryReferenceCode,
+            customer: $scope.queryCustomer,
+            visitCustomer: $scope.queryVisitCustomer,
         };
         Services2.getDriverSchedules(params).$promise.then(function(data) {
             $scope.driverScheduleFound = data.data.count;
