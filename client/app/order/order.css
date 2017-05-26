@@ -678,3 +678,13 @@ a {
 .dropdown-action {
     width: 260px;
 }
+
+.popover-body {
+    padding-left: 22px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
+
+.p-l-15 {
+    padding-left: 15px;
+}
