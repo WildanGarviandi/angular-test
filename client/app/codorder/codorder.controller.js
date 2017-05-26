@@ -29,6 +29,21 @@ angular.module('adminApp')
     $scope.offset = $location.search().offset || 0;
     $scope.isFirstLoaded = true;
     $scope.isFirstSort = true;
+    $scope.queryMultipleEDS = '';
+    $scope.orderNotFound = 0;
+    $scope.$watch(
+        'queryMultipleEDS',
+        function (newValue) {
+            // Filter empty line(s)
+            $scope.userOrderNumbers = [];
+            newValue.split('\n').forEach(function (val) {
+                var result = val.replace(/^\s+|\s+$/g, '');
+                if (result) {
+                    $scope.userOrderNumbers.push(result);
+                }
+            });
+        }
+    );
 
     $scope.status = {
         key: 'All',
@@ -113,6 +128,21 @@ angular.module('adminApp')
         });
     }
 
+    $scope.clearTextArea = function () {
+        $scope.queryMultipleEDS = '';
+        $scope.orderNotFound = 0;
+        if ($scope.userOrderNumbers.length > 0) {
+            $scope.userOrderNumbers = [];
+            $scope.getOrder();
+        }
+    };
+
+    $scope.filterMultipleEDS = function () {
+        var isFilterEDS = true;
+        $scope.offset = 0;
+        $scope.getOrder(isFilterEDS);
+    };
+
     // Here, model and param have same naming format
     var pickedVariables = {
         'Status': {
@@ -166,7 +196,7 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.getOrder = function() {
+    $scope.getOrder = function(isFilterEDS) {
         $rootScope.$emit('startSpin');
         if ($scope.pickupDatePicker.startDate) {
             $scope.pickupDatePicker.startDate = new Date($scope.pickupDatePicker.startDate);
@@ -231,11 +261,19 @@ angular.module('adminApp')
             endDropoff: $scope.dropoffDatePicker.endDate,
             sortBy: $scope.sortBy,
             sortCriteria: $scope.sortCriteria,
+            userOrderNumbers: JSON.stringify($scope.userOrderNumbers)
+        }
+        if (isFilterEDS) {
+            $scope.orderNotFound = 0;
         }
         Services2.getCODOrder(params).$promise.then(function(data) {
             // modify data, add DeliveredTime
             _.each(data.data.rows, processOrder);
             $scope.displayed = data.data.rows;
+            $scope.orderFound = data.data.count;
+            if (isFilterEDS) {
+                $scope.orderNotFound = $scope.userOrderNumbers.length - $scope.orderFound;
+            }
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 data.data.count / $scope.tableState.pagination.number);
