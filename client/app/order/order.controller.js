@@ -1938,7 +1938,7 @@ angular.module('adminApp')
         var params = {
             offset: 0,
             limit: 0,
-            status: 'All',
+            status: 2,
             codStatus: 'all',
             company: 'all'
         };
@@ -2394,7 +2394,9 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         
         getCompanies()
-        .then($scope.chooseCompanyReturnDrivers)
+        .then(function () {
+            $scope.chooseCompanyReturnDrivers($scope.fleet);
+        })
         .then(function () {
             ngDialog.close();
             $rootScope.$emit('stopSpin');
@@ -2701,7 +2703,9 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
         
         getCompanies()
-        .then($scope.chooseCompanyReturnDrivers)
+        .then(function () {
+            $scope.chooseCompanyReturnDrivers($scope.fleet);
+        })
         .then(function () {
             ngDialog.close();
             return ngDialog.open({
