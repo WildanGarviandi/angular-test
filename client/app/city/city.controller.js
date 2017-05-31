@@ -24,7 +24,9 @@ angular.module('adminApp')
     $scope.city = {
         Name: '',
         EcommercePriceReferenced: false,
-        StateID: 0 
+        StateID: 0,
+        CustomerPriceReferenced: false,
+        ThreeLetterCodeL: ''
     };
 
     $scope.cityStatus = {
@@ -48,7 +50,9 @@ angular.module('adminApp')
         var city = {
             Name: $scope.city.Name,
             EcommercePriceReferenced: $scope.city.EcommercePriceReferenced,
-            StateID: $scope.city.StateID
+            StateID: $scope.city.StateID,
+            CustomerPriceReferenced: $scope.city.CustomerPriceReferenced,
+            ThreeLetterCode: $scope.city.ThreeLetterCode
         };
         $rootScope.$emit('startSpin');
         Services2.createCity(city).$promise.then(function(response, error) {
@@ -72,7 +76,9 @@ angular.module('adminApp')
         var city = {
             Name: $scope.city.Name,
             EcommercePriceReferenced: $scope.city.EcommercePriceReferenced,
-            StateID: $scope.city.StateID
+            StateID: $scope.city.StateID,
+            CustomerPriceReferenced: $scope.city.CustomerPriceReferenced,
+            ThreeLetterCode: $scope.city.ThreeLetterCode
         };
         $rootScope.$emit('startSpin');
         Services2.updateCity({
@@ -260,10 +266,9 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.toggleTrue = function(id) {
-        var city = {
-            EcommercePriceReferenced: true
-        }
+    $scope.toggleTrue = function(id, paramVariable) {
+        var city = {};
+            city[paramVariable] = true;
         if ($window.confirm('Are you sure you want check this city?')) {
         $rootScope.$emit('startSpin');
         Services2.updateCity({
@@ -285,10 +290,9 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.toggleFalse = function(id) {
-        var city = {
-            EcommercePriceReferenced: false
-        }
+    $scope.toggleFalse = function(id, paramVariable) {
+        var city = {};
+            city[paramVariable] = false;
         if ($window.confirm('Are you sure you want uncheck this city?')) {
         $rootScope.$emit('startSpin');
         Services2.updateCity({
@@ -361,6 +365,19 @@ angular.module('adminApp')
             }); 
             $rootScope.$emit('stopSpin');
         });
+    }
+
+    /**
+     * to create uppercase and maximum 3 string character
+     * 
+     * @return {void}
+     */
+    $scope.threeLetterCodeValidator = function (event) {
+        if (event && $scope.city.ThreeLetterCode) {
+            $scope.city.ThreeLetterCode = $scope.city.ThreeLetterCode.replace(/[^a-zA-Z]/g, '')
+            $scope.city.ThreeLetterCode = $scope.city.ThreeLetterCode.toUpperCase();
+            $scope.city.ThreeLetterCode = $scope.city.ThreeLetterCode.substr(0, 3);
+        }
     }
 
     $scope.loadManagePage();

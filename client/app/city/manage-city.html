@@ -34,7 +34,23 @@
                             class="first form-control" />
                     </div>
                 </div>
-                <div class="clearfix"></div>                
+                <div class="clearfix"></div>
+                <div class="row-fluid-city">
+                    <div class="label-input-city">
+                        Three Letter Code :
+                    </div>  
+                    <div class="city-field">
+                        <input ng-model="city.ThreeLetterCode"
+                            type="text"
+                            name="threeLetterCode"
+                            ng-keyup="threeLetterCodeValidator($event)"
+                            value=""
+                            placeholder="Three Letter Code"
+                            required
+                            class="first form-control" />
+                    </div>
+                </div>
+                <div class="clearfix"></div>
                 <div class="row-fluid-city">                    
                     <div class="label-input-city">
                         State :
@@ -52,7 +68,7 @@
                         </ui-select-choices>
                     </ui-select>
                 </div>
-                <div class="clearfix"></div>                
+                <div class="clearfix"></div>
                 <div class="row-fluid-city">                    
                     <div class="label-input-city">
                         E-Commerce Price :
@@ -68,6 +84,20 @@
                     </div>
                 </div>
                 <div class="clearfix"></div>
+                <div class="row-fluid-city">
+                    <div class="label-input-city">
+                        Customer Price Referenced :
+                    </div>  
+                    <div class="city-field checkbox-city">
+                        <input ng-model="city.CustomerPriceReferenced"
+                            type="checkbox"
+                            name="CustomerPriceReferenced"
+                            value=""
+                            placeholder="Customer Price Referenced"
+                            required
+                            class="first form-control" />
+                    </div>
+                </div>
                 <div class="clearfix"></div>
                 <div ng-if="addPage" class="row-fluid">
                     <a class="hub-buttons" ng-click="createCity()">Create City</a>
