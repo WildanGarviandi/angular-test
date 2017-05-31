@@ -268,21 +268,22 @@ angular.module('adminApp')
      */
     $scope.toggleTrue = function(id, paramVariable) {
         var city = {};
-            city[paramVariable] = true;
+        city[paramVariable] = true;
+
         if ($window.confirm('Are you sure you want check this city?')) {
-        $rootScope.$emit('startSpin');
-        Services2.updateCity({
-            id: id
-        }, city).$promise.then(function(result) {  
-            alert('Check success');
-            $scope.getCities();
-            $rootScope.$emit('stopSpin');
-        }).catch(function() {
-            alert('Check failed');
-            $scope.getCities();
-            $rootScope.$emit('stopSpin');
-        });
-      }
+            $rootScope.$emit('startSpin');
+            Services2.updateCity({
+                id: id
+            }, city).$promise.then(function(result) {  
+                alert('Check success');
+                $scope.getCities();
+                $rootScope.$emit('stopSpin');
+            }).catch(function() {
+                alert('Check failed');
+                $scope.getCities();
+                $rootScope.$emit('stopSpin');
+            });
+        }
     }
 
     /**
@@ -292,21 +293,22 @@ angular.module('adminApp')
      */
     $scope.toggleFalse = function(id, paramVariable) {
         var city = {};
-            city[paramVariable] = false;
+        city[paramVariable] = false;
+
         if ($window.confirm('Are you sure you want uncheck this city?')) {
-        $rootScope.$emit('startSpin');
-        Services2.updateCity({
-            id: id
-        }, city).$promise.then(function(result) {  
-            alert('Uncheck success');
-            $scope.getCities();
-            $rootScope.$emit('stopSpin');
-        }).catch(function() {
-            alert('Uncheck failed');
-            $scope.getCities();
-            $rootScope.$emit('stopSpin');
-        });
-      }
+            $rootScope.$emit('startSpin');
+            Services2.updateCity({
+                id: id
+            }, city).$promise.then(function(result) {  
+                alert('Uncheck success');
+                $scope.getCities();
+                $rootScope.$emit('stopSpin');
+            }).catch(function() {
+                alert('Uncheck failed');
+                $scope.getCities();
+                $rootScope.$emit('stopSpin');
+            });
+        }
     }
 
     /**
