@@ -127,7 +127,40 @@ function mainConfig() {
             var activeMerchant = [0, 0, 0, 0, 0, 0];
             var countryCode = '+62';
             var webtrackingURL = 'http://staging.track.etobee.com';
-            break;
+            break;            
+        case 'staging2|com':
+            var url = 'http://staging2.api2.etobee.com';
+            var urlSocket = 'http://localhost:3099';
+            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
+            var currency = 'Rp';
+            var decimalSeparator = ',';
+            var zipLength = 5;
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
+            var countryCode = '+62';
+            var webtrackingURL = 'http://staging2.track.etobee.com';
+            break;      
+        case 'qa|com':
+            var url = 'http://qa.api2.etobee.com';
+            var urlSocket = 'http://localhost:3099';
+            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
+            var currency = 'Rp';
+            var decimalSeparator = ',';
+            var zipLength = 5;
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
+            var countryCode = '+62';
+            var webtrackingURL = 'http://qa.track.etobee.com';
+            break;  
+        case 'sandbox|com':
+            var url = 'http://sandbox.api2.etobee.com';
+            var urlSocket = 'http://localhost:3099';
+            var defaultLocation = { Latitude: -6.2115, Longitude: 106.8452 };
+            var currency = 'Rp';
+            var decimalSeparator = ',';
+            var zipLength = 5;
+            var activeMerchant = [0, 0, 0, 0, 0, 0];
+            var countryCode = '+62';
+            var webtrackingURL = 'http://qa.track.etobee.com';
+            break;  
         default:
             var url = 'http://localhost:3001';
             var urlSocket = 'http://localhost:3099';
