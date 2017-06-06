@@ -1,0 +1,23 @@
+{
+    "apps" : [
+        {
+            "name" : "ADMINDASH_SANDBOX",
+            "script" : "app.js",
+            "env_sandbox": {
+                "NODE_ENV": "sandbox"
+            },
+            "max_memory_restart" : "500M"
+        }
+    ],
+
+    "deploy" : {
+        "sandbox" : {
+            "user" : "ubuntu",
+            "host" : "sandbox.admin.etobee.com",
+            "ref" : "origin/sandbox",
+            "repo": "git@gitlab.com:etobee-techgroup/etobee-admin.git",
+            "path" : "/home/ubuntu/etobee-admin",
+            "post-deploy" : "npm install && bower install -F && pm2 startOrRestart ecosystem.sandbox.json --env sandbox"
+        }
+    }
+}
