@@ -21,7 +21,7 @@
     "deploy" : {
         "staging" : {
             "user" : "ubuntu",
-            "host" : "staging.admin2.etobee.com",
+            "host" : ["staging.admin.etobee.com", "staging2.admin.etobee.com"],
             "ref" : "origin/development",
             "repo": "git@gitlab.com:etobee-techgroup/etobee-admin.git",
             "path" : "/home/ubuntu/etobee-admin-staging",
