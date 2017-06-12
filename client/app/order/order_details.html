@@ -596,6 +596,17 @@
                         <uib-accordion-group ng-if="route.Trip !== null" heading="Trip">
                             <div class="row-fluid">
                                 <div class="col-md-2">
+                                    Trip ID
+                                </div>
+                                <div ng-show="route.Trip.TripID" class="col-md-10 summary-from">
+                                    {{route.Trip.TripID}}
+                                </div>
+                                <div ng-hide="route.Trip.Driver.FirstName && route.Trip.Driver.LastName" class="col-md-10 summary-from">
+                                    -
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="col-md-2">
                                     Driver
                                 </div>
                                 <div ng-show="route.Trip.Driver.FirstName || route.Trip.Driver.LastName" class="col-md-10 summary-from">
