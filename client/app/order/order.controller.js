@@ -32,6 +32,7 @@ angular.module('adminApp')
 
     $scope.itemsByPage = $location.search().limit || 10;
     $scope.offset = $location.search().offset || 0;
+    $scope.limitMultipleEDSFilter = 200;
     $scope.isFirstLoaded = true;
     $scope.isFirstSort = true;
 
@@ -2036,6 +2037,9 @@ angular.module('adminApp')
     };
 
     $scope.filterMultipleEDS = function () {
+        if ($scope.userOrderNumbers.length > $scope.limitMultipleEDSFilter) {
+            return SweetAlert.swal('Error', 'filter maximum ' + $scope.limitMultipleEDSFilter + ' orders only', 'error');
+        }
         getExistOrder();
         var isFilterEDS = true;
         $scope.getOrder(isFilterEDS);
