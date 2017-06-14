@@ -137,11 +137,14 @@
                             id="eds-textarea"
                             placeholder="Write/Paste EDS Number or Order ID here, separated with newline">
                         </textarea>
-                        <div class="col-md-9">
+                        <div class="col-md-12 no-padding">
                             <div>
                                 <span ng-if="$parent.$parent.$parent.queryMultipleEDS !== ''">
                                     {{userOrderNumbers.length}} </span> 
                                 <span ng-if="!$parent.$parent.$parent.queryMultipleEDS">0</span> inserted.
+                                <span class="pull-right" 
+                                    ng-class="userOrderNumbers.length > limitMultipleEDSFilter ? 'text-danger' : 'text-info'">
+                                    maximum {{limitMultipleEDSFilter}} orders</span> 
                             </div>
                             <div class="text-danger" ng-if="orderNotFound.length > 0">
                                 <span ng-if="orderNotFound.length > 1">
