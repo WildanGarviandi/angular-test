@@ -320,6 +320,12 @@ angular.module('adminApp')
                 module: 'country'
             },
         },
+        getPorts: {
+            method: 'GET',
+            params: {
+                module: 'port'
+            },
+        },
         getLogisticFees: {
             method: 'GET',
             params: {

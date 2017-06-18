@@ -10,6 +10,7 @@ angular.module('adminApp')
             Services2,
             moment, 
             lodash, 
+            SweetAlert,
             $state, 
             $stateParams,
             $location, 
@@ -25,8 +26,7 @@ angular.module('adminApp')
         Name: '',
         EcommercePriceReferenced: false,
         StateID: 0,
-        CustomerPriceReferenced: false,
-        ThreeLetterCodeL: ''
+        PortID: 0
     };
 
     $scope.cityStatus = {
@@ -51,8 +51,7 @@ angular.module('adminApp')
             Name: $scope.city.Name,
             EcommercePriceReferenced: $scope.city.EcommercePriceReferenced,
             StateID: $scope.city.StateID,
-            CustomerPriceReferenced: $scope.city.CustomerPriceReferenced,
-            ThreeLetterCode: $scope.city.ThreeLetterCode
+            PortID: $scope.city.PortID
         };
         $rootScope.$emit('startSpin');
         Services2.createCity(city).$promise.then(function(response, error) {
@@ -77,8 +76,7 @@ angular.module('adminApp')
             Name: $scope.city.Name,
             EcommercePriceReferenced: $scope.city.EcommercePriceReferenced,
             StateID: $scope.city.StateID,
-            CustomerPriceReferenced: $scope.city.CustomerPriceReferenced,
-            ThreeLetterCode: $scope.city.ThreeLetterCode
+            PortID: $scope.city.PortID
         };
         $rootScope.$emit('startSpin');
         Services2.updateCity({
@@ -144,6 +142,10 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.createCity = function() {
+        if (!$scope.city.Name || $scope.city.StateID) {
+            return SweetAlert.swal('Error', 'Name and State is required', 'error');
+        }
+
         createCity(function(err, city) {   
             if (err) {
                 alert('Error: '+ err.data.error.message );
@@ -160,6 +162,10 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.updateCity = function() {
+        if (!$scope.city.Name || $scope.city.StateID) {
+            return SweetAlert.swal('Error', 'Name and State is required', 'error');
+        }
+
         updateCity(function(err, city) {
             if (err) {
                 alert('Error: '+ err.data.error.message );
@@ -184,6 +190,9 @@ angular.module('adminApp')
         }).$promise.then(function(data) {
             $scope.city = data.data.City;
             $scope.state = {key: $scope.city.StateMaster.Name, value: $scope.city.StateMaster.StateID};
+            if ($scope.city.Port) {
+                $scope.port = {key: $scope.city.Port.ThreeLetterCode, value: $scope.city.Port.PortID};
+            }
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
@@ -216,6 +225,20 @@ angular.module('adminApp')
             $scope.tableState.pagination.numberOfPages = Math.ceil(
                 $scope.count / $scope.tableState.pagination.number);
             $rootScope.$emit('stopSpin');
+        });
+    }
+
+    /**
+     * Get all ports (TLC)
+     * 
+     * @return {void}
+     */
+    $scope.getPorts = function() {
+        return Services2.getPorts().$promise.then(function(data) {
+            $scope.ports = []; 
+            data.data.forEach(function(port) {
+                $scope.ports.push({key: port.ThreeLetterCode, value: port.PortID});
+            });
         });
     }
 
@@ -334,6 +357,7 @@ angular.module('adminApp')
      */
     $scope.loadManagePage = function() {
         $scope.getStates();
+        $scope.getPorts();
         if ($stateParams.cityID !== undefined) {
             $scope.getCityDetails();
             $scope.updatePage = true;
@@ -351,6 +375,16 @@ angular.module('adminApp')
     $scope.chooseState = function(item) {
         $scope.city.StateID = item.value;
         $scope.state = item;
+    }
+
+    /**
+     * Assign port to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.choosePort = function(item) {
+        $scope.city.PortID = item.value;
+        $scope.port = item;
     }
 
     /**
