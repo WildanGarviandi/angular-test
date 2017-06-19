@@ -122,6 +122,11 @@ angular.module('adminApp')
         $window.history.back();
     }
 
+    //workaround for bug ui-select
+    $scope.tagHandler = function (tag){
+        return null;
+    }
+
     /**
      * Choose status E-Commerce Price
      * 
@@ -142,16 +147,26 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.createCity = function() {
-        if (!$scope.city.Name || $scope.city.StateID) {
+        if (!$scope.city.Name || !$scope.city.StateID) {
             return SweetAlert.swal('Error', 'Name and State is required', 'error');
         }
 
         createCity(function(err, city) {   
             if (err) {
-                alert('Error: '+ err.data.error.message );
+                SweetAlert.swal('Error', err.data.error.message, 'error');
             } else {
-                alert('Your city ID:' + city.data.City.CityID + ' has been successfully created.');
-                $location.path('/cities');
+                SweetAlert.swal({
+                    title: 'Success',
+                    text: city.data.City.Name + " (city ID:" + city.data.City.CityID + ") has been successfully created.",
+                    type: "success",
+                    showCancelButton: false,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Ok",
+                }, function (isConfirm){ 
+                    if (isConfirm) {
+                        $location.path('/cities');
+                    }
+                });
             } 
         });
     }    
@@ -162,16 +177,26 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.updateCity = function() {
-        if (!$scope.city.Name || $scope.city.StateID) {
+        if (!$scope.city.Name) {
             return SweetAlert.swal('Error', 'Name and State is required', 'error');
         }
 
         updateCity(function(err, city) {
             if (err) {
-                alert('Error: '+ err.data.error.message );
+                SweetAlert.swal('Error', err.data.error.message, 'error');
             } else {
-                alert('Your city ID:' + city.data.City.CityID + ' has been successfully updated.');
-                $location.path('/cities');
+                SweetAlert.swal({
+                    title: 'Success',
+                    text: city.data.City.Name + " (city ID:" + city.data.City.CityID + ") has been successfully updated.",
+                    type: "success",
+                    showCancelButton: false,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Ok",
+                }, function (isConfirm){ 
+                    if (isConfirm) {
+                        $location.path('/cities');
+                    }
+                });
             } 
         });
     }   
@@ -270,14 +295,14 @@ angular.module('adminApp')
             id: id,
         }, {}).$promise.then(function(result) {
             if (result.data.Status === 1) {
-                alert('Delete success');
+                SweetAlert.swal('Success', 'Delete Success', 'success');
             } else {
-                alert('Failed');                
+                SweetAlert.swal('Error', 'Failed', 'error');
             }  
             $scope.getCities();
             $rootScope.$emit('stopSpin');
         }).catch(function() {
-            alert('Delete failed');
+            SweetAlert.swal('Error', 'Delete failed', 'error');
             $scope.getCities();
             $rootScope.$emit('stopSpin');
         });
@@ -297,12 +322,12 @@ angular.module('adminApp')
             $rootScope.$emit('startSpin');
             Services2.updateCity({
                 id: id
-            }, city).$promise.then(function(result) {  
-                alert('Check success');
+            }, city).$promise.then(function(result) {
+                SweetAlert.swal('Success', 'Check success', 'success');
                 $scope.getCities();
                 $rootScope.$emit('stopSpin');
             }).catch(function() {
-                alert('Check failed');
+                SweetAlert.swal('Error', 'Check failed', 'error');
                 $scope.getCities();
                 $rootScope.$emit('stopSpin');
             });
@@ -323,11 +348,11 @@ angular.module('adminApp')
             Services2.updateCity({
                 id: id
             }, city).$promise.then(function(result) {  
-                alert('Uncheck success');
+                SweetAlert.swal('Success', 'Uncheck success', 'success');
                 $scope.getCities();
                 $rootScope.$emit('stopSpin');
             }).catch(function() {
-                alert('Uncheck failed');
+                SweetAlert.swal('Error', 'Uncheck failed', 'error');
                 $scope.getCities();
                 $rootScope.$emit('stopSpin');
             });

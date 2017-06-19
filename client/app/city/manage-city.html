@@ -49,8 +49,8 @@
                             <ui-select-match placeholder="Choose TLC">
                                 {{ $select.selected.key }}
                             </ui-select-match>
-                            <ui-select-choices repeat="m in ports" selected>
-                                <span ng-bind-html="m.key"></span>
+                            <ui-select-choices repeat="m in ports | filter: $select.search track by $index" selected>
+                                <span ng-bind-html="m.key | highlight: $select.search"></span>
                             </ui-select-choices>
                         </ui-select>
                     </div>
@@ -69,8 +69,8 @@
                         <ui-select-match placeholder="Choose state">
                             {{ $select.selected.key }}
                         </ui-select-match>
-                        <ui-select-choices repeat="m in states" selected>
-                            <span ng-bind-html="m.key"></span>
+                        <ui-select-choices repeat="m in states | filter: $select.search track by $index" selected>
+                            <span ng-bind-html="m.key | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
                 </div>
