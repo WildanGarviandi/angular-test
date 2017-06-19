@@ -153,11 +153,10 @@ angular.module('adminApp')
 
     var getCurrentParam = function () {
         var params = {};
-        var paramsValue = {
-                'merchant': 'merchants',
-                'pickupType': 'pickupTypes',
-                'port': 'ports'
-            };
+        var paramsValue = {};
+            paramsValue.merchant = 'merchants';
+            paramsValue.pickupType = 'pickupTypes';
+            paramsValue.port = 'ports';
 
         lodash.each(paramsValue, function (val, key) {
             var value = $location.search()[key] || $scope[key].value;
