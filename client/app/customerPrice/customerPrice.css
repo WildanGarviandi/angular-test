@@ -9,3 +9,8 @@
     border-bottom: 1px solid #d0d0d0;
     border-top: 1px solid #d0d0d0;
 }
+
+.SweetAlertScrollAble {
+    max-height: 300px;
+    overflow-y: auto;
+}

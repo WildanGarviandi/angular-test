@@ -58,7 +58,9 @@
                 </ui-select>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
-                <button class="btn btn-green col-xs-12" ng-disabled="merchant.value == 0 || pickupType.value == 0" ng-click="getCustomerPrice()">Submit</button>
+                <button class="btn btn-green col-xs-12" 
+                    ng-disabled="merchant.value == 0 || pickupType.value == 0 || port.value == 0" 
+                    ng-click="getCustomerPrice()">Submit</button>
             </div>
         </div>
     </div>
@@ -74,7 +76,7 @@
                         confirm: 'addPriceModal',
                         type: 'create'
                     }
-                )">Add Price</button>
+                )">Add / Edit Price</button>
         </div>
         <div class="col-xs-4 col-sm-3">
             <button 
@@ -167,7 +169,7 @@
 <script type="text/ng-template" id="addPriceModal">
     <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
         <div class="col-md-12 no-padding">
-            <p><b>Add Price</b></p>
+            <p><b>Add / Edit Price</b></p>
             <br>
             <div class="col-md-12 no-padding">
                 <button class="btn btn-default pull-right" ng-click="handsontable.addNewRow()"><i class="fa fa-plus"></i> Row</button>

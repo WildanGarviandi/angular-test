@@ -215,6 +215,10 @@ angular.module('adminApp')
                 ]
             };
 
+            if (batchPosition > 0) {
+                params.isDownload = false;
+            }
+
             return Services2.getEcommercePrices(params).$promise
             .then(function(data) {
                 batchError = 0;

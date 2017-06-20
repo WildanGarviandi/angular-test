@@ -182,7 +182,7 @@ angular.module('adminApp')
         .then(getPorts)
         .then(function () {
             var params = getCurrentParam();
-            if (params.merchantID != 0 && params.pickupType != 0 && params.originID) {
+            if (params.merchantID != 0 && params.pickupType != 0 && params.originID != 0) {
                 $scope.getCustomerPrice();
             }
         })
@@ -254,7 +254,6 @@ angular.module('adminApp')
         var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + $scope.pricesCount;
         var params = getCurrentParam();
             params.isDownload = true;
-            params.userID = $scope.user.UserID;
 
         $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
         return;
@@ -318,8 +317,13 @@ angular.module('adminApp')
 
             if ($scope.onModal.type == 'create') {
                 params.zipCode = $scope.table.data[change[0]]['zipcode'];
-                params.price = change[3];
-                collectDataBeforeSafe(params);
+                if (change[1] == "price") {
+                    params.price = change[3];
+                }
+
+                if ((params.zipCode && params.zipCode !== "") && (params.price && params.price !== "")) {
+                    collectDataBeforeSafe(params);
+                }
             }
         });
     }
@@ -338,8 +342,8 @@ angular.module('adminApp')
             $scope.table.error = 'Invalid Price Number';
         };
 
-        isDataExist = lodash.find($scope.table.beforeSafe, function(val, key){ 
-            if(val.zipCode == data.zipCode){
+        isDataExist = lodash.find($scope.table.data, function(val, key){ 
+            if(val['zipcode'] == data.zipCode) {
                 indexKey = key;
                 return true;
             }
@@ -380,13 +384,89 @@ angular.module('adminApp')
         return true;
     }
 
+    var responseAddEditDelete = function (result, type) {
+        $scope.table.success = result.data;
+        $rootScope.$emit('stopSpin');
+
+        var responseText = '';
+        var responseType = '';
+        var responseSuccess = '';
+        var responseError = '';
+        var tempSuccess = [];
+        var tempError = [];
+
+        result.data.forEach(function (val, key) {
+            var message = '';
+            var success = {};
+            var error = {};
+
+            success.zipCode = val.ZipCode;
+            error.zipCode = val.ZipCode;
+
+            if (val.Status == 'success') {
+                success.message = 'success';
+
+                tempSuccess.push(success);
+            }
+            if (val.Status == 'failed') {
+                if (val.Error) {
+                     message = val.Error.name + ' - ' + val.Error.message;
+                }
+                if (val.Reason) {
+                     message = val.Reason.name + ' - ' + val.Reason.message;
+                }
+                
+                error.message = message;
+
+                tempError.push(error);
+            }
+        });
+
+        if (tempError.length == 0) {
+            responseType = 'success';
+            responseSuccess += '<table class="table"><thead><tr><th>ZipCode</th><th class="p-l-15">Response</th></tr><thead><tbody>';
+            tempSuccess.forEach(function (val) {
+                responseSuccess += '<tr><td class="text-left">' + val.zipCode + '</td><td class="text-left p-l-15"> ' + val.message + '</td></tr>';
+            });
+            responseSuccess += '</tbody></table>';
+            responseText = '<h3 class="no-margin">' + $filter('uppercase')(type) + ' PRICE SUCCESS (' + tempSuccess.length + ')</h3>' + responseSuccess;
+        }
+
+        if (tempError.length > 0) {
+            responseType = 'warning';
+            responseError += '<table class="table"><thead><tr><th>ZipCode</th><th class="p-l-15">Reason</th></tr><thead><tbody>';
+            tempError.forEach(function (val) {
+                responseError += '<tr><td class="text-left">' + val.zipCode + '</td><td class="text-left p-l-15">' + val.message + '</td></tr>';
+            });
+            responseError += '</tbody></table>';
+            responseText = '<h3 class="no-margin">ERROR (' + tempError.length + ')</h3>' + responseError;
+        }
+
+        if (tempError.length > 0 && tempSuccess.length > 0) {
+            responseType = 'warning';
+            responseText = responseError + '<br>' + responseSuccess;
+        }
+
+        SweetAlert.swal({
+            title: responseType.toUpperCase(), 
+            text: '<div class="SweetAlertScrollAble">' + responseText + '</div>', 
+            type: responseType,
+            html: true,
+            customClass: 'alert-big'
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $scope.handsontable.start();
+            }
+        });
+    }
+
     /**
      * Add, Edit and Delete for zipcode or price. all changed Cell to Server
      * 
      */
     $scope.addNewZipCode = function() {
         if (!$scope.table.beforeSafe.length) { 
-            return SweetAlert.swal('Error', 'please insert zipcode', 'error');
+            return SweetAlert.swal('Error', 'please insert zipcode and price', 'error');
         }
 
         $rootScope.$emit('startSpin');
@@ -398,7 +478,7 @@ angular.module('adminApp')
         $scope.table.beforeSafe.forEach(function(val, idx) {
             var price = {};
                 price.originID = $scope.port.value;
-                price.destinationID = val.zipCode;
+                price.destinationZipCode = val.zipCode;
                 price.price = val.price || 0;
 
             params.prices.push(price);
@@ -407,10 +487,7 @@ angular.module('adminApp')
         Services2.saveEcommercePrice({
             merchantID: $scope.merchant.value
         }, params).$promise.then(function (result) {
-            $scope.table.success = result.data.message;
-            $rootScope.$emit('stopSpin');
-            $scope.getCustomerPrice();
-            $scope.closeModal();
+            responseAddEditDelete(result, 'create / edit');
         })
         .catch(function (error) {
             $scope.table.error = error.data.error.message;
@@ -428,29 +505,32 @@ angular.module('adminApp')
             return SweetAlert.swal('Error', 'please insert zipcode', 'error');
         }
 
-        $rootScope.$emit('startSpin');
-
         var params = {};
             params.pickupType = $scope.pickupType.value;
             params.prices = [];
 
+        var countDestinationZipCode = 0;
+
         $scope.table.data.forEach(function(val, idx) {
             var price = {};
                 price.originID = $scope.port.value;
-                price.destinationID = val['zipcode'];
+                price.destinationZipCode = val['zipcode'];
             
-            if (val['zipcode'] !== "") {
+            if (val['zipcode'] && val['zipcode'] !== "") {
                 params.prices.push(price);
+                countDestinationZipCode++;
             }
         });
+
+        if (countDestinationZipCode == 0) {
+            return SweetAlert.swal('Error', 'please insert zipcode', 'error');
+        }
         
+        $rootScope.$emit('startSpin');
         Services2.saveEcommercePrice({
             merchantID: $scope.merchant.value
         }, params).$promise.then(function (result) {
-            $scope.table.success = result.data.message;
-            $rootScope.$emit('stopSpin');
-            $scope.getCustomerPrice();
-            $scope.closeModal();
+            responseAddEditDelete(result, 'delete');
         })
         .catch(function (error) {
             $scope.table.error = error.data.error.message;
