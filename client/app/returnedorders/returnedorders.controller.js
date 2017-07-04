@@ -14,6 +14,7 @@ angular.module('adminApp')
             $stateParams,
             $location, 
             $http, 
+            $httpParamSerializer,
             $window,
             config,
             ngDialog,
@@ -73,15 +74,15 @@ angular.module('adminApp')
      *
     */
     var orderNavigationHeight = $('#return-orders-navigation').height();
-    var addInitHeight = 170;
-    var minInitHeight = 110;
+    var addInitHeight = $('.box-header').height() + $('#table-footer').height() + 50;
+    var minInitHeight = $('#table-header-title').height() + $('#table-header-search').height() - 10;
     var externalHeightOnResize = 235;
     $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + addInitHeight);
     $scope.orderListHeight = $scope.tableHeight - minInitHeight;
     $(window).resize(function(){
         $scope.$apply(function(){
             orderNavigationHeight = $('#return-orders-navigation').height();
-            $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + externalHeightOnResize);
+            $scope.tableHeight = $window.innerHeight - (orderNavigationHeight + addInitHeight);
             $scope.orderListHeight = $scope.tableHeight - minInitHeight;
         });
     });
@@ -228,13 +229,7 @@ angular.module('adminApp')
         $scope.merchant = item;
     }
 
-    /**
-     * Get all orders
-     * 
-     * @return {void}
-     */
-    $scope.getOrder = function() {
-        $rootScope.$emit('startSpin');
+    var getCurrentParam = function () {
         if ($scope.pickupDatePicker.startDate) {
             $scope.pickupDatePicker.startDate = new Date($scope.pickupDatePicker.startDate);
         }
@@ -285,7 +280,7 @@ angular.module('adminApp')
                     $scope[data.toLowerCase() + 'DatePicker'].endDate;
         });
         $location.search('offset', $scope.offset);
-        $scope.isLoading = true;
+
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
@@ -308,6 +303,20 @@ angular.module('adminApp')
             startCreatedDate: $scope.createdDatePicker.startDate,
             endCreatedDate: $scope.createdDatePicker.endDate
         }
+
+        return params;
+    } 
+
+    /**
+     * Get all orders
+     * 
+     * @return {void}
+     */
+    $scope.getOrder = function() {
+        $rootScope.$emit('startSpin');
+        
+        $scope.isLoading = true;
+        var params = getCurrentParam();
         Services2.getReturnedOrders(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
@@ -858,7 +867,21 @@ angular.module('adminApp')
         $scope.tableState.pagination.start = 0;
         $scope.getOrder(); 
     }
-    
+
+    /**
+     * Get Download Returned Orders
+     * 
+     * @return {void}
+     */
+    $scope.downloadExcel = function () {
+        var type = 'returnedOrders';
+        var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + $scope.orderFound;
+        var params = getCurrentParam();
+
+        $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+        return;
+    }
+
     /**
      * Clear Filter
      * 

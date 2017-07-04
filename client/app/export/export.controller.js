@@ -126,6 +126,20 @@ angular.module('adminApp')
                 getDataJson(offset);
             });
         }
+
+        if (type == 'returnedOrders') {
+            return Services2.exportReturnedOrders(params).$promise
+            .then(function(data) {
+                batchError = 0;
+                successFunction(data);
+            }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
+                getDataJson(offset);
+            });
+        }
     }
 
     var fetchDataJson = function (type) {

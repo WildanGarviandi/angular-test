@@ -592,6 +592,13 @@ angular.module('adminApp')
                 id: null
             },
         },
+        exportReturnedOrders: {
+            method: 'GET',
+            params: {
+                module: 'returnedorder',
+                controller: 'export'
+            },
+        },
         updateCod: {
             method: 'POST',
             params: {
