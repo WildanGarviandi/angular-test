@@ -187,6 +187,8 @@ angular.module('adminApp')
         }
 
         if (type == 'returnedOrders') {
+            $scope.isExportTypeExist = true;
+
             return Services2.exportReturnedOrders(params).$promise
             .then(function(data) {
                 batchError = 0;
