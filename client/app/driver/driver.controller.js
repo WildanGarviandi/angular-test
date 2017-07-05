@@ -198,6 +198,11 @@ angular.module('adminApp')
         };
     });
 
+
+    $scope.manageAvailabilitiesFilter = function (obj) {
+        return obj.value !== 'all';
+    }
+
     /**
      * Assign status to the chosen item on edit page
      * 
