@@ -1,0 +1,23 @@
+{
+    "apps" : [
+        {
+            "name" : "sandbox.admin.etobee.com",
+            "script" : "app.js",
+            "env": {
+                "NODE_ENV": "sandbox"
+            },
+            "max_memory_restart" : "500M"
+        }
+    ],
+
+    "deploy" : {
+        "sandbox" : {
+            "user" : "ubuntu",
+            "host" : "sandbox.admin.etobee.com",
+            "ref" : "origin/master",
+            "repo": "git@gitlab.com:etobee-techgroup/etobee-admin.git",
+            "path" : "/home/ubuntu/sandbox.admin.etobee.com",
+            "post-deploy" : "cp /home/ubuntu/configs/sandbox.admin.etobee.com/env.js client/config/. && npm install && bower install -F && PORT=3003 pm2 startOrRestart ecosystem.sandbox.json --env sandbox"
+        }
+    }
+}

@@ -427,6 +427,20 @@
     </div>
     <div class="col-md-6 col-xs-12 pull-left no-padding webstore-info">
 
+        <div class="header-edit-webstore">
+            <h5>
+                <b>Cutoff Time</b>
+            </h5>
+        </div>
+        <table class="table table-hover webstore-table">
+            <thead class="hubs-table-head">
+            <tbody>
+                <tr ng-repeat="t in webstore.WebstoreBucketTimes">
+                    <td>{{t.BroadcastTime}}</td>
+                </tr>
+            </tbody>
+        </table>
+
         <div ng-show="parentWebstore" class="header-edit-webstore">
             <h5>
                 <b>Webstore Parent</b>

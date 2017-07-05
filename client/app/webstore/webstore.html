@@ -46,11 +46,11 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="text" ng-model="searchFilter.name" class="webstore-filter" ng-keyup="$event.keyCode == 13 && filterWebstores()"/></td>
-                        <td><input type="text" ng-model="searchFilter.email" class="webstore-filter" ng-keyup="$event.keyCode == 13 && filterWebstores()"/></td>
+                        <td><input type="text" ng-model="searchFilter.name" class="form-control input-table" ng-keyup="$event.keyCode == 13 && filterWebstores()"/></td>
+                        <td><input type="text" ng-model="searchFilter.email" class="form-control input-table " ng-keyup="$event.keyCode == 13 && filterWebstores()"/></td>
                         <td></td>
                         <td></td>
-                        <td><input type="text" ng-model="searchFilter.address" class="webstore-filter" ng-keyup="$event.keyCode == 13 && filterWebstores()"/></td>
+                        <td><input type="text" ng-model="searchFilter.address" class="form-control input-table" ng-keyup="$event.keyCode == 13 && filterWebstores()"/></td>
                         <td class="webstore-postpaidpayment-cell">
                             <ui-select class="webstore-postpaidpayment-field" 
                                 ng-model="postPaidPaymentFilter" 
@@ -80,6 +80,7 @@
                                 </ui-select-choices>
                             </ui-select>
                         </td>
+                        <td></td>
                         <td></td>
                     </tr>
                 </tbody>
@@ -119,7 +120,7 @@
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
                     <tr>
-                        <td colspan="9" 
+                        <td colspan="10" 
                             class="text-center" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 

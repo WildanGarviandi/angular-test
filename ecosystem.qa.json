@@ -1,0 +1,23 @@
+{
+    "apps" : [
+        {
+            "name" : "ADMINDASH_QA",
+            "script" : "app.js",
+            "env_qa": {
+                "NODE_ENV": "qa"
+            },
+            "max_memory_restart" : "500M"
+        }
+    ],
+
+    "deploy" : {
+        "qa" : {
+            "user" : "ubuntu",
+            "host" : "qa.admin.etobee.com",
+            "ref" : "origin/qa",
+            "repo": "git@gitlab.com:etobee-techgroup/etobee-admin.git",
+            "path" : "/home/ubuntu/etobee-admin",
+            "post-deploy" : "npm install && bower install -F && pm2 startOrRestart ecosystem.qa.json --env qa"
+        }
+    }
+}
