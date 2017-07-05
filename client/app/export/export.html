@@ -9,14 +9,16 @@
                 <div class="logo-center" style="height: 75px"></div>
                 <br>
                 <br>
-                <p class="text-center"><small>exporting: {{progress.percentage | number: 2}} %</small></p>
-                <uib-progressbar max="progress.maxExport" value="progress.export" style="border-radius: 0; border: 0; height: 5px;">
+                <p class="text-center" ng-show="isExportTypeExist"><small>exporting: {{progress.percentage | number: 2}} %</small></p>
+                <uib-progressbar ng-show="isExportTypeExist" max="progress.maxExport" value="progress.export" style="border-radius: 0; border: 0; height: 5px;">
                 </uib-progressbar>
-                <p class="text-center"><small>{{progress.message}}</small></p>
+                <p class="text-center" ng-show="isExportTypeExist"><small>{{progress.message}}</small></p>
+                <p class="text-center" ng-show="!isExportTypeExist"><b>Forbidden</b></p>
+                <p class="text-center" ng-show="!isExportTypeExist"><small>Export Type Doesn't Exist</small></p>
             </div>
             <div class="col-md-3 col-sm-2 col-xs-12"></div>
         </div>
-        <div class="row">
+        <div class="row" ng-show="isExportTypeExist">
             <p class="text-center"><b><small>You can do other things while exporting in progress, but don't close this section</small></b></p>
         </div>
     </div>
