@@ -410,10 +410,7 @@ angular.module('adminApp')
             }
             if (val.Status == 'failed') {
                 if (val.Error) {
-                     message = val.Error.name + ' - ' + val.Error.message;
-                }
-                if (val.Reason) {
-                     message = val.Reason.name + ' - ' + val.Reason.message;
+                    message = val.Error;
                 }
                 
                 error.message = message;
@@ -447,6 +444,7 @@ angular.module('adminApp')
             responseText = responseError + '<br>' + responseSuccess;
         }
 
+        $scope.getCustomerPrice();
         SweetAlert.swal({
             title: responseType.toUpperCase(), 
             text: '<div class="SweetAlertScrollAble">' + responseText + '</div>', 
