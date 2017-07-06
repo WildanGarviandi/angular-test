@@ -30,7 +30,8 @@ angular.module('adminApp')
             LastName: '',
             Email: '',
             PhoneNumber: '',
-            StatusID: ''
+            StatusID: '',
+            DriverAvailability: ''
         }
     };
 
@@ -49,9 +50,22 @@ angular.module('adminApp')
         CompanyName: 'All'
     }];
 
+    $scope.availability = {
+        key: 'All',
+        value: 'all'
+    };
+
     $scope.company = $scope.companies[0];
 
     $scope.codStatuses = [$scope.codStatus,  {
+        key: 'No',
+        value: 0
+    }, {
+        key: 'Yes',
+        value: 1
+    }];
+
+    $scope.availabilities = [$scope.availability,  {
         key: 'No',
         value: 0
     }, {
@@ -84,6 +98,7 @@ angular.module('adminApp')
                 Email: $scope.driver.Email,
                 PhoneNumber: $scope.driver.PhoneNumber,
                 StatusID: $scope.driver.Driver.StatusID,
+                DriverAvailability: $scope.driver.Driver.DriverAvailability,
             },
             FleetDriver: {
                 CompanyDetailID: $scope.company.CompanyDetailID,
@@ -164,6 +179,11 @@ angular.module('adminApp')
             pick: 'value',
             collection: 'codStatuses'
         },
+        'Availability': {
+            model: 'availability',
+            pick: 'value',
+            collection: 'availabilities'
+        },
     };
 
     // Generates
@@ -177,6 +197,11 @@ angular.module('adminApp')
             $scope.getDrivers(); 
         };
     });
+
+
+    $scope.manageAvailabilitiesFilter = function (obj) {
+        return obj.value !== 'all';
+    }
 
     /**
      * Assign status to the chosen item on edit page
@@ -196,6 +221,15 @@ angular.module('adminApp')
     $scope.chooseCompanyEdit = function(item) {
         $scope.driver.Driver.CompanyDetailID = item.CompanyDetailID;
         $scope.company = item;
+    }
+
+    /**
+     * Change availability to the chosen item on edit page
+     * 
+     * @return {void}
+     */
+    $scope.chooseAvailabilityEdit = function(item) {
+        $scope.driver.Driver.DriverAvailability = item.value;
     }
 
     /**
@@ -257,6 +291,7 @@ angular.module('adminApp')
         }).$promise.then(function(data) {
             $scope.driver = data.data.Driver;
             $scope.status = {key: $scope.driver.UserStatus.StatusName, value: $scope.driver.UserStatus.StatusId};
+            $scope.availability = {key: data.data.Driver.DriverAvailability ? 'Yes': 'No', value: $scope.driver.DriverAvailability};
             $scope.company = lodash.find($scope.companies, {
                 CompanyDetailID: data.data.Driver.Driver.CompanyDetail.CompanyDetailID});
             $scope.isLoading = false;
@@ -300,6 +335,7 @@ angular.module('adminApp')
             phone: $scope.queryPhone,
             status: $scope.status.value,
             codStatus: $scope.codStatus.value,
+            availability: $scope.availability.value,
             company: $scope.company.CompanyDetailID
         };
         Services2.getDrivers(params).$promise.then(function(data) {

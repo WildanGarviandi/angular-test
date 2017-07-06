@@ -405,7 +405,8 @@ angular.module('adminApp')
             limit: 0,
             status: 'All',
             codStatus: 'all',
-            company: company.CompanyDetailID
+            company: company.CompanyDetailID,
+            availability: 'all'
         };
         $scope.getDrivers(params);
     };

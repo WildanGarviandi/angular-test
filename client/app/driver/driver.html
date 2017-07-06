@@ -33,6 +33,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
+                        <th>Available?</th>
                         <th>Status</th>
                         <th>Company</th>
                         <th>Can Take COD</th>
@@ -84,6 +85,19 @@
                         </th>
                         <th>
                             <div class="filter-table">
+                                <ui-select ng-model="availability" 
+                                    theme="selectize" 
+                                    on-select="chooseAvailability($item)" 
+                                    class="booking-order-type">
+                                    <ui-select-match placeholder="Available?">{{$select.selected.key}}</ui-select-match>
+                                    <ui-select-choices repeat="ot in availabilities | filter: $select.search" selected>
+                                        <span ng-bind-html="ot.key | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="filter-table">
                                 <ui-select ng-model="status" 
                                     theme="selectize" 
                                     on-select="chooseStatus($item)" 
@@ -109,16 +123,17 @@
                             </div>
                         </th>
                         <th>
-                            <ui-select ng-model="codStatus" 
-                                theme="selectize" 
-                                on-select="chooseCodStatus($item)" 
-                                class="booking-order-type">
-                            <ui-select-match placeholder="Choose cod status">{{$select.selected.key}}</ui-select-match>
-                            <ui-select-choices repeat="ot in codStatuses | filter: $select.search" selected>
-                                <span ng-bind-html="ot.key | highlight: $select.search"></span>
-                            </ui-select-choices>
-                            </ui-select>
-                        <th>
+                            <div class="filter-table">
+                                <ui-select ng-model="codStatus" 
+                                    theme="selectize" 
+                                    on-select="chooseCodStatus($item)" 
+                                    class="booking-order-type">
+                                <ui-select-match placeholder="Choose cod status">{{$select.selected.key}}</ui-select-match>
+                                <ui-select-choices repeat="ot in codStatuses | filter: $select.search" selected>
+                                    <span ng-bind-html="ot.key | highlight: $select.search"></span>
+                                </ui-select-choices>
+                                </ui-select>
+                            </div>
                         </th>
                     </tr>
                 </tbody>
@@ -128,6 +143,7 @@
                         <td>{{driver.Driver.FirstName}} {{driver.Driver.LastName}}</td>
                         <td>{{driver.Driver.Email}}</td>
                         <td>{{driver.Driver.PhoneNumber}}</td>
+                        <td>{{ driver.Driver.DriverAvailability ? 'Yes': 'No'}}</td>
                         <td>{{driver.Driver.UserStatus.StatusName}}</td>
                         <td>{{driver.Driver.Driver.CompanyDetail.CompanyName}}</td>
                         <td>{{driver.CanTakeCOD}}</td>
