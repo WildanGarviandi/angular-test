@@ -7,6 +7,7 @@ angular.module('adminApp')
             $rootScope, 
             Services, 
             Services2,
+            Upload,
             moment, 
             lodash, 
             $state, 
@@ -383,6 +384,7 @@ angular.module('adminApp')
     $scope.openCreateCODPaymentModal = function () {
         $rootScope.$emit('startSpin');
         $scope.resetPaymentParams();
+        $scope.picture.reset();
         $scope.userTypeOnModal = $scope.userTypes[0];
         $scope.paidBy = 'company';
         $scope.customPagination = [];
@@ -656,6 +658,10 @@ angular.module('adminApp')
                 paidDate: $scope.transactionDate
             };
 
+            if ($scope.picture.result && $scope.picture.result.url) {
+                params.proofOfPaymentUrl = $scope.picture.result.url;
+            };
+
             return Services2.createCODPayment(params).$promise
             .then(function(result) {
                 SweetAlert.swal('Success', 'Your COD Payment has been created', 'success');
@@ -727,6 +733,11 @@ angular.module('adminApp')
                     transactionDetail: $scope.transactionDetails,
                     paidDate: $scope.transactionDate
                 };
+
+                if ($scope.picture.result && $scope.picture.result.url) {
+                    params.proofOfPaymentUrl = $scope.picture.result.url;
+                };
+
                 Services2.setCODPaymentManualPaid(params).$promise.then(function(result) {
                     SweetAlert.swal('Success', 'Your COD Payment has been confirmed', 'success');
                     ngDialog.close();
@@ -740,6 +751,44 @@ angular.module('adminApp')
                 return false;
             }
         });
+    };
+    /**
+     * upload Picture return URL
+     * @return {[type]}        [description]
+     */
+    $scope.picture = {};
+    $scope.picture.result = {};
+    $scope.picture.reset = function () {
+        $scope.picture.result = {};
+    };
+    $scope.picture.upload = function (file) {
+        $scope.picture.reset();
+        
+        if (file) {
+            $scope.picture.result.fileName = file;
+            file.upload = Upload.upload({
+                url: config.url + 'upload/picture',
+                data: {file: file}
+            })
+            .then(function (response) {
+                $timeout(function () {
+                    file.result = response.data;
+                    if (response.data.data && !response.data.error) {
+                        $scope.picture.result.url = response.data.data.Location;
+                    } else {
+                        alert('Uploading picture failed. Please try again');
+                        $scope.picture.result.error = 'Uploading picture failed. Please try again';
+                    }
+                });
+            }, function (response) {
+                if (response.status > 0) {
+                    $scope.picture.result.error = response.status + ': ' + response.data;
+                }
+                $rootScope.$emit('stopSpin');
+            }, function (evt) {
+                $scope.picture.result.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            });
+        }
     };
     /**
      * Cancel COD Payment
