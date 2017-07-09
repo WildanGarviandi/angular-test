@@ -65,7 +65,7 @@ angular.module('adminApp')
             $scope[val.model] = item;
         };
     });
-    
+
     /**
      * Init table state
      * 
@@ -335,9 +335,9 @@ angular.module('adminApp')
     var collectDataBeforeSafe = function (data) {
         var isDataExist = false;
         var indexKey;
-        
+
         $scope.table.error = '';
-        
+
         if (!parseInt(data.price) && data.price) {
             $scope.table.error = 'Invalid Price Number';
         };
@@ -412,7 +412,7 @@ angular.module('adminApp')
                 if (val.Error) {
                     message = val.Error;
                 }
-                
+
                 error.message = message;
 
                 tempError.push(error);
@@ -463,25 +463,34 @@ angular.module('adminApp')
      * 
      */
     $scope.addNewZipCode = function() {
-        if (!$scope.table.beforeSafe.length) { 
-            return SweetAlert.swal('Error', 'please insert zipcode and price', 'error');
-        }
-
-        $rootScope.$emit('startSpin');
-
+        var isNotValid = false;
         var params = {};
             params.pickupType = $scope.pickupType.value;
             params.prices = [];
 
-        $scope.table.beforeSafe.forEach(function(val, idx) {
-            var price = {};
-                price.originID = $scope.port.value;
-                price.destinationZipCode = val.zipCode;
-                price.price = val.price || 0;
+        $scope.table.data.forEach(function(val, idx) {
+            if (val['zipcode'] && val['price']) {
+                var price = {};
+                    price.originID = $scope.port.value;
+                    price.destinationZipCode = val['zipcode'];
+                    price.price = val['price'] || 0;
 
-            params.prices.push(price);
+                params.prices.push(price);
+            } else if (val['zipcode']) {
+                isNotValid = true;
+            }
         });
-        
+
+        if (!params.prices.length) {
+            return SweetAlert.swal('Error', 'please insert zipcode and price', 'error');
+        }
+
+        if (isNotValid) {
+            return SweetAlert.swal('Error', 'there are empty zipcode or price in a row', 'error');
+        }
+
+        $rootScope.$emit('startSpin');
+
         Services2.saveEcommercePrice({
             merchantID: $scope.merchant.value
         }, params).$promise.then(function (result) {
@@ -523,7 +532,7 @@ angular.module('adminApp')
         if (countDestinationZipCode == 0) {
             return SweetAlert.swal('Error', 'please insert zipcode', 'error');
         }
-        
+
         $rootScope.$emit('startSpin');
         Services2.saveEcommercePrice({
             merchantID: $scope.merchant.value
@@ -559,5 +568,5 @@ angular.module('adminApp')
     $scope.tagHandler = function (tag){
         return null;
     }
-    
+
 });
