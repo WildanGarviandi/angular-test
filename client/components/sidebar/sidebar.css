@@ -449,6 +449,14 @@
     background-image: url('../../assets/images/nav-finance-active.png');
 }
 
+.side-customer-price-image {
+    background-image: url('../../assets/images/nav-customer-price.png');
+}
+
+.side-customer-price-image.active {
+    background-image: url('../../assets/images/nav-customer-price-active.png');
+}
+
 #spinner-container {
     position: fixed;
     top: 0;
