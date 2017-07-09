@@ -255,14 +255,14 @@ angular.module('adminApp')
         };
         // Get Master price
         Services2.getEcommercePrices(paramsMaster).$promise.then(function (result) {
-            $scope.masterPrices = result.data;
+            $scope.masterPrices = lodash.filter(result.data.data, {WebStore: {UserID: 0}});
             if ($scope.input.webstore.value === 0) {
                 buildDefault();
                 $rootScope.$emit('stopSpin');
             } else {
                 // Get webstore price
                 Services2.getEcommercePrices(params).$promise.then(function (result) {
-                    $scope.prices = result.data;
+                    $scope.prices = result.data.data;
                     buildDefault();
                     buildMatrix();
                     $rootScope.$emit('stopSpin');
@@ -375,7 +375,7 @@ angular.module('adminApp')
             rowContents[0] = origin.Name;
             $scope.cities.forEach(function (dest, key) {
                 var data = lodash.find($scope.masterPrices, {
-                    Origin: {CityID: origin.CityID}, Destination: {CityID: dest.CityID}});
+                    Origin: {ID: origin.CityID}, Destination: {ID: dest.CityID}});
                 var price = 0;
                 if (data) {
                     if ($scope.filter === 'price') {
@@ -410,7 +410,7 @@ angular.module('adminApp')
         $scope.cities.forEach(function (origin, i) {
             $scope.cities.forEach(function (dest, key) {
                 var data = lodash.find($scope.prices, {
-                    Origin: {CityID: origin.CityID}, Destination: {CityID: dest.CityID}});
+                    Origin: {ID: origin.CityID}, Destination: {ID: dest.CityID}});
                 var price = 0;
                 if (data) {
                     if ($scope.filter === 'price') {
