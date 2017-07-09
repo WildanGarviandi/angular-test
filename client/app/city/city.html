@@ -65,32 +65,35 @@
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
                         <th>Name</th>
+                        <th>TLC</th>
                         <th>State</th>
                         <th>E-Commerce Price</th>
+                        <th></th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
                     <tr>
-                        <td colspan="9" class="text-center">
+                        <td colspan="6" class="text-center">
                             No data found
                         </td>
                     </tr>
                 </tbody>
                 <tbody ng-show="isLoading">
                     <tr>
-                        <td colspan="9" class="text-center">Loading ... </td>
+                        <td colspan="6" class="text-center">Loading ... </td>
                     </tr>
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="city in displayed">
                         <td>{{city.Name}}</td>
+                        <td>{{city.Port.ThreeLetterCode}}</td>
                         <td>{{city.StateMaster.Name}}</td>
-                        <td >
-                            <div ng-if="city.EcommercePriceReferenced" ng-click="toggleFalse(city.CityID)" class="check-true">
+                        <td>
+                            <div ng-if="city.EcommercePriceReferenced" ng-click="toggleFalse(city.CityID, 'EcommercePriceReferenced')" class="check-true">
                             </div>
-                            <div ng-if="!city.EcommercePriceReferenced" ng-click="toggleTrue(city.CityID)" class="check-false">
+                            <div ng-if="!city.EcommercePriceReferenced" ng-click="toggleTrue(city.CityID, 'EcommercePriceReferenced')" class="check-false">
                             </div>
                         </td>
                         <td>
@@ -103,11 +106,11 @@
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
                     <tr>
-                        <td colspan="9" 
+                        <td colspan="6" 
                             class="text-center" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 
-                            st-displayed-pages='9' st-template='components/table/pagination.html'>
+                            st-displayed-pages='6' st-template='components/table/pagination.html'>
                         </td>
                     </tr>
                 </tfoot>

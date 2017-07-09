@@ -34,7 +34,28 @@
                             class="first form-control" />
                     </div>
                 </div>
-                <div class="clearfix"></div>                
+                <div class="clearfix"></div>
+                <div class="row-fluid-city">
+                    <div class="label-input-city">
+                        Three Letter Code :
+                    </div>  
+                    <div class="city-field">
+                        <ui-select class="city-field select-field no-margin" 
+                            ng-model="port" 
+                            theme="selectize"
+                            tagging="tagHandler" 
+                            ng-disabled="disabled" 
+                            on-select="choosePort($item)">
+                            <ui-select-match placeholder="Choose TLC">
+                                {{ $select.selected.key }}
+                            </ui-select-match>
+                            <ui-select-choices repeat="m in ports | filter: $select.search track by $index" selected>
+                                <span ng-bind-html="m.key | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
                 <div class="row-fluid-city">                    
                     <div class="label-input-city">
                         State :
@@ -42,17 +63,18 @@
                     <ui-select class="city-field select-field" 
                         ng-model="state" 
                         theme="selectize" 
+                        tagging="tagHandler"
                         ng-disabled="disabled" 
                         on-select="chooseState($item)">
                         <ui-select-match placeholder="Choose state">
                             {{ $select.selected.key }}
                         </ui-select-match>
-                        <ui-select-choices repeat="m in states" selected>
-                            <span ng-bind-html="m.key"></span>
+                        <ui-select-choices repeat="m in states | filter: $select.search track by $index" selected>
+                            <span ng-bind-html="m.key | highlight: $select.search"></span>
                         </ui-select-choices>
                     </ui-select>
                 </div>
-                <div class="clearfix"></div>                
+                <div class="clearfix"></div>
                 <div class="row-fluid-city">                    
                     <div class="label-input-city">
                         E-Commerce Price :
@@ -67,7 +89,6 @@
                             class="first form-control" />
                     </div>
                 </div>
-                <div class="clearfix"></div>
                 <div class="clearfix"></div>
                 <div ng-if="addPage" class="row-fluid">
                     <a class="hub-buttons" ng-click="createCity()">Create City</a>

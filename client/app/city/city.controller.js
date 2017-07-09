@@ -10,6 +10,7 @@ angular.module('adminApp')
             Services2,
             moment, 
             lodash, 
+            SweetAlert,
             $state, 
             $stateParams,
             $location, 
@@ -24,7 +25,8 @@ angular.module('adminApp')
     $scope.city = {
         Name: '',
         EcommercePriceReferenced: false,
-        StateID: 0 
+        StateID: 0,
+        PortID: 0
     };
 
     $scope.cityStatus = {
@@ -48,7 +50,8 @@ angular.module('adminApp')
         var city = {
             Name: $scope.city.Name,
             EcommercePriceReferenced: $scope.city.EcommercePriceReferenced,
-            StateID: $scope.city.StateID
+            StateID: $scope.city.StateID,
+            PortID: $scope.city.PortID
         };
         $rootScope.$emit('startSpin');
         Services2.createCity(city).$promise.then(function(response, error) {
@@ -72,7 +75,8 @@ angular.module('adminApp')
         var city = {
             Name: $scope.city.Name,
             EcommercePriceReferenced: $scope.city.EcommercePriceReferenced,
-            StateID: $scope.city.StateID
+            StateID: $scope.city.StateID,
+            PortID: $scope.city.PortID
         };
         $rootScope.$emit('startSpin');
         Services2.updateCity({
@@ -118,6 +122,11 @@ angular.module('adminApp')
         $window.history.back();
     }
 
+    //workaround for bug ui-select
+    $scope.tagHandler = function (tag){
+        return null;
+    }
+
     /**
      * Choose status E-Commerce Price
      * 
@@ -138,12 +147,26 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.createCity = function() {
+        if (!$scope.city.Name || !$scope.city.StateID) {
+            return SweetAlert.swal('Error', 'Name and State is required', 'error');
+        }
+
         createCity(function(err, city) {   
             if (err) {
-                alert('Error: '+ err.data.error.message );
+                SweetAlert.swal('Error', err.data.error.message, 'error');
             } else {
-                alert('Your city ID:' + city.data.City.CityID + ' has been successfully created.');
-                $location.path('/cities');
+                SweetAlert.swal({
+                    title: 'Success',
+                    text: city.data.City.Name + " (city ID:" + city.data.City.CityID + ") has been successfully created.",
+                    type: "success",
+                    showCancelButton: false,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Ok",
+                }, function (isConfirm){ 
+                    if (isConfirm) {
+                        $location.path('/cities');
+                    }
+                });
             } 
         });
     }    
@@ -154,12 +177,26 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.updateCity = function() {
+        if (!$scope.city.Name) {
+            return SweetAlert.swal('Error', 'Name and State is required', 'error');
+        }
+
         updateCity(function(err, city) {
             if (err) {
-                alert('Error: '+ err.data.error.message );
+                SweetAlert.swal('Error', err.data.error.message, 'error');
             } else {
-                alert('Your city ID:' + city.data.City.CityID + ' has been successfully updated.');
-                $location.path('/cities');
+                SweetAlert.swal({
+                    title: 'Success',
+                    text: city.data.City.Name + " (city ID:" + city.data.City.CityID + ") has been successfully updated.",
+                    type: "success",
+                    showCancelButton: false,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Ok",
+                }, function (isConfirm){ 
+                    if (isConfirm) {
+                        $location.path('/cities');
+                    }
+                });
             } 
         });
     }   
@@ -178,6 +215,9 @@ angular.module('adminApp')
         }).$promise.then(function(data) {
             $scope.city = data.data.City;
             $scope.state = {key: $scope.city.StateMaster.Name, value: $scope.city.StateMaster.StateID};
+            if ($scope.city.Port) {
+                $scope.port = {key: $scope.city.Port.ThreeLetterCode, value: $scope.city.Port.PortID};
+            }
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
@@ -214,6 +254,20 @@ angular.module('adminApp')
     }
 
     /**
+     * Get all ports (TLC)
+     * 
+     * @return {void}
+     */
+    $scope.getPorts = function() {
+        return Services2.getPorts().$promise.then(function(data) {
+            $scope.ports = []; 
+            data.data.forEach(function(port) {
+                $scope.ports.push({key: port.ThreeLetterCode, value: port.PortID});
+            });
+        });
+    }
+
+    /**
      * Add search params
      * 
      * @return {void}
@@ -241,14 +295,14 @@ angular.module('adminApp')
             id: id,
         }, {}).$promise.then(function(result) {
             if (result.data.Status === 1) {
-                alert('Delete success');
+                SweetAlert.swal('Success', 'Delete Success', 'success');
             } else {
-                alert('Failed');                
+                SweetAlert.swal('Error', 'Failed', 'error');
             }  
             $scope.getCities();
             $rootScope.$emit('stopSpin');
         }).catch(function() {
-            alert('Delete failed');
+            SweetAlert.swal('Error', 'Delete failed', 'error');
             $scope.getCities();
             $rootScope.$emit('stopSpin');
         });
@@ -260,24 +314,24 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.toggleTrue = function(id) {
-        var city = {
-            EcommercePriceReferenced: true
-        }
+    $scope.toggleTrue = function(id, paramVariable) {
+        var city = {};
+        city[paramVariable] = true;
+
         if ($window.confirm('Are you sure you want check this city?')) {
-        $rootScope.$emit('startSpin');
-        Services2.updateCity({
-            id: id
-        }, city).$promise.then(function(result) {  
-            alert('Check success');
-            $scope.getCities();
-            $rootScope.$emit('stopSpin');
-        }).catch(function() {
-            alert('Check failed');
-            $scope.getCities();
-            $rootScope.$emit('stopSpin');
-        });
-      }
+            $rootScope.$emit('startSpin');
+            Services2.updateCity({
+                id: id
+            }, city).$promise.then(function(result) {
+                SweetAlert.swal('Success', 'Check success', 'success');
+                $scope.getCities();
+                $rootScope.$emit('stopSpin');
+            }).catch(function() {
+                SweetAlert.swal('Error', 'Check failed', 'error');
+                $scope.getCities();
+                $rootScope.$emit('stopSpin');
+            });
+        }
     }
 
     /**
@@ -285,24 +339,24 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    $scope.toggleFalse = function(id) {
-        var city = {
-            EcommercePriceReferenced: false
-        }
+    $scope.toggleFalse = function(id, paramVariable) {
+        var city = {};
+        city[paramVariable] = false;
+
         if ($window.confirm('Are you sure you want uncheck this city?')) {
-        $rootScope.$emit('startSpin');
-        Services2.updateCity({
-            id: id
-        }, city).$promise.then(function(result) {  
-            alert('Uncheck success');
-            $scope.getCities();
-            $rootScope.$emit('stopSpin');
-        }).catch(function() {
-            alert('Uncheck failed');
-            $scope.getCities();
-            $rootScope.$emit('stopSpin');
-        });
-      }
+            $rootScope.$emit('startSpin');
+            Services2.updateCity({
+                id: id
+            }, city).$promise.then(function(result) {  
+                SweetAlert.swal('Success', 'Uncheck success', 'success');
+                $scope.getCities();
+                $rootScope.$emit('stopSpin');
+            }).catch(function() {
+                SweetAlert.swal('Error', 'Uncheck failed', 'error');
+                $scope.getCities();
+                $rootScope.$emit('stopSpin');
+            });
+        }
     }
 
     /**
@@ -328,6 +382,7 @@ angular.module('adminApp')
      */
     $scope.loadManagePage = function() {
         $scope.getStates();
+        $scope.getPorts();
         if ($stateParams.cityID !== undefined) {
             $scope.getCityDetails();
             $scope.updatePage = true;
@@ -348,6 +403,16 @@ angular.module('adminApp')
     }
 
     /**
+     * Assign port to the chosen item
+     * 
+     * @return {void}
+     */
+    $scope.choosePort = function(item) {
+        $scope.city.PortID = item.value;
+        $scope.port = item;
+    }
+
+    /**
      * Get all states
      * 
      * @return {void}
@@ -361,6 +426,19 @@ angular.module('adminApp')
             }); 
             $rootScope.$emit('stopSpin');
         });
+    }
+
+    /**
+     * to create uppercase and maximum 3 string character
+     * 
+     * @return {void}
+     */
+    $scope.threeLetterCodeValidator = function (event) {
+        if (event && $scope.city.ThreeLetterCode) {
+            $scope.city.ThreeLetterCode = $scope.city.ThreeLetterCode.replace(/[^a-zA-Z]/g, '')
+            $scope.city.ThreeLetterCode = $scope.city.ThreeLetterCode.toUpperCase();
+            $scope.city.ThreeLetterCode = $scope.city.ThreeLetterCode.substr(0, 3);
+        }
     }
 
     $scope.loadManagePage();
