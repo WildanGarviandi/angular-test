@@ -112,6 +112,15 @@ angular.module('adminApp')
         }
     }
 
+    var forceBuildExcel = function (data, template) {
+        $scope.progress.export = maxExport;
+        $scope.progress.percentage = ($scope.progress.export / maxExport) * 100;
+
+        buildArray(data, batchPosition, template);
+
+        return buildExcel(type);
+    }
+
     var successFunction = function (data, template) {
         $scope.progress.export += params.limit;
         $scope.progress.percentage = ($scope.progress.export / maxExport) * 100;
@@ -245,6 +254,21 @@ angular.module('adminApp')
                     return errorFunction(e.data.error.message);
                 }
                 getDataJson(offset);
+            });
+        }
+
+        if (type == 'codpayment') {
+            $scope.isExportTypeExist = true;
+
+            return Services2.exportCODPayment(params).$promise
+            .then(function(data) {
+                if (!data.data.length) {
+                    return errorFunction('Empty Data');
+                };
+                batchError = 0;
+                forceBuildExcel(data);
+            }).catch(function (e) {
+                return errorFunction(e.data.error.message);
             });
         }
     }

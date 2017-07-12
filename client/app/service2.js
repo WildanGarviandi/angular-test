@@ -532,7 +532,14 @@ angular.module('adminApp')
             params: {
                 module: 'codpayment'
             },
-        },      
+        },
+        exportCODPayment: {
+            method: 'GET',
+            params: {
+                module: 'codpayment',
+                controller: 'export-csv'
+            }
+        },
         getCODOrdersNoPayment: {
             method: 'GET',
             params: {
