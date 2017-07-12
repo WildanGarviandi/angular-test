@@ -96,7 +96,7 @@ angular.module('adminApp')
                     key: 'Service Type',
                     value: '0'
                 }];
-                data.pickupTypes.forEach(function (pickupType) {
+                data.pickupTypeSimple.forEach(function (pickupType) {
                     if (pickupType.value === 2 || pickupType.value === 4) {
                         $scope.pickupTypes.push(pickupType);
                     };
@@ -254,6 +254,7 @@ angular.module('adminApp')
         var type = 'price';
         var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + $scope.pricesCount;
         var params = getCurrentParam();
+            params.pickupTypeDescription = $scope.pickupType.key;
             params.isDownload = true;
 
         $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
