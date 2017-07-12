@@ -279,6 +279,13 @@ angular.module('adminApp')
                 merchantID: null
             },
         },
+        getLatestPriceDownload: {
+            method: 'GET',
+            params: {
+                module: 'ecommerce-price',
+                controller: 'latest-price-download'
+            }
+        },
         saveEcommercePrice: {
             method: 'POST',
             url: config.url + ':module/:controller/:merchantID',
@@ -318,6 +325,12 @@ angular.module('adminApp')
             method: 'GET',
             params: {
                 module: 'country'
+            },
+        },
+        getPorts: {
+            method: 'GET',
+            params: {
+                module: 'port'
             },
         },
         getLogisticFees: {
@@ -590,6 +603,13 @@ angular.module('adminApp')
             params: {
                 module: 'returnedorder',
                 id: null
+            },
+        },
+        exportReturnedOrders: {
+            method: 'GET',
+            params: {
+                module: 'returnedorder',
+                controller: 'export'
             },
         },
         updateCod: {

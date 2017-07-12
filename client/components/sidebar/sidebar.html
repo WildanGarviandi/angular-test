@@ -221,6 +221,18 @@
                         <div class="clearfix"></div>
                     </li>
                     <li>
+                        <a ui-sref="app.customerPrice">
+                            <div class="side-image side-customer-price-image"
+                                ng-class="{ expanded: expanded, active: menus.pricing.submenus.customerPrice.active }"
+                                style="background-size: 22px"></div>
+                            <div class="side-text"
+                                ng-class="{ expanded: expanded, active: menus.pricing.submenus.customerPrice.active }">
+                                Customer Prices
+                            </div>
+                        </a>
+                        <div class="clearfix"></div>
+                    </li>
+                    <li>
                         <a ui-sref="app.ecommerce-pricing">
                             <div class="side-image side-order-image"
                                 ng-class="{ expanded: expanded, active: menus.pricing.submenus.ecommerce.active }"

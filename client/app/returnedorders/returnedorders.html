@@ -1,5 +1,4 @@
 <div class="container-fluid container-order" id="order-page">
-    <div class="clearfix"></div>
     <div class="row-fluid box-header">
         <div>
             <div class="col-md-6 col-sm-7">
@@ -7,25 +6,28 @@
                     Returned Order Management
                 </div>
             </div>
-            <div class="col-md-3 col-sm-5 pull-right">
+            <div class="col-md-6 col-sm-5">
                 <div class="hub" ng-include="'components/user/user.html'"></div>
-            </div>
-            <div class="col-md-3 col-sm-12">
-                <div class="hub-search">
-                </div>
             </div>
         </div>
     </div>
-    <div id="return-orders-navigation" class="first-row">
-        <button class="btn order-buttons first-row-element" ng-click="refresh()">Refresh</button>
-        <button class="btn order-buttons first-row-element" ng-click="clearFilter()">
-            <i class="fa fa-refresh"></i> Reset Filter</button>
+    <div id="return-orders-navigation" class="col-xs-12 no-padding">
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <button class="btn order-buttons col-xs-12" type="button" ng-click="downloadExcel()">Export Orders</button>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <button class="btn order-buttons col-xs-12" ng-click="refresh()">Refresh</button>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <button class="btn order-buttons col-xs-12" ng-click="clearFilter()">
+                <i class="fa fa-refresh"></i> Reset Filter</button>
+        </div>
     </div>
     <div class="">
         <div id="order-page" class="col-md-12">
-            <div class="table-responsive order-table overflow-y-hidden" ng-style="{height: tableHeight+ 'px'}" style="max-height: {{tableHeight}}px">
+            <div class="table-responsive order-table overflow-y-hidden mt20" ng-style="{height: tableHeight+ 'px'}" style="max-height: {{tableHeight}}px">
                 <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
-                    <thead class="hubs-table-head display-block" ng-show="!isLoading && displayed.length > 0">
+                    <thead id="table-header-title" class="hubs-table-head display-block" ng-show="!isLoading && displayed.length > 0">
                         <tr>
                             <th>AWB / Web Order ID</th>
                             <th>Pickup Time</th>
@@ -56,7 +58,7 @@
                             <td colspan="9" class="text-center">Loading ... </td>
                         </tr>
                     </tbody>
-                    <tbody class="display-block overflow-visible">
+                    <tbody id="table-header-search" class="display-block overflow-visible">
                         <tr>
                             <th>
                                 <div class="filter-table">
@@ -225,7 +227,7 @@
                             </th>
                         </tr>
                     </tbody>
-                    <tbody 
+                    <tbody id="table-body"
                         class="display-block order-table-list"
                         ng-style="{height: orderListHeight+ 'px'}"
                         style="max-height: {{orderListHeight}}px"
@@ -257,7 +259,7 @@
                             <td class="text-right">{{order.DeliveryFee | number | localizenumber}}</td>
                         </tr>
                     </tbody>
-                    <tfoot ng-show="!isLoading && displayed.length > 0">
+                    <tfoot id="table-footer" ng-show="!isLoading && displayed.length > 0">
                         <tr>
                             <td colspan="1">
                                 <h5 class="text-primary"><strong>{{orderFound | number}} orders found</strong></h5>
