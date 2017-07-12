@@ -7,7 +7,7 @@
                     New Customer Pricing (NDS dan REG)
                 </div>
             </div>
-            <div class="col-md-3 col-sm-5 pull-right">
+            <div class="col-md-6 col-sm-5">
                 <div class="hub" ng-include="'components/user/user.html'"></div>
             </div>
         </div>
@@ -74,6 +74,7 @@
                     getLastDownload, 
                     {
                         confirm: 'addPriceModal',
+                        action: handsontable.start,
                         type: 'create'
                     }
                 )">Add / Edit Price</button>
@@ -86,6 +87,7 @@
                     getLastDownload, 
                     {
                         confirm: 'deletePriceModal',
+                        action: handsontable.start,
                         type: 'delete'
                     }
                 )">Delete Price</button>
@@ -95,6 +97,19 @@
                 class="btn btn-sm btn-blue col-xs-12"
                 ng-disabled="prices.length == 0"
                 ng-click="downloadExcel()">Download Price</button>
+        </div>
+        <div class="col-xs-4 col-sm-3">
+            <button 
+                class="btn btn-sm btn-blue col-xs-12"
+                ng-click="openModal(
+                    'beforeAddPriceModal', 
+                    getLastDownload, 
+                    {
+                        confirm: 'importPriceModal',
+                        action: initImportPrice,
+                        type: 'create'
+                    }
+                )">Import Price</button>
         </div>
     </div>
 
@@ -160,7 +175,7 @@
             <br>
             <p><b>Please notify them for any price change</b></p>
             <div class="row-fluid">
-                <a class="btn btn-yellow col-md-3" ng-click="openModal(onModal.confirm, handsontable.start, {width: '20%', type: onModal.type})">Ok</a>
+                <a class="btn btn-yellow col-md-3" ng-click="openModal(onModal.confirm, onModal.action, {width: '20%', type: onModal.type})">Ok</a>
             </div>
         </div>
     </div>
@@ -235,6 +250,79 @@
                 </div>
                 <div class="col-md-6 col-xs-12 no-padding">
                     <button id="saveNewZipCode" class="btn btn-red col-md-12" ng-click="deleteZipCode()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="importPriceModal">
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <div class="col-md-12 no-padding">
+            <p><b>Import Price</b></p>
+            <br>
+            <div class="col-md-12 col-xs-12 no-padding mb15">
+                <div ngf-drop="uploadExcel($files, initImportPrice)"
+                    ngf-select="uploadExcel($files, initImportPrice)"
+                    ng-model="files" 
+                    class="drop-box" 
+                    ngf-drag-over-class="dragover" 
+                    ngf-multiple="true" 
+                    ngf-allow-dir="true" 
+                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+                    ngf-pattern="'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'">
+                    <div ng-hide="import.file.length">
+                        Drop <strong>.xlsx</strong> here
+                    </div>
+                    <div ng-show="import.file.length">
+                        {{import.file[0].title}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12 no-padding" ng-show="import.serverError">
+                <div class="alert bg-danger">
+                    <p>{{import.serverError}}</p>
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12 no-padding mb15" ng-show="import.success.length || import.error.length">
+                <div class="alert bg-info row no-margin">
+                    <p><b>Summary</b></p>
+                    <div class="col-sm-6 no-padding">
+                        <p><small>Merchant: <b>{{merchant.key}}</b></small></p>
+                        <p class="no-margin"><small>Merchant ID: <b>{{merchant.value}}</b></small></p>
+                    </div>
+                    <div class="col-sm-6 no-padding">
+                        <p class="text-green"><small>Success: <b>{{import.success.length}} rows</b></small></p>
+                        <p class="no-margin text-red"><small>Failed: <b>{{import.error.length}} rows</b></small></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12 no-padding mb15" ng-show="import.error.length">
+                <table class="table no-margin">
+                    <thead>
+                        <tr>
+                            <th><small>Row</small></th>
+                            <th><small>Destination<br>Zip Code</small></th>
+                            <th><small>ZipCode</small></th>
+                            <th><small>Reason</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="err in import.error track by $index">
+                            <td>{{err.row}}</td>
+                            <td>{{err.DestinationZipCodeID}}</td>
+                            <td>{{err.ZipCode}}</td>
+                            <td>{{err.Error}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-12 col-xs-12 no-padding">
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="closeImportPriceModal" class="btn btn-default col-md-12" ng-click="closeModal()">Close</button>
+                </div>
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="importPrice" class="btn btn-green col-md-12" ng-click="importPrice()" ng-disabled="!import.file">Import</button>
                 </div>
             </div>
         </div>
