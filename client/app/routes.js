@@ -519,5 +519,15 @@ angular.module('adminApp')
                 }
             },
             authenticate: true
+        })
+        .state('app.customerPrice', {
+            url: 'pricing/customer',
+             views: {
+                'content@': {
+                    templateUrl: 'app/customerPrice/customerPrice.html',
+                    controller: 'CustomerPriceCtrl'
+                }
+            },
+            authenticate: true
         });
     });
