@@ -724,6 +724,11 @@
                 </div>
             </div>
             <div ng-if="importOrderError.length > 0">
+                <div ng-if="importOrderError.length > 0">
+                    <div class="alert bg-danger">
+                        <p>{{importOrderError.length}} orders error</p>
+                    </div>
+                </div>
                 <div ng-repeat="err in importOrderError track by $index">
                     <uib-alert type="danger" ng-if="err.format">
                         <span>
