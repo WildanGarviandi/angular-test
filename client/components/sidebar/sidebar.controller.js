@@ -8,6 +8,7 @@ angular.module('adminApp')
             pricing: {
                 submenus: {
                     logistic: { routes: ['/pricing/logistic']},
+                    customerPrice: { routes: ['/pricing/customer']},
                     ecommerce: { routes: ['/pricing/ecommerce']},
                     ondemand: { routes: ['/ondemandPrice']},
                 }
