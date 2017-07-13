@@ -140,6 +140,9 @@ angular.module('adminApp')
         return Webstores.getWebstore(params).$promise.then(function (data) {
             $scope.merchants = [{
                 key: 'Choose Merchant',
+                value: '',
+            }, {
+                key: 'Master',
                 value: '0'
             }];
             data.data.webstores.forEach(function(merchant) {
@@ -183,7 +186,7 @@ angular.module('adminApp')
         .then(getPorts)
         .then(function () {
             var params = getCurrentParam();
-            if (params.merchantID != 0 && params.pickupType != 0 && params.originID != 0) {
+            if (params.merchantID != "" && params.pickupType != 0 && params.originID != 0) {
                 $scope.getCustomerPrice();
             }
         })
