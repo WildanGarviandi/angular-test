@@ -362,6 +362,16 @@
     background-size: 30px;
 }
 
+.side-prebookedorder-image {
+    background-image: url('../../assets/images/nav-prebooked.png');
+    background-size: 30px;
+}
+ 
+.side-prebookedorder-image.active {
+    background-image: url('../../assets/images/nav-prebooked-active.png');
+    background-size: 30px;
+}
+
 .side-hubmonitor-image {
     background-image: url('../../assets/images/nav-hubmonitor.png');
 }

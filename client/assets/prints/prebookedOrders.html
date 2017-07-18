@@ -1,0 +1,626 @@
+<style>
+    h1, h2, h3, h4, h5, h6, p, small, hr {
+        margin: 0;
+        padding: 0;
+    }
+    .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6,
+    .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
+        float: left;
+        position: relative;
+        min-height: 1px;
+        box-sizing: border-box;
+    }
+    .col-xs-1 {
+        width: 8.333%;
+    }
+    .col-xs-2 {
+        width: 16.666%;
+    }
+    .col-xs-3 {
+        width: 25%;
+    }
+    .col-xs-4 {
+        width: 33.333%;
+    }
+    .col-xs-5 {
+        width: 41.666%;
+    }
+    .col-xs-6 {
+        width: 50%;
+    }
+    .col-xs-7 {
+        width: 58.333%;
+    }
+    .col-xs-8 {
+        width: 66.666%;
+    }
+    .col-xs-9 {
+        width: 75%;
+    }
+    .col-xs-10 {
+        width: 83.333%;
+    }
+    .col-xs-11 {
+        width: 91.666%;
+    }
+    .col-xs-12 {
+        width: 100%;
+    }
+    .text-white {
+        color: #fff;
+    }
+    .text-etobee {
+        color: #462445 !important;
+    }
+    .bg-etobee {
+        background-color: #462445 !important;
+    }
+    .bg-content {
+        background-color: #f8f8f8;
+        border-radius: 4px;
+    }
+    .box {
+        border: solid 1px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        background-color: #ffffff;
+        padding: 9px 12px;
+    }
+    .fill {
+        background-image: linear-gradient(to right, rgba(0,0,0, 0.25) 25%, rgba(255,255,255, 0) 0%);
+        background-position: bottom;
+        background-size: 4px 1px;
+        background-repeat: repeat-x;
+        height: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 4px;
+        padding-left: 4px;
+    }
+    .checks {
+        height: 10px;
+        width: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.25);
+        border-radius: 2px;
+        margin-bottom: 4px;
+    }
+    .p-16 {
+        padding: 16px;
+    }
+    .p-l-8 {
+        padding-left: 8px;
+    }
+    .p-r-8 {
+        padding-right: 8px;
+    }
+    .p-t-8 {
+        padding-top: 8px;
+    }
+    .p-b-8 {
+        padding-bottom: 8px;
+    }
+    .m-t-16 {
+        margin-top: 16px;
+    }
+    .m-t-8 {
+        margin-top: 8px;
+    }
+    .m-b-8 {
+        margin-bottom: 8px;
+    }
+    .m-l-8 {
+        margin-left: 8px;
+    }
+    .m-r-8 {
+        margin-right: 8px;
+    }
+    .text-gray {
+        color: #7c7c7c;
+    }
+    hr {
+        height: 0.5px;
+        color: rgba(0, 0, 0, 0.1);
+        background: rgba(0, 0, 0, 0.1);
+        font-size: 0;
+        width: 100%;
+        border: 0;
+        display: block;
+    }
+    small {
+        font-size: 10px;
+        font-weight: normal;
+        line-height: 1;
+        width: 100%;
+        display: block;
+    }
+    small.info {
+        font-size: 8px;
+    }
+    br {
+       display: block;
+       margin-top: 8px;
+       line-height: 10px;
+       content: " ";
+    }
+    .text-right {
+        text-align: right;
+    }
+    .text-center {
+        text-align: center;
+    }
+    .address {
+        padding-left: 16px;
+        border-left: 1px solid #fff;
+    }
+    .bg-white {
+        background-color: #fff;
+        margin-top: -5px;
+        text-align: center;
+        border-radius: 4px;
+        padding-top: 4px;
+    }
+    .barcode {
+        width: 100%;
+        height: 40px;
+        background-color: #fff;
+    }
+</style>
+<section class="sheet p-16 bg-etobee" ng-repeat="order in orders">
+    <article class="col-xs-12">
+        <div class="col-xs-2">
+            <img class="col-xs-12" src="../../assets/images/logo-text-etobee.png">
+        </div>
+        <div class="col-xs-1"></div>
+        <div class="col-xs-5 address">
+            <small class="text-white">Jl. Infinia Park, RT.1/RW.7, Manggarai, Tebet, Kota Jakarta Selatan,</small>
+            <small class="text-white">Daerah Khusus Ibukota Jakarta 12850, Indonesia</small>
+            <small class="text-white">email : customerservice@etobee.com, phone : 021-7482567</small>
+        </div>
+        <div class="col-xs-1"></div>
+        <div class="col-xs-3 bg-white">
+            <img class="barcode" src="{{order.Barcode}}">
+        </div>
+    </article>
+    <article class="bg-content col-xs-12 p-16 m-t-8">
+        <div class="col-xs-12">
+            <div class="col-xs-3">
+                <small class="text-gray p-t-8">Tracking Number / AWB</small>
+                <h1 class="p-t-8">{{order.WebOrderID}}</h1>
+            </div>
+            <div class="col-xs-9">
+                <div class="col-xs-3 box">
+                    <small>Origin</small>
+                    <br>
+                    <div class="fill"> </div>
+                </div>
+                <div class="col-xs-3 box m-l-8">
+                    <small>Destination</small>
+                    <br>
+                    <div class="fill"> </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="col-xs-4">
+                <small class="p-t-8 p-b-8">SHIPPER DETAILS (Pengirim)</small>
+
+                <div class="col-xs-12 box">
+                    <div class="col-xs-12">
+                        <div class="col-xs-5">
+                            <small class="text-right text-etobee">Merchant Name :</small>
+                        </div>
+                        <div class="col-xs-7">
+                            <div class="fill"> </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-5">
+                            <small class="text-right text-etobee">Address :</small>
+                        </div>
+                        <div class="col-xs-7">
+                            <div class="col-xs-12">
+                                <div class="fill"> </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="fill"> </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="fill"> </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-5">
+                            <small class="text-right text-etobee">City :</small>
+                        </div>
+                        <div class="col-xs-7">
+                            <div class="fill"> </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-5">
+                            <small class="text-right text-etobee">Post Code :</small>
+                        </div>
+                        <div class="col-xs-7">
+                            <div class="fill"> </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <br>
+                        <div class="col-xs-5">
+                            <small class="text-right text-etobee">Contact Person :</small>
+                        </div>
+                        <div class="col-xs-7">
+                            <div class="fill"> </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <br>
+                        <div class="col-xs-5">
+                            <small class="text-right text-etobee">Special Instruction :</small>
+                        </div>
+                        <div class="col-xs-7">
+                            <div class="col-xs-12">
+                                <div class="fill"> </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="fill"> </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="fill"> </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 box m-t-8">
+                    <div class="col-xs-12">
+                        <div class="col-xs-5">
+                            <small class="text-right text-etobee">Pick Up by :</small>
+                        </div>
+                        <div class="col-xs-7">
+                            <div class="fill"> </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-5">
+                            <small class="text-right text-etobee">Date/Time :</small>
+                        </div>
+                        <div class="col-xs-7">
+                            <div class="fill"> </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-5">
+                            <small class="text-right text-etobee">Delivery by :</small>
+                        </div>
+                        <div class="col-xs-7">
+                            <div class="fill"> </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 box m-t-8">
+                    <div class="col-xs-12">
+                        <small class="text-center text-gray info">I. We here by acknowledge all the terms and condition contained on the reversed side as the terms and the condition of this contract and agree to be bound by such terms and conditions.</small>
+                    </div>
+                    <br>
+                    <div class="col-xs-12 m-t-16">
+                        <div class="col-xs-2">
+                        </div>
+                        <div class="col-xs-8 m-t-16 p-l-8 p-r-8">
+                            <br>
+                            <hr class="text-etobee bg-etobee">
+                        </div>
+                        <div class="col-xs-2">
+                        </div>
+                        <small class="col-xs-12 text-center text-etobee">Shipper Signature</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-8 p-l-8">
+                <div class="col-xs-7">
+                    <small class="p-t-8 p-b-8">CONSIGNEE DETAILS (Penerima)</small>
+                    <div class="col-xs-12 box">
+                        <div class="col-xs-12">
+                            <div class="col-xs-5">
+                                <small class="text-right text-etobee">Consignee Name :</small>
+                            </div>
+                            <div class="col-xs-7">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-5">
+                                <small class="text-right text-etobee">Address :</small>
+                            </div>
+                            <div class="col-xs-7">
+                                <div class="col-xs-12">
+                                    <div class="fill"></div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="fill"></div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-5">
+                                <small class="text-right text-etobee">Country :</small>
+                            </div>
+                            <div class="col-xs-7">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-5">
+                                <small class="text-right text-etobee">City :</small>
+                            </div>
+                            <div class="col-xs-7">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-5">
+                                <small class="text-right text-etobee">Post Code :</small>
+                            </div>
+                            <div class="col-xs-7">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <br>
+                            <div class="col-xs-5">
+                                <small class="text-right text-etobee">Contact Person :</small>
+                            </div>
+                            <div class="col-xs-7">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 box m-t-8">
+                        <div class="col-xs-12 m-b-8">
+                            <small class="text-center text-gray info">Consignee have been received the shipment in good condition</small>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-7">
+                                <div class="col-xs-12">
+                                    <div class="col-xs-5">
+                                        <small class="text-right text-etobee">Name : </small>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="fill"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="col-xs-5">
+                                        <small class="text-right text-etobee">Date :</small>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="fill"></div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="col-xs-5">
+                                        <small class="text-right text-etobee">Relationship :</small>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-5">
+                                <div class="col-xs-12">
+                                    <br>
+                                    <div class="col-xs-12 m-t-8 p-l-8 p-r-8">
+                                        <br>
+                                        <hr class="text-etobee bg-etobee">
+                                    </div>
+                                    <small class="text-etobee text-center">Receiver Signature</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 m-t-8">
+                        <div class="col-xs-4">
+                            <div class="col-xs-12 box">
+                                <small class="text-etobee">Pieces/Colly</small>
+                                <br>
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 p-l-8">
+                            <div class="col-xs-12 box">
+                                <small class="text-etobee">Weight</small>
+                                <br>
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-4 p-l-8">
+                            <div class="col-xs-12 box">
+                                <small class="text-etobee">Dimention</small>
+                                <br>
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 box m-t-8">
+                        <small class="text-etobee">Package Details</small>
+                        <br>
+                        <div class="fill"></div>
+                    </div>
+                </div>
+
+                <div class="col-xs-5 p-l-8">
+                    <small class="p-t-8 p-b-8">SERVICES & COST (Layanan & Biaya)</small>
+                    <div class="col-xs-12 box">
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-11">
+                                <small>Parcel</small>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-11">
+                                <small>Document</small>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 m-t-8 m-b-8">
+                            <hr>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-11">
+                                <small>INTERNATIONAL</small>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-11">
+                                <small>DOMESTIC</small>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-11">
+                                <small>S.D.S</small>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-11">
+                                <small>O.N.S</small>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 m-t-8 m-b-8">
+                            <hr>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-11">
+                                <small>Express</small>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-11">
+                                <small>Others</small>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 m-t-8 m-b-8">
+                            <hr>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-11">
+                                <small>COD</small>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-11">
+                                <small>Invoice</small>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-11">
+                                <small>Free of Charge (Special) </small>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 m-t-8 m-b-8">
+                            <hr>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-5">
+                                <small>Insurance</small>
+                            </div>
+                            <div class="col-xs-1">
+                                <small>Rp.</small>
+                            </div>
+                            <div class="col-xs-5">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-5">
+                                <small>Packing</small>
+                            </div>
+                            <div class="col-xs-1">
+                                <small>Rp.</small>
+                            </div>
+                            <div class="col-xs-5">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-1">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-5">
+                                <small>Others</small>
+                            </div>
+                            <div class="col-xs-1">
+                                <small>Rp.</small>
+                            </div>
+                            <div class="col-xs-5">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 m-t-8 m-b-8">
+                            <hr>
+                        </div>
+                        <div class="col-xs-12">
+                            <small class="text-etobee">TOTAL</small>
+                            <br>
+                            <div class="col-xs-12">
+                                <div class="col-xs-1">
+                                    <small>Rp.</small>
+                                </div>
+                                <div class="col-xs-11">
+                                    <div class="fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <small class="text-gray text-center col-xs-12 p-t-8">You agree that we may open and inspect a shipment for any reason at any time</small>
+            </div>
+        </div>
+    </article>
+</section>

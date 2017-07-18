@@ -420,6 +420,16 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.prebookedorder', {
+            url: 'prebooked-order',
+            views: {
+                'content@': {
+                    templateUrl: 'app/prebookedOrder/prebookedOrder.html',
+                    controller: 'PrebookedOrdersCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.codpayment', {
             url: 'codpayments',
              views: {
