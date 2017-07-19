@@ -16,6 +16,8 @@ angular.module('adminApp')
             $http, 
             $window,
             config,
+            ngDialog,
+            SweetAlert,
             $document,
             $timeout,
             $q
@@ -31,6 +33,8 @@ angular.module('adminApp')
     $scope.isFirstSort = true;
     $scope.queryMultipleEDS = '';
     $scope.orderNotFound = 0;
+    $scope.isOrderSelected = false;
+    $scope.orders = [];
     $scope.$watch(
         'queryMultipleEDS',
         function (newValue) {
@@ -56,6 +60,7 @@ angular.module('adminApp')
     $scope.codPaymentStatuses = [
         {key: 'All', value: 'All'},
         {key: 'Paid', value: 'Paid'},
+        {key: 'Paid to Vendor', value: 'PaidToVendor'},
         {key: 'Unpaid', value: 'Unpaid'}
     ]
 
@@ -270,6 +275,7 @@ angular.module('adminApp')
             // modify data, add DeliveredTime
             _.each(data.data.rows, processOrder);
             $scope.displayed = data.data.rows;
+            $scope.orders = data.data.rows;
             $scope.orderFound = data.data.count;
             if (isFilterEDS) {
                 $scope.orderNotFound = $scope.userOrderNumbers.length - $scope.orderFound;
@@ -447,6 +453,153 @@ angular.module('adminApp')
 
         });
     };
+
+    /**
+     * Select all or unselect all orders.
+     * 
+     * @return {void}
+     */
+    $scope.checkUncheckSelected = function() {
+        $scope.orders.forEach(function(order) {
+            order.Selected = $scope.status.selectedAll;
+        });
+        $scope.prepareSelectedOrders();
+    };
+ 
+    /**
+     * Check whether there is one or more orders selected.
+     * 
+     * @return {boolean}
+     */
+    $scope.selectedOrderExists = function() {
+        var checked = false;
+        $scope.orders.some(function(order) {
+            if (order.Selected) {
+                checked = true;
+                return;
+            }
+        });
+ 
+        return checked;
+    };
+ 
+    /**
+     * Prepare selected orders.
+     * 
+     * @return {array}
+     */
+    $scope.prepareSelectedOrders = function() {            
+        var selectedOrders = [];
+        $scope.orders.forEach(function (order) {
+            if (order.Selected) {
+                selectedOrders.push(order);
+            }
+        });
+ 
+        $scope.selectedOrders = selectedOrders;
+
+        $scope.isOrderSelected = false;
+        if ($scope.selectedOrderExists()) {
+            $scope.isOrderSelected = true;
+        }
+    };
+
+    /**
+     * Set all seleted order to scope
+     */
+    function setSelectedOrder () {
+        $scope.selectedOrders = [];
+        $scope.orders.forEach(function (order) {
+            if (order.Selected) {
+                $scope.selectedOrders.push(order);
+            }
+        });
+    }
+
+    $scope.cannotMarkAsPaidToVendor = function (order) {
+        if (order) {
+            var checked = false;
+            if (!order.CODPaymentUserOrder) {
+                checked = true;
+            }
+            if (order.CODPaymentUserOrder && order.CODPaymentUserOrder.CODPayment && order.CODPaymentUserOrder.CODPayment.Status == 'Paid') {
+                checked = true;
+            }
+            if (order.CODPaymentUserOrder && order.CODPaymentUserOrder.CODPayment && order.CODPaymentUserOrder.CODPayment.Status == 'PaidToVendor') {
+                checked = true;
+            }
+            return checked;
+        }
+    }
+
+    $scope.createMarkAsPaidToVendor = function () {
+        ngDialog.close();
+        $rootScope.$emit('startSpin');
+        var orderIDs = [];
+        lodash.forEach($scope.selectedOrders, function (val) {
+            orderIDs.push(val.UserOrderID);
+        });
+
+        Services2.bulkMarkAsPaidToVendor({
+            orderIDs: orderIDs
+        }).$promise
+        .then(function(data) {
+            $rootScope.$emit('stopSpin');
+            var failedResponse = '';
+            if (data.data.failed.length > 0) {
+                failedResponse += '\n Success '+ data.data.success + ' Orders';
+                failedResponse += '\n Error '+ data.data.error + ' Orders :';
+                lodash.forEach(data.data.failed, function (failed) {
+                    if (!failed.success) {
+                        failedResponse += '\n' + failed.error;
+                    }
+                })
+            }
+            SweetAlert.swal('Success', 'Mark as Paid to Vendor' + failedResponse, 'success');
+            $state.reload();
+        })
+        .catch(function (e) {
+            $rootScope.$emit('stopSpin');
+            SweetAlert.swal('Error', e.data.error.message, 'error');
+        });
+    }
+
+    /**
+     * Show modal when action button triggered
+     * @param  {Object} dataOnModal - target, title, validation
+     * @return {void}
+     */
+    $scope.showModalOnAction = function (dataOnModal) {
+        $scope.dataOnModalAction = dataOnModal;
+
+        if (dataOnModal.validation) {
+            var checked = false;
+            $scope.orders.some(function(order) {
+                if (order.Selected && dataOnModal.validation(order)) {
+                    checked = true;
+                    return;
+                }
+            });
+
+            if (checked) {
+                SweetAlert.swal('Error', 'You have selected one or more orders which cannot be \n' + dataOnModal.title, 'error');
+                return false;
+            }
+        }
+
+        if (dataOnModal.target == 'markAsPaidToVendor') {
+            
+        }
+
+        ngDialog.close();
+        return ngDialog.open({
+            template: dataOnModal.target,
+            scope: $scope,
+            className: 'ngdialog-theme-default',
+            width: dataOnModal.width || '50%',
+            closeByDocument: false
+        });
+    }
 
     /**
      * Refresh list with user input request
