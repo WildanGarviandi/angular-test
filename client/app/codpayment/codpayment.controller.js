@@ -15,6 +15,7 @@ angular.module('adminApp')
             $location, 
             $http, 
             $window,
+            $httpParamSerializer,
             config,
             $document,
             $timeout,
@@ -168,13 +169,10 @@ angular.module('adminApp')
         }
     }
     /**
-     * Get all payment
+     * Get current parameter
      * 
-     * @return {void}
      */
-    $scope.getPayment = function() {
-        $rootScope.$emit('startSpin');
-        $scope.isLoading = true;
+    var getCurrentParam = function () {
         if ($scope.createdDatePicker.startDate) {
             $scope.createdDatePicker.startDate = new Date($scope.createdDatePicker.startDate);
         }
@@ -229,8 +227,20 @@ angular.module('adminApp')
             startPaid: $scope.paidDatePicker.startDate,
             endPaid: $scope.paidDatePicker.endDate,
         }
+        return params;
+    }
+    /**
+     * Get all payment
+     * 
+     * @return {void}
+     */
+    $scope.getPayment = function() {
+        $rootScope.$emit('startSpin');
+        $scope.isLoading = true;
+        var params = getCurrentParam();
         Services2.getCODPayment(params).$promise.then(function(data) {
             _.each(data.data.rows, processPayment);
+            $scope.countCODPayment = data.data.count;
             $scope.displayed = data.data.rows;
             $scope.isLoading = false;
             $scope.tableState.pagination.numberOfPages = Math.ceil(
@@ -260,7 +270,6 @@ angular.module('adminApp')
             }
         };
     });
-    
     /**
      * Init table state
      * 
@@ -790,6 +799,19 @@ angular.module('adminApp')
             });
         }
     };
+    /**
+     * Get Download Customer Price
+     * 
+     * @return {void}
+     */
+    $scope.downloadExcel = function () {
+        var type = 'codpayment';
+        var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + $scope.countCODPayment;
+        var params = getCurrentParam();
+
+        $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+        return;
+    }
     /**
      * Cancel COD Payment
      * @return void
