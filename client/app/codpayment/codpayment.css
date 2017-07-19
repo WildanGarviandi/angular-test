@@ -95,3 +95,7 @@
 .btn-codpayment-filter {
     height: 75px;
 }
+
+.proofOfPaymentWidth {
+    width: 180px;
+}
