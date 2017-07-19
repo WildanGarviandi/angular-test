@@ -12,7 +12,8 @@ angular.module('adminApp')
             $window,
             $http, 
             $httpParamSerializer,
-            Auth,  
+            Auth,
+            Upload,
             Services, 
             Services2,
             Webstores,
@@ -257,6 +258,39 @@ angular.module('adminApp')
 
         $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
         return;
+    }
+
+    /**
+     * Upload Excel file and assign value to scope
+     * 
+     * @return {void}
+    */
+    $scope.uploadExcel = function(files, action) {
+        var upload = function () {
+            var data = {};
+            var temp = [];
+
+            if (files && files.length) {
+                for (var i = 0; i < files.length; i++) {
+                    data.title = files[i].name;
+                    data.file = files[i];
+
+                    if (!files[i].$error) {
+                        temp.push(data);
+                    }
+                }
+            }
+
+            $scope.import.file = temp;
+            return;
+        }
+
+        if (action) {
+            action()
+            .then(upload);
+        } else {
+            upload();
+        }
     }
 
     /**
@@ -543,6 +577,85 @@ angular.module('adminApp')
             $scope.table.error = error.data.error.message;
             SweetAlert.swal('Error', error.data.error.message, 'error');
             $rootScope.$emit('stopSpin');
+        });
+    }
+
+    /**
+     * Initialize import price data
+     * 
+     */
+    $scope.initImportPrice = function () {
+        return $q(function (resolve) {
+            $scope.import = {};
+            $scope.import.file = [];
+            $scope.import.error = [];
+            $scope.import.success = [];
+            resolve();
+        });
+    }
+
+    /**
+     * Delete for zipcode and price. all changed Cell to Server
+     * 
+     */
+    $scope.importPrice = function() {
+        var merchantID = $scope.merchant.value;
+        var url = config.url + 'price/import-price/merchant/' + merchantID;
+        var data = $scope.import;
+
+        if (!data.file.length) { 
+            return SweetAlert.swal('Error', 'Please drop excel file', 'error');
+        }
+
+        var successFunction = function (response) {
+            var row = 2;
+            response.data.data.forEach(function(zipCode, index){
+                zipCode.row = row;
+
+                if (zipCode.Status == 'failed') {
+                    data.error.push(zipCode);
+                }
+
+                if (zipCode.Status == 'success') {
+                    data.success.push(zipCode);
+                }
+
+                row++;
+            });
+
+            $scope.getCustomerPrice();
+        };
+
+        var errorFunction = function(error) {
+            data.serverError = error.data.error.message;
+        };
+
+        lodash.forEach(data.file, function(val) {
+            var param = {};
+                param.pickupType = $scope.pickupType.value;
+                param.originID = $scope.port.value;
+                param.file = val.file;
+
+            doUpload(url, param, successFunction, errorFunction);
+        })
+    }
+
+    /**
+     * General function to upload file
+     * 
+     * @return {void}
+    */
+    var doUpload = function(url, data, successFunction, errorFunction) {
+        $rootScope.$emit('startSpin');
+        Upload.upload({
+            url: url,
+            data: data
+        }).then(function(response) {
+            $rootScope.$emit('stopSpin');
+            successFunction(response);
+        }).catch(function(error){
+            $rootScope.$emit('stopSpin');
+            errorFunction(error);
         });
     }
 
