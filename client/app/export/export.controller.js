@@ -196,6 +196,22 @@ angular.module('adminApp')
             });
         }
 
+        if (type == 'returnedOrders') {
+            $scope.isExportTypeExist = true;
+
+            return Services2.exportReturnedOrders(params).$promise
+            .then(function(data) {
+                batchError = 0;
+                successFunction(data);
+            }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
+                getDataJson(offset);
+            });
+        }
+
         if (type == 'price') {
             $scope.isExportTypeExist = true;
 
