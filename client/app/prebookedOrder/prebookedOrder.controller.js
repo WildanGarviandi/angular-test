@@ -115,7 +115,6 @@ angular.module('adminApp')
         var params = {};
             params.offset = $scope.offset;
             params.limit = $scope.itemsByPage;
-            params.status = lodash.find($scope.statuses, {key: 'AWB_ISSUED'}).value;
 
         return params;
     }
@@ -158,7 +157,7 @@ angular.module('adminApp')
         $scope.isLoading = true;
         var params = getCurrentParam();
 
-        return Services2.getOrder(params).$promise.then(function(data) {
+        return Services2.getEmptyOrders(params).$promise.then(function(data) {
             $scope.orderFound = data.data.count;
             $scope.displayed = data.data.rows;
             $rootScope.$emit('stopSpin');
@@ -419,7 +418,7 @@ angular.module('adminApp')
 
     $scope.print = function () {
         $scope.selectedOrders.forEach(function (val, index, array) {
-            array[index].Barcode = barcodeGenerator(val.WebOrderID);
+            array[index].Barcode = barcodeGenerator(val.UserOrderNumber);
         });
 
         var templateUrl = '../../assets/prints/prebookedOrders.html';
