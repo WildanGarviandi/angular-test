@@ -243,6 +243,7 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.uploadExcel = function(files, action) {
+        $scope.initImport();
         var data = {};
         var temp = [];
         var upload = function () {
@@ -320,6 +321,8 @@ angular.module('adminApp')
      * 
      */
     $scope.updateOrderByExcel = function() {
+        $scope.import.file = [];
+
         var url = config.url + 'order/import-prebooked/xlsx';
         var data = $scope.import;
 
@@ -378,10 +381,6 @@ angular.module('adminApp')
             }
             if (data.others.showFleet) {
                 param.fleetManagerID = data.others.fleet.User.UserID;
-                param.isReadyForPickup = true;
-            }
-            if (data.others.isReadyForPickup) {
-                param.isReadyForPickup = data.others.isReadyForPickup;
             }
 
             doUpload(url, param, successFunction, errorFunction);
