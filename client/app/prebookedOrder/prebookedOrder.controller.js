@@ -321,8 +321,6 @@ angular.module('adminApp')
      * 
      */
     $scope.updateOrderByExcel = function() {
-        $scope.import.file = [];
-
         var url = config.url + 'order/import-prebooked/xlsx';
         var data = $scope.import;
 
@@ -331,6 +329,7 @@ angular.module('adminApp')
         }
 
         var successFunction = function (response) {
+            $scope.import.file = [];
             response.data.data.forEach(function(order, index){
                 var row = index + 2;
                 if (order.isCreated) {
@@ -346,6 +345,7 @@ angular.module('adminApp')
         }
 
         var errorFunction = function(error) {
+            $scope.import.file = [];
             var errorMessage = error.data.error.message;
             try {
                 var errorMessageParse = JSON.parse(errorMessage);
