@@ -894,6 +894,20 @@ angular.module('adminApp')
                 controller: 'bulk-change-return-warehouse'
             }
         },
+        getEmptyOrders: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'empty-orders'
+            }
+        },
+        createEmptyOrders: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'create-empty-orders'
+            }
+        },
         getAllFleets: {
             method: 'GET',
             params: {

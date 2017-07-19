@@ -689,3 +689,7 @@ a {
 .p-l-15 {
     padding-left: 15px;
 }
+
+.cursor {
+    cursor: pointer;
+}
