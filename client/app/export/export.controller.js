@@ -100,7 +100,17 @@ angular.module('adminApp')
                 if (template && template.header) {
                     var tempDatas = [];
                     template.header.forEach(function (value) {
-                        tempDatas.push(getDescendantProp(val, value.value));
+                        if (value.value instanceof Array) {
+                            var tempValue = '';
+                            value.value.forEach(function (objectKey) {
+                                tempValue += ' ' + getDescendantProp(val, objectKey);
+                            });
+                            tempDatas.push(tempValue);
+                        } else if (value.value) {
+                            tempDatas.push(getDescendantProp(val, value.value));
+                        } else {
+                            tempDatas.push(value.custom);
+                        }
                     });
                     datas = tempDatas;
                 }
@@ -193,23 +203,33 @@ angular.module('adminApp')
                 sheetName: {
                     index: 'Customer Price'
                 },
-                initRow: [
-                    {
-                        index: 'Downloaded by : ' + $scope.user.FirstName + ' ' + $scope.user.LastName + ' / ' + $scope.user.Email
-                    }, {
-                        index: 'Merchant :',
-                        value: ['Webstore.FirstName', 'Webstore.LastName']
-                    }, {
-                        index: 'Origin TLC :',
-                        value: ['Origin.TLC']
-                    }
-                ],
                 header: [
                     {
-                        index: 'ZipCode',
+                        index: 'webstoreID',
+                        value: 'Webstore.UserID'
+                    }, {
+                        index: 'webstoreName',
+                        value: ['Webstore.FirstName', 'Webstore.LastName']
+                    }, {
+                        index: 'pickupType',
+                        custom: params.pickupTypeDescription
+                    }, {
+                        index: 'originTLC',
+                        value: 'Origin.TLC'
+                    }, {
+                        index: 'destinationProvince',
+                        value: 'Destination.Province'
+                    }, {
+                        index: 'destinationCity',
+                        value: 'Destination.City'
+                    }, {
+                        index: 'destinationDistrict',
+                        value: 'Destination.District'
+                    }, {
+                        index: 'destinationZipCode',
                         value: 'Destination.ZipCode'
                     }, {
-                        index: 'Price',
+                        index: 'price',
                         value: 'Price'
                     }
                 ]
