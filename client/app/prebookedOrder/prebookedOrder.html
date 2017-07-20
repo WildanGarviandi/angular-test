@@ -1,0 +1,279 @@
+<div class="container-fluid container-order" id="order-page">
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    Prebooked Order Management
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-5">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="order-navigation" class="col-xs-12 no-padding bg-white border-top">
+        <div class="col-xs-12 no-padding">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                <button id="updateOrderModal" class="btn btn-green col-xs-12" 
+                    ng-click="openModal('updateOrderModal', initImport)">Update Order</button>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                <button id="createOrderModal" class="btn btn-green col-xs-12" 
+                    ng-click="openModal('createOrderModal', false, {quantity: 0})">Create Order</button>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                <button id="printPrebookedOrder" class="btn btn-blue col-xs-12" ng-click="print()" ng-disabled="!selectedOrders.length">Print</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="prebooked-orders-page" class="col-md-12">
+        <div class="col-md-12 no-padding">
+            <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip order-table">
+                <thead ng-show="!isLoading && displayed.length > 0">
+                    <tr>
+                        <th class="checkbox-header">
+                            <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
+                        </th>
+                        <th>AWB</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody ng-show="!isLoading && displayed.length == 0">
+                    <tr>
+                        <td colspan="3" class="text-center">
+                            No data found
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody ng-show="isLoading">
+                    <tr>
+                        <td colspan="3" class="text-center">Loading ... </td>
+                    </tr>
+                </tbody>
+                <tbody 
+                    id="prebooked-orders-table-list"
+                    ng-show="!isLoading && displayed.length > 0">
+                    <tr ng-if="displayed"></tr>
+                    <tr ng-repeat="order in displayed">
+                        <td class="checkbox-header" ng-click="$event.stopPropagation()">
+                            <input type="checkbox" ng-change="prepareSelectedOrders()" ng-model="order.Selected" />
+                        </td>
+                        <td>{{order.UserOrderNumber}}</td>
+                        <td>{{order.OrderStatus.OrderStatus}}</td>
+                    </tr>
+                </tbody>
+                <tfoot ng-show="!isLoading && displayed.length > 0">
+                    <tr>
+                        <td colspan="1">
+                            <h5 class="text-primary"><strong>{{orderFound | number}} orders found</strong></h5>
+                        </td>
+                        <td colspan="2" 
+                            class="text-center" 
+                            st-pagination="" 
+                            st-items-by-page="itemsByPage" 
+                            st-displayed-pages='9' st-template='components/table/pagination.html'>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="updateOrderModal">
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <div class="col-md-12 no-padding">
+            <p><b>Update Order</b></p>
+            <br>
+            <div class="col-md-12 col-xs-12 no-padding mb15">
+                <div ngf-drop="uploadExcel($files)"
+                    ngf-select="uploadExcel($files)"
+                    ng-model="files" 
+                    class="drop-box" 
+                    ngf-drag-over-class="dragover" 
+                    ngf-multiple="true" 
+                    ngf-allow-dir="true" 
+                    accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+                    ngf-pattern="'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'">
+                    <div ng-hide="import.file.length">
+                        Drop <strong>.xlsx</strong> here
+                    </div>
+                    <div ng-show="import.file.length">
+                        {{import.file[0].title}}
+                    </div>
+                    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+                </div>
+                <a id="templateUpdatePrebookedOrders" 
+                    href="{{urlToDownload.templateUpdatePrebookedOrders}}" target="_blank">Download Template</a>
+            </div>
+            <div class="col-xs-12 no-padding">            
+                <div class="col-md-4 col-xs-12 no-padding">
+                    <p class="label-import-margin">Pickup Time :</p>
+                </div>  
+                <div class="col-md-8 col-xs-12 no-padding">
+                    <div class="dropdown">
+                        <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
+                            <div class="input-group col-xs-12 no-padding">
+                                <input type="text" class="form-control" data-ng-model="importedDatePickerNow" datetime="MM/dd/yyyy HH:mm:ss">
+                                <span class="input-group-addon">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </span>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            <datetimepicker 
+                                data-ng-model="importedDatePicker" 
+                                data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }"
+                                data-on-set-time="onTimeSet(newDate, oldDate)"/>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 no-padding">
+                <div class="col-md-4 col-xs-12 no-padding">
+                </div>  
+                <div class="col-md-8 col-xs-12 no-padding">
+                    <div class="col-xs-12 no-padding margin-b-10">
+                        <p class="cursor">
+                            <input type="checkbox" checked disabled="true">
+                            Ready for Pickup Now
+                        </p>
+                    </div>
+                    <div class="col-xs-12 no-padding margin-b-10">
+                        <p ng-click="toggleScope('import.others.showMerchant')" class="cursor">
+                            <input type="checkbox" ng-model="import.others.showMerchant">
+                            Set Merchant
+                            <div class="col-md-12 no-padding" ng-show="import.others.showMerchant">
+                                <ui-select class="col-xs-12 no-padding" 
+                                    ng-model="import.others.merchant" 
+                                    theme="selectize" 
+                                    tagging="tagHandler"
+                                    ng-disabled="disabled" 
+                                    on-select="choosenDataToScope($item, 'import.others.merchant')">
+                                    <ui-select-match placeholder="Choose merchant">
+                                        {{ $select.selected.key }}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="m in merchants | filter: $select.search track by $index" selected>
+                                        <span ng-bind-html="m.key | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <h5 class="text-orange" ng-if="import.others.merchant.value > 0">
+                                    <i class="fa fa-info-circle"></i>
+                                    <small>This will override the Merchant to <b>{{import.others.merchant.key}}</b></small>
+                                </h5>
+                            </div>
+                        </p>
+                    </div>
+                    <div class="col-xs-12 no-padding margin-b-10">
+                        <p ng-click="toggleScope('import.others.showFleet')" class="cursor">
+                            <input type="checkbox" ng-model="import.others.showFleet">
+                            Set Fleet
+                            <div class="col-md-12 no-padding" ng-show="import.others.showFleet">
+                                <ui-select ng-model="import.others.fleet" 
+                                    theme="selectize" 
+                                    tagging="tagHandler"
+                                    on-select="choosenDataToScope($item, 'import.others.fleet')" 
+                                    class="col-xs-12 no-padding">
+                                    <ui-select-match class="input-table" placeholder="Choose Fleet">{{$select.selected.CompanyName}}</ui-select-match>
+                                    <ui-select-choices repeat="c in companies | filter: $select.search track by $index" selected>
+                                        <span class="input-table" ng-bind-html="c.CompanyName | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <h5 class="text-orange" ng-if="import.others.fleet.User.UserID > 0">
+                                    <i class="fa fa-info-circle"></i>
+                                    <small>This will override the Fleet to <b>{{import.others.fleet.CompanyName}}</b></small>
+                                </h5>
+                            </div>
+                        </p>
+                    </div>
+                 </div>
+            </div>
+
+            <div class="col-xs-12 no-padding" ng-if="import.error.length > 0 || import.uploaded.length > 0 || import.updated.length > 0">
+                <div ng-if="import.uploaded.length > 0">
+                    <div class="alert bg-success">
+                        <p>{{import.uploaded.length}} orders uploaded</p>
+                    </div>
+                </div>
+                <div ng-if="import.updated.length > 0">
+                    <div class="alert bg-success">
+                        <p>{{import.updated.length}} orders updated</p>
+                    </div>
+                </div>
+                <div ng-if="import.error.length > 0">
+                    <div ng-if="import.error.length > 0">
+                        <div class="alert bg-danger">
+                            <p>{{import.error.length}} orders error</p>
+                        </div>
+                    </div>
+                    <div ng-repeat="err in import.error track by $index">
+                        <uib-alert type="danger" ng-if="err.format">
+                            <span>
+                                {{err.format}}
+                            </span>
+                        </uib-alert>
+                        <uib-alert type="danger" ng-if="err.row">
+                            <span>
+                                Row {{err.row}} :
+                            </span> 
+                            <p ng-repeat="errorList in err.list track by $index">
+                                <small>{{errorList}}</small>
+                            </p>
+                        </uib-alert>
+                        <uib-alert type="danger" ng-if="err.order">
+                            <span>
+                                UserOrderNumber {{err.order}} :
+                            </span> 
+                            <p>
+                                <small>{{err.reason}}</small>
+                            </p>
+                        </uib-alert>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-xs-12 no-padding">
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="closeUpdateOrderModal" class="btn btn-default col-md-12" ng-click="closeModal()">Close</button>
+                </div>
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="updateOrderByExcel" class="btn btn-green col-md-12" ng-click="updateOrderByExcel()" ng-disabled="!import.file">Import</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="createOrderModal">
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <div class="col-md-12 no-padding">
+            <p><b>Create Prebooked Order</b></p>
+            <br>
+            <div class="col-md-12 col-xs-12 no-padding mb15">
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <p>Number of Orders</p>
+                </div>
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <input ng-model="onModal.quantity"
+                        type="number"
+                        name="Number of Orders"
+                        placeholder="Number of Orders"
+                        class="first form-control" />
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12 no-padding">
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="closeCreateOrderModal" class="btn btn-default col-md-12" ng-click="closeModal()">Close</button>
+                </div>
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="createEmptyOrders" 
+                        class="btn btn-green col-md-12" 
+                        ng-click="createEmptyOrders()" 
+                        ng-disabled="!onModal.quantity || onModal.quantity <= 0">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

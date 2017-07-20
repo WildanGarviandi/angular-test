@@ -25,6 +25,10 @@
             <button class="btn btn-primary col-xs-12" type="button" 
                 ng-click="openCreateCODPaymentModal()">Confirm COD Payment</button>
         </div>
+        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">
+            <button class="btn btn-primary col-xs-12" type="button" 
+                ng-click="downloadExcel()">Export COD Payment</button>
+        </div>
     </div>
     <div class="clearfix"></div>
     <div class="row no-margin">
@@ -157,7 +161,10 @@
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
                     <tr>
-                        <td colspan="9" 
+                        <td>
+                            {{countCODPayment}} COD Payments Found
+                        </td>
+                        <td colspan="7" 
                             class="text-center" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 
@@ -411,6 +418,45 @@
                     </ui-select>
                 </div>
             </div>
+            <div class="clearfix"></div>
+                <div class="label-payment mb15">
+                    Proof of Payment <small><b>(optional)</b></small> :
+                </div>
+                <div class="input-payment mb5">
+                    <div ng-show="picture.result.url">
+                        <img class="img-thumbnail proofOfPaymentWidth mb5" 
+                            ng-src="{{picture.result.url}}"
+                            alt="Proof of Payment"/>
+                    </div>
+                    <button class="btn btn-default" 
+                        ng-show="!picture.result.fileName" 
+                        ngf-select="picture.upload($file)" 
+                        ng-model="file" 
+                        ngf-model-invalid="errFile" 
+                        type="file" 
+                        accept="image/*" 
+                        ngf-max-size="2MB">Upload
+                    </button>
+                    <button class="btn btn-default" 
+                        ng-show="picture.result.fileName" 
+                        ngf-select="picture.upload($file)" 
+                        ng-model="file" 
+                        ngf-model-invalid="errFile" 
+                        type="file" accept="image/*" 
+                        ngf-max-size="2MB">Change
+                    </button>
+                    <button class="btn btn-warning" ng-show="picture.result.fileName" ng-click="picture.reset()">Remove
+                    </button>
+                    <div style="font:smaller">
+                        <div class="report-upload">
+                            <small>{{picture.result.error}}</small>
+                        </div>
+                        <div class="progress" ng-show="picture.result.progress >= 0 && picture.result.progress < 100">
+                            <div style="width:{{picture.result.progress}}%"  
+                                 ng-bind="picture.result.progress + '%'"></div>
+                        </div>
+                    </div>
+                </div>
             <div class="clearfix"></div>
             <div class="row-fluid">                    
                 <div class="label-payment">

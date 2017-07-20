@@ -150,6 +150,19 @@
         "key": "Regular", 
         "value": 4
     }],
+    "pickupTypeSimple": [{
+        "key": "SDS",
+        "value": 1
+    }, {
+        "key": "NDS",
+        "value": 2
+    }, {
+        "key": "ODS",
+        "value": 3
+    }, {
+        "key": "REG",
+        "value": 4
+    }],
     "packageSize": [
         {
             "key": "XS",

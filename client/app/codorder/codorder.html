@@ -26,6 +26,29 @@
             <i class="fa fa-refresh"></i> Reset Filter</button>
         </div>
         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <button 
+                ng-disabled="!isOrderSelected" 
+                class="order-buttons btn dropdown-toggle col-xs-12" 
+                type="button" 
+                data-toggle="dropdown" 
+                disabled="disabled">
+                Action
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu col-xs-12 dropdown-action">
+                <li>
+                    <a ng-click="showModalOnAction({
+                        target: 'markAsPaidToVendor',
+                        width: '60%',
+                        title: 'Mark as Paid to Vendor',
+                        textCreate: 'Mark as Paid to Vendor',
+                        validation: cannotMarkAsPaidToVendor,
+                        onCreate: createMarkAsPaidToVendor
+                    })">Mark as Paid to Vendor</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
             <button class="btn btn-primary col-md-12" type="button" ng-click="exportCsv()">Export CSV</button>
         </div>
     </div>
@@ -81,6 +104,9 @@
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
                 <thead class="hubs-table-head">
                     <tr>
+                        <th class="checkbox-header">
+                            <input type="checkbox" ng-model="status.selectedAll" ng-click="checkUncheckSelected()" />
+                        </th>
                         <th>AWB / Web Order ID</th>
                         <th>User</th>
                         <th>Pickup Time</th>
@@ -90,11 +116,14 @@
                         <th>COD Value</th>
                         <th>Order Status</th>
                         <th>Paid Time</th>
+                        <th>Payment Method</th>
                         <th>Driver/Logistic Transfer</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
+                        <th class="checkbox-header">
+                        </th>
                         <th>
                             <div class="filter-table">
                                 <input 
@@ -174,6 +203,7 @@
                             </div>
                         </th>
                         <th></th>
+                        <th></th>
                         <th>
                             <div class="filter-table">
                                 <ui-select ng-model="codPaymentStatus" 
@@ -204,6 +234,9 @@
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="order in displayed">
+                        <td class="checkbox-header" ng-click="$event.stopPropagation()">
+                            <input type="checkbox" ng-change="prepareSelectedOrders()" ng-model="order.Selected" />
+                        </td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.UserOrderNumber}} / {{order.WebOrderID}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.User.FirstName}} {{order.User.LastName}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)">{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
@@ -214,6 +247,7 @@
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.OrderStatus.OrderStatus}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" 
                             ng-class="order.UnpaidClass">{{order.CODPaymentUserOrder.CODPayment.PaidDate | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.CODPaymentUserOrder.CODPayment.PaymentMethod}}</td>
                         <td ng-click="detailsPage(order.UserOrderID)" ng-class="order.UnpaidClass">{{order.CODPaymentUserOrder.CODPayment.Status || 'Unpaid'}}</td>
                     </tr>
                 </tbody>
@@ -222,7 +256,7 @@
                         <td colspan="2">
                             <h5 class="text-primary"><strong>{{orderFound | number}} orders found</strong></h5>
                         </td>
-                        <td colspan="8" 
+                        <td colspan="10" 
                             class="text-center" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 
@@ -234,3 +268,24 @@
         </div>
     </div>
 </div>
+
+<script type="text/ng-template" id="markAsPaidToVendor">
+    <div class="header-wrapper mb15">
+        <h4 class="no-margin"><b>{{dataOnModalAction.title}}</b></h4>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <div class="row no-margin">
+            <div class="col-md-12 no-padding">
+                <p><b>{{selectedOrders.length}} Orders Selected :</b></p>
+            </div>
+            <div class="col-md-12 no-padding selectedCODOrders">
+                <p ng-repeat="o in selectedOrders">{{$index + 1}}: {{o.UserOrderNumber}} / {{o.WebOrderID}}</p>
+            </div>
+        </div>
+        <div class="row no-margin">
+            <div class="col-md-12 no-padding mt15">
+                <button class="btn btn-primary" ng-click="dataOnModalAction.onCreate()">{{dataOnModalAction.textCreate}}</button>
+            </div>
+        </div>
+    </div>
+</script>

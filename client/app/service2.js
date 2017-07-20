@@ -279,6 +279,13 @@ angular.module('adminApp')
                 merchantID: null
             },
         },
+        getLatestPriceDownload: {
+            method: 'GET',
+            params: {
+                module: 'ecommerce-price',
+                controller: 'latest-price-download'
+            }
+        },
         saveEcommercePrice: {
             method: 'POST',
             url: config.url + ':module/:controller/:merchantID',
@@ -318,6 +325,12 @@ angular.module('adminApp')
             method: 'GET',
             params: {
                 module: 'country'
+            },
+        },
+        getPorts: {
+            method: 'GET',
+            params: {
+                module: 'port'
             },
         },
         getLogisticFees: {
@@ -519,7 +532,14 @@ angular.module('adminApp')
             params: {
                 module: 'codpayment'
             },
-        },      
+        },
+        exportCODPayment: {
+            method: 'GET',
+            params: {
+                module: 'codpayment',
+                controller: 'export-csv'
+            }
+        },
         getCODOrdersNoPayment: {
             method: 'GET',
             params: {
@@ -533,6 +553,13 @@ angular.module('adminApp')
             params: {
                 module: 'codorder',
                 controller: 'nopayment-summary'
+            }
+        },
+        bulkMarkAsPaidToVendor: {
+            method: 'POST',
+            params: {
+                module: 'codorder',
+                controller: 'bulk-paid-vendor'
             }
         },
         getMainSLA: {
@@ -590,6 +617,13 @@ angular.module('adminApp')
             params: {
                 module: 'returnedorder',
                 id: null
+            },
+        },
+        exportReturnedOrders: {
+            method: 'GET',
+            params: {
+                module: 'returnedorder',
+                controller: 'export'
             },
         },
         updateCod: {
@@ -858,6 +892,20 @@ angular.module('adminApp')
             params: {
                 module: 'order',
                 controller: 'bulk-change-return-warehouse'
+            }
+        },
+        getEmptyOrders: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'empty-orders'
+            }
+        },
+        createEmptyOrders: {
+            method: 'POST',
+            params: {
+                module: 'order',
+                controller: 'create-empty-orders'
             }
         },
         getAllFleets: {

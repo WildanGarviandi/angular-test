@@ -420,6 +420,16 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.prebookedorder', {
+            url: 'prebooked-order',
+            views: {
+                'content@': {
+                    templateUrl: 'app/prebookedOrder/prebookedOrder.html',
+                    controller: 'PrebookedOrdersCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.codpayment', {
             url: 'codpayments',
              views: {
@@ -516,6 +526,16 @@ angular.module('adminApp')
                 'content@': {
                     templateUrl: 'app/import/import.html',
                     controller: 'ImportCtrl'
+                }
+            },
+            authenticate: true
+        })
+        .state('app.customerPrice', {
+            url: 'pricing/customer',
+             views: {
+                'content@': {
+                    templateUrl: 'app/customerPrice/customerPrice.html',
+                    controller: 'CustomerPriceCtrl'
                 }
             },
             authenticate: true

@@ -362,6 +362,16 @@
     background-size: 30px;
 }
 
+.side-prebookedorder-image {
+    background-image: url('../../assets/images/nav-prebooked.png');
+    background-size: 30px;
+}
+ 
+.side-prebookedorder-image.active {
+    background-image: url('../../assets/images/nav-prebooked-active.png');
+    background-size: 30px;
+}
+
 .side-hubmonitor-image {
     background-image: url('../../assets/images/nav-hubmonitor.png');
 }
@@ -447,6 +457,14 @@
 
 .side-finance-image.active {
     background-image: url('../../assets/images/nav-finance-active.png');
+}
+
+.side-customer-price-image {
+    background-image: url('../../assets/images/nav-customer-price.png');
+}
+
+.side-customer-price-image.active {
+    background-image: url('../../assets/images/nav-customer-price-active.png');
 }
 
 #spinner-container {

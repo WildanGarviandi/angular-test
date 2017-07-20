@@ -225,3 +225,14 @@
     color: #0000EE;;
     cursor: pointer;
 }
+
+.selectedCODOrders {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.selectedCODOrders p {
+    margin: 0px;
+    padding: 5px;
+    background-color: #fff;
+}

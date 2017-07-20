@@ -337,6 +337,7 @@
 #order-page .table > tbody > tr > td {
     width: 200px;
     min-width: 200px;
+    max-width: 200px;
 }
 
 #order-page .row {
@@ -687,4 +688,8 @@ a {
 
 .p-l-15 {
     padding-left: 15px;
+}
+
+.cursor {
+    cursor: pointer;
 }

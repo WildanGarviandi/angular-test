@@ -18,10 +18,13 @@ angular.module('adminApp')
 
     Auth.getCurrentUser().then(function(data) {
         $scope.user = data.profile;
+    }).then(function () {
+        fetchDataJson(type);
     });
 
     var dataArray = [];
     var type = $location.search()['exportType'];
+    var sheetName = '';
     var maxExport = $location.search()['maxExport'];
     var params = $location.search();
     delete params['exportType'];
@@ -36,21 +39,82 @@ angular.module('adminApp')
     var fetchingRow = 0;
 
     /** report for user **/
+    $scope.isExportTypeExist = true;
     $scope.progress = {};
     $scope.progress.maxExport = maxExport;
     $scope.progress.export = 0;
     $scope.progress.percentage = 0;
     $scope.progress.message = 'initialize ...';
 
-    var buildArray = function (data, batchPosition) {
+    var getDescendantProp = function (obj, desc) {
+        var arr = desc.split(".");
+        while(arr.length && (obj = obj[arr.shift()]));
+        var result = (obj) ? obj : '';
+        return result;
+    }
+
+    var buildArray = function (data, batchPosition, template) {
         if (data && data.data && data.data.length) {
             if (batchPosition == 0) {
                 var header = Object.keys(data.data[0]);
+
+                if (template) {
+                    var header = [];
+                    if (template.sheetName) {
+                        sheetName = template.sheetName.index;
+                        if (template.sheetName.value) {
+                            sheetName += ' ' + getDescendantProp(data.data[0], template.sheetName.value);
+                        }
+                    }
+                    if (template.initRow) {
+                        template.initRow.forEach(function (val) {
+                            var tempInitRow = [];
+                            tempInitRow.push(val.index);
+                            if (val.value && val.value instanceof Array) {
+                                var tempValue = '';
+                                val.value.forEach(function (objectKey) {
+                                    tempValue += ' ' + getDescendantProp(data.data[0], objectKey);
+                                });
+                                tempInitRow.push(tempValue);
+                            } else if (val.value) {
+                                tempInitRow.push(getDescendantProp(data.data[0], val.value));
+                            }
+                            dataArray.push(tempInitRow);
+                        });
+                    }
+                    if (template.header) {
+                        var tempHeader = [];
+                        template.header.forEach(function (val) {
+                            tempHeader.push(val.index);
+                        });
+                        header = tempHeader;
+                    }
+                }
+
                 dataArray.push(header);
             }
 
             angular.forEach(data.data, function (val, key) {
                 var datas = Object.values(val);
+
+                if (template && template.header) {
+                    var tempDatas = [];
+                    template.header.forEach(function (value) {
+                        if (value.value instanceof Array) {
+                            var tempValue = '';
+                            value.value.forEach(function (objectKey) {
+                                tempValue += ' ' + getDescendantProp(val, objectKey);
+                            });
+                            tempDatas.push(tempValue);
+                        } else if (value.value) {
+                            tempDatas.push(getDescendantProp(val, value.value));
+                        } else {
+                            tempDatas.push(value.custom);
+                        }
+                    });
+                    datas = tempDatas;
+                }
+
                 dataArray.push(datas);
             });
         } else {
@@ -58,11 +122,20 @@ angular.module('adminApp')
         }
     }
 
-    var successFunction = function (data) {
+    var forceBuildExcel = function (data, template) {
+        $scope.progress.export = maxExport;
+        $scope.progress.percentage = ($scope.progress.export / maxExport) * 100;
+
+        buildArray(data, batchPosition, template);
+
+        return buildExcel(type);
+    }
+
+    var successFunction = function (data, template) {
         $scope.progress.export += params.limit;
         $scope.progress.percentage = ($scope.progress.export / maxExport) * 100;
 
-        buildArray(data, batchPosition);
+        buildArray(data, batchPosition, template);
 
         batchPosition++;
 
@@ -82,6 +155,7 @@ angular.module('adminApp')
     }
 
     var getDataJson = function (offset) {
+        $scope.isExportTypeExist = false;
         fetchingRow = offset + limit;
         params.offset = offset;
         if (!offset) {
@@ -100,6 +174,8 @@ angular.module('adminApp')
         $scope.progress.message = 'fetching ' + fetchingRow + ' orders from ' + totalRow;
 
         if (type == 'standard') {
+            $scope.isExportTypeExist = true;
+
             return Services2.exportStandardFormatJson(params).$promise
             .then(function(data) {
                 batchError = 0;
@@ -114,6 +190,8 @@ angular.module('adminApp')
         }
 
         if (type == 'uploadable') {
+            $scope.isExportTypeExist = true;
+
             return Services2.exportUploadableFormatJson(params).$promise
             .then(function(data) {
                 batchError = 0;
@@ -124,6 +202,93 @@ angular.module('adminApp')
                     return errorFunction(e.data.error.message);
                 }
                 getDataJson(offset);
+            });
+        }
+
+        if (type == 'returnedOrders') {
+            $scope.isExportTypeExist = true;
+
+            return Services2.exportReturnedOrders(params).$promise
+            .then(function(data) {
+                batchError = 0;
+                successFunction(data);
+            }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
+                getDataJson(offset);
+            });
+        }
+
+        if (type == 'price') {
+            $scope.isExportTypeExist = true;
+
+            var template = {
+                sheetName: {
+                    index: 'Customer Price'
+                },
+                header: [
+                    {
+                        index: 'webstoreID',
+                        value: 'Webstore.UserID'
+                    }, {
+                        index: 'webstoreName',
+                        value: ['Webstore.FirstName', 'Webstore.LastName']
+                    }, {
+                        index: 'pickupType',
+                        custom: params.pickupTypeDescription
+                    }, {
+                        index: 'originTLC',
+                        value: 'Origin.TLC'
+                    }, {
+                        index: 'destinationProvince',
+                        value: 'Destination.Province'
+                    }, {
+                        index: 'destinationCity',
+                        value: 'Destination.City'
+                    }, {
+                        index: 'destinationDistrict',
+                        value: 'Destination.District'
+                    }, {
+                        index: 'destinationZipCode',
+                        value: 'Destination.ZipCode'
+                    }, {
+                        index: 'price',
+                        value: 'Price'
+                    }
+                ]
+            };
+
+            if (batchPosition > 0) {
+                params.isDownload = false;
+            }
+
+            return Services2.getEcommercePrices(params).$promise
+            .then(function(data) {
+                batchError = 0;
+                successFunction(data.data, template);
+            }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
+                getDataJson(offset);
+            });
+        }
+
+        if (type == 'codpayment') {
+            $scope.isExportTypeExist = true;
+
+            return Services2.exportCODPayment(params).$promise
+            .then(function(data) {
+                if (!data.data.length) {
+                    return errorFunction('Empty Data');
+                };
+                batchError = 0;
+                forceBuildExcel(data);
+            }).catch(function (e) {
+                return errorFunction(e.data.error.message);
             });
         }
     }
@@ -148,11 +313,10 @@ angular.module('adminApp')
         
         var result = {};
         result.fileName = 'export_'+ $filter('date')(new Date(), 'dd-MM-yyyy HH:mm:ss').replace(':', '-');
-        result.sheetName = type;
+        result.sheetName = (sheetName) ? sheetName : type;
         result.dataExcel = dataArray;
 
         $rootScope.$emit('downloadExcel', result);
     };
 
-    fetchDataJson(type);
 });

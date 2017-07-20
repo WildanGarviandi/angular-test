@@ -47,6 +47,18 @@
                     </li>
 
                     <li>
+                        <a ui-sref="app.prebookedorder">
+                            <div class="side-image side-prebookedorder-image"
+                                ng-class="{ expanded: expanded, active: menus.orders.submenus.prebookedorder.active }"></div>
+                            <div class="side-text"
+                                ng-class="{ expanded: expanded, active: menus.orders.submenus.prebookedorder.active }">
+                                Prebooked Orders
+                            </div>
+                        </a>
+                        <div class="clearfix"></div>
+                    </li>
+
+                    <li>
                         <a ui-sref="app.codorder">
                             <div class="side-image side-codorders-image"
                                 ng-class="{ expanded: expanded, active: menus.orders.submenus.cod.active }"></div>
@@ -216,6 +228,18 @@
                             <div class="side-text"  
                                 ng-class="{ expanded: expanded, active: menus.pricing.submenus.logistic.active }">
                                 Logistic Fees
+                            </div>
+                        </a>
+                        <div class="clearfix"></div>
+                    </li>
+                    <li>
+                        <a ui-sref="app.customerPrice">
+                            <div class="side-image side-customer-price-image"
+                                ng-class="{ expanded: expanded, active: menus.pricing.submenus.customerPrice.active }"
+                                style="background-size: 22px"></div>
+                            <div class="side-text"
+                                ng-class="{ expanded: expanded, active: menus.pricing.submenus.customerPrice.active }">
+                                Customer Prices
                             </div>
                         </a>
                         <div class="clearfix"></div>
