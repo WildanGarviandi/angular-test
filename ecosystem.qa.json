@@ -16,7 +16,7 @@
             "host" : "qa.admin.etobee.com",
             "ref" : "origin/qa",
             "repo": "git@gitlab.com:etobee-techgroup/etobee-admin.git",
-            "path" : "/home/ubuntu/etobee-admin",
+            "path" : "/home/ubuntu/qa.admin.etobee.com/source",
             "post-deploy" : "npm install && bower install -F && pm2 startOrRestart ecosystem.qa.json --env qa"
         }
     }
