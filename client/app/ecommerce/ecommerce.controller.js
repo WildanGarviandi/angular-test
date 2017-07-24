@@ -255,7 +255,7 @@ angular.module('adminApp')
         };
         // Get Master price
         Services2.getEcommercePrices(paramsMaster).$promise.then(function (result) {
-            $scope.masterPrices = lodash.filter(result.data.data, {WebStore: {UserID: 0}});
+            $scope.masterPrices = lodash.filter(result.data.data, {WebStore: {UserID: '0'}});
             if ($scope.input.webstore.value === 0) {
                 buildDefault();
                 $rootScope.$emit('stopSpin');
