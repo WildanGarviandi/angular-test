@@ -34,7 +34,7 @@
                 <p class="input-group date-picker-new"> 
                     <input type="text"
                         class="form-control border-right-none"
-                        ng-model="startDropoff"
+                        ng-model="startFilter"
                         uib-datepicker-popup="d MMMM yyyy"
                         date:'yyyy-MM-dd'
                         is-open="isStartDropoffDatePickerOpen"
@@ -55,7 +55,7 @@
                 <p class="input-group date-picker-new"> 
                     <input type="text"
                         class="form-control border-right-none"
-                        ng-model="endDropoff"
+                        ng-model="endFilter"
                         uib-datepicker-popup="d MMMM yyyy"
                         date:'yyyy-MM-dd'
                         is-open="isEndDropoffDatePickerOpen"
@@ -72,6 +72,19 @@
                     </span>
                 </p>
             </div>
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                <ui-select ng-model="filterBy"
+                    theme="selectize"
+                    ng-disabled="disabled"
+                    on-select="chooseFilterBy($item)">
+                    <ui-select-match placeholder="Filter by ...">
+                        {{ $select.selected.key }}
+                    </ui-select-match>
+                    <ui-select-choices repeat="f in filterBys | filter: $select.search" selected>
+                        <span ng-bind-html="f.key | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
             <div class="col-lg-1 col-md-3 col-sm-4 col-xs-6">
                 <button class="btn btn-green col-xs-12" ng-click="filterDate()">Filter</button>
             </div>
@@ -87,7 +100,7 @@
                 <button
                     class="btn btn-blue col-xs-12"
                     ng-click="modalTemplateGenerator('confirmation', 'AutoUpdateFee', '', '', updatePriceAuto)"
-                    ng-disabled="totalData == 0">
+                    ng-disabled="displayed.length == 0">
                     <i class="fa fa-custom-auto-update"></i> AUTO UPDATE FEE</button>
             </div>
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">
@@ -107,11 +120,11 @@
         <div class="col-md-12" ng-show="actionPayoutAndInvoice.showTable">
             <div ng-hide="temp.selectedAllListTable">
                 <small class="pull-left">All <b class="red">{{temp.selectedList.length}}</b> orders on this page are selected. 
-                    <a ng-click="checkUncheckSelectedAllInTable(true)">Select all <b class="red">{{totalData | number}}</b> orders in list</a>
+                    <a ng-click="checkUncheckSelectedAllInTable(true)">Select all orders in list</a>
                 </small>
             </div>
             <div ng-show="temp.selectedAllListTable">
-                <small class="pull-left">All <b class="red">{{totalData | number}}</b> orders are selected. 
+                <small class="pull-left">All orders are selected. 
                     <a ng-click="checkUncheckSelectedAllInTable(false)">Clear Selection</a>
                 </small>
             </div>
@@ -344,10 +357,7 @@
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
                     <tr>
-                        <td colspan="4" class="border-right-none">
-                            <p class="no-margin"><small>Showing {{totalData | number}} orders found</small></p>
-                        </td>
-                        <td colspan="10" 
+                        <td colspan="14" 
                             class="text-right border-left-none" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 
