@@ -142,6 +142,8 @@ angular.module('adminApp')
         if (batchPosition < batch) {
             getDataJson(params.limit * batchPosition);
         } else {
+            $scope.progress.percentage = 100;
+            $scope.progress.export = $scope.progress.maxExport;
             return buildExcel(type);
         }
     }
@@ -210,6 +212,27 @@ angular.module('adminApp')
 
             return Services2.exportReturnedOrders(params).$promise
             .then(function(data) {
+                batchError = 0;
+                successFunction(data);
+            }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
+                getDataJson(offset);
+            });
+        }
+
+        if (type == 'userReferral') {
+            $scope.isExportTypeExist = true;
+
+            return Services2.exportReferral(params).$promise
+            .then(function(datas) {
+                var data = {};
+                    data.data = datas.data.rows;
+                if (!datas.data.length) {
+                    batchPosition = batch;
+                }
                 batchError = 0;
                 successFunction(data);
             }).catch(function (e) {

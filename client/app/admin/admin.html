@@ -94,7 +94,7 @@
                 <small ng-show="formInValid.role" class="text-danger">{{formInValid.role}}</small>
             </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-12 no-padding">
             <div class="col-md-2 pull-right" ng-show="isAdminCreate">
                 <button type="button" class="btn btn-admin col-xs-12" ng-click="createAdmin()">Create</button>
             </div>
@@ -107,9 +107,15 @@
         </div>
     </div>
 
-    <div class="col-md-12" ng-hide="isAdminCreate || isAdminEdit">
+    <div class="col-md-12 no-padding" ng-hide="isAdminCreate || isAdminEdit">
         <br>
-        <button type="button" class="btn btn-primary col-md-2" ng-click="addAdmin()">Add Admin</button>
+        <div class="col-md-2 col-xs-12">
+            <button type="button" class="btn btn-blue col-xs-12" ng-click="addAdmin()">Add Admin</button>
+        </div>
+        <div class="col-md-2 col-xs-12">
+            <button class="btn btn-green col-xs-12"
+                ng-click="export()">Export</button>
+        </div>
     </div>
     
     <div class="col-md-12">
@@ -148,6 +154,9 @@
                     <td>{{admin.Role}}</td>
                     <td>
                         <button class="btn btn-primary" type="button" ng-click="editAdmin(admin)">Edit</button>
+                        <button class="btn btn-yellow" type="button" 
+                            ng-click="referralCodeModal(admin)" 
+                            ng-show="admin.AdminDetail.RoleID == 4">Referral Code</button>
                     </td>
                 </tr>
             </tbody>
@@ -167,3 +176,40 @@
         </table>
     </div>
 </div>
+
+<script type="text/ng-template" id="modalReferralCode">
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <div class="col-md-12 no-padding">
+            <p><b>Referral Code</b></p>
+            <div class="col-md-12 no-padding" ng-show="dataOnModal.referralCode">
+                <div class="col-md-5 no-padding">
+                    <p>Referral Code</p>
+                </div>
+                <div class="col-md-7 no-padding">
+                    <p>{{dataOnModal.referralCode}}</p>
+                </div>
+                <br>
+            </div>
+            <div class="col-md-12 no-padding mb15">
+                <div class="col-md-5 no-padding">
+                    <p>Update Referral Code</p>
+                </div>
+                <div class="col-md-7 no-padding">
+                    <input type="text" class="form-control" id="referralCodeOnModal" ng-model="temp.referralCode" placeholder="Referral Code">
+                    <small class="text-danger">must be 4 character</small>
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12 no-padding">
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="" class="btn btn-default col-md-12" ng-click="closeModal()">Cancel</button>
+                </div>
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="updateRefferalCode" 
+                        class="btn btn-green col-md-12" 
+                        ng-disabled="!temp.referralCode" 
+                        ng-click="updateRefferalCode()">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

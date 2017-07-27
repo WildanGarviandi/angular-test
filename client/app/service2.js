@@ -386,6 +386,20 @@ angular.module('adminApp')
                 module: 'user'
             }
         },
+        updateUserReferralCode: {
+            method: 'POST',
+            params: {
+                module: 'user',
+                controller: 'update-referral'
+            }
+        },
+        exportReferral: {
+            method: 'GET',
+            params: {
+                module: 'user',
+                controller: 'export-referral'
+            }
+        },
         getAdminFeatures: {
             method: 'GET',
             params: {
