@@ -5,12 +5,12 @@
      */
     "apps" : [
         {
-            "name" : "etobee-admin",
+            "name" : "admin.etobee.com",
             "script" : "app.js",
             "env_production": {
                 "NODE_ENV": "production"
             },
-            "max_memory_restart" : "500M"
+            "max_memory_restart" : "700M"
         }
     ],
 
