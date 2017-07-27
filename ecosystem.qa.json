@@ -1,12 +1,12 @@
 {
     "apps" : [
         {
-            "name" : "ADMINDASH_QA",
+            "name" : "qa.admin.etobee.com",
             "script" : "app.js",
             "env_qa": {
                 "NODE_ENV": "qa"
             },
-            "max_memory_restart" : "500M"
+            "max_memory_restart" : "700M"
         }
     ],
 
@@ -17,7 +17,7 @@
             "ref" : "origin/qa",
             "repo": "git@gitlab.com:etobee-techgroup/etobee-admin.git",
             "path" : "/home/ubuntu/qa.admin.etobee.com",
-            "post-deploy" : "npm install && bower install -F && pm2 startOrRestart ecosystem.qa.json --env qa"
+            "post-deploy" : "cp /home/ubuntu/configs/qa.admin.etobee.com/env.js client/config/. && npm install && bower install -F && PORT=3003 pm2 startOrRestart ecosystem.qa.json --env qa"
         }
     }
 }
