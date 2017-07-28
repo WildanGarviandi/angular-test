@@ -357,6 +357,7 @@ angular.module('adminApp')
         Services2.updateUserReferralCode(params).$promise
         .then(function (data) {
             $scope.closeModal();
+            $rootScope.$emit('stopSpin');
         })
         .catch(function(err) {
             $scope.closeModal();
