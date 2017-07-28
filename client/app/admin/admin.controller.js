@@ -14,8 +14,10 @@ angular.module('adminApp')
             $stateParams,
             $location, 
             $http, 
+            $httpParamSerializer,
             $window,
             SweetAlert,
+            ngDialog,
             $q
         ) {
 
@@ -32,10 +34,11 @@ angular.module('adminApp')
         confirmPassword: '',
         email: '',
         statusID: '',
-        roleID: ''
+        roleID: '',
+        referralCode: ''
     };
     $scope.formInValid = {};
-
+    $scope.dataOnModal = {};
     $scope.adminStatus = [{
         key: 'CHOOSE STATUS',
         value: 0
@@ -327,6 +330,57 @@ angular.module('adminApp')
                 data.data.count / $scope.tableState.pagination.number);
             $scope.adminFound = data.data.count;
             $rootScope.$emit('stopSpin');
+        });
+    }
+
+    $scope.closeModal = function () {
+        ngDialog.close();
+    }
+
+    $scope.referralCodeModal = function (admin) {
+        $scope.dataOnModal.userID = admin.UserID;
+        $scope.temp.referralCode = admin.ReferralCode;
+        ngDialog.open({
+            template: 'modalReferralCode',
+            scope: $scope,
+            className: 'ngdialog-theme-default',
+            closeByDocument: false
+        });
+    }
+
+    $scope.updateRefferalCode = function () {
+        $rootScope.$emit('startSpin');
+        var params = {};
+            params.userID = $scope.dataOnModal.userID;
+            params.referralCode = $scope.temp.referralCode;
+
+        Services2.updateUserReferralCode(params).$promise
+        .then(function (data) {
+            $scope.closeModal();
+            $rootScope.$emit('stopSpin');
+            $scope.getAdminList();
+        })
+        .catch(function(err) {
+            $scope.closeModal();
+            SweetAlert.swal('Error', err.data.error.message, 'error');
+            $rootScope.$emit('stopSpin');
+        });
+    }
+
+    $scope.export = function () {
+        var type = 'userReferral';
+        var maxExport = 0;
+        var params = {};
+            params.limit = 1;
+            params.userType = 2;
+
+        Services2.exportReferral(params).$promise
+        .then(function (data) {
+            maxExport = data.data.count;
+            var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + maxExport;
+            var params = {};
+                params.userType = 2;
+            $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
         });
     }
 
