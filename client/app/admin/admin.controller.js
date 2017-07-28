@@ -358,6 +358,7 @@ angular.module('adminApp')
         .then(function (data) {
             $scope.closeModal();
             $rootScope.$emit('stopSpin');
+            $scope.getAdminList();
         })
         .catch(function(err) {
             $scope.closeModal();
