@@ -230,9 +230,6 @@ angular.module('adminApp')
             .then(function(datas) {
                 var data = {};
                     data.data = datas.data.rows;
-                if (!datas.data.length) {
-                    batchPosition = batch;
-                }
                 batchError = 0;
                 successFunction(data);
             }).catch(function (e) {

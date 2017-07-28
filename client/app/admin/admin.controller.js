@@ -370,13 +370,14 @@ angular.module('adminApp')
         var maxExport = 0;
         var params = {};
             params.limit = 1;
+            params.userType = 2;
 
         Services2.exportReferral(params).$promise
         .then(function (data) {
             maxExport = data.data.count;
             var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + maxExport;
             var params = {};
-                params.userType = 1;
+                params.userType = 2;
             $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
         });
     }
