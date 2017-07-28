@@ -338,8 +338,8 @@ angular.module('adminApp')
     }
 
     $scope.referralCodeModal = function (admin) {
-        $scope.dataOnModal.referralCode = admin.referralCode;
         $scope.dataOnModal.userID = admin.UserID;
+        $scope.temp.referralCode = admin.ReferralCode;
         ngDialog.open({
             template: 'modalReferralCode',
             scope: $scope,
