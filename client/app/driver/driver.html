@@ -19,10 +19,19 @@
         </div>
     </div>
 
-    <div class="first-row">
-        <button class="btn order-buttons" ng-click="refresh()">Refresh</button>
-        <button class="btn order-buttons" ng-click="clearFilter()">
-            <i class="fa fa-refresh"></i> Reset Filter</button>
+    <div class="col-md-12 no-padding mt15">
+        <div class="col-xs-12 no-padding">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                <button class="btn btn-green col-xs-12" ng-click="refresh()">Refresh</button>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                <button class="btn btn-green col-xs-12" ng-click="clearFilter()">
+                    <i class="fa fa-refresh"></i> Reset Filter</button>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                <button class="btn btn-green col-xs-12" ng-click="export()">Export</button>
+            </div>
+        </div>
     </div>
 
     <div class="container-content">
@@ -37,6 +46,7 @@
                         <th>Status</th>
                         <th>Company</th>
                         <th>Can Take COD</th>
+                        <th>Referral Code</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -135,6 +145,8 @@
                                 </ui-select>
                             </div>
                         </th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
@@ -147,8 +159,12 @@
                         <td>{{driver.Driver.UserStatus.StatusName}}</td>
                         <td>{{driver.Driver.Driver.CompanyDetail.CompanyName}}</td>
                         <td>{{driver.CanTakeCOD}}</td>
+                        <td>{{driver.Driver.ReferralCode}}</td>
                         <td>
                             <button class="btn btn-primary" type="button" ng-click="editDriver(driver.UserID)">Edit</button>
+                            <button class="btn btn-yellow" type="button"
+                                ng-click="referralCodeModal(driver)"
+                                ng-show="user.AdminDetail.RoleID == 4 || user.AdminDetail.RoleID == 2">Referral Code</button>
                         </td>
                     </tr>
                 </tbody>
@@ -166,3 +182,31 @@
         </div>
     </div>
 </div>
+
+<script type="text/ng-template" id="modalReferralCode">
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <div class="col-md-12 no-padding">
+            <p><b>Referral Code</b></p>
+            <div class="col-md-12 no-padding mb15">
+                <div class="col-md-5 no-padding">
+                    <p>Update Referral Code</p>
+                </div>
+                <div class="col-md-7 no-padding">
+                    <input type="text" class="form-control" id="referralCodeOnModal" ng-model="temp.referralCode" placeholder="Referral Code">
+                    <small class="text-danger">must be 4 character</small>
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12 no-padding">
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="" class="btn btn-default col-md-12" ng-click="closeModal()">Cancel</button>
+                </div>
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="updateRefferalCode"
+                        class="btn btn-green col-md-12"
+                        ng-disabled="!temp.referralCode"
+                        ng-click="updateRefferalCode()">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
