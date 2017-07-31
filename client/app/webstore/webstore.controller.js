@@ -14,7 +14,8 @@ angular.module('adminApp')
             $state, 
             $stateParams,
             $location, 
-            $http, 
+            $http,
+            $httpParamSerializer, 
             $window,
             Upload,
             config,
@@ -119,6 +120,8 @@ angular.module('adminApp')
     $scope.newChild = {};
     $scope.allWebstores = [];
     $scope.input = {};
+    $scope.dataOnModal = {};
+    $scope.temp = {};
 
     $scope.cutoffTimes = [];
     for (var i = 0; i < 24; i++) {
@@ -973,5 +976,56 @@ angular.module('adminApp')
         angular.element(document.getElementsByClassName('package-dimension-grid')[0])
             .css('height', 82 + (30 * ($scope.packageDimensionGrid.data.length - 1)) + 'px');
     };
+
+    $scope.closeModal = function () {
+        ngDialog.close();
+    }
+
+    $scope.referralCodeModal = function (webstore) {
+        $scope.dataOnModal.userID = webstore.UserID;
+        $scope.temp.referralCode = webstore.ReferralCode;
+        ngDialog.open({
+            template: 'modalReferralCode',
+            scope: $scope,
+            className: 'ngdialog-theme-default',
+            closeByDocument: false
+        });
+    }
+
+    $scope.updateRefferalCode = function () {
+        $rootScope.$emit('startSpin');
+        var params = {};
+            params.userID = $scope.dataOnModal.userID;
+            params.referralCode = $scope.temp.referralCode;
+
+        Services2.updateUserReferralCode(params).$promise
+        .then(function (data) {
+            $scope.closeModal();
+            $rootScope.$emit('stopSpin');
+            $scope.getWebstores();
+        })
+        .catch(function(err) {
+            $scope.closeModal();
+            SweetAlert.swal('Error', err.data.error.message, 'error');
+            $rootScope.$emit('stopSpin');
+        });
+    }
+
+    $scope.export = function () {
+        var type = 'userReferral';
+        var maxExport = 0;
+        var params = {};
+            params.limit = 1;
+            params.userType = 5;
+
+        Services2.exportReferral(params).$promise
+        .then(function (data) {
+            maxExport = data.data.count;
+            var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + maxExport;
+            var params = {};
+                params.userType = 5;
+            $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+        });
+    }
 
   });

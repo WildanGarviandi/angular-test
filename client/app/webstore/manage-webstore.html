@@ -429,14 +429,22 @@
 
         <div class="header-edit-webstore">
             <h5>
-                <b>Cutoff Time</b>
+                <b>Referral Info</b>
             </h5>
         </div>
         <table class="table table-hover webstore-table">
-            <thead class="hubs-table-head">
             <tbody>
-                <tr ng-repeat="t in webstore.WebstoreBucketTimes">
-                    <td>{{t.BroadcastTime}}</td>
+                <tr>
+                    <td>Referral Code</td>
+                    <td>{{webstore.ReferralCode}}</td>
+                </tr>
+                <tr>
+                    <td>Referrer's Name</td>
+                    <td>{{webstore.Consumer.Referrer.FirstName}} {{webstore.Consumer.Referrer.LastName}}</td>
+                </tr>
+                <tr>
+                    <td>Referrer's Code</td>
+                    <td>{{webstore.Consumer.Referrer.ReferralCode}}</td>
                 </tr>
             </tbody>
         </table>
@@ -575,6 +583,21 @@
                 </tfoot>
             </table>
         </div>
+
+        <div class="header-edit-webstore">
+            <h5>
+                <b>Cutoff Time</b>
+            </h5>
+        </div>
+        <table class="table table-hover webstore-table">
+            <thead class="hubs-table-head">
+            <tbody>
+                <tr ng-repeat="t in webstore.WebstoreBucketTimes">
+                    <td>{{t.BroadcastTime}}</td>
+                </tr>
+            </tbody>
+        </table>
+
         <div class="header-edit-webstore">
             <h5><b>Webstore Location</b></h5>
         </div>
