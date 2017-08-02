@@ -53,6 +53,12 @@ angular.module('adminApp')
         return result;
     }
 
+    var customInit = function (callback) {
+        if (batchPosition == 0) {
+            callback();
+        }
+    }
+
     var buildArray = function (data, batchPosition, template) {
         if (data && data.data && data.data.length) {
             if (batchPosition == 0) {
@@ -131,11 +137,15 @@ angular.module('adminApp')
         return buildExcel(type);
     }
 
-    var successFunction = function (data, template) {
+    var successFunction = function (data, template, buildCustomArray) {
         $scope.progress.export += params.limit;
         $scope.progress.percentage = ($scope.progress.export / maxExport) * 100;
 
-        buildArray(data, batchPosition, template);
+        if (buildCustomArray) {
+            buildCustomArray(data, batchPosition);
+        } else {
+            buildArray(data, batchPosition, template);
+        }
 
         batchPosition++;
 
@@ -328,6 +338,91 @@ angular.module('adminApp')
             });
         }
 
+        if (type == 'profitAndLoss') {
+            $scope.isExportTypeExist = true;
+            customInit(function () {
+                var start = moment(params.start);
+                var end = moment(params.end);
+                var diff = Math.ceil(end.diff(start, 'months', true)) + 1;
+
+                limit = 1;
+                batch = diff;
+                maxExport = diff;
+                $scope.progress.maxExport = diff;
+
+                params.limit = limit;
+                params.month = parseInt(moment(params.end).format('M'));
+                params.year = parseInt(moment(params.end).format('YYYY'));
+            });
+
+            if (offset) {
+                params.month = params.month - limit;
+                if (params.month < 1) {
+                    params.year = (params.month == 0) ? params.year - 1 : params.year;
+                    params.month = 12 - params.month;
+                }
+            }
+
+            return Services2.exportProfitAndLoss(params).$promise
+            .then(function(data) {
+                batchError = 0;
+
+                var profitAndLossArray = function (data, batchPosition) {
+                    if (data && data.data) {
+                        if (batchPosition == 0) {
+                            dataArray.push(['Profit & Loss']);
+                            dataArray.push(['PT Etobee Teknologi Indonesia']);
+                            dataArray.push(['For '+ moment(params.start).format('MMMM YYYY') +' - '+ moment(params.end).format('MMMM YYYY')]);
+                            dataArray.push(['']);
+                            dataArray.push(['']);
+                            dataArray.push(['']);
+                            dataArray.push(['Income']);
+                            angular.forEach(data.data.income, function (val, key) {
+                                dataArray.push([val.displayName]);
+                            });
+                            dataArray.push(['Total Income']);
+                            dataArray.push(['']);
+                            dataArray.push(['Less Cost of Sales']);
+                            angular.forEach(data.data.cost, function (val, key) {
+                                dataArray.push([val.displayName]);
+                            });
+                            dataArray.push(['Total Cost of Sales']);
+                            dataArray.push(['']);
+                            dataArray.push(['Gross Profit']);
+                        }
+
+                        var indexDate = 4;
+                        var indexTotalIncome = indexDate + 3 + data.data.income.length;
+                        var indexTotalCost = indexTotalIncome + 3 + data.data.cost.length;
+                        var indexGrossProfit = dataArray.length - 1;
+
+                        dataArray[indexDate].push(data.data.date);
+                        angular.forEach(dataArray, function (val, key) {
+                            var income = lodash.find(data.data.income, {displayName: val[0]});
+                            var cost = lodash.find(data.data.cost, {displayName: val[0]});
+                            if (income) {
+                                val.push(parseInt(income.value));
+                            }
+                            if (cost) {
+                                val.push(parseInt(cost.value));
+                            }
+                        });
+                        dataArray[indexTotalIncome].push(data.data.totalIncome);
+                        dataArray[indexTotalCost].push(data.data.totalCost);
+                        dataArray[indexGrossProfit].push(data.data.totalIncome - data.data.totalCost);
+                    }
+                };
+
+                successFunction(data, '', profitAndLossArray);
+            }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
+                getDataJson(offset);
+            });
+        }
+
     }
 
     var fetchDataJson = function (type) {
@@ -351,7 +446,7 @@ angular.module('adminApp')
         var result = {};
         result.fileName = 'export_'+ $filter('date')(new Date(), 'dd-MM-yyyy HH:mm:ss').replace(':', '-');
         result.sheetName = (sheetName) ? sheetName : type;
-        result.dataExcel = dataArray;
+        result.dataExcel = dataArray;console.log(dataArray);
 
         $rootScope.$emit('downloadExcel', result);
     };

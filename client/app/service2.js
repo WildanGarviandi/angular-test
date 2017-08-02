@@ -848,6 +848,13 @@ angular.module('adminApp')
                 controller: 'order-completed-export'
             }
         },
+        exportProfitAndLoss: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'finance-profit-loss-summary'
+            }
+        },
         orderUpdatePriceAuto: {
             method: 'POST',
             params: {

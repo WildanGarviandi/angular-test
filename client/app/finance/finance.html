@@ -29,7 +29,7 @@
                 </ui-select>
             </div>
         </div>
-        <div class="col-md-12 no-padding mb5" ng-show="actionPayoutAndInvoice.showFilter">
+        <div class="col-md-12 no-padding mb5">
             <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
                 <p class="input-group date-picker-new"> 
                     <input type="text"
@@ -85,8 +85,15 @@
                     </ui-select-choices>
                 </ui-select>
             </div>
-            <div class="col-lg-1 col-md-3 col-sm-4 col-xs-6">
+            <div class="col-lg-1 col-md-3 col-sm-4 col-xs-6" ng-show="actionPayoutAndInvoice.showFilter">
                 <button class="btn btn-green col-xs-12" ng-click="filterDate()">Filter</button>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6" ng-show="actionProfitAndLoss.showFilter">
+                <button
+                    class="btn btn-yellow col-xs-12"
+                    ng-click="modalTemplateGenerator('confirmation', 'ExportProfitAndLoss', '', '', '')"
+                    ng-disabled="!startFilter || !endFilter || !filterBy">
+                    <i class="fa fa-custom-export"></i> EXPORT</button>
             </div>
         </div>
         <div class="col-md-12 no-padding mb15" ng-show="actionPayoutAndInvoice.showTable">
@@ -568,7 +575,7 @@
                 <button class="btn btn-red col-xs-12" type="button" ng-click="closeModal()">Cancel</button>
             </div>
             <div class="col-md-6 pl0">
-                <button class="btn btn-green col-xs-12" type="button" ng-click="onSubmitInTemplate()">Update</button>
+                <button class="btn btn-green col-xs-12" type="button" ng-click="onSubmitInTemplate()" ng-bind-html="modalTemplate.action"></button>
             </div>
         </div>
     </div>
