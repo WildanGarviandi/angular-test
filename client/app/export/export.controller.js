@@ -446,7 +446,7 @@ angular.module('adminApp')
         var result = {};
         result.fileName = 'export_'+ $filter('date')(new Date(), 'dd-MM-yyyy HH:mm:ss').replace(':', '-');
         result.sheetName = (sheetName) ? sheetName : type;
-        result.dataExcel = dataArray;console.log(dataArray);
+        result.dataExcel = dataArray;
 
         $rootScope.$emit('downloadExcel', result);
     };

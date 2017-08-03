@@ -788,7 +788,7 @@ angular.module('adminApp')
                 imageUrl = '../../assets/images/icon-question-mark.png';
                 textDescription = 'It will export from ' + moment($scope.startFilter).format('MMMM YYYY') + ' - ' + moment($scope.endFilter).format('MMMM YYYY');
                 description = '<img class="img-center" src="'+imageUrl+'">'
-                                                +'<p class="text-center">'+textDescription+'</p>';
+                    +'<p class="text-center">'+textDescription+'</p>';
             }
 
             if (isValid) {
