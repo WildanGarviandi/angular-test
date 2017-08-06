@@ -341,9 +341,15 @@ angular.module('adminApp')
         if (type == 'profitAndLoss') {
             $scope.isExportTypeExist = true;
             customInit(function () {
+                var getAbsoulteMonths = function (momentDate) {
+                  var months = Number(momentDate.format("MM"));
+                  var years = Number(momentDate.format("YYYY"));
+                  return months + (years * 12);
+                }
+
                 var start = moment(params.start);
                 var end = moment(params.end);
-                var diff = Math.ceil(end.diff(start, 'months', true)) + 1;
+                var diff = Math.ceil(getAbsoulteMonths(end) - getAbsoulteMonths(start)) + 1;
 
                 limit = 1;
                 batch = diff;

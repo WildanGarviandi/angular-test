@@ -183,7 +183,9 @@ angular.module('adminApp')
 
             if (value == 1) {
                 $scope.actionPayoutAndInvoice.showFilter = true;
-                $scope.getListPayoutAndInvoice();
+                if ($scope.startFilter && $scope.endFilter) {
+                    $scope.getListPayoutAndInvoice();
+                }
             }
             if (value == 2) {
                 $scope.actionProfitAndLoss.showFilter = true;
@@ -381,10 +383,10 @@ angular.module('adminApp')
 
     $scope.getListParamForProfitAndLossFeature = function () {
         if ($scope.startFilter) {
-            $scope.startFilter = new Date($scope.startFilter);     
+            $scope.startFilter = $scope.startFilter;     
         }
         if ($scope.endFilter) {
-            $scope.endFilter = new Date($scope.endFilter);
+            $scope.endFilter = $scope.endFilter;
         }
 
         lodash.each(filterDatePayoutAndFinance, function (val) {
