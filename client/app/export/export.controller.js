@@ -342,9 +342,9 @@ angular.module('adminApp')
             $scope.isExportTypeExist = true;
             customInit(function () {
                 var getAbsoulteMonths = function (momentDate) {
-                  var months = Number(momentDate.format("MM"));
-                  var years = Number(momentDate.format("YYYY"));
-                  return months + (years * 12);
+                    var months = Number(momentDate.format("MM"));
+                    var years = Number(momentDate.format("YYYY"));
+                    return months + (years * 12);
                 }
 
                 var start = moment(params.start);
