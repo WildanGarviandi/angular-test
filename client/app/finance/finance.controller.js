@@ -99,6 +99,10 @@ angular.module('adminApp')
         'showTable': false
     };
 
+    $scope.actionProfitAndLoss = {
+        'showFilter': false
+    };
+
     $scope.financeFeatures = [];
 
     var tableFilter = ['UserOrderNumber', 'DropoffTimeString', 'City', 'OrderStatusString', 
@@ -159,15 +163,32 @@ angular.module('adminApp')
         });
     };
 
+    function resetActionFinanceFeature (action) {
+        for (var key in action) {
+            if (action.hasOwnProperty(key)) {
+                action[key] = false;
+            }
+        }
+    }
+
     function getFinanceFeature () {
         lodash.each(pickedFinanceFeature, function (val) {
             var value = $location.search()[val.model] || $scope[val.model][val.pick];
             var findObject = {};
             findObject[val.pick] = (parseInt(value)) ? parseInt(value) : value;
             $scope[val.model] = lodash.find($scope[val.collection], findObject);
+
+            resetActionFinanceFeature($scope.actionPayoutAndInvoice);
+            resetActionFinanceFeature($scope.actionProfitAndLoss);
+
             if (value == 1) {
                 $scope.actionPayoutAndInvoice.showFilter = true;
-                $scope.getListPayoutAndInvoice();
+                if ($scope.startFilter && $scope.endFilter) {
+                    $scope.getListPayoutAndInvoice();
+                }
+            }
+            if (value == 2) {
+                $scope.actionProfitAndLoss.showFilter = true;
             }
         });
     }
@@ -360,6 +381,32 @@ angular.module('adminApp')
         $scope.isFirstLoadedFilter = true;
     }
 
+    $scope.getListParamForProfitAndLossFeature = function () {
+        if ($scope.startFilter) {
+            $scope.startFilter = $scope.startFilter;     
+        }
+        if ($scope.endFilter) {
+            $scope.endFilter = $scope.endFilter;
+        }
+
+        lodash.each(filterDatePayoutAndFinance, function (val) {
+            $scope[val] = $location.search()[val] || $scope[val];
+        });
+
+        var params = {};
+            params.start = $scope.startFilter;
+            params.end = $scope.endFilter;
+
+        if ($scope.filterBy && $scope.filterBy.value == 'pickupTime') {
+            params.pickupTimeOrDropoffTime = 1;
+        }
+        if ($scope.filterBy && $scope.filterBy.value == 'dropOffTime') {
+            params.pickupTimeOrDropoffTime = 2;
+        }
+
+        return params;
+    }
+
     /**
      * Get list payout and invoice data
      * 
@@ -401,6 +448,12 @@ angular.module('adminApp')
         if (type == 'payoutAndInvoice') {
             var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + $scope.totalData;
             var params = $scope.getListParamForPayoutAndInvoicingFeature();
+            $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+        }
+        if (type == 'profitAndLoss') {
+            var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + $scope.totalData;
+            var params = $scope.getListParamForProfitAndLossFeature();
+            $scope.closeModal();
             $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
         }
     }
@@ -538,7 +591,8 @@ angular.module('adminApp')
             $scope[val.model] = item;
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
-            $scope.actionPayoutAndInvoice.showFilter = true;
+
+            getFinanceFeature();
         };
     });
 
@@ -665,6 +719,7 @@ angular.module('adminApp')
         $scope.modalTemplate.templateName = templateName;
         $scope.modalTemplate.nextTemplateName = nextTemplateName;
         $scope.modalTemplate.nextTitle = nextTitle;
+        $scope.modalTemplate.action = 'Update';
 
         $scope.onSubmitInTemplate = function () {
             $scope.showDetailModal(nextTemplateName, $scope.data, true);
@@ -723,6 +778,19 @@ angular.module('adminApp')
                     && !$scope.temp.isListSelectedContain.differentFleetManager) {
                     isValid = true;
                 }
+            }
+
+            if (category == 'ExportProfitAndLoss') {
+                $scope.modalTemplate.action = 'Export';
+                $scope.onSubmitInTemplate = function () {
+                    $scope.export('profitAndLoss');
+                };
+
+                title = 'Export Profit and Loss';
+                imageUrl = '../../assets/images/icon-question-mark.png';
+                textDescription = 'It will export from ' + moment($scope.startFilter).format('MMMM YYYY') + ' - ' + moment($scope.endFilter).format('MMMM YYYY');
+                description = '<img class="img-center" src="'+imageUrl+'">'
+                    +'<p class="text-center">'+textDescription+'</p>';
             }
 
             if (isValid) {
