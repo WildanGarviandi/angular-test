@@ -311,6 +311,23 @@ angular.module('adminApp')
                 return errorFunction(e.data.error.message);
             });
         }
+
+        if (type == 'payoutAndInvoice') {
+            $scope.isExportTypeExist = true;
+
+            return Services2.exportPayoutAndInvoice(params).$promise
+            .then(function(data) {
+                batchError = 0;
+                successFunction(data);
+            }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
+                getDataJson(offset);
+            });
+        }
+
     }
 
     var fetchDataJson = function (type) {

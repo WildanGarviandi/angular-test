@@ -841,6 +841,13 @@ angular.module('adminApp')
                 orderID: null
             }
         },
+        exportPayoutAndInvoice: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'order-completed-export'
+            }
+        },
         orderUpdatePriceAuto: {
             method: 'POST',
             params: {
