@@ -14,6 +14,7 @@ angular.module('adminApp')
             $stateParams,
             $location, 
             $http, 
+            $httpParamSerializer,
             $window,
             $q,
             config,
@@ -64,13 +65,22 @@ angular.module('adminApp')
         }
     }
 
-    $scope.startDropoff = $location.search().startDropoff || null;
-    $scope.endDropoff = $location.search().endDropoff || null;
+    $scope.startFilter = $location.search().startFilter || null;
+    $scope.endFilter = $location.search().endFilter || null;
 
     $scope.financeFeature = {
         key: 'Choose finance feature ...',
         value: 0
     };
+
+    $scope.filterBys = [{
+        key: 'Delivered + Return Time',
+        value: 'dropOffTime'
+    }, {
+        key: 'Picktup Time',
+        value: 'pickupTime'
+    }];
+    $scope.filterBy = $scope.filterBys[0];
 
     $scope.itemsByPage = $location.search().limit || 10;
     $scope.offset = $location.search().offset || 0;
@@ -87,6 +97,10 @@ angular.module('adminApp')
     $scope.actionPayoutAndInvoice = {
         'showFilter': false,
         'showTable': false
+    };
+
+    $scope.actionProfitAndLoss = {
+        'showFilter': false
     };
 
     $scope.financeFeatures = [];
@@ -107,8 +121,8 @@ angular.module('adminApp')
     };
 
     var filterDatePayoutAndFinance = [
-        'startDropoff',
-        'endDropoff'
+        'startFilter',
+        'endFilter'
     ];
 
     /**
@@ -124,63 +138,6 @@ angular.module('adminApp')
     };
 
     getDefaultValues();
-
-    var httpSaveBlob = function(url, params, type, fileName){
-        var style = '<link rel="stylesheet" href="app/app.css">';
-
-        var output = '<div class="circleSpinnerloader" style="margin-top: 50px; margin-bottom: 50px">'+
-                        '<div class="loadersanimation"></div>'+
-                    '</div>'+
-                    '<p style="text-align: center">You can do other things, while exporting in progress</p>';
-
-        var popout = window.open();
-            popout.document.write(style+output);
-
-        $http({
-            url: config.url + url,
-            method: "GET",
-            params: params,
-            headers: {
-                'Content-type': 'application/json',
-                'Accept': type
-            },
-            responseType: 'arraybuffer'
-        }).then(function(response) {
-
-            var blob = new Blob([response.data], { type: type });
-
-            if (typeof window.navigator.msSaveBlob !== 'undefined') {
-                window.navigator.msSaveBlob(blob, fileName);
-            } else {
-                var URL = window.URL || window.webkitURL;
-                var downloadUrl = window.URL.createObjectURL(blob);
-
-                if (fileName) {
-                    // use HTML5 a[download] attribute to specify filename
-                    var a = document.createElement("a");
-                    if (typeof a.download === 'undefined') {
-                        popout.location.href = downloadUrl;
-                    } else {
-                        a.href = downloadUrl;
-                        a.download = fileName;
-                        a.target = '_blank';
-                        document.body.appendChild(a);
-                        a.click();
-                    }
-                } else {
-                    popout.location.href = downloadUrl;
-                }
-
-                setTimeout(function () { 
-                    window.URL.revokeObjectURL(downloadUrl); 
-                    popout.close();
-                }, 1000); // cleanup
-            }
-        }).catch(function (e) {
-            $rootScope.$emit('stopSpin');
-            SweetAlert.swal('Download Failed ', e.statusText);
-        });
-    }
 
     function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
@@ -206,27 +163,48 @@ angular.module('adminApp')
         });
     };
 
+    function resetActionFinanceFeature (action) {
+        for (var key in action) {
+            if (action.hasOwnProperty(key)) {
+                action[key] = false;
+            }
+        }
+    }
+
     function getFinanceFeature () {
         lodash.each(pickedFinanceFeature, function (val) {
             var value = $location.search()[val.model] || $scope[val.model][val.pick];
             var findObject = {};
             findObject[val.pick] = (parseInt(value)) ? parseInt(value) : value;
             $scope[val.model] = lodash.find($scope[val.collection], findObject);
+
+            resetActionFinanceFeature($scope.actionPayoutAndInvoice);
+            resetActionFinanceFeature($scope.actionProfitAndLoss);
+
             if (value == 1) {
                 $scope.actionPayoutAndInvoice.showFilter = true;
-                $scope.getListPayoutAndInvoice();
+                if ($scope.startFilter && $scope.endFilter) {
+                    $scope.getListPayoutAndInvoice();
+                }
+            }
+            if (value == 2) {
+                $scope.actionProfitAndLoss.showFilter = true;
             }
         });
+    }
+
+    $scope.chooseFilterBy = function (item) {
+        $scope.filterBy = item;
     }
 
     $scope.getListParamForPayoutAndInvoicingFeature = function (type) {
         $location.search('offset', $scope.offset);
 
-        if ($scope.startDropoff) {
-            $scope.startDropoff = new Date($scope.startDropoff);     
+        if ($scope.startFilter) {
+            $scope.startFilter = new Date($scope.startFilter);     
         }
-        if ($scope.endDropoff) {
-            $scope.endDropoff = new Date($scope.endDropoff);
+        if ($scope.endFilter) {
+            $scope.endFilter = new Date($scope.endFilter);
         }
 
         lodash.each(filterDatePayoutAndFinance, function (val) {
@@ -301,9 +279,7 @@ angular.module('adminApp')
             dropOffZipCodes: (paramFilter['ZipCode']) ? JSON.stringify(paramFilter['ZipCode']) : '',
             handlingFees: (paramFilter['HandlingFee']) ? JSON.stringify(paramFilter['HandlingFee']) : '',
             deliveryFees: (paramFilter['OrderCost']) ? JSON.stringify(paramFilter['OrderCost']) : '',
-            logisticShares: (paramFilter['LogisticShare']) ? JSON.stringify(paramFilter['LogisticShare']) : '',
-            dropOffTimeStart: $scope.startDropoff,
-            dropOffTimeEnd: $scope.endDropoff
+            logisticShares: (paramFilter['LogisticShare']) ? JSON.stringify(paramFilter['LogisticShare']) : ''
         };
 
         if (type && type == 'post') {
@@ -319,10 +295,14 @@ angular.module('adminApp')
                 dropOffZipCodes: (paramFilter['ZipCode']) ? paramFilter['ZipCode'] : '',
                 handlingFees: (paramFilter['HandlingFee']) ? paramFilter['HandlingFee'] : '',
                 deliveryFees: (paramFilter['OrderCost']) ? paramFilter['OrderCost'] : '',
-                logisticShares: (paramFilter['LogisticShare']) ? paramFilter['LogisticShare'] : '',
-                dropOffTimeStart: $scope.startDropoff,
-                dropOffTimeEnd: $scope.endDropoff
+                logisticShares: (paramFilter['LogisticShare']) ? paramFilter['LogisticShare'] : ''
             };
+        }
+
+        if ($scope.filterBy && $scope.filterBy.value) {
+            var paramFilerDate = $scope.filterBy.value;
+            params[paramFilerDate + 'Start'] = $scope.startFilter;
+            params[paramFilerDate + 'End'] = $scope.endFilter;
         }
 
         return params;
@@ -401,6 +381,32 @@ angular.module('adminApp')
         $scope.isFirstLoadedFilter = true;
     }
 
+    $scope.getListParamForProfitAndLossFeature = function () {
+        if ($scope.startFilter) {
+            $scope.startFilter = $scope.startFilter;     
+        }
+        if ($scope.endFilter) {
+            $scope.endFilter = $scope.endFilter;
+        }
+
+        lodash.each(filterDatePayoutAndFinance, function (val) {
+            $scope[val] = $location.search()[val] || $scope[val];
+        });
+
+        var params = {};
+            params.start = $scope.startFilter;
+            params.end = $scope.endFilter;
+
+        if ($scope.filterBy && $scope.filterBy.value == 'pickupTime') {
+            params.pickupTimeOrDropoffTime = 1;
+        }
+        if ($scope.filterBy && $scope.filterBy.value == 'dropOffTime') {
+            params.pickupTimeOrDropoffTime = 2;
+        }
+
+        return params;
+    }
+
     /**
      * Get list payout and invoice data
      * 
@@ -440,14 +446,15 @@ angular.module('adminApp')
 
     $scope.export = function (type) {
         if (type == 'payoutAndInvoice') {
+            var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + $scope.totalData;
             var params = $scope.getListParamForPayoutAndInvoicingFeature();
-                params.offset = 0;
-                params.limit = $scope.totalData;
-            var url = 'order/order-completed-export';
-            var fileName = 'order-completed-export_'+ moment(new Date()).format('YYYY-MM-DD HH:mm:ss') +'.xlsx';
-            var type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-               
-            return httpSaveBlob(url, params, type, fileName);
+            $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+        }
+        if (type == 'profitAndLoss') {
+            var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + $scope.totalData;
+            var params = $scope.getListParamForProfitAndLossFeature();
+            $scope.closeModal();
+            $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
         }
     }
 
@@ -584,6 +591,7 @@ angular.module('adminApp')
             $scope[val.model] = item;
             $scope.offset = 0;
             $scope.tableState.pagination.start = 0;
+
             getFinanceFeature();
         };
     });
@@ -711,6 +719,7 @@ angular.module('adminApp')
         $scope.modalTemplate.templateName = templateName;
         $scope.modalTemplate.nextTemplateName = nextTemplateName;
         $scope.modalTemplate.nextTitle = nextTitle;
+        $scope.modalTemplate.action = 'Update';
 
         $scope.onSubmitInTemplate = function () {
             $scope.showDetailModal(nextTemplateName, $scope.data, true);
@@ -730,7 +739,7 @@ angular.module('adminApp')
             if (category == 'AutoUpdateFee') {
                 title = 'You choose to bulk auto update fee';
                 imageUrl = '../../assets/images/icon-question-mark.png';
-                textDescription = 'It will update ' + $scope.totalData + ' orders.';
+                textDescription = 'It will update All orders.';
                 description = '<img class="img-center" src="'+imageUrl+'">'
                                                 +'<p class="text-center">'+textDescription+'</p>';
             }
@@ -769,6 +778,19 @@ angular.module('adminApp')
                     && !$scope.temp.isListSelectedContain.differentFleetManager) {
                     isValid = true;
                 }
+            }
+
+            if (category == 'ExportProfitAndLoss') {
+                $scope.modalTemplate.action = 'Export';
+                $scope.onSubmitInTemplate = function () {
+                    $scope.export('profitAndLoss');
+                };
+
+                title = 'Export Profit and Loss';
+                imageUrl = '../../assets/images/icon-question-mark.png';
+                textDescription = 'It will export from ' + moment($scope.startFilter).format('MMMM YYYY') + ' - ' + moment($scope.endFilter).format('MMMM YYYY');
+                description = '<img class="img-center" src="'+imageUrl+'">'
+                    +'<p class="text-center">'+textDescription+'</p>';
             }
 
             if (isValid) {

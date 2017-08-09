@@ -14,10 +14,13 @@ angular.module('adminApp')
             $stateParams,
             $location, 
             $http, 
+            $httpParamSerializer,
             $window,
             $q,
             config,
             Upload,
+            ngDialog,
+            SweetAlert,
             $timeout
         ) {
 
@@ -47,6 +50,8 @@ angular.module('adminApp')
         value: 'All'
     };
 
+    $scope.dataOnModal = {};
+    $scope.temp = {};
     $scope.itemsByPage = $location.search().limit || 10;
     $scope.offset = $location.search().offset || 0;
     $scope.isFirstLoaded = true;
@@ -436,5 +441,56 @@ angular.module('adminApp')
     };
 
     $scope.loadManagePage();
+
+    $scope.closeModal = function () {
+        ngDialog.close();
+    }
+
+    $scope.referralCodeModal = function (fleet) {
+        $scope.dataOnModal.userID = fleet.UserID;
+        $scope.temp.referralCode = fleet.ReferralCode;
+        ngDialog.open({
+            template: 'modalReferralCode',
+            scope: $scope,
+            className: 'ngdialog-theme-default',
+            closeByDocument: false
+        });
+    }
+
+    $scope.updateRefferalCode = function () {
+        $rootScope.$emit('startSpin');
+        var params = {};
+            params.userID = $scope.dataOnModal.userID;
+            params.referralCode = $scope.temp.referralCode;
+
+        Services2.updateUserReferralCode(params).$promise
+        .then(function (data) {
+            $scope.closeModal();
+            $rootScope.$emit('stopSpin');
+            getFleets();
+        })
+        .catch(function(err) {
+            $scope.closeModal();
+            SweetAlert.swal('Error', err.data.error.message, 'error');
+            $rootScope.$emit('stopSpin');
+        });
+    }
+
+    $scope.export = function () {
+        var type = 'userReferral';
+        var maxExport = 0;
+        var params = {};
+            params.limit = 1;
+            params.userType = 4;
+
+        Services2.exportReferral(params).$promise
+        .then(function (data) {
+            maxExport = data.data.count;
+            var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + maxExport;
+            var params = {};
+                params.userType = 4;
+            $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+        });
+    }
 
 });

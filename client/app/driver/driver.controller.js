@@ -15,13 +15,18 @@ angular.module('adminApp')
             $stateParams,
             $location, 
             $http, 
+            $httpParamSerializer,
             $window,
+            ngDialog,
             $q
         ) {
 
     Auth.getCurrentUser().then(function(data) {
         $scope.user = data.profile;
     });
+
+    $scope.dataOnModal = {};
+    $scope.temp = {};
 
     $scope.driver = {
         CanTakeCOD: 0,
@@ -434,4 +439,55 @@ angular.module('adminApp')
         $state.reload();
     }
     
+    $scope.closeModal = function () {
+        ngDialog.close();
+    }
+
+    $scope.referralCodeModal = function (driver) {
+        $scope.dataOnModal.userID = driver.UserID;
+        $scope.temp.referralCode = driver.Driver.ReferralCode;
+        ngDialog.open({
+            template: 'modalReferralCode',
+            scope: $scope,
+            className: 'ngdialog-theme-default',
+            closeByDocument: false
+        });
+    }
+
+    $scope.updateRefferalCode = function () {
+        $rootScope.$emit('startSpin');
+        var params = {};
+            params.userID = $scope.dataOnModal.userID;
+            params.referralCode = $scope.temp.referralCode;
+
+        Services2.updateUserReferralCode(params).$promise
+        .then(function (data) {
+            $scope.closeModal();
+            $rootScope.$emit('stopSpin');
+            $scope.getDrivers();
+        })
+        .catch(function(err) {
+            $scope.closeModal();
+            SweetAlert.swal('Error', err.data.error.message, 'error');
+            $rootScope.$emit('stopSpin');
+        });
+    }
+
+    $scope.export = function () {
+        var type = 'userReferral';
+        var maxExport = 0;
+        var params = {};
+            params.limit = 1;
+            params.userType = 3;
+
+        Services2.exportReferral(params).$promise
+        .then(function (data) {
+            maxExport = data.data.count;
+            var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + maxExport;
+            var params = {};
+                params.userType = 3;
+            $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+        });
+    }
+
   });

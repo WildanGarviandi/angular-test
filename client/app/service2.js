@@ -386,6 +386,20 @@ angular.module('adminApp')
                 module: 'user'
             }
         },
+        updateUserReferralCode: {
+            method: 'POST',
+            params: {
+                module: 'user',
+                controller: 'update-referral'
+            }
+        },
+        exportReferral: {
+            method: 'GET',
+            params: {
+                module: 'user',
+                controller: 'export-referral'
+            }
+        },
         getAdminFeatures: {
             method: 'GET',
             params: {
@@ -825,6 +839,20 @@ angular.module('adminApp')
                 module: 'order',
                 controller: 'order-complete-detail',
                 orderID: null
+            }
+        },
+        exportPayoutAndInvoice: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'order-completed-export'
+            }
+        },
+        exportProfitAndLoss: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'finance-profit-loss-summary'
             }
         },
         orderUpdatePriceAuto: {

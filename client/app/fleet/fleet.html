@@ -19,12 +19,16 @@
         </div>
     </div>
     
-    <div class="container-content">
-        <div class="col-md-12">
-            <div class="addButton">
-                <button class="btn btn-primary" type="button" ng-click="addFleet()">Add Fleet</button>
-            </div>
+    <div class="col-xs-12 no-padding mt15">
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <button class="btn btn-green col-xs-12" ng-click="addFleet()">Add Fleet</button>
         </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <button class="btn btn-green col-xs-12" ng-click="export()">Export</button>
+        </div>
+    </div>
+
+    <div class="container-content">
         <div class="col-md-12">
             <table st-table="displayed" st-pipe="callServer" class="table table-hover">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
@@ -33,6 +37,7 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Status</th>
+                        <th>Referral Code</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -94,6 +99,8 @@
                         </th>
                         <th>
                         </th>
+                        <th>
+                        </th>
                     </tr>
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
@@ -103,8 +110,12 @@
                         <td>{{fleet.Email}}</td>
                         <td>{{fleet.CountryCode}} {{fleet.PhoneNumber}}</td>
                         <td>{{fleet.UserStatus.StatusName}}</td>
+                        <td>{{fleet.ReferralCode}}</td>
                         <td>
                             <button class="btn btn-primary" type="button" ng-click="editFleet(fleet.UserID)">Edit</button>
+                            <button class="btn btn-yellow" type="button"
+                                ng-click="referralCodeModal(fleet)"
+                                ng-show="user.AdminDetail.RoleID == 4 || user.AdminDetail.RoleID == 2">Referral Code</button>
                         </td>
                     </tr>
                 </tbody>
@@ -122,3 +133,31 @@
         </div>
     </div>
 </div>
+
+<script type="text/ng-template" id="modalReferralCode">
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <div class="col-md-12 no-padding">
+            <p><b>Referral Code</b></p>
+            <div class="col-md-12 no-padding mb15">
+                <div class="col-md-5 no-padding">
+                    <p>Update Referral Code</p>
+                </div>
+                <div class="col-md-7 no-padding">
+                    <input type="text" class="form-control" id="referralCodeOnModal" ng-model="temp.referralCode" placeholder="Referral Code">
+                    <small class="text-danger">must be 4 character</small>
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12 no-padding">
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="" class="btn btn-default col-md-12" ng-click="closeModal()">Cancel</button>
+                </div>
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="updateRefferalCode" 
+                        class="btn btn-green col-md-12" 
+                        ng-disabled="!temp.referralCode" 
+                        ng-click="updateRefferalCode()">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
