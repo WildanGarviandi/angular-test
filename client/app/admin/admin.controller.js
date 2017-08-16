@@ -427,7 +427,17 @@ angular.module('adminApp')
                         $scope.temp.hubUsers.push(hub);
                         $scope.temp.param.hubIDs.push(obj.Hub.HubID);
                     });
-                    $rootScope.$emit('stopSpin');
+
+                    getHubs(function (data) {
+                        $scope.hubs = [];
+                        data.data.Hubs.rows.forEach(function (val, key) {
+                            $scope.hubs.push({
+                                key: val.Name,
+                                value: val.HubID
+                            });
+                        });
+                        $rootScope.$emit('stopSpin');
+                    });
                 });
             } else {
                 $rootScope.$emit('stopSpin');
@@ -485,23 +495,10 @@ angular.module('adminApp')
         $scope.temp.param.hubIDs.splice(idx, 1);
     }
 
-    $scope.getHubs = function (searchString) {
-        var params = {
-            offset: 0,
-            limit: 5,
-            search: searchString
-        };
-        Services2.getHubs(params).$promise
+    function getHubs (callback) {
+        Services2.getHubs().$promise
         .then(function (data) {
-            $scope.hubs = [];
-            data.data.Hubs.rows.forEach(function (val, key) {
-                if ($scope.temp.param && $scope.temp.param.hubIDs && $scope.temp.param.hubIDs.indexOf(val.HubID) === -1) {
-                    $scope.hubs.push({
-                        key: val.Name,
-                        value: val.HubID
-                    });
-                }
-            });
+            callback(data);
         });
     }
 

@@ -94,11 +94,7 @@
                                 tagging="tagHandler"
                                 class="booking-order-type">
                                 <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
-                                <ui-select-choices 
-                                    repeat="ot in hubs"
-                                    refresh="getHubs($select.search)"
-                                    refresh-delay="100"
-                                    minimum-input-length="0">
+                                <ui-select-choices repeat="ot in hubs | filter: $select.search" selected>
                                     <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
                                 </ui-select-choices>
                             </ui-select>
