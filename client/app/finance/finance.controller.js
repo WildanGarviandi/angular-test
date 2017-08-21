@@ -77,7 +77,7 @@ angular.module('adminApp')
         key: 'Delivered + Return Time',
         value: 'dropOffTime'
     }, {
-        key: 'Picktup Time',
+        key: 'Pickup Time',
         value: 'pickupTime'
     }];
     $scope.filterBy = $scope.filterBys[0];
