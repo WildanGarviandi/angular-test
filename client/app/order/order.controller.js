@@ -1022,6 +1022,7 @@ angular.module('adminApp')
         $scope.dataTemporary.title = '';
         $scope.uploaded = [];
         $scope.updated = [];
+        $scope.cancelled = [];
         $scope.temp = {};
         $scope.importOrderError = [];
     }
@@ -1106,17 +1107,18 @@ angular.module('adminApp')
                     $scope.temp.confirmation[o.WebOrderID] = 'no';
                     $scope.temp.orders.push(o);
                 })
-                return ngDialog.open({
+                $scope.temp.duplicateModal = ngDialog.open({
                     template: 'duplicateWebOrderIDModal',
                     scope: $scope,
                     closeByDocument: false,
                     className: 'ngdialog-theme-default reassign-driver-popup return-customer'
                 });
+                return;
             };
 
             if ($scope.temp.confirmation) {
-                ngDialog.close('ngdialog3');
-                ngDialog.close('ngdialog4');
+                ngDialog.close($scope.temp.duplicateModal.id);
+                ngDialog.close($scope.temp.duplicateSummaryModal.id);
             }
 
             $scope.clearMessage();
@@ -1128,14 +1130,16 @@ angular.module('adminApp')
                     $scope.updated.push(order);
                 } else if (order.error) {
                     $scope.importOrderError.push({row: row, list: order.error});
+                } else if (order.WebOrderID) {
+                    $scope.cancelled.push(order);
                 }
             });
         };
 
         var errorFunction = function(error) {
             if ($scope.temp.confirmation) {
-                ngDialog.close('ngdialog3');
-                ngDialog.close('ngdialog4');
+                ngDialog.close($scope.temp.duplicateModal.id);
+                ngDialog.close($scope.temp.duplicateSummaryModal.id);
             }
 
             var errorMessage = error.data.error.message;
@@ -1198,7 +1202,7 @@ angular.module('adminApp')
             }
         });
 
-        ngDialog.open({
+        $scope.temp.duplicateSummaryModal = ngDialog.open({
             template: 'duplicateWebOrderIDSummaryModal',
             scope: $scope,
             closeByDocument: false,

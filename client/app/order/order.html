@@ -712,7 +712,7 @@
             <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
         </div>
         <div class="clearfix"></div>
-        <div class="col-xs-12 no-padding" ng-if="importOrderError.length > 0 || uploaded.length > 0 || updated.length > 0">
+        <div class="col-xs-12 no-padding" ng-if="importOrderError.length > 0 || uploaded.length > 0 || updated.length > 0 || cancelled.length > 0">
             <div ng-if="uploaded.length > 0">
                 <div class="alert bg-success">
                     <p>{{uploaded.length}} orders uploaded</p>
@@ -721,6 +721,11 @@
             <div ng-if="updated.length > 0">
                 <div class="alert bg-success">
                     <p>{{updated.length}} orders updated</p>
+                </div>
+            </div>
+            <div ng-if="cancelled.length > 0">
+                <div class="alert bg-warning">
+                    <p>{{cancelled.length}} orders not uploaded</p>
                 </div>
             </div>
             <div ng-if="importOrderError.length > 0">
