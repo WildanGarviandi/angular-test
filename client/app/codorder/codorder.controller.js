@@ -419,7 +419,9 @@ angular.module('adminApp')
      *  export orders csv
      */
     $scope.exportCsv = function(){
+        $rootScope.$emit('startSpin');
         var params = {
+            userOrderNumbers: JSON.stringify($scope.userOrderNumbers),
             userOrderNumber: $scope.queryUserOrderNumber,
             driver: $scope.queryDriver,
             user: $scope.queryUser,
@@ -437,6 +439,7 @@ angular.module('adminApp')
         $http.get(config.url + 'codorder/export/csv', {
             params: params
         }).success(function(data){
+            $rootScope.$emit('stopSpin');
             var blob = new Blob([data], {
                 type: "text/csv;charset=UTF-8;"
             });
