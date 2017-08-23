@@ -399,5 +399,152 @@ angular.module('adminApp')
         }
         getAdminRoles().then($scope.getAdminList);
     }
-    
+
+    function getAdminDetail () {
+        $rootScope.$emit('startSpin');
+        $scope.id = $stateParams.userID;
+        Services2.getAdminDetail({userID: $scope.id}).$promise
+        .then(function (data) {
+            $scope.admin = data.data;
+            $scope.admin.Status = (lodash.find($scope.adminStatus, {value: data.data.StatusID})).key;
+            if (data.data.AdminDetail && (data.data.AdminDetail.RoleID == 3 || data.data.AdminDetail.RoleID == 5)) {
+                getHubUser(function (hub) {
+                    $scope.admin.hubUsers = [];
+                    $scope.admin.canAccessAdmin = (data.data.AdminDetail.RoleID == 5);
+                    $scope.temp.param = {};
+                    $scope.temp.param.canAccessAdmin = (data.data.AdminDetail.RoleID == 5);
+                    $scope.temp.param.hubIDs = [];
+                    $scope.temp.hubUsers = [];
+                    $scope.temp.deletedHubUsers = [];
+                    $scope.temp.addedHubUsers = [];
+
+                    hub.HubUsers.forEach(function (obj) {
+                        var hub = {
+                            key: obj.Hub.Name,
+                            value: obj.Hub.HubID
+                        };
+                        $scope.admin.hubUsers.push(hub);
+                        $scope.temp.hubUsers.push(hub);
+                        $scope.temp.param.hubIDs.push(obj.Hub.HubID);
+                    });
+
+                    getHubs(function (data) {
+                        $scope.hubs = [];
+                        data.data.Hubs.rows.forEach(function (val, key) {
+                            $scope.hubs.push({
+                                key: val.Name,
+                                value: val.HubID
+                            });
+                        });
+                        $rootScope.$emit('stopSpin');
+                    });
+                });
+            } else {
+                $rootScope.$emit('stopSpin');
+            }
+        });
+    }
+
+    function getHubUser (callback) {
+        $scope.id = $stateParams.userID;
+        Services2.getHubUser({userID: $scope.id}).$promise
+        .then(function (data) {
+            callback(data.data);
+        });
+    }
+
+    $scope.chooseHubInDetail = function (data) {
+        $scope.temp.hub = data;
+    }
+
+    function addOrDeletedHubUsersInfo () {
+        $scope.temp.addedHubUsers = [];
+        $scope.temp.deletedHubUsers = [];
+
+        $scope.temp.hubUsers.forEach(function (obj) {
+            var idx = lodash.findIndex($scope.admin.hubUsers, {'value': obj.value});
+            if (idx < 0) {
+                console.log(idx);
+                $scope.temp.addedHubUsers.push(obj);
+            }
+        });
+        $scope.admin.hubUsers.forEach(function (obj) {
+            var idx = lodash.findIndex($scope.temp.hubUsers, {'value': obj.value});
+            if (idx < 0) {
+                $scope.temp.deletedHubUsers.push(obj);
+            }
+        });
+    }
+
+    $scope.addHubInDetail = function () {
+        var addedHubData = {
+            key: $scope.temp.hub.key,
+            value: $scope.temp.hub.value
+        };
+        $scope.temp.hubUsers.push(addedHubData);
+        $scope.temp.param.hubIDs.push($scope.temp.hub.value);
+        
+        $scope.temp.hub = null;
+    }
+
+    $scope.deleteHubInDetail = function (hubID) {
+        lodash.remove($scope.temp.hubUsers, {
+            value: hubID
+        });
+        var idx = $scope.temp.param.hubIDs.indexOf(hubID);
+        $scope.temp.param.hubIDs.splice(idx, 1);
+    }
+
+    function getHubs (callback) {
+        Services2.getHubs().$promise
+        .then(function (data) {
+            callback(data);
+        });
+    }
+
+    $scope.modalUpdateAdminDetail = function (admin) {
+        addOrDeletedHubUsersInfo();
+
+        ngDialog.open({
+            template: 'modalUpdateAdminDetail',
+            scope: $scope,
+            className: 'ngdialog-theme-default',
+            closeByDocument: false
+        });
+    }
+
+    $scope.updateAdminDetail = function () {
+        $rootScope.$emit('startSpin');
+        var params = $scope.temp.param;
+
+        Services2.updateHubAdmin({userID: $scope.id}, params).$promise
+        .then(function (data) {
+            $scope.closeModal();
+            $rootScope.$emit('stopSpin');
+            getAdminDetail();
+        })
+        .catch(function(err) {
+            $scope.closeModal();
+            SweetAlert.swal('Error', err.data.error.message, 'error');
+            $rootScope.$emit('stopSpin');
+        });
+    }
+
+    $scope.detailsPage = function(id) {
+        $window.open('/admin/details/' + id);
+    };
+
+    /**
+     * Load details
+     * 
+     * @return {void}
+     */
+    $scope.loadDetails = function() {
+        if ($stateParams.userID !== undefined) {
+            getAdminDetail();
+        }
+    }
+
+    $scope.loadDetails();
+
   });

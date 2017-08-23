@@ -155,8 +155,9 @@
                     <td>{{admin.Role}}</td>
                     <td>{{admin.ReferralCode}}</td>
                     <td>
-                        <button class="btn btn-primary" type="button" ng-click="editAdmin(admin)">Edit</button>
-                        <button class="btn btn-yellow" type="button" 
+                        <button class="btn btn-green col-xs-12" type="button" ng-click="detailsPage(admin.UserID)">Detail</button>
+                        <button class="btn btn-blue col-xs-12" type="button" ng-click="editAdmin(admin)">Edit</button>
+                        <button class="btn btn-yellow col-xs-12" type="button" 
                             ng-click="referralCodeModal(admin)" 
                             ng-show="user.AdminDetail.RoleID == 4 || user.AdminDetail.RoleID == 2">Referral Code</button>
                     </td>
