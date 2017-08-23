@@ -186,6 +186,8 @@ function mainConfig() {
             signOut: 'sign-out'
         },
         defaultLocation: defaultLocation,
+        // HubAdmin
+        forbiddenRoleID: [3],
         notCancellableOrderStatus: [4, 5, 13, 16],
         // INTRANSIT, DELIVERED, CANCELLED, RETURNED_SENDER
         reassignableOrderStatus: [2, 6, 10, 12, 15, 3, 17],

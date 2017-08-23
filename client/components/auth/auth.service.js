@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('adminApp')
-    .factory('Auth', function Auth($location, $rootScope, $http, User, $cookies, $q, config, Services2) {
+    .factory('Auth', function Auth($location, $rootScope, $http, User, $cookies, $q, config, Services2, SweetAlert) {
         var currentUser = {};
 
         return {
@@ -26,6 +26,22 @@ angular.module('adminApp')
                 $http.post(url, param).
                 success(function(data) {
                     data = data.data.SignIn;
+                    if (!data.RoleID || config.forbiddenRoleID.indexOf(data.RoleID) !== -1) {
+                        return SweetAlert.swal({
+                            title: 'Error',
+                            text: 'Your are unable to access.\nPlease contact tech support',
+                            type: 'error'
+                        }, function (isConfirm){
+                            if (isConfirm) {
+                                $http.jsonp('https://accounts.google.com/o/oauth2/revoke?token=' + $cookies.get('access_token'));
+
+                                $cookies.remove('token');
+                                $cookies.remove('techSupport');
+                                $cookies.remove('access_token');
+                                $location.path('/login');
+                            }
+                        });
+                    }
                     $cookies.put('token', data.LoginSessionKey);
                     deferred.resolve(data);
                     return cb();
