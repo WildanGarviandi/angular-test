@@ -132,6 +132,7 @@ angular.module('adminApp')
 
     $scope.isModalOpen = {};
     $scope.urlUploadedPic = '';
+    $scope.temp = {};
 
     /*
      * Style Responsive Height
@@ -1021,6 +1022,8 @@ angular.module('adminApp')
         $scope.dataTemporary.title = '';
         $scope.uploaded = [];
         $scope.updated = [];
+        $scope.cancelled = [];
+        $scope.temp = {};
         $scope.importOrderError = [];
     }
 
@@ -1059,7 +1062,7 @@ angular.module('adminApp')
      * @return {void}
     */
     $scope.startUpload = function() {
-        var url = config.url + 'order/import/xlsx';
+        var url = config.url + 'order/import-check/xlsx';
         var data = $scope.dataTemporary;
 
         if (!data.length) {
@@ -1087,19 +1090,58 @@ angular.module('adminApp')
         }
 
         var successFunction = function (response) {
+            if (response.data.data && response.data.data.Status == 'Need Confirmation') {
+                $scope.temp.orders = [];
+                $scope.temp.confirmation = {};
+                lodash.forEach(response.data.data['Duplicated On DB'], function (o) {
+                    var tempObj = o;
+
+                    tempObj.action = 'no';
+                    if (response.data.data.AllowedCreate.indexOf(o.OrderStatus.OrderStatusID) !== -1) {
+                        tempObj.action = 'create';
+                    }
+                    if (response.data.data.AllowedUpdate.indexOf(o.OrderStatus.OrderStatusID) !== -1) {
+                        tempObj.action = 'update';
+                    }
+
+                    $scope.temp.confirmation[o.WebOrderID] = 'no';
+                    $scope.temp.orders.push(o);
+                })
+                $scope.temp.duplicateModal = ngDialog.open({
+                    template: 'duplicateWebOrderIDModal',
+                    scope: $scope,
+                    closeByDocument: false,
+                    className: 'ngdialog-theme-default reassign-driver-popup return-customer'
+                });
+                return;
+            };
+
+            if ($scope.temp.confirmation) {
+                ngDialog.close($scope.temp.duplicateModal.id);
+                ngDialog.close($scope.temp.duplicateSummaryModal.id);
+            }
+
+            $scope.clearMessage();
             response.data.data.forEach(function(order, index){
                 var row = index + 2;
                 if (order.isCreated) {
                     $scope.uploaded.push(order);
                 } else if (order.isUpdated) {
                     $scope.updated.push(order);
-                } else {
+                } else if (order.error) {
                     $scope.importOrderError.push({row: row, list: order.error});
+                } else if (order.WebOrderID) {
+                    $scope.cancelled.push(order);
                 }
             });
         };
 
         var errorFunction = function(error) {
+            if ($scope.temp.confirmation) {
+                ngDialog.close($scope.temp.duplicateModal.id);
+                ngDialog.close($scope.temp.duplicateSummaryModal.id);
+            }
+
             var errorMessage = error.data.error.message;
             try {
                 var errorMessageParse = JSON.parse(errorMessage);
@@ -1135,8 +1177,37 @@ angular.module('adminApp')
             if ($scope.readyForPickupOnImport) {
                 val.isReadyForPickup = true;
             }
+            if ($scope.temp.confirmation) {
+                val.confirmation = $scope.temp.confirmation;
+            }
             doUpload(url, val, successFunction, errorFunction);
         })
+    }
+
+    $scope.duplicateWebOrderIDSummary = function () {
+        $scope.temp.summary = {
+            create: [],
+            update: [],
+            no: []
+        };
+        lodash.forEach($scope.temp.orders, function (o) {
+            if ($scope.temp.confirmation[o.WebOrderID] == 'create') {
+                $scope.temp.summary.create.push(o);
+            }
+            if ($scope.temp.confirmation[o.WebOrderID] == 'update') {
+                $scope.temp.summary.update.push(o);
+            }
+            if ($scope.temp.confirmation[o.WebOrderID] == 'no') {
+                $scope.temp.summary.no.push(o);
+            }
+        });
+
+        $scope.temp.duplicateSummaryModal = ngDialog.open({
+            template: 'duplicateWebOrderIDSummaryModal',
+            scope: $scope,
+            closeByDocument: false,
+            className: 'ngdialog-theme-default modal-import-summary'
+        });
     }
 
     /**
@@ -1151,7 +1222,6 @@ angular.module('adminApp')
             data: data
         }).then(function(response) {
             $rootScope.$emit('stopSpin');
-            $scope.clearMessage();
             successFunction(response);
         }).catch(function(error){
             $rootScope.$emit('stopSpin');

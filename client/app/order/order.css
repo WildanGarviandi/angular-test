@@ -693,3 +693,7 @@ a {
 .cursor {
     cursor: pointer;
 }
+
+.modal-import-summary .ngdialog-content {
+    width: 1000px !important;
+}
