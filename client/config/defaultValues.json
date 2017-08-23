@@ -362,6 +362,10 @@
         {
             "key": "Profit and Loss",
             "value": 2
+        },
+        {
+            "key": "Order Summary",
+            "value": 3
         }
     ]
 }
