@@ -500,6 +500,16 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.admin-details', {
+            url: 'admin/details/:userID',
+             views: {
+                'content@': {
+                    templateUrl: 'app/admin/admin-details.html',
+                    controller: 'AdminCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.finance', {
             url: 'finance',
              views: {

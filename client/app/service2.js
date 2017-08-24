@@ -805,6 +805,23 @@ angular.module('adminApp')
                 module: 'admin'
             }
         },
+        getAdminDetail: {
+            method: 'GET',
+            url: config.url + ':module/:userID',
+            params: {
+                module: 'admin',
+                userID: null
+            }
+        },
+        getHubUser: {
+            method: 'GET',
+            url: config.url + ':module/:controller/:userID',
+            params: {
+                module: 'admin',
+                controller: 'hub-user',
+                userID: null
+            }
+        },
         createAdmin: {
             method: 'POST',
             params: {
@@ -816,6 +833,15 @@ angular.module('adminApp')
             params: {
                 module: 'admin',
                 id: null
+            }
+        },
+        updateHubAdmin: {
+            method: 'POST',
+            url: config.url + ':module/:controller/:userID',
+            params: {
+                module: 'admin',
+                controller: 'update-hub-admin',
+                userID: null
             }
         },
         bulkSetHub: {
