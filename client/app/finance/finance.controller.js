@@ -77,7 +77,7 @@ angular.module('adminApp')
         key: 'Delivered + Return Time',
         value: 'dropOffTime'
     }, {
-        key: 'Picktup Time',
+        key: 'Pickup Time',
         value: 'pickupTime'
     }];
     $scope.filterBy = $scope.filterBys[0];
@@ -100,6 +100,10 @@ angular.module('adminApp')
     };
 
     $scope.actionProfitAndLoss = {
+        'showFilter': false
+    };
+
+    $scope.actionOrderSummary = {
         'showFilter': false
     };
 
@@ -180,6 +184,7 @@ angular.module('adminApp')
 
             resetActionFinanceFeature($scope.actionPayoutAndInvoice);
             resetActionFinanceFeature($scope.actionProfitAndLoss);
+            resetActionFinanceFeature($scope.actionOrderSummary);
 
             if (value == 1) {
                 $scope.actionPayoutAndInvoice.showFilter = true;
@@ -189,6 +194,9 @@ angular.module('adminApp')
             }
             if (value == 2) {
                 $scope.actionProfitAndLoss.showFilter = true;
+            }
+            if (value == 3) {
+                $scope.actionOrderSummary.showFilter = true;
             }
         });
     }
@@ -450,7 +458,7 @@ angular.module('adminApp')
             var params = $scope.getListParamForPayoutAndInvoicingFeature();
             $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
         }
-        if (type == 'profitAndLoss') {
+        if (type == 'profitAndLoss' || type == 'orderSummary') {
             var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + $scope.totalData;
             var params = $scope.getListParamForProfitAndLossFeature();
             $scope.closeModal();
@@ -787,6 +795,19 @@ angular.module('adminApp')
                 };
 
                 title = 'Export Profit and Loss';
+                imageUrl = '../../assets/images/icon-question-mark.png';
+                textDescription = 'It will export from ' + moment($scope.startFilter).format('MMMM YYYY') + ' - ' + moment($scope.endFilter).format('MMMM YYYY');
+                description = '<img class="img-center" src="'+imageUrl+'">'
+                    +'<p class="text-center">'+textDescription+'</p>';
+            }
+
+            if (category == 'ExportOrderSummary') {
+                $scope.modalTemplate.action = 'Export';
+                $scope.onSubmitInTemplate = function () {
+                    $scope.export('orderSummary');
+                };
+
+                title = 'Export Order Summary';
                 imageUrl = '../../assets/images/icon-question-mark.png';
                 textDescription = 'It will export from ' + moment($scope.startFilter).format('MMMM YYYY') + ' - ' + moment($scope.endFilter).format('MMMM YYYY');
                 description = '<img class="img-center" src="'+imageUrl+'">'

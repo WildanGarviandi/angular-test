@@ -29,7 +29,7 @@
                 </ui-select>
             </div>
         </div>
-        <div class="col-md-12 no-padding mb5" ng-show="actionPayoutAndInvoice.showFilter || actionProfitAndLoss.showFilter">
+        <div class="col-md-12 no-padding mb5" ng-show="actionPayoutAndInvoice.showFilter || actionProfitAndLoss.showFilter || actionOrderSummary.showFilter">
             <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
                 <p class="input-group date-picker-new"> 
                     <input type="text"
@@ -92,6 +92,13 @@
                 <button
                     class="btn btn-yellow col-xs-12"
                     ng-click="modalTemplateGenerator('confirmation', 'ExportProfitAndLoss', '', '', '')"
+                    ng-disabled="!startFilter || !endFilter || !filterBy">
+                    <i class="fa fa-custom-export"></i> EXPORT</button>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6" ng-show="actionOrderSummary.showFilter">
+                <button
+                    class="btn btn-yellow col-xs-12"
+                    ng-click="modalTemplateGenerator('confirmation', 'ExportOrderSummary', '', '', '')"
                     ng-disabled="!startFilter || !endFilter || !filterBy">
                     <i class="fa fa-custom-export"></i> EXPORT</button>
             </div>

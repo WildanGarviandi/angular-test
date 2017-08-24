@@ -855,6 +855,13 @@ angular.module('adminApp')
                 controller: 'finance-profit-loss-summary'
             }
         },
+        exportOrderSummary: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                controller: 'finance-order-summary'
+            }
+        },
         orderUpdatePriceAuto: {
             method: 'POST',
             params: {

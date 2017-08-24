@@ -429,6 +429,89 @@ angular.module('adminApp')
             });
         }
 
+        if (type == 'orderSummary') {
+            $scope.isExportTypeExist = true;
+            customInit(function () {
+                var getAbsoulteMonths = function (momentDate) {
+                    var months = Number(momentDate.format("MM"));
+                    var years = Number(momentDate.format("YYYY"));
+                    return months + (years * 12);
+                }
+
+                var start = moment(params.start);
+                var end = moment(params.end);
+                var diff = Math.ceil(getAbsoulteMonths(end) - getAbsoulteMonths(start)) + 1;
+
+                limit = 1;
+                batch = diff;
+                maxExport = diff;
+                $scope.progress.maxExport = diff;
+
+                params.limit = limit;
+                params.month = parseInt(moment(params.end).format('M'));
+                params.year = parseInt(moment(params.end).format('YYYY'));
+            });
+
+            if (offset) {
+                params.month = params.month - limit;
+                if (params.month < 1) {
+                    params.year = (params.month == 0) ? params.year - 1 : params.year;
+                    params.month = 12 - params.month;
+                }
+            }
+
+            return Services2.exportOrderSummary(params).$promise
+            .then(function(data) {
+                batchError = 0;
+
+                var orderSummaryArray = function (data, batchPosition) {
+                    if (data && data.data) {
+                        if (batchPosition == 0) {
+                            dataArray.push(['Order Summary']);
+                            dataArray.push(['PT Etobee Teknologi Indonesia']);
+                            dataArray.push(['For '+ moment(params.start).format('MMMM YYYY') +' - '+ moment(params.end).format('MMMM YYYY')]);
+                            dataArray.push(['']);
+                            dataArray.push(['# Order']);
+                            dataArray.push(['Total Order']);
+                            angular.forEach(data.data.result, function (val, key) {
+                                dataArray.push([val.displayName]);
+                                angular.forEach(val.data, function (val, key) {
+                                    dataArray.push([val.displayName]);
+                                });
+                                dataArray.push(['']);
+                            });
+                        }
+
+                        var indexDate = 4;
+                        var indexTotalOrder = indexDate + 1;
+                        var rowContent = indexTotalOrder;
+
+                        dataArray[indexDate].push(data.data.date);
+                        dataArray[indexTotalOrder].push(data.data.totalOrder);
+
+                        angular.forEach(data.data.result, function (val, key) {
+                            rowContent++;
+                            dataArray[rowContent].push(['']);
+                            angular.forEach(val.data, function (val, key) {
+                                rowContent++;
+                                dataArray[rowContent].push(val.value);
+                            });
+                            rowContent++;
+                            dataArray[rowContent].push(['']);
+                        });
+                    }
+                };
+
+                successFunction(data, '', orderSummaryArray);
+            }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
+                getDataJson(offset);
+            });
+        }
+
     }
 
     var fetchDataJson = function (type) {
