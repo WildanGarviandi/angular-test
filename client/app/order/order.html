@@ -712,7 +712,7 @@
             <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
         </div>
         <div class="clearfix"></div>
-        <div class="col-xs-12 no-padding" ng-if="importOrderError.length > 0 || uploaded.length > 0 || updated.length > 0">
+        <div class="col-xs-12 no-padding" ng-if="importOrderError.length > 0 || uploaded.length > 0 || updated.length > 0 || cancelled.length > 0">
             <div ng-if="uploaded.length > 0">
                 <div class="alert bg-success">
                     <p>{{uploaded.length}} orders uploaded</p>
@@ -721,6 +721,11 @@
             <div ng-if="updated.length > 0">
                 <div class="alert bg-success">
                     <p>{{updated.length}} orders updated</p>
+                </div>
+            </div>
+            <div ng-if="cancelled.length > 0">
+                <div class="alert bg-warning">
+                    <p>{{cancelled.length}} orders not uploaded</p>
                 </div>
             </div>
             <div ng-if="importOrderError.length > 0">
@@ -1451,5 +1456,110 @@
                 <li><font color="#f691b2">less important package details</font> highlighted with pink</li>
             </ol>
         </small>
+    </div>
+</script>
+
+<script type="text/ng-template" id="duplicateWebOrderIDModal">
+    <div class="header-wrapper">
+        <h3 class="no-margin">Need Confirmation</h3>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <div class="col-md-12">
+            <table class="table table-responsive">
+                <tbody>
+                    <tr ng-repeat="t in temp.orders">
+                        <td>
+                            <p>Old</p>
+                            <p><small>Order ID: {{t.WebOrderID}}</small></p>
+                            <p><small>Status: {{t.OrderStatus.OrderStatus}}</small></p>
+                        </td>
+                        <td>
+                            <p>New</p>
+                            <p><small>Order ID: {{t.WebOrderID}}</small></p>
+                        </td>
+                        <td>
+                            <select ng-model="temp.confirmation[t.WebOrderID]">
+                                <option value="create" ng-show="t.action == 'create'">create new order</option>
+                                <option value="update" ng-show="t.action == 'update'">update order</option>
+                                <option value="no">cancel import order</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-primary" ng-click="duplicateWebOrderIDSummary()">Execute</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="duplicateWebOrderIDSummaryModal">
+    <div class="header-wrapper">
+        <h3 class="no-margin">Summary</h3>
+    </div>
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <div class="col-md-4">
+            <p>Create New: {{temp.summary.create.length}} orders</p>
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="t in temp.summary.create">
+                        <td>
+                            <p><small>{{t.WebOrderID}}</small></p>
+                        </td>
+                        <td>
+                            <p><small>{{t.OrderStatus.OrderStatus}}</small></p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-4">
+            <p>Updated: {{temp.summary.update.length}} orders</p>
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="t in temp.summary.update">
+                        <td>
+                            <p><small>{{t.WebOrderID}}</small></p>
+                        </td>
+                        <td>
+                            <p><small>{{t.OrderStatus.OrderStatus}}</small></p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-4">
+            <p>Cancelled: {{temp.summary.no.length}} orders</p>
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="t in temp.summary.no">
+                        <td>
+                            <p><small>{{t.WebOrderID}}</small></p>
+                        </td>
+                        <td>
+                            <p><small>{{t.OrderStatus.OrderStatus}}</small></p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="btn btn-primary" ng-click="startUpload()">Upload</button>
     </div>
 </script>
