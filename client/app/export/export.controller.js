@@ -512,6 +512,95 @@ angular.module('adminApp')
             });
         }
 
+        if (type == 'dailyDistance') {
+            $scope.isExportTypeExist = true;
+            customInit(function () {
+                var start = moment(params.start);
+                var end = moment(params.end);
+                var diff = Math.ceil(end.diff(start, 'days')) + 1;
+
+                limit = 1;
+                batch = diff;
+                maxExport = diff;
+                $scope.progress.maxExport = diff;
+
+                params.limit = limit;
+                params.date = moment(start).toDate();
+            });
+
+            if (offset) {
+                var date = moment(params.date);
+                params.date = moment(date.add(limit, 'days')).toDate();
+            }
+
+            return Services2.exportDailyDistance(params).$promise
+            .then(function(data) {
+                var indexDate = 4;
+                var rowContent = indexDate + 1;
+
+                batchError = 0;
+
+                var findRowFromFleetAndDriver = function (companyName, driverName) {
+                    var result = false;
+                    angular.forEach(dataArray, function (val, key) {
+                        if (key > indexDate) {
+                            if (dataArray[key][0] == companyName && dataArray[key][1] == driverName) {
+                                result = {};
+                                result.row = key;
+                                result.column = offset;
+                            }
+                        }
+                    });
+                    return result;
+                }
+
+                var dailyDistanceArray = function (data, batchPosition) {
+                    if (data && data.data) {
+                        if (batchPosition == 0) {
+                            dataArray.push(['Daily Distance']);
+                            dataArray.push(['PT Etobee Teknologi Indonesia']);
+                            dataArray.push(['For '+ moment(params.start).format('DD MMMM YYYY') +' - '+ moment(params.end).format('DD MMMM YYYY')]);
+                            dataArray.push(['']);
+                            dataArray.push(['FleetManager', 'DriverName']);
+                        }
+
+                        dataArray[indexDate].push(data.data.date);
+
+                        angular.forEach(data.data.result, function (val, key) {
+                            var findRowColumn = findRowFromFleetAndDriver(val.CompanyName, val.DriverName);
+                            var newRowContent = [];
+
+                            if (!findRowColumn) {
+                                newRowContent.push(val.CompanyName);
+                                newRowContent.push(val.DriverName);
+                                for (var i=0; i < offset; i++) {
+                                    newRowContent.push('');
+                                }
+                                newRowContent.push(val.Distance);
+                                dataArray.push(newRowContent);
+                            }
+
+                            if (findRowColumn) {
+                                var emptyColumn = (offset + 2) - dataArray[findRowColumn.row].length;
+                                for (var i=0; i < emptyColumn; i++) {
+                                    dataArray[findRowColumn.row].push('');
+                                }
+                                dataArray[findRowColumn.row].push(val.Distance);
+                            }
+                        });
+                    }
+                };
+
+                successFunction(data, '', dailyDistanceArray);
+            }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
+                getDataJson(offset);
+            });
+        }
+
     }
 
     var fetchDataJson = function (type) {
@@ -531,7 +620,6 @@ angular.module('adminApp')
 
     var buildExcel = function(type) {
         $scope.progress.message = 'building Excel File';
-        
         var result = {};
         result.fileName = 'export_'+ $filter('date')(new Date(), 'dd-MM-yyyy HH:mm:ss').replace(':', '-');
         result.sheetName = (sheetName) ? sheetName : type;
