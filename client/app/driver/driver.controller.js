@@ -343,6 +343,7 @@ angular.module('adminApp')
 
         return params;
     }
+
     /**
      * Get all drivers
      * 
