@@ -3,6 +3,9 @@
         margin: 0;
         padding: 0;
     }
+    .no-padding {
+        padding: 0px;
+    }
     .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6,
     .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
         float: left;
@@ -69,9 +72,9 @@
         padding: 6px 10px;
     }
     .fill {
-        background-image: linear-gradient(to right, rgba(0,0,0, 0.25) 25%, rgba(255,255,255, 0) 0%);
+        background-image: linear-gradient(to right, rgba(0,0,0, 0.25) 50%, rgba(255,255,255, 0) 0%);
         background-position: bottom;
-        background-size: 4px 1px;
+        background-size: 2px 1px;
         background-repeat: repeat-x;
         height: 6px;
         width: 100%;
@@ -113,11 +116,17 @@
     .m-b-8 {
         margin-bottom: 3px;
     }
+    .m-b-6 {
+        margin-bottom: 6px;
+    }
     .m-l-8 {
         margin-left: 8px;
     }
     .m-r-8 {
         margin-right: 8px;
+    }
+    .p-barcode {
+        padding: 2.5px 0px;
     }
     .text-justify {
         text-align: justify;
@@ -144,8 +153,11 @@
         width: 100%;
         display: block;
     }
+    small > small {
+        font-size: 5px
+    }
     small.info {
-        font-size: 6px;
+        font-size: 3.8px;
     }
     br {
        display: block;
@@ -161,7 +173,7 @@
     }
     .address {
         padding-left: 16px;
-        border-left: 1px solid #fff;
+        border-left: 1px solid rgba(255,255,255, 0.25);
     }
     .bg-white {
         background-color: #fff;
@@ -178,35 +190,43 @@
     .logo-etobee {
         width: 90%;
     }
+    .text-behind {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        font-size: 14px;
+        color: rgba(0,0,0,0.1);
+    }
+    .text-behind.small {
+        font-size: 8px;
+    }
 </style>
 <section class="sheet p-16 bg-etobee" ng-repeat="order in orders">
     <article class="col-xs-12">
         <div class="col-xs-2">
+            <br>
             <img class="logo-etobee" src="../../assets/images/logo-text-etobee.png">
         </div>
-        <div class="col-xs-1"></div>
-        <div class="col-xs-6 address">
+        <div class="col-xs-9 address p-t-8 p-b-8">
             <small class="text-white">Pergudangan infinia park No 45, PT Etobee Tekhnologi Indonesia Blok A63,</small>
             <small class="text-white">Daerah Khusus Ibukota Jakarta 12850, Indonesia</small>
             <small class="text-white">email : cs@etobee.com, phone : 021-50601799</small>
         </div>
-        <div class="col-xs-3 bg-white">
-            <img class="barcode" src="{{order.Barcode}}">
-        </div>
     </article>
     <article class="bg-content col-xs-12 p-16 m-t-8">
         <div class="col-xs-12">
-            <div class="col-xs-3">
-                <small class="text-gray p-t-8">Tracking Number / AWB</small>
-                <h5 class="p-t-8">{{order.UserOrderNumber}}</h5>
-            </div>
-            <div class="col-xs-9">
-                <div class="col-xs-3 box">
+            <div class="col-xs-12">
+                <div class="col-xs-2 box p-barcode">
+                    <img class="barcode" src="{{order.Barcode}}">
+                </div>
+                <div class="col-xs-2 box m-l-8">
                     <small>Origin</small>
                     <br>
                     <div class="fill"> </div>
                 </div>
-                <div class="col-xs-3 box m-l-8">
+                <div class="col-xs-2 box m-l-8">
                     <small>Destination</small>
                     <br>
                     <div class="fill"> </div>
@@ -214,140 +234,29 @@
             </div>
         </div>
         <div class="col-xs-12">
-            <div class="col-xs-4">
-                <small class="p-t-8 p-b-8">DETAIL PENGIRIM</small>
+            <div class="col-xs-6">
+                <div class="col-xs-8">
+                    <small class="p-t-8 p-b-8">DETAIL PENGIRIM & BARANG</small>
 
-                <div class="col-xs-12 box">
-                    <div class="col-xs-12">
-                        <div class="col-xs-3">
-                            <small class="text-right text-etobee">Nama Pengirim :</small>
-                        </div>
-                        <div class="col-xs-9">
-                            <div class="fill"> </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12">
-                        <div class="col-xs-3">
-                            <small class="text-right text-etobee">Alamat Pengirim :</small>
-                        </div>
-                        <div class="col-xs-9">
-                            <div class="col-xs-12">
-                                <div class="fill"> </div>
-                            </div>
-                            <div class="col-xs-12">
-                                <div class="fill"> </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12">
-                        <div class="col-xs-3">
-                            <small class="text-right text-etobee">Kota :</small>
-                        </div>
-                        <div class="col-xs-9">
-                            <div class="fill"> </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12">
-                        <div class="col-xs-3">
-                            <small class="text-right text-etobee">Kode Pos :</small>
-                        </div>
-                        <div class="col-xs-9">
-                            <div class="fill"> </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12">
-                        <br>
-                        <div class="col-xs-3">
-                            <small class="text-right text-etobee">Nomor Telepon :</small>
-                        </div>
-                        <div class="col-xs-9">
-                            <div class="fill"> </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12">
-                        <br>
-                        <div class="col-xs-3">
-                            <small class="text-right text-etobee">Instruksi Khusus :</small>
-                        </div>
-                        <div class="col-xs-9">
-                            <div class="col-xs-12">
-                                <div class="fill"> </div>
-                            </div>
-                            <div class="col-xs-12">
-                                <div class="fill"> </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12">
-                        <br>
-                        <div class="col-xs-3">
-                            <small class="text-right text-etobee">Web Order ID :</small>
-                        </div>
-                        <div class="col-xs-9">
-                            <div class="fill"> </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-12 box m-t-8">
-                    <div class="col-xs-12">
-                        <div class="col-xs-3">
-                            <small class="text-right text-etobee">Diambil Oleh :</small>
-                        </div>
-                        <div class="col-xs-9">
-                            <div class="fill"> </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12">
-                        <div class="col-xs-3">
-                            <small class="text-right text-etobee">Tanggal/Waktu :</small>
-                        </div>
-                        <div class="col-xs-9">
-                            <div class="fill"> </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-12 box m-t-8">
-                    <div class="col-xs-6">
-                        <small class="text-justify text-gray info">I. We here by acknowledge all the terms and condition contained on the reversed side as the terms and the condition of this contract and agree to be bound by such terms and conditions.</small>
-                    </div>
-                    <div class="col-xs-6 m-t-16">
-                        <div class="col-xs-1">
-                        </div>
-                        <div class="col-xs-10 m-t-16 p-l-8 p-r-8">
-                            <br>
-                            <hr class="text-etobee bg-etobee">
-                        </div>
-                        <div class="col-xs-1">
-                        </div>
-                        <small class="col-xs-12 text-center text-etobee">Tanda Tangan Pengirim</small>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xs-8 p-l-8">
-                <div class="col-xs-7">
-                    <small class="p-t-8 p-b-8">DETAIL PENERIMA</small>
                     <div class="col-xs-12 box">
                         <div class="col-xs-12">
                             <div class="col-xs-3">
-                                <small class="text-right text-etobee">Nama Penerima :</small>
+                                <small class="text-right text-etobee">Nama Pengirim :</small>
                             </div>
                             <div class="col-xs-9">
-                                <div class="fill"></div>
+                                <div class="fill"> </div>
                             </div>
                         </div>
                         <div class="col-xs-12">
                             <div class="col-xs-3">
-                                <small class="text-right text-etobee">Alamat Penerima :</small>
+                                <small class="text-right text-etobee">Alamat Pengirim :</small>
                             </div>
                             <div class="col-xs-9">
                                 <div class="col-xs-12">
-                                    <div class="fill"></div>
+                                    <div class="fill"> </div>
                                 </div>
                                 <div class="col-xs-12">
-                                    <div class="fill"></div>
+                                    <div class="fill"> </div>
                                 </div>
                             </div>
                         </div>
@@ -356,7 +265,7 @@
                                 <small class="text-right text-etobee">Kota :</small>
                             </div>
                             <div class="col-xs-9">
-                                <div class="fill"></div>
+                                <div class="fill"> </div>
                             </div>
                         </div>
                         <div class="col-xs-12">
@@ -364,15 +273,21 @@
                                 <small class="text-right text-etobee">Kecamatan :</small>
                             </div>
                             <div class="col-xs-9">
-                                <div class="fill"></div>
+                                <div class="fill"> </div>
                             </div>
                         </div>
                         <div class="col-xs-12">
                             <div class="col-xs-3">
+                                <small class="text-right text-etobee">Kelurahan :</small>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="fill"> </div>
+                            </div>
+                            <div class="col-xs-3">
                                 <small class="text-right text-etobee">Kode Pos :</small>
                             </div>
-                            <div class="col-xs-9">
-                                <div class="fill"></div>
+                            <div class="col-xs-3">
+                                <div class="fill"> </div>
                             </div>
                         </div>
                         <div class="col-xs-12">
@@ -381,120 +296,137 @@
                                 <small class="text-right text-etobee">Nomor Telepon :</small>
                             </div>
                             <div class="col-xs-9">
-                                <div class="fill"></div>
+                                <div class="fill"> </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 box m-t-8">
-                        <div class="col-xs-12 m-b-8">
-                            <small class="text-center text-gray info">Penerima telah menerima kiriman dalam kondisi baik</small>
                         </div>
                         <div class="col-xs-12">
-                            <div class="col-xs-7">
-                                <div class="col-xs-12">
-                                    <div class="col-xs-5">
-                                        <small class="text-right text-etobee">Nama : </small>
-                                    </div>
-                                    <div class="col-xs-7">
-                                        <div class="fill"></div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12">
-                                    <div class="col-xs-5">
-                                        <small class="text-right text-etobee">Tanggal :</small>
-                                    </div>
-                                    <div class="col-xs-7">
-                                        <div class="fill"></div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12">
-                                    <div class="col-xs-5">
-                                        <small class="text-right text-etobee">Hubungan :</small>
-                                    </div>
-                                    <div class="col-xs-7">
-                                        <div class="fill"></div>
-                                    </div>
-                                </div>
+                            <br>
+                            <div class="col-xs-3">
+                                <small class="text-right text-etobee">Instruksi Khusus :</small>
                             </div>
-                            <div class="col-xs-5">
+                            <div class="col-xs-9">
                                 <div class="col-xs-12">
-                                    <br>
-                                    <div class="col-xs-12 m-t-8 p-l-8 p-r-8">
-                                        <br>
-                                        <hr class="text-etobee bg-etobee">
-                                    </div>
-                                    <small class="text-etobee text-center">Tanda Tangan Penerima</small>
+                                    <div class="fill"> </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="fill"> </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="col-xs-12 m-t-8">
-                        <div class="col-xs-4">
-                            <div class="col-xs-12 box">
-                                <small class="text-etobee">Koli</small>
-                                <br>
-                                <div class="fill"></div>
+                        <div class="col-xs-12">
+                            <br>
+                            <div class="col-xs-3">
+                                <small class="text-right text-etobee">Web Order ID :</small>
                             </div>
-                        </div>
-                        <div class="col-xs-4 p-l-8">
-                            <div class="col-xs-12 box">
-                                <small class="text-etobee">Berat</small>
-                                <br>
-                                <div class="fill"></div>
-                            </div>
-                        </div>
-                        <div class="col-xs-4 p-l-8">
-                            <div class="col-xs-12 box">
-                                <small class="text-etobee">Dimensi</small>
-                                <br>
-                                <div class="col-xs-3 no-padding">
-                                    <div class="fill"></div>
-                                </div>
-                                <div class="col-xs-1 no-padding"><small class="text-etobee">x</small></div>
-                                <div class="col-xs-3 no-padding">
-                                    <div class="fill"></div>
-                                </div>
-                                <div class="col-xs-1 no-padding"><small class="text-etobee">x</small></div>
-                                <div class="col-xs-3 no-padding">
-                                    <div class="fill"></div>
-                                </div>
+                            <div class="col-xs-9">
+                                <div class="fill"> </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-xs-12 box m-t-8">
-                        <small class="text-etobee">Detail Barang</small>
-                        <br>
-                        <div class="fill"></div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-3">
+                                <small class="text-right text-etobee">Diambil Oleh :</small>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="fill"> </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-3">
+                                <small class="text-right text-etobee">Tanggal/Waktu :</small>
+                            </div>
+                            <div class="col-xs-9">
+                                <div class="fill"> </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 box m-t-8">
+                        <div class="col-xs-8">
+                            <small class="text-justify text-gray">Dengan menandatangani bukti/resi pengiriman ini, maka pengirim telah mengerti dan menyetujui seluruh syarat & ketentuan yang ada dibalik bukti/resi pengiriman ini.</small>
+                        </div>
+                        <div class="col-xs-4 m-t-16">
+                            <div class="col-xs-12 m-t-16">
+                                <br>
+                                <hr class="text-etobee bg-etobee">
+                            </div>
+                            <small class="col-xs-12 text-center text-etobee">Tanda Tangan Pengirim</small>
+                        </div>
                     </div>
                 </div>
+                <div class="col-xs-4">
+                    <div class="p-l-8">
+                        <small class="p-t-8 p-b-8"></small>
 
-                <div class="col-xs-5 p-l-8">
+                        <div class="col-xs-12 box m-t-8">
+                            <small class="text-etobee"><small>Jumlah/Koli</small></small>
+                            <br>
+                            <div class="fill"></div>
+                        </div>
+                        <div class="col-xs-12 box m-t-8">
+                            <small class="text-etobee"><small>Berat</small></small>
+                            <br>
+                            <div class="fill"></div>
+                        </div>
+                        <div class="col-xs-12 box m-t-8">
+                            <small class="text-etobee"><small>Volume Metrik</small></small>
+                            <br>
+                            <div class="fill"></div>
+                        </div>
+                        <div class="col-xs-12 box m-t-8">
+                            <small class="text-etobee"><small>Dimensi</small></small>
+                            <br>
+                            <div class="col-xs-3 no-padding">
+                                <div class="fill"></div>
+                            </div>
+                            <div class="col-xs-1 no-padding text-center"><small class="text-etobee">x</small></div>
+                            <div class="col-xs-3 no-padding">
+                                <div class="fill"></div>
+                            </div>
+                            <div class="col-xs-1 no-padding text-center"><small class="text-etobee">x</small></div>
+                            <div class="col-xs-3 no-padding">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 box m-t-8">
+                            <p class="text-behind">Isi tidak diperiksa</p>
+                            <small class="text-etobee"><small>Detail Barang</small></small>
+                            <br>
+                            <div class="fill"></div>
+                            <div class="fill"></div>
+                            <div class="fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-6 p-l-8">
+                <div class="col-xs-4">
                     <small class="p-t-8 p-b-8">LAYANAN</small>
                     <div class="col-xs-12 box">
                         <div class="col-xs-12">
-                            <div class="col-xs-1">
+                            <div class="col-xs-2">
                                 <div class="checks col-xs-12"></div>
                             </div>
-                            <div class="col-xs-11">
+                            <div class="col-xs-10">
                                 <small>Same Day Service (SDS)</small>
                             </div>
                         </div>
                         <div class="col-xs-12">
-                            <div class="col-xs-1">
+                            <div class="col-xs-2">
                                 <div class="checks col-xs-12"></div>
                             </div>
-                            <div class="col-xs-11">
+                            <div class="col-xs-10">
                                 <small>Next Day Service (NDS)</small>
                             </div>
                         </div>
                         <div class="col-xs-12">
-                            <div class="col-xs-1">
+                            <div class="col-xs-2">
                                 <div class="checks col-xs-12"></div>
                             </div>
-                            <div class="col-xs-11">
+                            <div class="col-xs-10">
                                 <small>Reguler (REG)</small>
                             </div>
                         </div>
@@ -502,26 +434,26 @@
 
                     <div class="col-xs-12 box m-t-8">
                         <div class="col-xs-12">
-                            <div class="col-xs-1">
+                            <div class="col-xs-2">
                                 <div class="checks col-xs-12"></div>
                             </div>
-                            <div class="col-xs-11">
-                                <small>COD</small>
+                            <div class="col-xs-10">
+                                <small>Cash</small>
                             </div>
                         </div>
                         <div class="col-xs-12">
-                            <div class="col-xs-1">
+                            <div class="col-xs-2">
                                 <div class="checks col-xs-12"></div>
                             </div>
-                            <div class="col-xs-11">
+                            <div class="col-xs-10">
                                 <small>Invoice</small>
                             </div>
                         </div>
                         <div class="col-xs-12">
-                            <div class="col-xs-1">
+                            <div class="col-xs-2">
                                 <div class="checks col-xs-12"></div>
                             </div>
-                            <div class="col-xs-11">
+                            <div class="col-xs-10">
                                 <small>Free of Charge (Special) </small>
                             </div>
                         </div>
@@ -529,38 +461,234 @@
 
                     <div class="col-xs-12 box m-t-8">
                         <div class="col-xs-12">
-                            <div class="col-xs-1">
+                            <div class="col-xs-2">
                                 <div class="checks col-xs-12"></div>
                             </div>
-                            <div class="col-xs-11">
+                            <div class="col-xs-5">
                                 <small>Insurance</small>
                             </div>
+                            <div class="col-xs-5">
+                                <div class="fill"><small>Rp.</small></div>
+                            </div>
                         </div>
                         <div class="col-xs-12">
-                            <div class="col-xs-1">
+                            <div class="col-xs-2">
                                 <div class="checks col-xs-12"></div>
                             </div>
-                            <div class="col-xs-11">
+                            <div class="col-xs-5">
                                 <small>Packing</small>
                             </div>
+                            <div class="col-xs-5">
+                                <div class="fill"><small>Rp.</small></div>
+                            </div>
                         </div>
                         <div class="col-xs-12">
-                            <div class="col-xs-1">
+                            <div class="col-xs-2">
                                 <div class="checks col-xs-12"></div>
                             </div>
-                            <div class="col-xs-11">
-                                <small>Others</small>
+                            <div class="col-xs-5">
+                                <small>Biaya Kirim</small>
+                            </div>
+                            <div class="col-xs-5">
+                                <div class="fill"><small>Rp.</small></div>
                             </div>
                         </div>
                         <div class="col-xs-12">
-                            <div class="col-xs-12">
+                            <div class="col-xs-2">
+                                <div class="checks col-xs-12"></div>
+                            </div>
+                            <div class="col-xs-10">
+                                <div class="fill"><small class="text-behind small" style="text-align: left; top: 3px;">Others</small></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 box m-t-8">
+                        <div class="col-xs-12">
+                            <small class="text-etobee">Biaya Total</small>
+                        </div>
+                        <div class="col-xs-12">
+                            <br>
+                        </div>
+                        <div class="col-xs-12 m-t-8">
+                            <div class="fill">
+                                <small>Rp.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-8 p-l-8">
+                    <small class="p-t-8 p-b-8">DETAIL PENERIMA</small>
+                    <div class="col-xs-12 box">
+                        <p class="text-behind">Tidak Menerima Alamat PO Box</p>
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <small class="text-right text-etobee">Nama Penerima :</small>
+                            </div>
+                            <div class="col-xs-8">
                                 <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <small class="text-right text-etobee">Alamat Penerima :</small>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="col-xs-12">
+                                    <div class="fill"></div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="fill"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <small class="text-right text-etobee">Kota :</small>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <small class="text-right text-etobee">Kecamatan :</small>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <div class="col-xs-4">
+                                <small class="text-right text-etobee">Kode Pos :</small>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <br>
+                            <div class="col-xs-4">
+                                <small class="text-right text-etobee">Nomor Telepon :</small>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="col-xs-6">
+                            <div class="box col-xs-12 m-t-8">
+                                <div class="col-xs-12 m-b-8">
+                                    <small class="text-etobee"><b>Dikirim oleh</b></small>
+                                </div>
+                                <div class="col-xs-12 m-b-8"><br></div>
+                                <div class="col-xs-12">
+                                    <div class="col-xs-12">
+                                        <div class="col-xs-4">
+                                            <small class="text-right text-etobee">Nama : </small>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            <div class="fill"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="col-xs-4">
+                                            <small class="text-right text-etobee">Tanggal :</small>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            <div class="fill"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="col-xs-4">
+                                            <small class="text-right text-etobee">Waktu :</small>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            <div class="fill"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="box col-xs-12 m-t-8">
+                                <p class="text-behind small">Kosongkan bila bukan pengiriman COD</p>
+                                <div class="col-xs-2">
+                                    <div class="checks col-xs-12"></div>
+                                </div>
+                                <div class="col-xs-10">
+                                    <small>Pengiriman COD</small>
+                                </div>
+                                <div class="col-xs-12 m-t-8">
+                                    <br>
+                                </div>
+                                <div class="col-xs-12 m-t-8">
+                                    <br>
+                                </div>
+                                <div class="col-xs-12">
+                                    <br>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="fill"><small>Rp.</small></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6 p-l-8">
+                            <div class="box col-xs-12 m-t-8">
+                                <div class="col-xs-12 m-b-6">
+                                    <small class="text-center text-gray info">Penerima telah menerima kiriman dalam kondisi baik</small>
+                                </div>
+                                <div class="col-xs-12 m-b-8"><br></div>
+                                <div class="col-xs-12">
+                                    <div class="col-xs-12">
+                                        <div class="col-xs-5">
+                                            <small class="text-right text-etobee">Nama : </small>
+                                        </div>
+                                        <div class="col-xs-7">
+                                            <div class="fill"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="col-xs-5">
+                                            <small class="text-right text-etobee">Tanggal :</small>
+                                        </div>
+                                        <div class="col-xs-7">
+                                            <div class="fill"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="col-xs-5">
+                                            <small class="text-right text-etobee">Hubungan :</small>
+                                        </div>
+                                        <div class="col-xs-7">
+                                            <div class="fill"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="box col-xs-12 m-t-8">
+                                <br>
+                                <div class="col-xs-12 m-t-16">
+                                    <br>
+                                </div>
+                                <div class="col-xs-12">
+                                    <br>
+                                </div>
+                                <div class="col-xs-12 m-t-8 p-l-8 p-r-8">
+                                    <br>
+                                    <hr class="text-etobee bg-etobee">
+                                </div>
+                                <small class="col-xs-12 text-etobee text-center">Tanda Tangan Penerima</small>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <small class="text-gray text-center col-xs-12 p-t-8">You agree that we may open and inspect a shipment for any reason at any time</small>
         </div>
     </article>
 </section>
