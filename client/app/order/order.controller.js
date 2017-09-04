@@ -486,7 +486,8 @@ angular.module('adminApp')
 
                 array[index].InHubPosition = '';
                 if (val.CurrentRoute && val.CurrentRoute.LogUserOrderEvents.length) {
-                    array[index].InHubPosition = val.CurrentRoute.LogUserOrderEvents[val.CurrentRoute.LogUserOrderEvents.length - 1].AdditionalData;
+                    var lastLogUserOrderEvents = val.CurrentRoute.LogUserOrderEvents.length - 1;
+                    array[index].InHubPosition = val.CurrentRoute.LogUserOrderEvents[lastLogUserOrderEvents].AdditionalData;
                 }
             });
             $rootScope.$emit('stopSpin');
