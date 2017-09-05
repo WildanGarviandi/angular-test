@@ -381,7 +381,7 @@ angular.module('adminApp')
             $scope.import.updated = [];
             $scope.import.uploaded = [];
             $scope.import.others = {};
-
+            $scope.f = {};
 
             $scope.importedDatePicker = moment().add(1, 'hours').toDate();
             $scope.importedDatePickerNow = moment().add(1, 'hours').format('dddd, MMM Do HH:mm');
@@ -415,7 +415,7 @@ angular.module('adminApp')
                 } else if (order.isUpdated) {
                     data.updated.push(order);
                 } else {
-                    data.error.push({row: row, list: order.error});
+                    data.uploaded.push(order);
                 }
             });
 
