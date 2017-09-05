@@ -159,8 +159,9 @@ angular.module('adminApp')
                     if (v.Driver) {
                         driver.title = v.Driver.FirstName + ' ' + v.Driver.LastName;
                         driver.phone = v.Driver.PhoneNumber;
-                        if (v.Driver.Driver) {
-                            driver.fleet = v.Driver.Driver.CompanyDetail;
+                        driver.fleet = '-';
+                        if (v.Driver.Driver && v.Driver.Driver.CompanyDetail) {
+                            driver.fleet = v.Driver.Driver.CompanyDetail.CompanyName;
                         }
                     }
 
