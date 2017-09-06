@@ -52,7 +52,7 @@ angular.module('adminApp')
     $scope.isAdminCreate = false;
     $scope.isAdminEdit = false;
 
-    var tableFilterSearch = ['name', 'email', 'phone'];
+    var tableFilterSearch = ['name', 'email', 'phoneNumber'];
     var tableFilterSelect = [
         {
             key: 'statusID',
@@ -373,7 +373,7 @@ angular.module('adminApp')
         param.limit = $scope.itemsByPage;
         param.name = $scope.temp.filter.name;
         param.email = $scope.temp.filter.email;
-        param.phone = $scope.temp.filter.phone;
+        param.phoneNumber = $scope.temp.filter.phoneNumber;
         param.statusID = $scope.temp.filter.statusID;
         param.roleID = $scope.temp.filter.AdminRoleMasterID;
 
