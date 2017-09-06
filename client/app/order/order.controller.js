@@ -710,6 +710,14 @@ angular.module('adminApp')
      */
     $scope.loadDetails = function() {
         if ($stateParams.orderID !== undefined) {
+            $scope.limitCheckpoint = 3;
+            $scope.limitCheckpointToggle = function (isShowing) {
+                $scope.limitCheckpoint = 3;
+                if (isShowing) {
+                    $scope.limitCheckpoint = $scope.order.Checkpoints.length;
+                }
+            }
+            $scope.moment = moment;
             $scope.getOrderDetails();
         }
     }
