@@ -184,6 +184,14 @@ angular.module('adminApp')
                 id: null
             },
         },
+        getBulkDistance: {
+            method: 'GET',
+            params: {
+                module: 'driver',
+                controller: 'bulk-distance',
+                id: null
+            },
+        },
         getFleets: {
             method: 'GET',
             params: {

@@ -78,6 +78,8 @@ angular.module('adminApp')
         value: 1
     }];
 
+    $scope.startFilter = $location.search().startFilter || null;
+    $scope.endFilter = $location.search().endFilter || null;
     $scope.itemsByPage = $location.search().limit || 10;
     $scope.offset = $location.search().offset || 0;
     $scope.isFirstLoaded = true;
@@ -206,6 +208,17 @@ angular.module('adminApp')
         };
     });
 
+    var filterDateRange = ['startFilter', 'endFilter'];
+    filterDateRange.forEach(function (val) {
+        $scope.$watch(
+            (val),
+            function (date) {
+                if (Date.parse(date)) {
+                    $location.search(val, (new Date(date)).toISOString());
+                }
+            }
+        );
+    });
 
     $scope.manageAvailabilitiesFilter = function (obj) {
         return obj.value !== 'all';
@@ -521,6 +534,55 @@ angular.module('adminApp')
 
             $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
         }
+    }
+
+    /**
+     * Redirect to driver detail page
+     * 
+     * @return {void}
+     */
+    $scope.detailsPage = function (id) {
+        $window.open('/drivers/' + id);
+    }
+
+    $scope.driverDistance = function () {
+        lodash.each(filterDateRange, function (val) {
+            $scope[val] = $location.search()[val] || $scope[val];
+        });
+
+        var start = moment($scope.startFilter);
+        var end = moment($scope.endFilter);
+        var diff = Math.ceil(end.diff(start, 'days')) + 1;
+
+        var params = {};
+            params.id = $stateParams.driverID;
+            params.startDate = $scope.startFilter;
+            params.endDate = $scope.endFilter;
+
+        Services2.getBulkDistance(params).$promise
+        .then(function(data) {
+            $scope.driverDistanceDetail = data.data;
+            $scope.driverDistanceSeries = ['Distance'];
+            $scope.driverDistanceData = [];
+            $scope.driverDistanceLabel = [];
+
+            for (var i = 0; i < diff; i++) {
+                $scope.driverDistanceLabel.push(start.format('DD MMM YYYY'));
+                start = start.add(1, 'days');
+            }
+
+            lodash.forEach($scope.driverDistanceLabel, function (val) {
+                var distance = lodash.find($scope.driverDistanceDetail, function (o) {
+                    return moment(o.Date).format('DD MMM YYYY') == val;
+                });
+
+                if (distance) {
+                    $scope.driverDistanceData.push(distance.Distance);
+                } else {
+                    $scope.driverDistanceData.push(0);
+                }
+            });
+        });
     }
 
   });

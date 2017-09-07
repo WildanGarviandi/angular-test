@@ -46,6 +46,7 @@
             <table st-table="displayed" st-pipe="callServer" class="table table-hover">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
+                        <th></th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
@@ -59,18 +60,19 @@
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
                     <tr>
-                        <td colspan="9" class="text-center">
+                        <td colspan="10" class="text-center">
                             No data found
                         </td>
                     </tr>
                 </tbody>
                 <tbody ng-show="isLoading">
                     <tr>
-                        <td colspan="9" class="text-center">Loading ... </td>
+                        <td colspan="10" class="text-center">Loading ... </td>
                     </tr>
                 </tbody>
                 <tbody>
                     <tr>
+                        <th></th>
                         <th>
                             <div class="filter-table">
                                 <input 
@@ -159,6 +161,14 @@
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="driver in displayed">
+                        <td class="checkbox-header">
+                            <a href="">
+                                <i class="fa fa-search-plus fa-lg" 
+                                    ng-click="detailsPage(driver.UserID)"
+                                    tooltip-placement="top" 
+                                    uib-tooltip="View Details"></i>
+                            </a>
+                        </td>
                         <td>{{driver.Driver.FirstName}} {{driver.Driver.LastName}}</td>
                         <td>{{driver.Driver.Email}}</td>
                         <td>{{driver.Driver.PhoneNumber}}</td>
@@ -177,7 +187,7 @@
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
                     <tr>
-                        <td colspan="9" 
+                        <td colspan="10" 
                             class="text-center" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 

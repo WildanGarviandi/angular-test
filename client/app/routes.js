@@ -300,6 +300,16 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.driver-detail', {
+            url: 'drivers/:driverID',
+             views: {
+                'content@': {
+                    templateUrl: 'app/driver/driver-detail.html',
+                    controller: 'DriverCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.fleet', {
             url: 'fleets',
              views: {
