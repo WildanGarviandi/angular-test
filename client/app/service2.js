@@ -400,6 +400,14 @@ angular.module('adminApp')
                 controller: 'export-referral'
             }
         },
+        exportDailyDistance: {
+            method: 'GET',
+            params: {
+                module: 'driver',
+                submodule: 'export',
+                controller: 'daily-distance'
+            }
+        },
         getAdminFeatures: {
             method: 'GET',
             params: {
