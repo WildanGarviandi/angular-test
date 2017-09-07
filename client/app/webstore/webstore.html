@@ -51,6 +51,9 @@
                         <th width="465">Address</th>
                         <th>Payment</th>
                         <th>Allow COD</th>
+                        <th>Join Date</th>
+                        <th>Total Order</th>
+                        <th>Referrer Code</th>
                         <th>Status</th>
                         <th>Referral Code</th>
                         <th></th>
@@ -79,6 +82,9 @@
                             </ui-select>
                         </td>
                         <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td class="webstore-status-cell">
                             <ui-select class="webstore-status-field" 
                                 ng-model="statusFilter" 
@@ -100,14 +106,14 @@
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length == 0">
                     <tr>
-                        <td colspan="9" class="text-center">
+                        <td colspan="14" class="text-center">
                             Your filter does not match any webstore
                         </td>
                     </tr>
                 </tbody>
                 <tbody ng-show="isLoading">
                     <tr>
-                        <td colspan="9" class="text-center">Loading ... </td>
+                        <td colspan="14" class="text-center">Loading ... </td>
                     </tr>
                 </tbody>
                 <tbody ng-show="!isLoading && displayed.length > 0">
@@ -123,16 +129,19 @@
                         </td>
                         <td class="webstore-cell">{{webstore.WebstoreCompany.PostPaidPayment ? "Postpaid" : "Prepaid"}}</td>
                         <td class="webstore-cell">{{webstore.WebstoreCompany.AllowCOD ? "Yes" : "No"}}</td>
+                        <td class="webstore-cell">{{webstore.CreatedDate | date: 'MM/dd/yyyy HH:mm:ss a'}}</td>
+                        <td class="webstore-cell">{{webstore.TotalOrder}}</td>
+                        <td class="webstore-cell">{{webstore.Consumer.Referrer.ReferralCode}}</td>
                         <td class="webstore-cell">{{webstore.RegistrationStatus}}</td>
                         <td>{{webstore.ReferralCode}}</td>
                         <td>
                             <button class="btn btn-default" ng-click="bucket(webstore.UserID)">Bucket</button>
                         </td>
                         <td>
-                            <button class="btn btn-primary" type="button" ng-click="editWebstore(webstore.UserID)">Edit</button>
-                            <button class="btn btn-yellow" type="button" 
+                            <button class="btn btn-primary col-md-12" type="button" ng-click="editWebstore(webstore.UserID)">Edit</button>
+                            <button class="btn btn-yellow col-md-12" type="button" 
                                 ng-click="referralCodeModal(webstore)" 
-                                ng-show="user.AdminDetail.RoleID == 4 || user.AdminDetail.RoleID == 2">Referral Code</button>
+                                ng-show="user.AdminDetail.RoleID == 4 || user.AdminDetail.RoleID == 2">Referral</button>
                         </td>
                     </tr>
                 </tbody>
