@@ -554,6 +554,14 @@ angular.module('adminApp')
         var end = moment($scope.endFilter);
         var diff = Math.ceil(end.diff(start, 'days')) + 1;
 
+        if (diff > 31) {
+            return SweetAlert.swal({
+                title: 'Failed Fatch Driver Distance',
+                text: 'Maximum range is 31 days',
+                type: 'error'
+            });
+        }
+
         var params = {};
             params.id = $stateParams.driverID;
             params.startDate = $scope.startFilter;
