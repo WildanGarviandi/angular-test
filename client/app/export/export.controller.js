@@ -123,8 +123,6 @@ angular.module('adminApp')
 
                 dataArray.push(datas);
             });
-        } else {
-            return buildExcel(type);
         }
     }
 

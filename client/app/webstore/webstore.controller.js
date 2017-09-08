@@ -157,6 +157,23 @@ angular.module('adminApp')
         return newData;
     }
 
+    /*
+     * Style Responsive Height
+     *
+    */
+    var webstoreNavigationHeight = $('#webstore-navigation').height();
+    var addInitHeight = 160;
+    var minInitHeight = 100;
+    var externalHeightOnResize = 160;
+    $scope.tableHeight = $window.innerHeight - (webstoreNavigationHeight + addInitHeight);
+    $scope.webstoreListHeight = $scope.tableHeight - minInitHeight;
+    $(window).resize(function(){
+        $scope.$apply(function(){
+            webstoreNavigationHeight = $('#webstore-navigation').height();
+            $scope.tableHeight = $window.innerHeight - (webstoreNavigationHeight + externalHeightOnResize);
+            $scope.webstoreListHeight = $scope.tableHeight - minInitHeight;
+        });
+    });
 
     var createWebstore = function(callback) {
         var pricingType = parseInt($scope.webstore.PricingType);

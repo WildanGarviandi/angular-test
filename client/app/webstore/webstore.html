@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <div class="col-md-12 no-padding" ng-hide="isAdminCreate || isAdminEdit">
+    <div id="webstore-navigation" class="col-md-12 no-padding" ng-hide="isAdminCreate || isAdminEdit">
         <br>
         <div class="col-md-2 col-xs-12">
             <button type="button" class="btn btn-blue col-xs-12" ng-click="addWebstore()">Add Webstore</button>
@@ -40,122 +40,127 @@
     </div>
 
     <div class="container-content">
-        <div class="col-md-12">
-            <table st-table="displayed" st-pipe="callServer" class="table table-hover webstore-table">
-                <thead class="hubs-table-head">
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Last Login</th>
-                        <th>Mobile</th>
-                        <th width="465">Address</th>
-                        <th>Payment</th>
-                        <th>Allow COD</th>
-                        <th>Join Date</th>
-                        <th>Total Order</th>
-                        <th>Referrer Code</th>
-                        <th>Status</th>
-                        <th>Referral Code</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="text" ng-model="searchFilter.name" class="form-control input-table" ng-keyup="$event.keyCode == 13 && filterWebstores()"/></td>
-                        <td><input type="text" ng-model="searchFilter.email" class="form-control input-table " ng-keyup="$event.keyCode == 13 && filterWebstores()"/></td>
-                        <td></td>
-                        <td></td>
-                        <td><input type="text" ng-model="searchFilter.address" class="form-control input-table" ng-keyup="$event.keyCode == 13 && filterWebstores()"/></td>
-                        <td class="webstore-postpaidpayment-cell">
-                            <ui-select class="webstore-postpaidpayment-field" 
-                                ng-model="postPaidPaymentFilter" 
-                                theme="selectize" 
-                                ng-disabled="disabled"
-                                on-select="choosePostPaidPayment($item)">
-                                <ui-select-match>
-                                    {{ postPaidPaymentFilter.text }}
-                                </ui-select-match>
-                                <ui-select-choices repeat="m in postPaidPaymentList" selected>
-                                    <span ng-bind-html="m.text"></span>
-                                </ui-select-choices>
-                            </ui-select>
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td class="webstore-status-cell">
-                            <ui-select class="webstore-status-field" 
-                                ng-model="statusFilter" 
-                                theme="selectize" 
-                                ng-disabled="disabled"
-                                on-select="chooseRegistrationStatus($item)">
-                                <ui-select-match>
-                                    {{ statusFilter.text }}
-                                </ui-select-match>
-                                <ui-select-choices repeat="m in statusList" selected>
-                                    <span ng-bind-html="m.text"></span>
-                                </ui-select-choices>
-                            </ui-select>
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-                <tbody ng-show="!isLoading && displayed.length == 0">
-                    <tr>
-                        <td colspan="14" class="text-center">
-                            Your filter does not match any webstore
-                        </td>
-                    </tr>
-                </tbody>
-                <tbody ng-show="isLoading">
-                    <tr>
-                        <td colspan="14" class="text-center">Loading ... </td>
-                    </tr>
-                </tbody>
-                <tbody ng-show="!isLoading && displayed.length > 0">
-                    <tr ng-if="displayed"></tr>
-                    <tr ng-repeat="webstore in displayed">
-                        <td>{{webstore.FirstName}} {{webstore.LastName}}</td>
-                        <td>{{webstore.Email}}</td>
-                        <td>{{webstore.LastLoginDate | date: 'MM/dd/yyyy HH:mm:ss a'}}</td>
-                        <td>{{webstore.PhoneNumber}}</td>
-                        <td>{{webstore.WebstoreCompany.UserAddress.Address1}} 
-                            {{webstore.WebstoreCompany.UserAddress.City}}
-                            {{webstore.WebstoreCompany.UserAddress.Country}}
-                        </td>
-                        <td class="webstore-cell">{{webstore.WebstoreCompany.PostPaidPayment ? "Postpaid" : "Prepaid"}}</td>
-                        <td class="webstore-cell">{{webstore.WebstoreCompany.AllowCOD ? "Yes" : "No"}}</td>
-                        <td class="webstore-cell">{{webstore.CreatedDate | date: 'MM/dd/yyyy HH:mm:ss a'}}</td>
-                        <td class="webstore-cell">{{webstore.TotalOrder}}</td>
-                        <td class="webstore-cell">{{webstore.Consumer.Referrer.ReferralCode}}</td>
-                        <td class="webstore-cell">{{webstore.RegistrationStatus}}</td>
-                        <td>{{webstore.ReferralCode}}</td>
-                        <td>
-                            <button class="btn btn-default" ng-click="bucket(webstore.UserID)">Bucket</button>
-                        </td>
-                        <td>
-                            <button class="btn btn-primary col-md-12" type="button" ng-click="editWebstore(webstore.UserID)">Edit</button>
-                            <button class="btn btn-yellow col-md-12" type="button" 
-                                ng-click="referralCodeModal(webstore)" 
-                                ng-show="user.AdminDetail.RoleID == 4 || user.AdminDetail.RoleID == 2">Referral</button>
-                        </td>
-                    </tr>
-                </tbody>
-                <tfoot ng-show="!isLoading && displayed.length > 0">
-                    <tr>
-                        <td colspan="11" 
-                            class="text-center" 
-                            st-pagination="" 
-                            st-items-by-page="itemsByPage" 
-                            st-displayed-pages='9' st-template='components/table/pagination.html'>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+        <div id="order-page" class="col-md-12">
+            <div class="table-responsive order-table overflow-y-hidden" ng-style="{height: tableHeight+ 'px'}" style="max-height: {{tableHeight}}px">
+                <table st-table="displayed" st-pipe="callServer" class="table table-hover webstore-table">
+                    <thead class="hubs-table-head display-block">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Last Login</th>
+                            <th>Mobile</th>
+                            <th width="465">Address</th>
+                            <th>Payment</th>
+                            <th>Allow COD</th>
+                            <th>Join Date</th>
+                            <th>Total Order</th>
+                            <th>Referrer Code</th>
+                            <th>Status</th>
+                            <th>Referral Code</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="display-block overflow-visible">
+                        <tr>
+                            <td><input type="text" ng-model="searchFilter.name" class="form-control input-table" ng-keyup="$event.keyCode == 13 && filterWebstores()"/></td>
+                            <td><input type="text" ng-model="searchFilter.email" class="form-control input-table " ng-keyup="$event.keyCode == 13 && filterWebstores()"/></td>
+                            <td></td>
+                            <td></td>
+                            <td><input type="text" ng-model="searchFilter.address" class="form-control input-table" ng-keyup="$event.keyCode == 13 && filterWebstores()"/></td>
+                            <td class="webstore-postpaidpayment-cell">
+                                <ui-select class="webstore-postpaidpayment-field" 
+                                    ng-model="postPaidPaymentFilter" 
+                                    theme="selectize" 
+                                    ng-disabled="disabled"
+                                    on-select="choosePostPaidPayment($item)">
+                                    <ui-select-match>
+                                        {{ postPaidPaymentFilter.text }}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="m in postPaidPaymentList" selected>
+                                        <span ng-bind-html="m.text"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="webstore-status-cell">
+                                <ui-select class="webstore-status-field" 
+                                    ng-model="statusFilter" 
+                                    theme="selectize" 
+                                    ng-disabled="disabled"
+                                    on-select="chooseRegistrationStatus($item)">
+                                    <ui-select-match>
+                                        {{ statusFilter.text }}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="m in statusList" selected>
+                                        <span ng-bind-html="m.text"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                    <tbody class="display-block overflow-visible" ng-show="!isLoading && displayed.length == 0">
+                        <tr>
+                            <td colspan="14" class="text-center">
+                                Your filter does not match any webstore
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody class="display-block overflow-visible" ng-show="isLoading">
+                        <tr>
+                            <td colspan="14" class="text-center">Loading ... </td>
+                        </tr>
+                    </tbody>
+                    <tbody ng-show="!isLoading && displayed.length > 0"
+                        class="display-block order-table-list" 
+                        ng-style="{height: webstoreListHeight+ 'px'}"
+                        style="max-height: {{webstoreListHeight}}px">
+                        <tr ng-if="displayed"></tr>
+                        <tr ng-repeat="webstore in displayed">
+                            <td>{{webstore.FirstName}} {{webstore.LastName}}</td>
+                            <td>{{webstore.Email}}</td>
+                            <td>{{webstore.LastLoginDate | date: 'MM/dd/yyyy HH:mm:ss a'}}</td>
+                            <td>{{webstore.PhoneNumber}}</td>
+                            <td>{{webstore.WebstoreCompany.UserAddress.Address1}} 
+                                {{webstore.WebstoreCompany.UserAddress.City}}
+                                {{webstore.WebstoreCompany.UserAddress.Country}}
+                            </td>
+                            <td class="webstore-cell">{{webstore.WebstoreCompany.PostPaidPayment ? "Postpaid" : "Prepaid"}}</td>
+                            <td class="webstore-cell">{{webstore.WebstoreCompany.AllowCOD ? "Yes" : "No"}}</td>
+                            <td class="webstore-cell">{{webstore.CreatedDate | date: 'MM/dd/yyyy HH:mm:ss a'}}</td>
+                            <td class="webstore-cell">{{webstore.TotalOrder}}</td>
+                            <td class="webstore-cell">{{webstore.Consumer.Referrer.ReferralCode}}</td>
+                            <td class="webstore-cell">{{webstore.RegistrationStatus}}</td>
+                            <td>{{webstore.ReferralCode}}</td>
+                            <td>
+                                <button class="btn btn-default" ng-click="bucket(webstore.UserID)">Bucket</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary col-md-12" type="button" ng-click="editWebstore(webstore.UserID)">Edit</button>
+                                <button class="btn btn-yellow col-md-12" type="button" 
+                                    ng-click="referralCodeModal(webstore)" 
+                                    ng-show="user.AdminDetail.RoleID == 4 || user.AdminDetail.RoleID == 2">Referral</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot ng-show="!isLoading && displayed.length > 0">
+                        <tr>
+                            <td colspan="14" 
+                                class="text-center" 
+                                st-pagination="" 
+                                st-items-by-page="itemsByPage" 
+                                st-displayed-pages='9' st-template='components/table/pagination.html'>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     </div>
 </div>
