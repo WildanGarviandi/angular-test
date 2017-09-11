@@ -6,6 +6,7 @@ angular.module('adminApp')
             $stateParams,
             $rootScope,
             $location,
+            $timeout,
             $window,
             $scope,
             $state,
@@ -102,6 +103,35 @@ angular.module('adminApp')
     };
 
     /**
+     * Get all Driver by Fleet
+     * 
+     * @return {Object} Promise
+     */
+    var getDriversByFleet = function (params) {
+        $scope.import.others.showDriver = false;
+        return Services2.getDrivers(params).$promise.then(function(result) {
+            params.limit = result.data.Drivers.count;
+            Services2.getDrivers(params).$promise.then(function(result) {
+                var drivers = [];
+                result.data.Drivers.rows.forEach(function(driver){
+                    var driverData = {
+                        key: driver.UserID, 
+                        value: driver.Driver.FirstName + ' ' + driver.Driver.LastName,
+                        fleetManagerID: driver.Driver.Driver.FleetManager.UserID
+                    };
+                    drivers.push(driverData);
+                });
+                drivers = lodash.sortBy(drivers, function (i) { 
+                    return i.value.toLowerCase(); 
+                });
+                $scope.drivers = drivers;
+                $scope.driver = $scope.drivers[0];
+                $scope.import.others.showDriver = true;
+            });
+        });
+    };
+
+    /**
      * Assign merchant to the chosen item
      * 
      * @return {void}
@@ -191,8 +221,24 @@ angular.module('adminApp')
      * 
      * @return {Object} choosen data into scope 
      */
-    $scope.choosenDataToScope = function (data, scope) {
+    $scope.choosenDataToScope = function (type, data, scope) {
         $scope[scope] = data;
+        if (type == 'fleet' 
+            && $scope.import.others.fleet 
+            && $scope.import.others.fleet.User 
+            && $scope.import.others.fleet.User.UserID) {
+
+            var paramsGetDriver = {
+                offset: 0,
+                limit: 1,
+                status: 2,
+                codStatus: 'all',
+                company: 'all',
+                availability: 'all',
+                company: $scope.import.others.fleet.CompanyDetailID
+            };
+            getDriversByFleet(paramsGetDriver);
+        }
     };
 
     $scope.toggleScope = function (scope) {
@@ -207,6 +253,38 @@ angular.module('adminApp')
     $scope.closeModal = function() {
         ngDialog.close();
     }
+
+    /**
+     * Upload an image to the cloud, will return a url as a response
+     * @param  {File} file - image to be uploaded
+     * 
+     */
+    $scope.uploadPic = function (file) {
+        $rootScope.$emit('startSpin');
+        if (file) {
+            $scope.f = file;
+            file.upload = Upload.upload({
+                url: config.url + 'upload/picture',
+                data: {file: file}
+            })
+            .then(function (response) {
+                file.result = response.data;
+                if (response.data.data && !response.data.error) {
+                    $scope.f.success = response.data.data.Location;
+                } else {
+                    $scope.f.error = 'Uploading picture failed. Please try again';
+                }
+                $rootScope.$emit('stopSpin');
+            }, function (response) {
+                if (response.status > 0) {
+                    $scope.f.error = response.status + ': ' + response.data;
+                }
+                $rootScope.$emit('stopSpin');
+            }, function (evt) {
+                file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+            });
+        }
+    };
 
     /**
      * Open modal by templateID and do some action before opening modal 
@@ -303,7 +381,7 @@ angular.module('adminApp')
             $scope.import.updated = [];
             $scope.import.uploaded = [];
             $scope.import.others = {};
-
+            $scope.f = {};
 
             $scope.importedDatePicker = moment().add(1, 'hours').toDate();
             $scope.importedDatePickerNow = moment().add(1, 'hours').format('dddd, MMM Do HH:mm');
@@ -337,7 +415,7 @@ angular.module('adminApp')
                 } else if (order.isUpdated) {
                     data.updated.push(order);
                 } else {
-                    data.error.push({row: row, list: order.error});
+                    data.uploaded.push(order);
                 }
             });
 
@@ -376,11 +454,15 @@ angular.module('adminApp')
                 param.file = val.file;
                 param.pickupTime = $scope.importedDatePicker;
 
+            if ($scope.f.success) {
+                param.proofOfPickupUrl = $scope.f.success;
+            }
             if (data.others.showMerchant) {
                 param.merchantID = data.others.merchant.value;    
             }
             if (data.others.showFleet) {
                 param.fleetManagerID = data.others.fleet.User.UserID;
+                param.driverID = data.others.driver.key;
             }
 
             doUpload(url, param, successFunction, errorFunction);
