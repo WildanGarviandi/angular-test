@@ -523,4 +523,8 @@ angular.module('adminApp')
         }
     }
 
-  });
+    $scope.driverLocation = function() {
+        $window.open('/driverLocation');
+    };
+
+});
