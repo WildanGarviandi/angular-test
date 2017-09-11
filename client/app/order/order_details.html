@@ -1,5 +1,4 @@
 <div class="container-fluid container-hubs">
-    <div class="clearfix"></div>
     <div class="row-fluid box-header">
         <div>
             <div class="col-md-6 col-sm-7">
@@ -7,692 +6,841 @@
                     Order Details
                 </div>
             </div>
-            <div class="col-md-3 col-sm-5 pull-right">
+            <div class="col-md-6 col-sm-5 pull-right">
                 <div class="hub" ng-include="'components/user/user.html'"></div>
-            </div>
-            <div class="col-md-3 col-sm-12">
-                <div class="hub-search">
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row box-order-details">
-        <div class="col-md-6 order-details">
-            <div class="row-fluid order-details-main-header">
-                Order Detail
-                <div class="btn-group pull-right" uib-dropdown is-open="status.isopen">
-                    <button id="single-button" type="button" class="btn btn-default" uib-dropdown-toggle ng-disabled="disabled">
-                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                        <li role="menuitem">
-                            <a href="#"
-                            ng-click="returnCustomer()"
-                            ng-if="canBeReturned">Return to Sender</a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#"
-                            ng-click="copyCancelledOrder()"
-                            ng-if="canBeCopied">Copy as a new order</a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#"
-                            ng-click="cancelOrder()"
-                            ng-if="canBeCancelled">Cancel this order</a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#"
-                            ng-click="reassignDriver()"
-                            ng-if="canBeReassigned">Reassign Driver</a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#"
-                            ng-click="setClaimed()"
-                            ng-if="canBeClaimed">Mark as Claimed</a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#"
-                            ng-click="openUploadPODmodal()"
-                            ng-if="canUploadPOD">Upload POD</a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#"
-                            ng-if="noAction">No action available</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="row-fluid order-details-body">
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Airway Bill
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.UserOrderNumber}}
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Web Order ID
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.WebOrderID}}
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        User
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.User.FirstName || '-'}} {{order.User.LastName || '-'}} / 
-                        {{order.User.Email || '-'}} / {{order.User.CountryCode}} {{order.User.PhoneNumber || '-'}}
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Webstore
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.WebstoreUser.FirstName || '-'}} {{order.WebstoreUser.LastName || '-'}} / 
-                        {{order.WebstoreUser.Email || '-'}} / {{order.WebstoreUser.CountryCode}} {{order.WebstoreUser.PhoneNumber || '-'}}
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Fleet Manager
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName ||
-                                order.FleetManager.CompanyDetail.CompanyName}}
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Driver
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.Driver.FirstName}} {{order.Driver.LastName}} / 
-                        {{order.Driver.CountryCode}} {{order.Driver.PhoneNumber}}
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Pickup Type
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.PickupType}}
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Payment Type
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.PaymentType}}
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Status
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.OrderStatus.OrderStatus}}
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid" ng-if="order.OrderStatus.OrderStatusID == 15">
-                    <div class="col-sm-4">
-                        Return Warehouse Location
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.ReturnedWarehouseLocation}}
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Pickup Time
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Pickup Address
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.PickupAddress.Address1}} {{order.PickupAddress.Address2}} {{order.PickupAddress.City}} 
-                        {{order.PickupAddress.State}} {{order.PickupAddress.Country}} {{order.PickupAddress.ZipCode}}  
-                        <div>
-                            <a class="address-buttons" type="" ng-click="editPickupAddress()"> 
-                                Edit
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Dropoff Time
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Recipient Detail
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.DropoffAddress.FirstName}} {{order.DropoffAddress.LastName}} / 
-                        {{order.DropoffAddress.CountryCode}}-{{order.DropoffAddress.MobileNumber}} / 
-                        {{order.DropoffAddress.EmailID}}
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Dropoff Address
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.DropoffAddress.Address1}} {{order.DropoffAddress.Address2}} {{order.DropoffAddress.City}} 
-                        {{order.DropoffAddress.State}} {{order.DropoffAddress.Country}} {{order.DropoffAddress.ZipCode}}
-                        <div>
-                        <a class="address-buttons" type="" ng-click="editDropoffAddress()"> 
-                            Edit
-                        </a>
-                        </div>
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Paid By Parent
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.PaidByParent}} 
-                        <span ng-if="order.PaidByParent">
-                            (by {{order.User.FirstName}} {{order.User.LastName}})
-                        </span>
-                        <span ng-if="!order.PaidByParent">
-                            (by {{order.WebstoreUser.FirstName}} {{order.WebstoreUser.LastName}})
-                        </span>
-                    </div>
-                    <div class="col-sm-4"></div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Order Cost
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.OrderCost | awnum:2:decimalSeparator:'round':'false':'true'}}
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Final Cost
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.FinalCost | awnum:2:decimalSeparator:'round':'false':'true'}}
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        VAT
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.VAT | awnum:2:decimalSeparator:'round':'false':'true'}}
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Include Insurance
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        <span ng-if="order.IncludeInsurance">Yes</span>
-                        <span ng-if="!order.IncludeInsurance">No</span>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Is COD
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{order.IsCOD}}
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Total Value
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.TotalValue | awnum:2:decimalSeparator:'round':'false':'true'}}
-                        <div>
-                        <a class="address-buttons" type="" ng-click="editCod()"> 
-                            Edit
-                        </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Use Extra Helper
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        <span ng-if="order.UseExtraHelper">Yes</span>
-                        <span ng-if="!order.UseExtraHelper">No</span>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Etobee Share
-                    </div>
-                    <div class="col-sm-8 summary-from" >
-                        {{currency}}{{order.Share | awnum:2:decimalSeparator:'round':'false':'true'}}
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Driver Share
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.DriverShare | awnum:2:decimalSeparator:'round':'false':'true'}}
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="row-fluid">
-                    <div class="col-sm-4">
-                        Logistic Share
-                    </div>
-                    <div class="col-sm-8 summary-from">
-                        {{currency}}{{order.LogisticShare | awnum:2:decimalSeparator:'round':'false':'true'}} 
-                    </div>
-                </div>
-                <div ng-repeat="attempt in order.UserOrderAttempts" class="row-fluid order-detail-from-address">
-                    <uib-accordion>
-                    <uib-accordion-group 
-                        heading="Failed attempt {{$index + 1}}:">
-                        <div class="order-status-container-body">
-                            Driver: {{attempt.Driver.FirstName}} {{attempt.Driver.LastName}}
-                        </div>
-                        <div class="order-status-container-body">
-                            Reason: {{attempt.ReasonReturn.ReasonName}}
-                        </div>
-                        <div class="order-status-container-body">
-                            Date: {{attempt.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}
-                        </div>
-                        <div class="order-status-container-body">
-                            Proof of Failed: 
-                            <div>
-                                <img class="failed-image" src="{{attempt.ProofOfAttemptURL}}"></img>
-                            </div>
-                        </div>
-                    </uib-accordion-group>   
-                    </uib-accordion>                        
-                </div>
-                <div ng-show="isCurrentStatus.returnedSender" class="row-fluid order-detail-from-address">
-                    <uib-accordion>
-                        <uib-accordion-group heading="POD - {{order.OrderStatus.OrderStatus}}:">
-                            <div class="row no-margin">
-                                <div class="col-sm-4 no-padding">
-                                    Date 
-                                </div>
-                                <div class="col-sm-8">
-                                    {{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
-                                </div>
-                            </div>
-                            <div class="row no-margin">
-                                <div class="col-sm-4 no-padding">
-                                    Photo 
-                                </div>
-                                <div class="col-sm-8">
-                                    <img class="failed-image" ng-if="order.PathPhotoPODReturnCustomer" src="{{order.PathPhotoPODReturnCustomer}}">
-                                </div>
-                            </div>
-                        </uib-accordion-group>
-                    </uib-accordion>
-                </div>
-                <div ng-show="order.RecipientName.trim()" class="row-fluid order-detail-from-address">
-                    <uib-accordion>
-                        <uib-accordion-group heading="POD - {{order.OrderStatus.OrderStatus}}">
-                            <div class="order-status-container-body">
-                                <span>Recipient Name</span> : {{order.RecipientName}}
-                            </div>
-                            <div>
-                                <div class="order-status-container-body">
-                                    Recipient Phone : {{order.RecipientPhone}}
-                                </div> 
-                                <div ng-show="order.RecipientRelation" class="order-status-container-body">
-                                    Recipient Relation : {{order.RecipientRelation}}
-                                </div>
-                            </div>
-                            <div class="order-status-container-body col-sm-6 text-center">
-                                Signature :
-                                <div>
-                                    <img class="failed-image" src="{{order.RecipientSignature}}">
-                                </div>
-                            </div> 
-                            <div class="order-status-container-body col-sm-6 text-center">
-                                Photo :
-                                <div>
-                                    <img class="failed-image" src="{{order.RecipientPhoto}}">
-                                </div>
-                            </div>
-                        </uib-accordion-group>
-                    </uib-accordion>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="row text-center">
-                <h2><strong>{{order.OrderStatus.OrderStatus}}</strong></h2>
-                <div class="header-background-order-detail">
-                    <div class="row no-margin">
-                        <h5><b>CURRENT ROUTE</b></h5>
-                    </div>
-                </div>
-                <div class="bg-white row no-margin">
-                    <div class="col-xs-12 text-left">
-                        <h5>{{order.CurrentRouteDetail}}</h5>
-                    </div>
-                </div>
-            </div>
-            <div class="row text-center">
-                <a class="address-buttons" ng-click="openTracking(order.UserOrderNumber)">Track this item</a>
-            </div>
-        </div>
-    </div>
-    <div class="row box-order-details">
-        <div class="col-md-12 order-details">
-            <div class="row-fluid order-details-main-header">
-                History Routes
-            </div>
-            <div class="clearfix"></div>
-            <div class="row-fluid order-details-body">
-                <div class="clearfix"></div>
-                <div ng-repeat="route in order.UserOrderRoutes" class="row-fluid order-detail-from-address">
-                    <uib-accordion>
-                    <uib-accordion-group
-                        heading="Route {{$index + 1}} | Status: {{route.OrderStatus.OrderStatus}} 
-                            {{ route.Trip !== null ? ' | Fleet: ' + route.Trip.FleetManager.CompanyDetail.CompanyName : ''}} 
-                            {{ route.Trip !== null ? ' | Driver: ' + route.Trip.Driver.FirstName + ' ' + route.Trip.Driver.LastName : ''}}">
-                        <div class="order-status-container-body">
-                            <div class="row-fluid">
-                                <div class="col-md-2">
-                                    Origin Hub
-                                </div>
-                                <div ng-show="route.OriginHub.Name || route.OriginHub.Address1" class="col-md-10 summary-from">
-                                    {{route.OriginHub.Name || '-'}} / {{route.OriginHub.Address1 || '-'}}
-                                </div>
-                                <div ng-hide="route.OriginHub.Name && route.OriginHub.Address1" class="col-md-10 summary-from">
-                                    -
-                                </div>
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="row-fluid">
-                            <div class="col-md-2">
-                                Destination Hub
-                            </div>
-                            <div ng-show="route.DestinationHub.Name || route.DestinationHub.Address1" class="col-md-10 summary-from">
-                                {{route.DestinationHub.Name || '-'}} / {{route.DestinationHub.Address1 || '-'}}
-                            </div>
-                            <div ng-hide="route.DestinationHub.Name && route.DestinationHub.Address1" class="col-md-10 summary-from">
-                                -
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="row-fluid">
-                            <div class="col-md-2">
-                                Pickup Address
-                            </div>
-                            <div ng-show="route.PickupAddress.Address1" class="col-md-10 summary-from">
-                                {{route.PickupAddress.Address1}}
-                            </div>
-                            <div ng-hide="route.PickupAddress.Address1" class="col-md-10 summary-from">
-                                -
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="row-fluid">
-                            <div class="col-md-2">
-                                Pickup Time
-                            </div>
-                            <div ng-show="route.PickupTime" class="col-md-10 summary-from">
-                                {{route.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
-                            </div>
-                            <div ng-hide="route.PickupTime" class="col-md-10 summary-from">
-                                -
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="row-fluid">
-                            <div class="col-md-2">
-                                Dropoff Address
-                            </div>
-                            <div ng-show="route.DropoffAddress.Address1" class="col-md-10 summary-from">
-                                {{route.DropoffAddress.Address1}}
-                            </div>
-                            <div ng-hide="route.DropoffAddress.Address1" class="col-md-10 summary-from">
-                                -
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="row-fluid">
-                            <div class="col-md-2">
-                                Dropoff Time
-                            </div>
-                            <div ng-show="route.DropoffTime" class="col-md-10 summary-from">
-                                {{route.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
-                            </div>
-                            <div ng-hide="route.DropoffTime" class="col-md-10 summary-from">
-                                -
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="row-fluid">
-                            <div class="col-md-2">
-                                Distance
-                            </div>
-                            <div class="col-md-10 summary-from">
-                                {{route.Distance / 1000 | number : 3 }} km
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="row-fluid">
-                            <div class="col-md-2">
-                                ETA Delivery
-                            </div>
-                            <div class="col-md-10 summary-from">
-                                {{route.ETADelivery | secondsToDateTime | date:'HH:mm:ss'}}
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="row-fluid">
-                            <div class="col-md-2">
-                                Logistic Fee
-                            </div>
-                            <div class="col-md-10 summary-from">
-                                {{route.LogisticFee | currency: currency}}
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="row-fluid">
-                            <div class="col-md-2">
-                                Net Margin
-                            </div>
-                            <div ng-show="route.NetMargin" class="col-md-10 summary-from">
-                                {{route.NetMargin}}
-                            </div>
-                            <div ng-hide="route.NetMargin" class="col-md-10 summary-from">
-                                -
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="row-fluid">
-                            <div class="col-md-2">
-                                Status
-                            </div>
-                            <div class="col-md-10 summary-from">
-                                {{route.OrderStatus.OrderStatus}}
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                        <div class="row-fluid">
-                            <div class="col-md-2">
-                                Fleet Manager
-                            </div>
-                            <div ng-show="route.FleetManager" class="col-md-10 summary-from">
-                                {{route.FleetManager.CompanyDetail.CompanyName}} / 
-                                {{route.FleetManager.Email}} / {{route.FleetManager.PhoneNumber}}
-                            </div>
-                            <div ng-hide="route.FleetManager" class="col-md-10 summary-from">
-                                -
-                            </div>
-                        </div>
-                        <uib-accordion>
-                        <uib-accordion-group ng-if="route.Trip !== null" heading="Trip">
-                            <div class="row-fluid">
-                                <div class="col-md-2">
-                                    Trip ID
-                                </div>
-                                <div ng-show="route.Trip.TripID" class="col-md-10 summary-from">
-                                    {{route.Trip.TripID}}
-                                </div>
-                                <div ng-hide="route.Trip.Driver.FirstName && route.Trip.Driver.LastName" class="col-md-10 summary-from">
-                                    -
-                                </div>
-                            </div>
-                            <div class="row-fluid">
-                                <div class="col-md-2">
-                                    Driver
-                                </div>
-                                <div ng-show="route.Trip.Driver.FirstName || route.Trip.Driver.LastName" class="col-md-10 summary-from">
-                                    {{route.Trip.Driver.FirstName}} {{route.Trip.Driver.LastName}}
-                                </div>
-                                <div ng-hide="route.Trip.Driver.FirstName && route.Trip.Driver.LastName" class="col-md-10 summary-from">
-                                    -
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="row-fluid">
-                                <div class="col-md-2">
-                                    Container
-                                </div>
-                                <div ng-show="route.Trip.ContainerNumber" class="col-md-10 summary-from">
-                                    {{route.Trip.ContainerNumber}}
-                                </div>
-                                <div ng-hide="route.Trip.ContainerNumber" class="col-md-10 summary-from">
-                                    -
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="row-fluid">
-                                <div class="col-md-2">
-                                    Status
-                                </div>
-                                <div ng-show="route.Trip.OrderStatus.OrderStatus" class="col-md-10 summary-from">
-                                    {{route.Trip.OrderStatus.OrderStatus}}
-                                </div>
-                                <div ng-hide="route.Trip.OrderStatus.OrderStatus" class="col-md-10 summary-from">
-                                    -
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="row-fluid">
-                                <div class="col-md-2">
-                                    PickupTime
-                                </div>
-                                <div ng-show="route.Trip.PickupTime" class="col-md-10 summary-from">
-                                    {{route.Trip.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
-                                </div>
-                                <div ng-hide="route.Trip.PickupTime" class="col-md-10 summary-from">
-                                    -
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
-                            <div class="row-fluid">
-                                <div class="col-md-2">
-                                    Dropoff Time
-                                </div>
-                                <div ng-show="route.Trip.DropoffTime" class="col-md-10 summary-from">
-                                    {{route.Trip.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
-                                </div>
-                                <div ng-hide="route.Trip.DropoffTime" class="col-md-10 summary-from">
-                                    -
-                                </div>
-                            </div>
-                        </uib-accordion-group>   
-                        </uib-accordion>
-                    </uib-accordion-group>   
-                    </uib-accordion>                        
-                </div>
             </div>
         </div>
     </div>
 
     <div class="row box-order-details">
-        <div class="col-md-12 order-details">
-            <div class="row-fluid order-details-main-header">
-                Order Track History
+        <table class="table table-rounded">
+            <thead>
+                <tr>
+                    <th>Checkpoint Start</th>
+                    <th>Checkpoint End</th>
+                    <th>Location</th>
+                    <th>Start Time</th>
+                    <th>Start End</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="o in order.Checkpoints | limitTo: limitCheckpoint">
+                    <td class="text-center">{{o.CheckpointStart}}</td>
+                    <td class="text-center">{{o.CheckpointEnd}}</td>
+                    <td class="text-center">{{o.LocationStart}} <span ng-if="o.LocationStart && o.LocationEnd">></span> {{o.LocationEnd}}</td>
+                    <td class="text-center">{{moment(o.TimeStart).format('DD MMMM YYYY')}} <br> {{moment(o.TimeStart).format('HH:mm:ss')}}</td>
+                    <td class="text-center">{{moment(o.TimeEnd).format('DD MMMM YYYY')}} <br> {{moment(o.TimeEnd).format('HH:mm:ss')}}</td>
+                    <td class="text-center">
+                        <span ng-if="moment(o.TimeEnd).diff(moment(o.TimeStart), 'days')">
+                            {{moment(o.TimeEnd).diff(moment(o.TimeStart), 'days')}} day
+                        </span>
+                        {{moment.utc(moment(o.TimeEnd).diff(moment(o.TimeStart))).format("HH:mm:ss")}}
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot ng-if="order.Checkpoints.length > 3">
+                <tr ng-if="limitCheckpoint != order.Checkpoints.length">
+                    <td colspan="6" class="text-center">
+                        <a href="#" class="text-blue col-md-12" ng-click="limitCheckpointToggle(true)">SHOW ALL ({{order.Checkpoints.length}})</a>
+                    </td>
+                </tr>
+                <tr ng-if="limitCheckpoint == order.Checkpoints.length">
+                    <td colspan="6" class="text-center">
+                        <a href="#" class="text-blue col-md-12" ng-click="limitCheckpointToggle(false)">HIDE</a>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="row box-order-details">
+        <div class="col-md-8 pl0 pr0">
+            <div class="box-rounded">
+                <div class="row-fluid order-details-main-header bg-white">
+                    Order Detail
+                    <div class="btn-group pull-right" uib-dropdown is-open="status.isopen">
+                        <button id="single-button" type="button" class="btn btn-default no-border" uib-dropdown-toggle ng-disabled="disabled">
+                            <h6 class="no-margin">
+                                <small>
+                                    <small>
+                                        <i class="fa fa-circle"> </i>
+                                        <i class="fa fa-circle"> </i>
+                                        <i class="fa fa-circle"> </i>
+                                    </small>
+                                </small>
+                            </h6>
+                        </button>
+                        <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                            <li role="menuitem">
+                                <a href="#"
+                                ng-click="returnCustomer()"
+                                ng-if="canBeReturned">Return to Sender</a>
+                            </li>
+                            <li role="menuitem">
+                                <a href="#"
+                                ng-click="copyCancelledOrder()"
+                                ng-if="canBeCopied">Copy as a new order</a>
+                            </li>
+                            <li role="menuitem">
+                                <a href="#"
+                                ng-click="cancelOrder()"
+                                ng-if="canBeCancelled">Cancel this order</a>
+                            </li>
+                            <li role="menuitem">
+                                <a href="#"
+                                ng-click="reassignDriver()"
+                                ng-if="canBeReassigned">Reassign Driver</a>
+                            </li>
+                            <li role="menuitem">
+                                <a href="#"
+                                ng-click="setClaimed()"
+                                ng-if="canBeClaimed">Mark as Claimed</a>
+                            </li>
+                            <li role="menuitem">
+                                <a href="#"
+                                ng-click="openUploadPODmodal()"
+                                ng-if="canUploadPOD">Upload POD</a>
+                            </li>
+                            <li role="menuitem">
+                                <a href="#"
+                                ng-if="noAction">No action available</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row bg-white no-margin pt15 pb15">
+                    <div class="col-md-6 mt15 mb15 pr0">
+                        <div class="box-rounded">
+                            <div class="mt15 mb15">
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Airway Bill</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.UserOrderNumber}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin no-padding">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Web Order ID</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.WebOrderID}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">User</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.User.FirstName || '-'}} {{order.User.LastName || '-'}} / 
+                                        {{order.User.Email || '-'}} / {{order.User.CountryCode}} {{order.User.PhoneNumber || '-'}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Webstore</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.WebstoreUser.FirstName || '-'}} {{order.WebstoreUser.LastName || '-'}} / 
+                                        {{order.WebstoreUser.Email || '-'}} / {{order.WebstoreUser.CountryCode}} {{order.WebstoreUser.PhoneNumber || '-'}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Fleet Manager</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.Driver.Driver.FleetManager.CompanyDetail.CompanyName ||
+                                                order.FleetManager.CompanyDetail.CompanyName}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Driver</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.Driver.FirstName}} {{order.Driver.LastName}} / 
+                                        {{order.Driver.CountryCode}} {{order.Driver.PhoneNumber}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Pickup Type</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.PickupType}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Payment Type</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.PaymentType}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Status</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.OrderStatus.OrderStatus}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin" ng-if="order.OrderStatus.OrderStatusID == 15">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Return Warehouse Location</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.ReturnedWarehouseLocation}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Pickup Time</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Pickup Address</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.PickupAddress.Address1}} {{order.PickupAddress.Address2}} {{order.PickupAddress.City}} 
+                                        {{order.PickupAddress.State}} {{order.PickupAddress.Country}} {{order.PickupAddress.ZipCode}}  
+                                        <div>
+                                            <a href="#" class="text-blue" type="" ng-click="editPickupAddress()"> 
+                                                <i>Edit</i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Dropoff Time</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Recipient Detail</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.DropoffAddress.FirstName}} {{order.DropoffAddress.LastName}} / 
+                                        {{order.DropoffAddress.CountryCode}}-{{order.DropoffAddress.MobileNumber}} / 
+                                        {{order.DropoffAddress.EmailID}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Dropoff Address</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.DropoffAddress.Address1}} {{order.DropoffAddress.Address2}} {{order.DropoffAddress.City}} 
+                                        {{order.DropoffAddress.State}} {{order.DropoffAddress.Country}} {{order.DropoffAddress.ZipCode}}
+                                        <div>
+                                        <a href="#" class="text-blue" type="" ng-click="editDropoffAddress()"> 
+                                            <i>Edit</i>
+                                        </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt15 mb15">
+                        <div class="box-rounded">
+                            <div class="mt15 mb15">
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Paid By Parent</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.PaidByParent}} 
+                                        <span ng-if="order.PaidByParent">
+                                            (by {{order.User.FirstName}} {{order.User.LastName}})
+                                        </span>
+                                        <span ng-if="!order.PaidByParent">
+                                            (by {{order.WebstoreUser.FirstName}} {{order.WebstoreUser.LastName}})
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Order Cost</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{currency}}{{order.OrderCost | awnum:2:decimalSeparator:'round':'false':'true'}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Final Cost</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{currency}}{{order.FinalCost | awnum:2:decimalSeparator:'round':'false':'true'}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">VAT</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{currency}}{{order.VAT | awnum:2:decimalSeparator:'round':'false':'true'}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Include Insurance</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        <span ng-if="order.IncludeInsurance">Yes</span>
+                                        <span ng-if="!order.IncludeInsurance">No</span>
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Is COD</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{order.IsCOD}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Total Value</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{currency}}{{order.TotalValue | awnum:2:decimalSeparator:'round':'false':'true'}}
+                                        <div>
+                                            <a href="#" class="text-blue" type="" ng-click="editCod()"> 
+                                                <i>Edit</i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Use Extra Helper</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        <span ng-if="order.UseExtraHelper">Yes</span>
+                                        <span ng-if="!order.UseExtraHelper">No</span>
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Etobee Share</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from" >
+                                        {{currency}}{{order.Share | awnum:2:decimalSeparator:'round':'false':'true'}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Driver Share</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{currency}}{{order.DriverShare | awnum:2:decimalSeparator:'round':'false':'true'}}
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-sm-4 no-padding">
+                                        <p class="text-label no-margin">Logistic Share</p>
+                                    </div>
+                                    <div class="col-sm-8 summary-from">
+                                        {{currency}}{{order.LogisticShare | awnum:2:decimalSeparator:'round':'false':'true'}} 
+                                    </div>
+                                </div>
+                                <div class="row no-margin">
+                                    <div class="col-md-12 mt15" ng-show="order.UserOrderAttempts.length">
+                                        <button class="btn btn-default bg-white col-xs-12"
+                                            ng-click="showFailedAttempt = true">
+                                            See Failed Attempt
+                                            <i class="fa fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row no-margin" ng-show="showFailedAttempt">
+                                    <div class="col-md-12 no-padding order-trip-detail" ng-show="order.UserOrderAttempts.length">
+                                        <div class="col-md-12 order-attempt-detail-content">
+                                            <div class="box-rounded bg-white">
+                                                <div class="row no-margin order-details-main-header">
+                                                    <div class="text-center col-xs-12 no-padding">
+                                                        <h5 class="no-margin">
+                                                            Failed Attempt
+                                                            <a href="#" class="pull-right text-blue" ng-click="showFailedAttempt = false">
+                                                                <i class="fa fa-close"></i>
+                                                            </a>
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                                <div class="order-track-history">
+                                                    <div class="row no-margin" ng-repeat="attempt in order.UserOrderAttempts">
+                                                        <div class="col-md-12 order-attempt-row">
+                                                            <div class="col-md-12 no-padding">
+                                                                <div class="col-md-3 no-padding">
+                                                                    <p class="text-label no-margin">Driver</p>
+                                                                </div>
+                                                                <div ng-show="attempt.Driver.FirstName || attempt.Driver.LastName" class="col-md-9 summary-from">
+                                                                    {{attempt.Driver.FirstName}} {{attempt.Driver.LastName}}
+                                                                </div>
+                                                                <div ng-hide="attempt.Driver.FirstName || attempt.Driver.LastName" class="col-md-9 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 no-padding">
+                                                                <div class="col-md-3 no-padding">
+                                                                    <p class="text-label no-margin">Reason</p>
+                                                                </div>
+                                                                <div ng-show="attempt.ReasonReturn.ReasonName" class="col-md-9 summary-from">
+                                                                    {{attempt.ReasonReturn.ReasonName}}
+                                                                </div>
+                                                                <div ng-show="!attempt.ReasonReturn.ReasonName" class="col-md-9 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 no-padding">
+                                                                <div class="col-md-3 no-padding">
+                                                                    <p class="text-label no-margin">Date</p>
+                                                                </div>
+                                                                <div ng-show="attempt.CreatedDate" class="col-md-9 summary-from">
+                                                                    {{attempt.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}
+                                                                </div>
+                                                                <div ng-show="!attempt.CreatedDate" class="col-md-9 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 no-padding">
+                                                                <div class="col-md-3 no-padding">
+                                                                    <p class="text-label no-margin">Proof of Failed</p>
+                                                                </div>
+                                                                <div ng-show="attempt.ProofOfAttemptURL" class="col-md-9 summary-from">
+                                                                    <div>
+                                                                        <img class="failed-image" src="{{attempt.ProofOfAttemptURL}}"></img>
+                                                                    </div>
+                                                                </div>
+                                                                <div ng-show="!attempt.ProofOfAttemptURL" class="col-md-9 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row no-margin" ng-show="isCurrentStatus.returnedSender || order.RecipientName.trim()">
+                                    <div class="col-md-12 mt15">
+                                        <button class="btn btn-default bg-white col-xs-12"
+                                            ng-click="showPOD = true">
+                                            See POD
+                                            <i class="fa fa-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row no-margin" ng-show="showPOD">
+                                    <div class="col-md-12 no-padding order-trip-detail">
+                                        <div class="col-md-12 order-attempt-detail-content">
+                                            <div class="box-rounded bg-white">
+                                                <div class="row no-margin order-details-main-header">
+                                                    <div class="text-center col-xs-12 no-padding">
+                                                        <h5 class="no-margin">
+                                                            POD - {{order.OrderStatus.OrderStatus}}
+                                                            <a href="#" class="pull-right text-blue" ng-click="showPOD = false">
+                                                                <i class="fa fa-close"></i>
+                                                            </a>
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                                <div class="order-track-history">
+                                                    <div class="row no-margin">
+                                                        <div class="col-md-12 order-attempt-row" ng-show="isCurrentStatus.returnedSender">
+                                                            <div class="col-md-12 no-padding">
+                                                                <div class="col-md-4 no-padding">
+                                                                    <p class="text-label no-margin">Date</p>
+                                                                </div>
+                                                                <div ng-show="order.DropoffTime" class="col-md-8 summary-from">
+                                                                    {{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                                                                </div>
+                                                                <div ng-show="!order.DropoffTime" class="col-md-8 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 no-padding">
+                                                                <div class="col-md-4 no-padding">
+                                                                    <p class="text-label no-margin">Photo</p>
+                                                                </div>
+                                                                <div ng-show="order.PathPhotoPODReturnCustomer" class="col-md-8 summary-from">
+                                                                    <img class="failed-image" 
+                                                                        ng-if="order.PathPhotoPODReturnCustomer" 
+                                                                        src="{{order.PathPhotoPODReturnCustomer}}">
+                                                                </div>
+                                                                <div ng-show="!order.PathPhotoPODReturnCustomer" class="col-md-8 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-12 order-attempt-row" ng-show="order.RecipientName.trim()">
+                                                            <div class="col-md-12 no-padding">
+                                                                <div class="col-md-4 no-padding">
+                                                                    <p class="text-label no-margin">Recipient Name</p>
+                                                                </div>
+                                                                <div ng-show="order.RecipientName" class="col-md-8 summary-from">
+                                                                    {{order.RecipientName}}
+                                                                </div>
+                                                                <div ng-show="!order.RecipientName" class="col-md-8 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 no-padding">
+                                                                <div class="col-md-4 no-padding">
+                                                                    <p class="text-label no-margin">Recipient Phone</p>
+                                                                </div>
+                                                                <div ng-show="order.RecipientPhone" class="col-md-8 summary-from">
+                                                                    {{order.RecipientPhone}}
+                                                                </div>
+                                                                <div ng-show="!order.RecipientPhone" class="col-md-8 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 no-padding">
+                                                                <div class="col-md-4 no-padding">
+                                                                    <p class="text-label no-margin">Recipient Relation</p>
+                                                                </div>
+                                                                <div ng-show="order.RecipientRelation" class="col-md-8 summary-from">
+                                                                    {{order.RecipientRelation}}
+                                                                </div>
+                                                                <div ng-show="!order.RecipientRelation" class="col-md-8 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 no-padding">
+                                                                <div class="col-md-4 no-padding">
+                                                                    <p class="text-label no-margin">Signature</p>
+                                                                </div>
+                                                                <div ng-show="order.RecipientSignature" class="col-md-8 summary-from">
+                                                                    <img class="failed-image" 
+                                                                        ng-if="order.RecipientSignature" 
+                                                                        src="{{order.RecipientSignature}}">
+                                                                </div>
+                                                                <div ng-show="!order.RecipientSignature" class="col-md-8 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 no-padding">
+                                                                <div class="col-md-4 no-padding">
+                                                                    <p class="text-label no-margin">Photo</p>
+                                                                </div>
+                                                                <div ng-show="order.RecipientPhoto" class="col-md-8 summary-from">
+                                                                    <img class="failed-image" 
+                                                                        ng-if="order.RecipientPhoto" 
+                                                                        src="{{order.RecipientPhoto}}">
+                                                                </div>
+                                                                <div ng-show="!order.RecipientPhoto" class="col-md-8 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="clearfix"></div>
-            <div ng-repeat="track in order.UserTrackOrders" class="row-fluid order-detail-from-address">
-                <div class="row-fluid">
-                    <div class="col-md-2">
-                        Status: {{ track.OrderStatus.OrderStatus }}
+        </div>
+
+        <div class="col-md-4 pr0">
+            <div class="box-rounded bg-white col-md-12 no-padding">
+                <div class="row text-center">
+                    <h2><strong>{{order.OrderStatus.OrderStatus}}</strong></h2>
+                    <h5 class="text-center"><b>CURRENT ROUTE</b></h5>
+                    <div class="bg-white row no-margin">
+                        <div class="col-xs-12">
+                            <h5>{{order.CurrentRouteDetail}}</h5>
+                        </div>
                     </div>
-                    <div class="col-md-2">
-                        Time: {{ track.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}} 
+                </div>
+                <div class="row text-center mb15">
+                    <a class="btn bg-green col-xs-12" ng-click="openTracking(order.UserOrderNumber)">Track this item</a>
+                </div>
+            </div>
+
+            <div class="box-rounded bg-white col-md-12 no-padding mt15">
+                <div class="row-fluid order-details-main-header">
+                    Order Track History
+                </div>
+                <div class="order-track-history">
+                    <div ng-repeat="track in order.UserTrackOrders" class="row no-margin order-detail-from-address">
+                        <div class="row no-margin">
+                            <div class="col-md-1">
+                                {{$index + 1}}
+                            </div>
+                            <div class="col-md-11">
+                                <p>{{ track.OrderStatus.OrderStatus }}</p>
+                                <p>{{ track.CreatedDate | date:'MM/dd/yyyy HH:mm:ss a'}}</p>
+                                <p>By {{ track.User.Email }}</p>
+                                <p>Latitude: {{ track.Latitude }}, Longitude: {{ track.Longitude }}</p>
+                            </div>
+                            <hr>
+                        </div>
                     </div>
-                    <div class="col-md-2">
-                        User: {{ track.User.Email }} 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row box-order-details no-border">
+        <div class="col-md-12 box-rounded bg-white no-padding">
+            <div class="row-fluid order-details-main-header bg-white">
+                History Routes
+            </div>
+            <div class="mt15">
+                <div class="row no-margin">
+                    <div ng-repeat="route in order.UserOrderRoutes">
+                        <div ng-class="$odd ? 'row no-margin' : ''">
+                            <div class="col-md-6">
+                                <div class="box-rounded mb15" ng-init="showTrip[$index] = false">
+                                    <div class="row-fluid order-details-main-header text-center">
+                                        <p class="no-margin"><b>Route {{$index + 1}}</b></p>
+                                        <p class="no-margin">{{route.OrderStatus.OrderStatus}}</p>
+                                    </div>
+                                    <div class="mt15 mb15">
+                                        <div class="row no-margin">
+                                            <div class="col-md-3 no-padding">
+                                                <p class="text-label no-margin">Origin Hub</p>
+                                            </div>
+                                            <div ng-show="route.OriginHub.Name || route.OriginHub.Address1" class="col-md-9 summary-from">
+                                                {{route.OriginHub.Name || '-'}} / {{route.OriginHub.Address1 || '-'}}
+                                            </div>
+                                            <div ng-hide="route.OriginHub.Name && route.OriginHub.Address1" class="col-md-9 summary-from">
+                                                -
+                                            </div>
+                                        </div>
+                                        <div class="row no-margin">
+                                            <div class="col-md-3 no-padding">
+                                                <p class="text-label no-margin">Destination Hub</p>
+                                            </div>
+                                            <div ng-show="route.DestinationHub.Name || route.DestinationHub.Address1" class="col-md-9 summary-from">
+                                                {{route.DestinationHub.Name || '-'}} / {{route.DestinationHub.Address1 || '-'}}
+                                            </div>
+                                            <div ng-hide="route.DestinationHub.Name && route.DestinationHub.Address1" class="col-md-9 summary-from">
+                                                -
+                                            </div>
+                                        </div>
+                                        <div class="row no-margin">
+                                            <div class="col-md-3 no-padding">
+                                                <p class="text-label no-margin">Pickup Address</p>
+                                            </div>
+                                            <div ng-show="route.PickupAddress.Address1" class="col-md-9 summary-from">
+                                                {{route.PickupAddress.Address1}}
+                                            </div>
+                                            <div ng-hide="route.PickupAddress.Address1" class="col-md-9 summary-from">
+                                                -
+                                            </div>
+                                        </div>
+                                        <div class="row no-margin">
+                                            <div class="col-md-3 no-padding">
+                                                <p class="text-label no-margin">Pickup Time</p>
+                                            </div>
+                                            <div ng-show="route.PickupTime" class="col-md-9 summary-from">
+                                                {{route.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                                            </div>
+                                            <div ng-hide="route.PickupTime" class="col-md-9 summary-from">
+                                                -
+                                            </div>
+                                        </div>
+                                        <div class="row no-margin">
+                                            <div class="col-md-3 no-padding">
+                                                <p class="text-label no-margin">Dropoff Address</p>
+                                            </div>
+                                            <div ng-show="route.DropoffAddress.Address1" class="col-md-9 summary-from">
+                                                {{route.DropoffAddress.Address1}}
+                                            </div>
+                                            <div ng-hide="route.DropoffAddress.Address1" class="col-md-9 summary-from">
+                                                -
+                                            </div>
+                                        </div>
+                                        <div class="row no-margin">
+                                            <div class="col-md-3 no-padding">
+                                                <p class="text-label no-margin">Dropoff Time</p>
+                                            </div>
+                                            <div ng-show="route.DropoffTime" class="col-md-9 summary-from">
+                                                {{route.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                                            </div>
+                                            <div ng-hide="route.DropoffTime" class="col-md-9 summary-from">
+                                                -
+                                            </div>
+                                        </div>
+                                        <div class="row no-margin">
+                                            <div class="col-md-3 no-padding">
+                                                <p class="text-label no-margin">Distance</p>
+                                            </div>
+                                            <div class="col-md-9 summary-from">
+                                                {{route.Distance / 1000 | number : 3 }} km
+                                            </div>
+                                        </div>
+                                        <div class="row no-margin">
+                                            <div class="col-md-3 no-padding">
+                                                <p class="text-label no-margin">ETA Delivery</p>
+                                            </div>
+                                            <div class="col-md-9 summary-from">
+                                                {{route.ETADelivery | secondsToDateTime | date:'HH:mm:ss'}}
+                                            </div>
+                                        </div>
+                                        <div class="row no-margin">
+                                            <div class="col-md-3 no-padding">
+                                                <p class="text-label no-margin">Logistic Fee</p>
+                                            </div>
+                                            <div class="col-md-9 summary-from">
+                                                {{route.LogisticFee | currency: currency}}
+                                            </div>
+                                        </div>
+                                        <div class="row no-margin">
+                                            <div class="col-md-3 no-padding">
+                                                <p class="text-label no-margin">Net Margin</p>
+                                            </div>
+                                            <div ng-show="route.NetMargin" class="col-md-9 summary-from">
+                                                {{route.NetMargin}}
+                                            </div>
+                                            <div ng-hide="route.NetMargin" class="col-md-9 summary-from">
+                                                -
+                                            </div>
+                                        </div>
+                                        <div class="row no-margin">
+                                            <div class="col-md-3 no-padding">
+                                                <p class="text-label no-margin">Status</p>
+                                            </div>
+                                            <div class="col-md-9 summary-from">
+                                                {{route.OrderStatus.OrderStatus}}
+                                            </div>
+                                        </div>
+                                        <div class="row no-margin">
+                                            <div class="col-md-3 no-padding">
+                                                <p class="text-label no-margin">Fleet Manager</p>
+                                            </div>
+                                            <div ng-show="route.FleetManager" class="col-md-9 summary-from">
+                                                {{route.FleetManager.CompanyDetail.CompanyName}} / 
+                                                {{route.FleetManager.Email}} / {{route.FleetManager.PhoneNumber}}
+                                            </div>
+                                            <div ng-hide="route.FleetManager" class="col-md-9 summary-from">
+                                                -
+                                            </div>
+                                        </div>
+                                        <div class="row no-margin">
+                                            <div class="col-md-12 mt15" ng-if="route.Trip !== null">
+                                                <button class="btn btn-default bg-white col-xs-12"
+                                                    ng-click="showTrip[$index] = true">
+                                                    See Trip Details
+                                                    <i class="fa fa-chevron-down"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row no-margin" ng-show="showTrip[$index]">
+                                            <div class="col-md-12 no-padding order-trip-detail" ng-if="route.Trip !== null">
+                                                <div class="col-md-12 order-trip-detail-content">
+                                                    <div class="box-rounded bg-white">
+                                                        <div class="row no-margin order-details-main-header">
+                                                            <div class="text-center col-xs-12 no-padding">
+                                                                <h5 class="no-margin">
+                                                                    Trip Details
+                                                                    <a href="#" class="pull-right text-blue" ng-click="showTrip[$index] = false">
+                                                                        <i class="fa fa-close"></i>
+                                                                    </a>
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt15 mb15">
+                                                            <div class="row no-margin">
+                                                                <div class="col-md-3 no-padding">
+                                                                    <p class="text-label no-margin">Trip ID</p>
+                                                                </div>
+                                                                <div ng-show="route.Trip.TripID" class="col-md-9 summary-from">
+                                                                    {{route.Trip.TripID}}
+                                                                </div>
+                                                                <div ng-hide="route.Trip.TripID" class="col-md-9 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                            <div class="row no-margin">
+                                                                <div class="col-md-3 no-padding">
+                                                                    <p class="text-label no-margin">Driver</p>
+                                                                </div>
+                                                                <div ng-show="route.Trip.Driver.FirstName || route.Trip.Driver.LastName" class="col-md-9 summary-from">
+                                                                    {{route.Trip.Driver.FirstName}} {{route.Trip.Driver.LastName}}
+                                                                </div>
+                                                                <div ng-hide="route.Trip.Driver.FirstName && route.Trip.Driver.LastName" class="col-md-9 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                            <div class="row no-margin">
+                                                                <div class="col-md-3 no-padding">
+                                                                    <p class="text-label no-margin">Container</p>
+                                                                </div>
+                                                                <div ng-show="route.Trip.ContainerNumber" class="col-md-9 summary-from">
+                                                                    {{route.Trip.ContainerNumber}}
+                                                                </div>
+                                                                <div ng-hide="route.Trip.ContainerNumber" class="col-md-9 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                            <div class="row no-margin">
+                                                                <div class="col-md-3 no-padding">
+                                                                    <p class="text-label no-margin">Status</p>
+                                                                </div>
+                                                                <div ng-show="route.Trip.OrderStatus.OrderStatus" class="col-md-9 summary-from">
+                                                                    {{route.Trip.OrderStatus.OrderStatus}}
+                                                                </div>
+                                                                <div ng-hide="route.Trip.OrderStatus.OrderStatus" class="col-md-9 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                            <div class="row no-margin">
+                                                                <div class="col-md-3 no-padding">
+                                                                    <p class="text-label no-margin">PickupTime</p>
+                                                                </div>
+                                                                <div ng-show="route.Trip.PickupTime" class="col-md-9 summary-from">
+                                                                    {{route.Trip.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                                                                </div>
+                                                                <div ng-hide="route.Trip.PickupTime" class="col-md-9 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                            <div class="row no-margin">
+                                                                <div class="col-md-3 no-padding">
+                                                                    <p class="text-label no-margin">Dropoff Time</p>
+                                                                </div>
+                                                                <div ng-show="route.Trip.DropoffTime" class="col-md-9 summary-from">
+                                                                    {{route.Trip.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}
+                                                                </div>
+                                                                <div ng-hide="route.Trip.DropoffTime" class="col-md-9 summary-from">
+                                                                    -
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-2">
-                        Latitude: {{ track.Latitude }} 
-                    </div>
-                    <div class="col-md-2">
-                        Longitude: {{ track.Longitude }} 
-                    </div>
-                    <div class="clearfix"></div>
-                </div>      
+                </div>
             </div>
         </div>
     </div>

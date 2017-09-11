@@ -184,6 +184,21 @@ angular.module('adminApp')
                 id: null
             },
         },
+        bulkCurrentLocation: {
+            method: 'GET',
+            params: {
+                module: 'driver',
+                controller: 'bulk-current-location'
+            },
+        },
+        getBulkDistance: {
+            method: 'GET',
+            params: {
+                module: 'driver',
+                controller: 'bulk-distance',
+                id: null
+            },
+        },
         getFleets: {
             method: 'GET',
             params: {
@@ -398,6 +413,14 @@ angular.module('adminApp')
             params: {
                 module: 'user',
                 controller: 'export-referral'
+            }
+        },
+        exportDailyDistance: {
+            method: 'GET',
+            params: {
+                module: 'driver',
+                submodule: 'export',
+                controller: 'daily-distance'
             }
         },
         getAdminFeatures: {

@@ -35,7 +35,8 @@ angular.module('adminApp')
         email: '',
         statusID: '',
         roleID: '',
-        referralCode: ''
+        referralCode: '',
+        filter: {}
     };
     $scope.formInValid = {};
     $scope.dataOnModal = {};
@@ -50,6 +51,21 @@ angular.module('adminApp')
 
     $scope.isAdminCreate = false;
     $scope.isAdminEdit = false;
+
+    var tableFilterSearch = ['name', 'email', 'phoneNumber'];
+    var tableFilterSelect = [
+        {
+            key: 'statusID',
+            collection: 'adminStatus',
+            scope: 'status',
+            value: 'value'
+        }, {
+            key: 'AdminRoleMasterID',
+            collection: 'roles',
+            scope: 'role',
+            value: 'AdminRoleMasterID'
+        }
+    ];
 
     /**
      * Get all Admin Roles
@@ -132,7 +148,8 @@ angular.module('adminApp')
             confirmPassword: '',
             email: '',
             statusID: '',
-            roleID: ''
+            roleID: '',
+            filter: {}
         };
     }
 
@@ -155,6 +172,7 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.editAdmin = function (admin) {
+        $window.scrollTo(0, 0);
         $scope.cancelAddOrUpdate();
         $scope.isAdminEdit = true;
         $scope.resetTemp();
@@ -305,6 +323,63 @@ angular.module('adminApp')
         });
     }
 
+    $scope.selectFilter = function (name, item) {
+        lodash.each(tableFilterSelect, function (val) {
+            if (name == val.scope) {
+                $scope.temp.filter[val.key] = item[val.value];
+                $location.search(val.key, $scope.temp.filter[val.key]);
+                $scope[val.scope] = item;
+            }
+        });
+    }
+
+    $scope.searchList = function () {
+        tableFilterSearch.forEach(function (val) {
+            $location.search(val, $scope.temp.filter[val]);
+        });
+        $scope.getAdminList();
+    }
+
+    $scope.resetFilter = function () {
+        tableFilterSearch.forEach(function (val) {
+            $location.search(val, null);
+            $scope.temp.filter[val] = '';
+        });
+        tableFilterSelect.forEach(function (val) {
+            $location.search(val.key, null);
+            $scope.temp.filter[val.key] = '';
+        });
+        $scope.offset = 0;
+        $scope.getAdminList();
+    }
+
+    var getAdminListParam = function () {
+        var param = {};
+        $location.search('offset', $scope.offset);
+
+        lodash.each(tableFilterSearch, function (val) {
+            $scope.temp.filter[val] = $location.search()[val] || $scope.temp.filter[val];
+        });
+        lodash.each(tableFilterSelect, function (val) {
+            var value = $location.search()[val.key] || $scope.temp.filter[val.key];
+            var findObject = {};
+                findObject[val.value] = (parseInt(value)) ? parseInt(value) : value;
+
+            $scope.temp.filter[val.key] = value;
+            $scope.temp.filter[val.scope] = lodash.find($scope[val.collection], findObject);
+        });
+
+        param.offset = $scope.offset;
+        param.limit = $scope.itemsByPage;
+        param.name = $scope.temp.filter.name;
+        param.email = $scope.temp.filter.email;
+        param.phoneNumber = $scope.temp.filter.phoneNumber;
+        param.statusID = $scope.temp.filter.statusID;
+        param.roleID = $scope.temp.filter.AdminRoleMasterID;
+
+        return param;
+    }
+
     /**
      * Get all admin
      * 
@@ -312,13 +387,9 @@ angular.module('adminApp')
      */
     $scope.getAdminList = function () {
         $rootScope.$emit('startSpin');
-
-        $location.search('offset', $scope.offset);
         $scope.isLoading = true;
-        var params = {
-            offset: $scope.offset,
-            limit: $scope.itemsByPage
-        };
+
+        var params = getAdminListParam();
         Services2.getAdminList(params).$promise.then(function (data) {
             $scope.displayed = data.data.rows;
             $scope.displayed.forEach(function (object){
@@ -464,7 +535,6 @@ angular.module('adminApp')
         $scope.temp.hubUsers.forEach(function (obj) {
             var idx = lodash.findIndex($scope.admin.hubUsers, {'value': obj.value});
             if (idx < 0) {
-                console.log(idx);
                 $scope.temp.addedHubUsers.push(obj);
             }
         });

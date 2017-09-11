@@ -29,7 +29,17 @@
                     <i class="fa fa-refresh"></i> Reset Filter</button>
             </div>
             <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                <button class="btn btn-green col-xs-12" ng-click="export()">Export</button>
+                <button class="btn btn-yellow dropdown-toggle col-xs-12" type="button" data-toggle="dropdown">
+                    Export
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu col-xs-12">
+                    <li><a ng-click="export('userReferral')">Drivers</a></li>
+                    <li><a ng-click="exportDailyDistanceModal()">Daily Distance</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                <button class="btn btn-blue col-xs-12" ng-click="driverLocation()">Driver Location</button>
             </div>
         </div>
     </div>
@@ -39,6 +49,7 @@
             <table st-table="displayed" st-pipe="callServer" class="table table-hover">
                 <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
                     <tr>
+                        <th></th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
@@ -52,18 +63,19 @@
                 </thead>
                 <tbody ng-show="!isLoading && displayed.length == 0">
                     <tr>
-                        <td colspan="9" class="text-center">
+                        <td colspan="10" class="text-center">
                             No data found
                         </td>
                     </tr>
                 </tbody>
                 <tbody ng-show="isLoading">
                     <tr>
-                        <td colspan="9" class="text-center">Loading ... </td>
+                        <td colspan="10" class="text-center">Loading ... </td>
                     </tr>
                 </tbody>
                 <tbody>
                     <tr>
+                        <th></th>
                         <th>
                             <div class="filter-table">
                                 <input 
@@ -152,6 +164,14 @@
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="driver in displayed">
+                        <td class="checkbox-header">
+                            <a href="">
+                                <i class="fa fa-search-plus fa-lg" 
+                                    ng-click="detailsPage(driver.UserID)"
+                                    tooltip-placement="top" 
+                                    uib-tooltip="View Details"></i>
+                            </a>
+                        </td>
                         <td>{{driver.Driver.FirstName}} {{driver.Driver.LastName}}</td>
                         <td>{{driver.Driver.Email}}</td>
                         <td>{{driver.Driver.PhoneNumber}}</td>
@@ -161,8 +181,8 @@
                         <td>{{driver.CanTakeCOD}}</td>
                         <td>{{driver.Driver.ReferralCode}}</td>
                         <td>
-                            <button class="btn btn-primary" type="button" ng-click="editDriver(driver.UserID)">Edit</button>
-                            <button class="btn btn-yellow" type="button"
+                            <button class="btn btn-primary col-md-12" type="button" ng-click="editDriver(driver.UserID)">Edit</button>
+                            <button class="btn btn-yellow col-md-12" type="button"
                                 ng-click="referralCodeModal(driver)"
                                 ng-show="user.AdminDetail.RoleID == 4 || user.AdminDetail.RoleID == 2">Referral Code</button>
                         </td>
@@ -170,7 +190,7 @@
                 </tbody>
                 <tfoot ng-show="!isLoading && displayed.length > 0">
                     <tr>
-                        <td colspan="9" 
+                        <td colspan="10" 
                             class="text-center" 
                             st-pagination="" 
                             st-items-by-page="itemsByPage" 
@@ -205,6 +225,76 @@
                         class="btn btn-green col-md-12"
                         ng-disabled="!temp.referralCode"
                         ng-click="updateRefferalCode()">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="modalDailyDistance">
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <div class="col-md-12 no-padding">
+            <p><b>Daily Distance</b></p>
+            <div class="col-md-12 no-padding mb15">
+                <div class="col-md-4 no-padding">
+                    <p>Date Start</p>
+                </div>
+                <div class="col-md-8 no-padding">
+                    <p class="input-group date-picker-new"> 
+                        <input type="text"
+                            class="form-control border-right-none"
+                            ng-model="dataOnModal.start"
+                            uib-datepicker-popup="d MMMM yyyy"
+                            date:'yyyy-MM-dd'
+                            is-open="isStartDateOpen"
+                            placeholder="Start"
+                            datepicker-options="datePickerOptions"
+                            show-button-bar="false"
+                            ng-click="isStartDateOpen = !isStartDateOpen" />
+                        <span class="input-group-btn">
+                            <button type="button"
+                                class="btn btn-default"
+                                ng-click="isStartDateOpen = !isStartDateOpen">
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-12 no-padding mb15">
+                <div class="col-md-4 no-padding">
+                    <p>Date End</p>
+                </div>
+                <div class="col-md-8 no-padding">
+                    <p class="input-group date-picker-new"> 
+                        <input type="text"
+                            class="form-control border-right-none"
+                            ng-model="dataOnModal.end"
+                            uib-datepicker-popup="d MMMM yyyy"
+                            date:'yyyy-MM-dd'
+                            is-open="isEndDateOpen"
+                            placeholder="End"
+                            datepicker-options="datePickerOptions"
+                            show-button-bar="false"
+                            ng-click="isEndDateOpen = !isEndDateOpen" />
+                        <span class="input-group-btn">
+                            <button type="button"
+                                class="btn btn-default"
+                                ng-click="isEndDateOpen = !isEndDateOpen">
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12 no-padding">
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="" class="btn btn-default col-md-12" ng-click="closeModal()">Cancel</button>
+                </div>
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="updateRefferalCode"
+                        class="btn btn-green col-md-12"
+                        ng-click="export('dailyDistance')">Export</button>
                 </div>
             </div>
         </div>

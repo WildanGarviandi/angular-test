@@ -78,10 +78,15 @@ angular.module('adminApp')
         value: 1
     }];
 
+    $scope.startFilter = $location.search().startFilter || null;
+    $scope.endFilter = $location.search().endFilter || null;
     $scope.itemsByPage = $location.search().limit || 10;
     $scope.offset = $location.search().offset || 0;
     $scope.isFirstLoaded = true;
-
+    $scope.datePickerOptions = {
+        'showWeeks': false,
+        'formatDay': 'd'
+    };
 
     var updateDriver = function(callback) {
         if (!($scope.company && $scope.company.CompanyDetailID && $scope.company.User && $scope.company.User.UserID)) {
@@ -203,6 +208,17 @@ angular.module('adminApp')
         };
     });
 
+    var filterDateRange = ['startFilter', 'endFilter'];
+    filterDateRange.forEach(function (val) {
+        $scope.$watch(
+            (val),
+            function (date) {
+                if (Date.parse(date)) {
+                    $location.search(val, (new Date(date)).toISOString());
+                }
+            }
+        );
+    });
 
     $scope.manageAvailabilitiesFilter = function (obj) {
         return obj.value !== 'all';
@@ -304,13 +320,7 @@ angular.module('adminApp')
         });
     }
 
-    /**
-     * Get all drivers
-     * 
-     * @return {void}
-     */
-    $scope.getDrivers = function() {
-        $rootScope.$emit('startSpin');
+    var getDriversParam = function () {
         if ($stateParams.query) {
             $scope.reqSearchString = $stateParams.query;
         }
@@ -331,7 +341,7 @@ angular.module('adminApp')
         });
 
         $location.search('offset', $scope.offset);
-        $scope.isLoading = true;
+
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
@@ -343,6 +353,19 @@ angular.module('adminApp')
             availability: $scope.availability.value,
             company: $scope.company.CompanyDetailID
         };
+
+        return params;
+    }
+
+    /**
+     * Get all drivers
+     * 
+     * @return {void}
+     */
+    $scope.getDrivers = function() {
+        $rootScope.$emit('startSpin');
+        $scope.isLoading = true;
+        var params = getDriversParam();
         Services2.getDrivers(params).$promise.then(function(data) {
             $scope.displayed = data.data.Drivers.rows;
             $scope.displayed.forEach(function(object){
@@ -440,6 +463,7 @@ angular.module('adminApp')
     }
     
     $scope.closeModal = function () {
+        $scope.dataOnModal = {};
         ngDialog.close();
     }
 
@@ -473,21 +497,103 @@ angular.module('adminApp')
         });
     }
 
-    $scope.export = function () {
-        var type = 'userReferral';
-        var maxExport = 0;
-        var params = {};
-            params.limit = 1;
-            params.userType = 3;
+    $scope.exportDailyDistanceModal = function () {
+        $scope.dataOnModal.date = {};
 
-        Services2.exportReferral(params).$promise
-        .then(function (data) {
-            maxExport = data.data.count;
-            var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + maxExport;
-            var params = {};
-                params.userType = 3;
-            $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+        return ngDialog.open({
+            template: 'modalDailyDistance',
+            scope: $scope,
+            className: 'ngdialog-theme-default',
+            closeByDocument: false
         });
     }
 
-  });
+    $scope.export = function (type) {
+        if (type == 'userReferral') {
+            var maxExport = 0;
+            var params = {};
+                params.limit = 1;
+                params.userType = 3;
+
+            Services2.exportReferral(params).$promise
+            .then(function (data) {
+                maxExport = data.data.count;
+                var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + maxExport;
+                var params = {};
+                    params.userType = 3;
+                $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+            });
+        }
+
+        if (type == 'dailyDistance') {
+            var maxExport = 0;
+            var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + maxExport;
+            var params = getDriversParam();
+                params.start = $scope.dataOnModal.start;
+                params.end = $scope.dataOnModal.end;
+
+            $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+        }
+    }
+
+    $scope.driverLocation = function() {
+        $window.open('/driverLocation');
+    };
+
+    /**
+     * Redirect to driver detail page
+     * 
+     * @return {void}
+     */
+    $scope.detailsPage = function (id) {
+        $window.open('/drivers/' + id);
+    }
+
+    $scope.driverDistance = function () {
+        lodash.each(filterDateRange, function (val) {
+            $scope[val] = $location.search()[val] || $scope[val];
+        });
+
+        var start = moment($scope.startFilter);
+        var end = moment($scope.endFilter);
+        var diff = Math.ceil(end.diff(start, 'days')) + 1;
+
+        if (diff > 31) {
+            return SweetAlert.swal({
+                title: 'Failed Fatch Driver Distance',
+                text: 'Maximum range is 31 days',
+                type: 'error'
+            });
+        }
+
+        var params = {};
+            params.id = $stateParams.driverID;
+            params.startDate = $scope.startFilter;
+            params.endDate = $scope.endFilter;
+
+        Services2.getBulkDistance(params).$promise
+        .then(function(data) {
+            $scope.driverDistanceDetail = data.data;
+            $scope.driverDistanceSeries = ['Distance'];
+            $scope.driverDistanceData = [];
+            $scope.driverDistanceLabel = [];
+
+            for (var i = 0; i < diff; i++) {
+                $scope.driverDistanceLabel.push(start.format('DD MMM YYYY'));
+                start = start.add(1, 'days');
+            }
+
+            lodash.forEach($scope.driverDistanceLabel, function (val) {
+                var distance = lodash.find($scope.driverDistanceDetail, function (o) {
+                    return moment(o.Date).format('DD MMM YYYY') == val;
+                });
+
+                if (distance) {
+                    $scope.driverDistanceData.push(distance.Distance);
+                } else {
+                    $scope.driverDistanceData.push(0);
+                }
+            });
+        });
+    }
+});

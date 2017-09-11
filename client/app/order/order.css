@@ -60,7 +60,6 @@
 .order-details-main-header {
     font-family: 'Avenir-Heavy';
     font-size: 15px;
-    height: 60px;
     padding: 20px;
     width: 100%;
     border-bottom: 1px solid #ccc;
@@ -696,4 +695,79 @@ a {
 
 .modal-import-summary .ngdialog-content {
     width: 1000px !important;
+}
+
+.box-rounded {
+    border-radius: 4px;
+    border: 1px solid #e8e8e8;
+}
+
+.table-rounded {
+    border-radius: 4px;
+}
+
+.table-rounded thead {
+    border-top: 1px solid #e8e8e8;
+    border-left: 1px solid #e8e8e8;
+    border-right: 1px solid #e8e8e8;
+}
+
+.table-rounded tbody {
+    border-left: 1px solid #e8e8e8;
+    border-right: 1px solid #e8e8e8;
+}
+
+.table-rounded tfoot {
+    border-bottom: 1px solid #e8e8e8;
+    border-left: 1px solid #e8e8e8;
+    border-right: 1px solid #e8e8e8;
+}
+
+.table-rounded thead th {
+    text-align: center;
+    color: #000;
+    padding-top: 17px !important;
+    padding-bottom: 17px !important;
+}
+
+.table-rounded tfoot td {
+    padding-top: 17px !important;
+    padding-bottom: 17px !important;
+}
+
+.order-track-history {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+.text-label {
+    text-align: right;
+    color: rgba(0,0,0, 0.5);
+}
+
+.order-trip-detail {
+    position: relative;
+}
+
+.order-trip-detail-content {
+    position: absolute;
+    bottom: 0;
+    width: inherit;
+}
+
+.order-attempt-detail-content {
+    position: absolute;
+    width: inherit;
+    top: -35px;
+    z-index: 9;
+}
+
+.order-attempt-row {
+    border-bottom: 1px solid #e6e6e6;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 0;
+    padding-right: 0;
 }

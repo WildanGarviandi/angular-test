@@ -151,7 +151,7 @@
                                     theme="selectize" 
                                     tagging="tagHandler"
                                     ng-disabled="disabled" 
-                                    on-select="choosenDataToScope($item, 'import.others.merchant')">
+                                    on-select="choosenDataToScope('merchant', $item, 'import.others.merchant')">
                                     <ui-select-match placeholder="Choose merchant">
                                         {{ $select.selected.key }}
                                     </ui-select-match>
@@ -169,12 +169,12 @@
                     <div class="col-xs-12 no-padding margin-b-10">
                         <p ng-click="toggleScope('import.others.showFleet')" class="cursor">
                             <input type="checkbox" ng-model="import.others.showFleet">
-                            Set Fleet
+                            Select Pickup Driver
                             <div class="col-md-12 no-padding" ng-show="import.others.showFleet">
                                 <ui-select ng-model="import.others.fleet" 
                                     theme="selectize" 
                                     tagging="tagHandler"
-                                    on-select="choosenDataToScope($item, 'import.others.fleet')" 
+                                    on-select="choosenDataToScope('fleet', $item, 'import.others.fleet')" 
                                     class="col-xs-12 no-padding">
                                     <ui-select-match class="input-table" placeholder="Choose Fleet">{{$select.selected.CompanyName}}</ui-select-match>
                                     <ui-select-choices repeat="c in companies | filter: $select.search track by $index" selected>
@@ -186,9 +186,40 @@
                                     <small>This will override the Fleet to <b>{{import.others.fleet.CompanyName}}</b></small>
                                 </h5>
                             </div>
+
+                            <div class="col-md-12 no-padding" ng-show="!import.others.showDriver && import.others.fleet">
+                                <h5>Fetching driver data...</h5>                            
+                            </div>
+                            <div class="col-md-12 no-padding" ng-show="import.others.showDriver">
+                                <ui-select ng-model="import.others.driver" 
+                                    theme="selectize" 
+                                    tagging="tagHandler"
+                                    on-select="choosenDataToScope('driver', $item, 'import.others.driver')" 
+                                    class="col-xs-12 no-padding">
+                                    <ui-select-match class="input-table" placeholder="Choose Driver">{{$select.selected.value}}</ui-select-match>
+                                    <ui-select-choices repeat="d in drivers | filter: $select.search track by $index" selected>
+                                        <span class="input-table" ng-bind-html="d.value | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                                <h5 class="text-orange" ng-if="import.others.driver.key > 0">
+                                    <i class="fa fa-info-circle"></i>
+                                    <small>This will override the Driver to <b>{{import.others.driver.value}}</b></small>
+                                </h5>
+                            </div>
                         </p>
                     </div>
                  </div>
+            </div>
+            <div class="col-xs-12 no-padding">            
+                <div class="col-md-4 col-xs-12 no-padding">
+                    <p class="label-import-margin">Proof of Pickup :</p>
+                </div>  
+                <div class="col-md-8 col-xs-12 no-padding">
+                    <a ng-show="f.success" href="{{f.success}}"
+                    target="_blank">Click to view</a>
+                    <button class="btn btn-default" ngf-select="uploadPic($file)" ng-model="file" 
+                        ngf-model-invalid="errorFile" type="file" accept="image/*">Upload</button>
+                </div>
             </div>
 
             <div class="col-xs-12 no-padding" ng-if="import.error.length > 0 || import.uploaded.length > 0 || import.updated.length > 0">

@@ -290,11 +290,31 @@ angular.module('adminApp')
             },
             authenticate: true
         })
+        .state('app.driverLocation', {
+            url: 'driverLocation',
+             views: {
+                'content@': {
+                    templateUrl: 'app/driverLocation/driverLocation.html',
+                    controller: 'DriverLocationCtrl',
+                }
+            },
+            authenticate: true
+        })
         .state('app.update-driver', {
             url: 'update-driver/:driverID',
              views: {
                 'content@': {
                     templateUrl: 'app/driver/manage-driver.html',
+                    controller: 'DriverCtrl',
+                }
+            },
+            authenticate: true
+        })
+        .state('app.driver-detail', {
+            url: 'drivers/:driverID',
+             views: {
+                'content@': {
+                    templateUrl: 'app/driver/driver-detail.html',
                     controller: 'DriverCtrl',
                 }
             },
