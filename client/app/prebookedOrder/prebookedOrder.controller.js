@@ -407,8 +407,9 @@ angular.module('adminApp')
     var barcodeGenerator = function (value) {
         var canvas = document.createElement("canvas");
         var settings = {
-            height: 40,
-            width: 2
+            height: 20,
+            width: 2,
+            fontSize: 14
         };
 
         JsBarcode(canvas, value, settings);
@@ -424,7 +425,7 @@ angular.module('adminApp')
         var data = {};
             data.orders = $scope.selectedOrders;
             data.setting = {
-                paperSize: 'A5',
+                paperSize: 'airwayBill',
                 paperOrientation: 'landscape',
                 cssURL: ['../../app/prebookedOrder/printPrebookedOrder.css']
             };
