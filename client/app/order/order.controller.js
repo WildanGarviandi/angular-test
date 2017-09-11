@@ -483,12 +483,6 @@ angular.module('adminApp')
                         array[index].ReturnedWarehouseLocation = val.UserOrderReturneds[0].Location.Hub.Name;
                     }
                 }
-
-                array[index].InHubPosition = '';
-                if (val.CurrentRoute && val.CurrentRoute.LogUserOrderEvents.length) {
-                    var lastLogUserOrderEvents = val.CurrentRoute.LogUserOrderEvents.length - 1;
-                    array[index].InHubPosition = val.CurrentRoute.LogUserOrderEvents[lastLogUserOrderEvents].AdditionalData;
-                }
             });
             $rootScope.$emit('stopSpin');
             $scope.isLoading = false;
