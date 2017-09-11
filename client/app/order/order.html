@@ -537,7 +537,8 @@
                             <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                             <td tooltip-placement="top" 
                                 uib-tooltip="{{order.ReturnedWarehouseLocation}}">{{order.OrderStatus.OrderStatus}}</td>
-                            <td>{{order.CurrentRouteDetail}}</td>
+                            <td><span href="#" tooltip-placement="top" 
+                                uib-tooltip="{{order.InHubPosition}}">{{order.CurrentRouteDetail}}</span></td>
                             <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                             <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                             <td>{{order.PickupAddress.Address1}}</td>
