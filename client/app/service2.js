@@ -191,6 +191,14 @@ angular.module('adminApp')
                 controller: 'bulk-current-location'
             },
         },
+        getBulkDistance: {
+            method: 'GET',
+            params: {
+                module: 'driver',
+                controller: 'bulk-distance',
+                id: null
+            },
+        },
         getFleets: {
             method: 'GET',
             params: {
