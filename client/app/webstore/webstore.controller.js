@@ -157,6 +157,23 @@ angular.module('adminApp')
         return newData;
     }
 
+    /*
+     * Style Responsive Height
+     *
+    */
+    var webstoreNavigationHeight = $('#webstore-navigation').height();
+    var addInitHeight = 160;
+    var minInitHeight = 100;
+    var externalHeightOnResize = 160;
+    $scope.tableHeight = $window.innerHeight - (webstoreNavigationHeight + addInitHeight);
+    $scope.webstoreListHeight = $scope.tableHeight - minInitHeight;
+    $(window).resize(function(){
+        $scope.$apply(function(){
+            webstoreNavigationHeight = $('#webstore-navigation').height();
+            $scope.tableHeight = $window.innerHeight - (webstoreNavigationHeight + externalHeightOnResize);
+            $scope.webstoreListHeight = $scope.tableHeight - minInitHeight;
+        });
+    });
 
     var createWebstore = function(callback) {
         var pricingType = parseInt($scope.webstore.PricingType);
@@ -525,13 +542,7 @@ angular.module('adminApp')
         $scope.offset = Math.ceil(value);
     }
 
-    /**
-     * Get all webstores
-     * 
-     * @return {void}
-     */
-    $scope.getWebstores = function() {
-        $rootScope.$emit('startSpin');
+    var getWebstoresParam = function () {
         var paramsQuery = {
             'name': 'name',
             'email': 'email',
@@ -551,16 +562,29 @@ angular.module('adminApp')
         });
 
         $location.search('offset', $scope.offset);
-        $scope.isLoading = true;
         var params = {
             name: $scope.searchFilter.name,
             email: $scope.searchFilter.email,
             address: $scope.searchFilter.address,
             status: $scope.statusFilter.key,
-            postPaidPayment: $scope.postPaidPaymentFilter.key,
+            postPaidPayment: ($scope.postPaidPaymentFilter.key !== 'all') ? $scope.postPaidPaymentFilter.key : '',
             offset: $scope.offset,
             limit: $scope.itemsByPage
         };
+
+        return params;
+    }
+
+    /**
+     * Get all webstores
+     * 
+     * @return {void}
+     */
+    $scope.getWebstores = function() {
+        $rootScope.$emit('startSpin');
+        $scope.isLoading = true;
+        
+        var params = getWebstoresParam();
         Webstores.getWebstore(params).$promise.then(function(data) {
             $scope.displayed = _.map(data.data.webstores, function(webstore) {
                 return _.assign({}, webstore.webstore, {
@@ -1023,6 +1047,7 @@ angular.module('adminApp')
             maxExport = data.data.count;
             var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + maxExport;
             var params = {};
+                params = getWebstoresParam();
                 params.userType = 5;
             $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
         });
