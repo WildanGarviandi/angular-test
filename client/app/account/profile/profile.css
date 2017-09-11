@@ -45,3 +45,7 @@ form .progress {
 .no-margin {
     margin: 0 !important;
 }
+
+.no-border {
+    border: none;
+}
