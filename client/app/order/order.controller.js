@@ -698,6 +698,7 @@ angular.module('adminApp')
             }
             $scope.isCurrentStatus = {};
             $scope.isCurrentStatus.returnedSender = ($scope.order.OrderStatus.OrderStatusID === 16);
+            $scope.isCurrentStatus.delivered = ($scope.order.OrderStatus.OrderStatusID === 5);
             $scope.isLoading = false;
             $rootScope.$emit('stopSpin');
         });
