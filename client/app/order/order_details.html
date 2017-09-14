@@ -439,8 +439,7 @@
                                 </div>
                                 <div class="row no-margin"
                                     ng-show="isCurrentStatus.delivered
-                                    || isCurrentStatus.returnedSender
-                                    || order.RecipientName.trim()">
+                                    || isCurrentStatus.returnedSender">
                                     <div class="col-md-12 mt15">
                                         <button class="btn btn-default bg-white col-xs-12"
                                             ng-click="showPOD = true">
@@ -465,9 +464,7 @@
                                                 </div>
                                                 <div class="order-track-history">
                                                     <div class="row no-margin">
-                                                        <div class="col-md-12 order-attempt-row"
-                                                            ng-show="isCurrentStatus.delivered
-                                                            || isCurrentStatus.returnedSender">
+                                                        <div class="col-md-12 order-attempt-row">
                                                             <div class="col-md-12 no-padding">
                                                                 <div class="col-md-4 no-padding">
                                                                     <p class="text-label no-margin">Date</p>
@@ -494,7 +491,7 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-md-12 order-attempt-row" ng-show="order.RecipientName.trim()">
+                                                        <div class="col-md-12 order-attempt-row">
                                                             <div class="col-md-12 no-padding">
                                                                 <div class="col-md-4 no-padding">
                                                                     <p class="text-label no-margin">Recipient Name</p>
