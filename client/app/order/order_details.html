@@ -13,48 +13,6 @@
     </div>
 
     <div class="row box-order-details">
-        <table class="table table-rounded">
-            <thead>
-                <tr>
-                    <th>Checkpoint Start</th>
-                    <th>Checkpoint End</th>
-                    <th>Location</th>
-                    <th>Start Time</th>
-                    <th>Start End</th>
-                    <th>Duration</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="o in order.Checkpoints | limitTo: limitCheckpoint">
-                    <td class="text-center">{{o.CheckpointStart}}</td>
-                    <td class="text-center">{{o.CheckpointEnd}}</td>
-                    <td class="text-center">{{o.LocationStart}} <span ng-if="o.LocationStart && o.LocationEnd">></span> {{o.LocationEnd}}</td>
-                    <td class="text-center">{{moment(o.TimeStart).format('DD MMMM YYYY')}} <br> {{moment(o.TimeStart).format('HH:mm:ss')}}</td>
-                    <td class="text-center">{{moment(o.TimeEnd).format('DD MMMM YYYY')}} <br> {{moment(o.TimeEnd).format('HH:mm:ss')}}</td>
-                    <td class="text-center">
-                        <span ng-if="moment(o.TimeEnd).diff(moment(o.TimeStart), 'days')">
-                            {{moment(o.TimeEnd).diff(moment(o.TimeStart), 'days')}} day
-                        </span>
-                        {{moment.utc(moment(o.TimeEnd).diff(moment(o.TimeStart))).format("HH:mm:ss")}}
-                    </td>
-                </tr>
-            </tbody>
-            <tfoot ng-if="order.Checkpoints.length > 3">
-                <tr ng-if="limitCheckpoint != order.Checkpoints.length">
-                    <td colspan="6" class="text-center">
-                        <a href="#" class="text-blue col-md-12" ng-click="limitCheckpointToggle(true)">SHOW ALL ({{order.Checkpoints.length}})</a>
-                    </td>
-                </tr>
-                <tr ng-if="limitCheckpoint == order.Checkpoints.length">
-                    <td colspan="6" class="text-center">
-                        <a href="#" class="text-blue col-md-12" ng-click="limitCheckpointToggle(false)">HIDE</a>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-
-    <div class="row box-order-details">
         <div class="col-md-8 pl0 pr0">
             <div class="box-rounded">
                 <div class="row-fluid order-details-main-header bg-white">
@@ -846,6 +804,49 @@
             </div>
         </div>
     </div>
+
+    <div class="row box-order-details">
+        <table class="table table-rounded">
+            <thead>
+                <tr>
+                    <th>Checkpoint Start</th>
+                    <th>Checkpoint End</th>
+                    <th>Location</th>
+                    <th>Start Time</th>
+                    <th>Start End</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="(key, o) in order.Checkpoints | limitTo: limitCheckpoint" ng-hide="key == order.Checkpoints.length - 1">
+                    <td class="text-center">{{o.CheckpointStart}}</td>
+                    <td class="text-center">{{o.CheckpointEnd}}</td>
+                    <td class="text-center">{{o.LocationStart}} <span ng-if="o.LocationStart && o.LocationEnd">></span> {{o.LocationEnd}}</td>
+                    <td class="text-center">{{moment(o.TimeStart).format('DD MMMM YYYY')}} <br> {{moment(o.TimeStart).format('HH:mm:ss')}}</td>
+                    <td class="text-center">{{moment(o.TimeEnd).format('DD MMMM YYYY')}} <br> {{moment(o.TimeEnd).format('HH:mm:ss')}}</td>
+                    <td class="text-center">
+                        <span ng-if="moment(o.TimeEnd).diff(moment(o.TimeStart), 'days')">
+                            {{moment(o.TimeEnd).diff(moment(o.TimeStart), 'days')}} day
+                        </span>
+                        {{moment.utc(moment(o.TimeEnd).diff(moment(o.TimeStart))).format("HH:mm:ss")}}
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot ng-if="order.Checkpoints.length - 1 > 3">
+                <tr ng-if="limitCheckpoint != order.Checkpoints.length - 1">
+                    <td colspan="6" class="text-center">
+                        <a href="#" class="text-blue col-md-12" ng-click="limitCheckpointToggle(true)">SHOW ALL ({{order.Checkpoints.length - 1}})</a>
+                    </td>
+                </tr>
+                <tr ng-if="limitCheckpoint == order.Checkpoints.length - 1">
+                    <td colspan="6" class="text-center">
+                        <a href="#" class="text-blue col-md-12" ng-click="limitCheckpointToggle(false)">HIDE</a>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
 </div>
 
 <script type="text/ng-template" id="editPickupAddressTemplate">
