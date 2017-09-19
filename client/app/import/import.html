@@ -104,6 +104,7 @@
             <div class="col-md-12 col-sm-12 no-padding">
                 <uib-progressbar
                     class="progress-striped active import-progress" 
+                    max="import.max"
                     value="import.progress">
                 </uib-progressbar>
             </div>
@@ -118,7 +119,7 @@
                 <p class="no-margin" ng-bind-html="import.info"></p>
             </div>
             <div class="col-md-1 col-sm-2 no-padding submit-import-button">
-                <button class="btn btn-blue col-md-12 col-sm-12" ng-click="openModal('modalGenerator')">import</button>
+                <button class="btn btn-blue col-md-12 col-sm-12" ng-disabled="import.isOnProcess" ng-click="openModal('modalGenerator')">import</button>
             </div>
         </div>
     </div>
