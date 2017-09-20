@@ -321,7 +321,8 @@ angular.module('adminApp')
                     $scope.temp.listOfSuccess = [];
                     $scope.temp.listOfError = [];
                     $scope.temp.error = [];
-                    var limit = 1;
+                    var limit = 25;
+                    var error = '';
                     var bulkMarkAsDelivered = function (data) {
                         $scope.import.info = 'processing ' + $scope.import.progress + ' row from ' + $scope.import.max;
 
@@ -329,32 +330,35 @@ angular.module('adminApp')
                         return Services2.bulkMarkAsDelivered({
                             data: data
                         }).$promise.then(function (result) {
-                            angular.forEach(tempData, function (d) {
-                                $scope.temp.listOfSuccess.push(d);
+                            angular.forEach(tempData, function (v, k) {
+                                var temp = lodash.find(result.data, { EDSNumber: v.EDSNumber });
+                                if (!temp.status) {
+                                    var err = temp.message;
+                                    if (temp.message.message) {
+                                        err = temp.message.message;
+                                    }
+
+                                    var column = $scope.table.headerNames.indexOf('EDSNumber');
+                                    var comment = err;
+                                    var cellError = {
+                                        row: $scope.import.progress + k,
+                                        column: column,
+                                        comment: comment
+                                    };
+                                    $scope.temp.error.push(cellError);
+
+                                    $scope.temp.listOfError.push(v);
+                                }
+                                if (temp.status) {
+                                    $scope.temp.listOfSuccess.push(v);
+                                }
                             });
                         }).catch(function (e) {
-                            var error = e.data.error.message;
+                            error += e.data.error.message;
 
                             if (e.data.error.message.errorList) {
-                                error = e.data.error.message.errorList;
+                                error += e.data.error.message.errorList;
                             }
-
-                            if (e.data.error.message.message) {
-                                error = e.data.error.message.message;
-                            }
-
-                            angular.forEach(tempData, function (d) {
-                                var column = $scope.table.headerNames.indexOf('EDSNumber');
-                                var comment = error;
-                                var cellError = {
-                                    row: $scope.import.progress,
-                                    column: column,
-                                    comment: comment
-                                };
-                                $scope.temp.error.push(cellError);
-
-                                $scope.temp.listOfError.push(d);
-                            });
                         });
                     };
 
@@ -371,6 +375,9 @@ angular.module('adminApp')
                                 + ' row imported </span>, <span class="text-red">' 
                                 + $scope.temp.listOfError.length 
                                 + ' row error </span>';
+                        }
+                        if (error) {
+                            $scope.import.info += error;
                         }
 
                         $scope.temp.listOfSuccess = lodash.difference($scope.temp.data, $scope.temp.listOfError);
