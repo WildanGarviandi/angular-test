@@ -391,12 +391,9 @@ angular.module('adminApp')
                     $scope.hotInstance.loadData($scope.table.data);
 
                     lodash.forEach($scope.temp.error, function (error) {
+                        commentsPlugin.removeCommentAtCell(error.row, error.column);
                         $scope.hotInstance.getCellMeta(error.row, error.column).comment = error.comment;
-                        commentsPlugin.showAtCell(error.row, error.column);
-                        commentsPlugin.saveCommentAtCell(error.row, error.column);
                     });
-
-                    $scope.hotInstance.render();
                     
                     $(".htCommentTextArea").attr("disabled","disabled");
                 }
@@ -409,7 +406,7 @@ angular.module('adminApp')
                         header: 'DropoffTime',
                         format: {
                             type: 'date',
-                            dateFormat: 'MM/DD/YYYY',
+                            dateFormat: 'MM/DD/YYYY HH:mm:ss A',
                             correctFormat: true
                         }
                     }
