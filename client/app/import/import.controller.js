@@ -341,7 +341,7 @@ angular.module('adminApp')
                                     var column = $scope.table.headerNames.indexOf('EDSNumber');
                                     var comment = err;
                                     var cellError = {
-                                        row: $scope.import.progress + k,
+                                        row: $scope.temp.listOfError.length,
                                         column: column,
                                         comment: comment
                                     };
@@ -391,10 +391,10 @@ angular.module('adminApp')
                     $scope.hotInstance.loadData($scope.table.data);
 
                     lodash.forEach($scope.temp.error, function (error) {
-                        commentsPlugin.removeCommentAtCell(error.row, error.column);
                         $scope.hotInstance.getCellMeta(error.row, error.column).comment = error.comment;
                     });
-                    
+
+                    commentsPlugin.refreshEditorPosition();
                     $(".htCommentTextArea").attr("disabled","disabled");
                 }
                 $scope.import.listOfSuccess = function () {
