@@ -201,6 +201,31 @@ angular.module('adminApp')
         }, 1000);
     };
 
+    var processingLoop = function (limit, funcToExecute, callbackOnFinish) {
+        var data = $scope.temp.data;
+        var startRow = $scope.import.progress;
+        var endRow = startRow + limit;
+
+        funcToExecute(data.slice(startRow, endRow))
+        .then(function() {
+            $scope.import.progress = endRow;
+
+            if ($scope.import.progress < $scope.import.max) {
+                processingLoop(limit, funcToExecute, callbackOnFinish);
+            } else {
+                return callbackOnFinish();
+            }
+        });
+    }
+
+    var loopWithLimit = function (limit, funcToExecute, callbackOnFinish) {
+        var promises = [];
+        $scope.import.progress = 0;
+        $scope.import.max = $scope.temp.data.length;
+        
+        return processingLoop(limit, funcToExecute, callbackOnFinish);
+    }
+
     /* routing import type */
     var buildImportType = function (type) {
         $scope.import.customValidator = [];
@@ -271,6 +296,8 @@ angular.module('adminApp')
                 $scope.import.isUsingSocket = false;
                 $scope.import.isHaveParam = false;
                 $scope.import.onSubmit = function () {
+                    ngDialog.close();
+                    $scope.import.isOnProcess = true;
                     var commentsPlugin = $scope.hotInstance.getPlugin('comments');
                     if ($scope.temp.error) {
                         lodash.forEach($scope.temp.error, function (error) {
@@ -288,83 +315,87 @@ angular.module('adminApp')
                         }
                     });
 
-                    function deliveredErrorComment () {
-                        $q(function (resolve) {
-                            var i = 0;
-                            $scope.temp.error = [];
-                            $scope.temp.listOfError = [];
-                            $scope.temp.listOfSuccess = [];
-                            lodash.forEach($scope.table.error, function (value, index) {
-                                if (value.error) {
-                                    var errorData = value.error;
-                                    var idx = value.row - 1;
-                                    var row = i;
+                    $scope.import.info = '';
+                    $scope.import.processMessage = 'importing data ...';
 
-                                    $scope.temp.listOfError.push($scope.temp.data[idx]);
+                    $scope.temp.listOfSuccess = [];
+                    $scope.temp.listOfError = [];
+                    $scope.temp.error = [];
+                    var limit = 25;
+                    var error = '';
+                    var bulkMarkAsDelivered = function (data) {
+                        $scope.import.info = 'processing ' + $scope.import.progress + ' row from ' + $scope.import.max;
 
-                                    lodash.forEach(lodash.keys(errorData), function (key) {
-                                        var column = $scope.table.headerNames.indexOf(key);
-                                        var comment = errorData[key];
-                                        var cellError = {
-                                            row: row,
-                                            column: column,
-                                            comment: errorData[key]
-                                        };
-                                        $scope.temp.error.push(cellError);
-                                    });
-                                    i++;
+                        var tempData = data;
+                        return Services2.bulkMarkAsDelivered({
+                            data: data
+                        }).$promise.then(function (result) {
+                            angular.forEach(tempData, function (v, k) {
+                                var temp = lodash.find(result.data, { EDSNumber: v.EDSNumber });
+                                if (!temp.status) {
+                                    var err = temp.message;
+                                    if (temp.message.message) {
+                                        err = temp.message.message;
+                                    }
+
+                                    var column = $scope.table.headerNames.indexOf('EDSNumber');
+                                    var comment = err;
+                                    var cellError = {
+                                        row: $scope.temp.listOfError.length,
+                                        column: column,
+                                        comment: comment
+                                    };
+                                    $scope.temp.error.push(cellError);
+
+                                    $scope.temp.listOfError.push(v);
+                                }
+                                if (temp.status) {
+                                    $scope.temp.listOfSuccess.push(v);
                                 }
                             });
-                            resolve();
-                        }).then(function () {
-                            $scope.temp.listOfSuccess = lodash.difference($scope.temp.data, $scope.temp.listOfError);
-                            $scope.table.data = lodash.difference($scope.table.data, $scope.temp.listOfSuccess);
-                            $scope.hotInstance.loadData($scope.table.data);
+                        }).catch(function (e) {
+                            error += e.data.error.message;
 
-                            lodash.forEach($scope.temp.error, function (error) {
-                                $scope.hotInstance.getCellMeta(error.row, error.column).comment = error.comment;
-                                commentsPlugin.showAtCell(error.row, error.column);
-                                commentsPlugin.saveCommentAtCell(error.row, error.column);
-                            });
-
-                            $scope.hotInstance.render();
-                            
-                            $(".htCommentTextArea").attr("disabled","disabled");
+                            if (e.data.error.message.errorList) {
+                                error += e.data.error.message.errorList;
+                            }
                         });
                     };
 
-                    $scope.import.info = '';
-                    $scope.table.error = [];
-                    $scope.import.processMessage = 'importing data ...';
-                    Services2.bulkMarkAsDelivered({
-                        data: $scope.temp.data
-                    }).$promise.then(function (result) {
-                        ngDialog.close();
-                        $scope.temp.listOfError = [];
-                        $scope.temp.listOfSuccess = $scope.temp.data;
+                    loopWithLimit(limit, bulkMarkAsDelivered, function () {
                         $scope.clearSheet();
+                        $scope.import.progress = 0;
+                        $scope.import.isOnProcess = false;
                         $scope.import.processMessage = 'finish importing';
-                        $scope.import.info = 'success ' + $scope.temp.count + ' row imported';
-                    })
-                    .catch(function (e) {
-                        ngDialog.close();
-                        $scope.import.processMessage = 'finish importing';
-                        $scope.table.error = e.data.error.message.errorList;
 
-                        if ($scope.table.error) {
+                        $scope.import.info = 'success ' + $scope.temp.count + ' row imported';
+                        if ($scope.temp.listOfError.length) {
                             $scope.import.info = '<span class="text-green">'
-                                + ($scope.temp.count - $scope.table.error.length) 
+                                + ($scope.temp.count - $scope.temp.listOfError.length) 
                                 + ' row imported </span>, <span class="text-red">' 
-                                + $scope.table.error.length 
+                                + $scope.temp.listOfError.length 
                                 + ' row error </span>';
-                            deliveredErrorComment();
-                        } else {
-                            $scope.import.info = e.data.error.message;
                         }
+                        if (error) {
+                            $scope.import.info += error;
+                        }
+
+                        $scope.temp.listOfSuccess = lodash.difference($scope.temp.data, $scope.temp.listOfError);
+                        $scope.table.data = lodash.difference($scope.table.data, $scope.temp.listOfSuccess);
                     });
                 };
                 $scope.import.listOfError = function () {
                     $scope.table.data = $scope.temp.listOfError;
+
+                    var commentsPlugin = $scope.hotInstance.getPlugin('comments');
+                    $scope.hotInstance.loadData($scope.table.data);
+
+                    lodash.forEach($scope.temp.error, function (error) {
+                        $scope.hotInstance.getCellMeta(error.row, error.column).comment = error.comment;
+                    });
+
+                    commentsPlugin.refreshEditorPosition();
+                    $(".htCommentTextArea").attr("disabled","disabled");
                 }
                 $scope.import.listOfSuccess = function () {
                     $scope.table.data = $scope.temp.listOfSuccess;
@@ -375,7 +406,8 @@ angular.module('adminApp')
                         header: 'DropoffTime',
                         format: {
                             type: 'date',
-                            dateFormat: 'MM/DD/YYYY hh:mm:ss A'
+                            dateFormat: 'MM/DD/YYYY HH:mm:ss A',
+                            correctFormat: true
                         }
                     }
                 ];
