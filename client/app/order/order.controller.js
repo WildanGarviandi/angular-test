@@ -280,6 +280,17 @@ angular.module('adminApp')
     $scope.isOrderSelected = false;
     $scope.techSupport = $cookies.get('techSupport') === 'true';
 
+    var getWebstores = function () {
+        var params = {};
+            params.status = 2;
+
+        return Services2.getWebstores(params).$promise.then(function (result) {
+            $scope.merchants = result.data.webstores.map(function (val) {
+                return val.webstore.FirstName + ' ' + val.webstore.LastName;
+            });
+        });
+    };
+
     /**
      * Get default values from config
      * 
@@ -612,7 +623,8 @@ angular.module('adminApp')
         } else {
             $scope.offset = state.pagination.start;
         }
-        $scope.getStatus().then($scope.getOrder);
+        $scope.getStatus()
+        .then($scope.getOrder);
     }
 
     $scope.pickerFocus = function() {
@@ -720,6 +732,10 @@ angular.module('adminApp')
             }
             $scope.moment = moment;
             $scope.getOrderDetails();
+        }
+
+        if ($stateParams.orderID === undefined) {
+            getWebstores();
         }
     }
 
@@ -1657,18 +1673,6 @@ angular.module('adminApp')
             });
         });
     };
-
-    var getWebstores = function () {
-        var params = {};
-            params.status = 2;
-
-        return Services2.getWebstores(params).$promise.then(function (result) {
-            $scope.merchants = result.data.webstores.map(function (val) {
-                return val.webstore.FirstName + ' ' + val.webstore.LastName;
-            });
-        });
-    };
-    getWebstores();
 
     /**
      * Show export orders modals
