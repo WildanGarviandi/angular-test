@@ -134,9 +134,37 @@ angular.module('adminApp')
         }
 
         $scope.isMenuDisable = function() {
+            Object.keys($scope.menus).forEach(function(menu) {
+                $scope.menus[menu].menu = true;
+
+                if ($scope.menus[menu].submenus) {
+                    Object.keys($scope.menus[menu].submenus).forEach(function(submenu) {
+                        $scope.menus[menu].submenus[submenu].menu = true;
+                    });
+                }
+            });
+
             $scope.menus.deliveryDistribution.menu = config.features.deliveryDistribution.menu;
             $scope.menus.driverSchedule.menu = config.features.driverSchedule.menu;
             $scope.menus.admin.menu = $cookies.get('techSupport') === 'true';
+
+            if ($cookies.get('hubAdmin') === 'true') {
+                Object.keys($scope.menus).forEach(function(menu) {
+                    $scope.menus[menu].menu = false;
+                    if (['orders'].indexOf(menu) >= 0) {
+                        $scope.menus[menu].menu = true;
+                    }
+
+                    if ($scope.menus[menu].submenus) {
+                        Object.keys($scope.menus[menu].submenus).forEach(function(submenu) {
+                            $scope.menus[menu].submenus[submenu].menu = false;
+                            if (['all', 'returnedorders'].indexOf(submenu) >= 0) {
+                                $scope.menus[menu].submenus[submenu].menu = true;
+                            }
+                        });
+                    }
+                });
+            }
         }
 
         $scope.isMenuDisable();

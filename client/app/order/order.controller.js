@@ -279,6 +279,7 @@ angular.module('adminApp')
     $scope.limitPages = [$scope.itemsByPage, 25, 50, 100, 200];
     $scope.isOrderSelected = false;
     $scope.techSupport = $cookies.get('techSupport') === 'true';
+    $scope.hubAdmin = $cookies.get('hubAdmin') === 'true';
 
     var getWebstores = function () {
         var params = {};

@@ -4,6 +4,7 @@ angular.module('adminApp')
     .controller('ReturnedOrdersCtrl', 
         function(
             $scope, 
+            $cookies,
             Auth, 
             $rootScope, 
             Services, 
@@ -68,6 +69,7 @@ angular.module('adminApp')
     };
 
     $scope.importedDatePicker = new Date();
+    $scope.hubAdmin = $cookies.get('hubAdmin') === 'true';
 
     /*
      * Style Responsive Height
