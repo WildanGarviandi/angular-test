@@ -279,6 +279,13 @@ angular.module('adminApp')
                 submodule: 'cutoff'
             }
         },
+        exportWebstore: {
+            method: 'GET',
+            params: {
+                module: 'webstore',
+                submodule: 'export'
+            }
+        },
         getVehicles: {
             method: 'GET',
             params: {

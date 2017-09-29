@@ -249,6 +249,24 @@ angular.module('adminApp')
             });
         }
 
+        if (type == 'webstore') {
+            $scope.isExportTypeExist = true;
+
+            return Services2.exportWebstore(params).$promise
+            .then(function(datas) {
+                var data = {};
+                    data.data = datas.data.rows;
+                batchError = 0;
+                successFunction(data);
+            }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
+                getDataJson(offset);
+            });
+        }
+
         if (type == 'price') {
             $scope.isExportTypeExist = true;
 

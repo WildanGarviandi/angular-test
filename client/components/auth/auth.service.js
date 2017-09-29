@@ -26,6 +26,10 @@ angular.module('adminApp')
                 $http.post(url, param).
                 success(function(data) {
                     data = data.data.SignIn;
+                    // hubAdmin
+                    if (data.RoleID == 3) {
+                        $cookies.put('hubAdmin', 'true');
+                    }
                     if (!data.RoleID || config.forbiddenRoleID.indexOf(data.RoleID) !== -1) {
                         return SweetAlert.swal({
                             title: 'Error',

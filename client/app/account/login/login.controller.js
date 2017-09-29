@@ -39,12 +39,14 @@ angular.module('adminApp')
                         }
                         $cookies.remove('token');
                         $cookies.remove('techSupport');
+                        $cookies.remove('hubAdmin');
                         $cookies.remove('access_token');
                     });
                 } else if (authResult['error']) {
                     $scope.errors.other = authResult['error'];
                     $cookies.remove('token');
                     $cookies.remove('techSupport');
+                    $cookies.remove('hubAdmin');
                     $cookies.remove('access_token');
                 }
             }

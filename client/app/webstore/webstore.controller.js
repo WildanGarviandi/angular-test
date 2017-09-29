@@ -123,6 +123,47 @@ angular.module('adminApp')
     $scope.dataOnModal = {};
     $scope.temp = {};
 
+    $scope.joinDatePicker = {
+        startDate: $location.search().startJoin || null,
+        endDate: $location.search().endJoin || null
+    };
+
+    /*
+     * Set picker name for filter
+     *
+     */
+    $scope.setPickerName = function(pickerName) {
+        $scope.pickerName = pickerName;
+    }
+    $scope.optionsDatepicker = {
+        separator: ':',
+        eventHandlers: {
+            'apply.daterangepicker': function(ev, picker) {
+                if (!ev.model.startDate && !ev.model.endDate) {
+                    $scope[$scope.pickerName] = {
+                        startDate: new Date().setHours(0, 0, 0, 0),
+                        endDate: new Date().setHours(23, 59, 59, 59)
+                    };
+                }
+                $scope.offset = 0;
+                $scope.tableState.pagination.start = 0;
+                $scope.getWebstores();
+            }
+        }
+    };
+    // Generated scope:
+    // JoinDatePicker
+    // startJoin, endJoin
+    ['Join'].forEach(function (val) {
+        $scope.$watch(
+            (val.toLowerCase() + 'DatePicker'),
+            function (date) {
+                if (date.startDate) { $location.search('start' + val, (new Date(date.startDate)).toISOString()); }
+                if (date.endDate) { $location.search('end' + val, (new Date(date.endDate)).toISOString()); }
+            }
+        );
+    });
+
     $scope.cutoffTimes = [];
     for (var i = 0; i < 24; i++) {
         $scope.cutoffTimes.push({
@@ -571,6 +612,13 @@ angular.module('adminApp')
             offset: $scope.offset,
             limit: $scope.itemsByPage
         };
+
+        if ($scope.joinDatePicker.startDate) {
+            params.startJoinDate = new Date($scope.joinDatePicker.startDate);
+        }
+        if ($scope.joinDatePicker.endDate) {
+            params.endJoinDate = new Date($scope.joinDatePicker.endDate);
+        }
 
         return params;
     }
@@ -1036,19 +1084,18 @@ angular.module('adminApp')
     }
 
     $scope.export = function () {
-        var type = 'userReferral';
+        var type = 'webstore';
         var maxExport = 0;
         var params = {};
+            params = getWebstoresParam();
             params.limit = 1;
-            params.userType = 5;
 
-        Services2.exportReferral(params).$promise
+        Services2.exportWebstore(params).$promise
         .then(function (data) {
             maxExport = data.data.count;
             var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + maxExport;
             var params = {};
                 params = getWebstoresParam();
-                params.userType = 5;
             $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
         });
     }

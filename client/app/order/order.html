@@ -19,7 +19,7 @@
     
     <div class="col-xs-12 no-padding">
         <div id="order-navigation" class="col-xs-12 no-padding" ng-show="isNavigationOpen">
-            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6" ng-show="!hubAdmin">
                 <button class="btn order-buttons col-xs-12" ng-click="showImportModal()">Import</button>
             </div>
             <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
@@ -29,10 +29,10 @@
                 </button>
                 <ul class="dropdown-menu col-xs-12">
                     <li><a ng-click="exportOrders('standard')">Standard Format</a></li>
-                    <li><a ng-click="exportOrders('uploadable')">Import Format</a></li>
+                    <li ng-show="!hubAdmin"><a ng-click="exportOrders('uploadable')">Import Format</a></li>
                 </ul>
             </div>
-            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6" ng-show="!hubAdmin">
                 <button ng-show="features.order.set_price || 
                     features.order.reassign_fleet || 
                     features.order.bulk_mark_delivered || 
