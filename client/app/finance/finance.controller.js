@@ -8,6 +8,7 @@ angular.module('adminApp')
             $rootScope, 
             Services, 
             Services2,
+            Webstores,
             moment, 
             lodash, 
             $state, 
@@ -88,11 +89,26 @@ angular.module('adminApp')
     $scope.isFirstLoadedFilter = false;
     $scope.isFirstLoadedParam = false;
 
+    $scope.merchant = {
+        key: 'All',
+        value: ''
+    };
+    $scope.merchants = [$scope.merchant];
+    $scope.fleet = {
+        key: 'All',
+        value: ''
+    };
+    $scope.fleets = [$scope.fleet];
     $scope.pickupType = {
         key: 'All',
-        value: 'All'
+        value: ''
     };
     $scope.pickupTypes = [$scope.pickupType];
+    $scope.status = {
+        key: 'All',
+        value: ''
+    };
+    $scope.statuses = [$scope.status];
 
     $scope.actionPayoutAndInvoice = {
         'showFilter': false,
@@ -109,10 +125,6 @@ angular.module('adminApp')
 
     $scope.financeFeatures = [];
 
-    var tableFilter = ['UserOrderNumber', 'DropoffTimeString', 'City', 'OrderStatusString', 
-        'PickupTypeDesc', 'Merchant', 'FleetName', 'ZipCode', 'PackageWeight', 
-        'LogisticShare', 'HandlingFee', 'OrderCost'];
-    
     var keyOfDifferentSelected = ['WebstoreUser','DropoffAddress','FleetManager'];
 
     // Here, model and param have same naming format for choose finance feature
@@ -201,8 +213,136 @@ angular.module('adminApp')
         });
     }
 
+    var getStatus = function() {
+        return $q(function (resolve) {
+            Services2.getStatus().$promise.then(function(data) {
+                $scope.statuses = [];
+                $scope.statuses.push($scope.status);
+                data.data.rows.forEach(function(status) {
+                    $scope.statuses.push({key: status.OrderStatus, value: status.OrderStatusID});
+                });
+                resolve();
+            });
+        });
+    };
+
+    var getMerchants = function() {
+        var params = {};
+            params.status = 2;
+
+        return $q(function (resolve) {
+            Webstores.getWebstore(params).$promise.then(function (data) {
+                data.data.webstores.forEach(function(merchant) {
+                    $scope.merchants.push({
+                        key: merchant.webstore.FirstName + ' ' + merchant.webstore.LastName,
+                        value: merchant.webstore.UserID
+                    });
+                });
+                resolve();
+            });
+        });
+    };
+
+    var getFleets = function () {
+        return $q(function (resolve) {
+            Services2.getAllCompanies().$promise.then(function(result) {
+                result.data.Companies.forEach(function(company){
+                    $scope.fleets.push({
+                        key: company.CompanyName.toLowerCase(),
+                        value: company.User.UserID
+                    });
+                });
+                resolve();
+            });
+        });
+    };
+
+    var chooseVariables = {
+        'Status': {
+            model: 'status',
+            pick: 'value',
+            collection: 'statuses'
+        },
+        'PickupType': {
+            model: 'pickupType',
+            pick: 'value',
+            collection: 'pickupTypes'
+        },
+        'Merchant': {
+            model: 'merchant',
+            pick: 'value',
+            collection: 'merchants'
+        },
+        'Fleet': {
+            model: 'fleet',
+            pick: 'value',
+            collection: 'fleets'
+        }
+    };
+
+    // Generates
+    // chooseStatus, choosePickupType, chooseOrderType
+    lodash.each(chooseVariables, function (val, key) {
+        $scope['choose' + key] = function(item) {
+            $location.search(val.model, item[val.pick]);
+            $scope[val.model] = item;
+        };
+    });
+
+    var searchVariables = {
+        'ZipCode': {
+            model: 'zipCode',
+            param: 'zipCode'
+        },
+        'Weight': {
+            model: 'weight',
+            param: 'weight'
+        },
+        'DeliveryFee': {
+            model: 'deliveryFee',
+            param: 'deliveryFee'
+        },
+    };
+
+    // Generates:
+    // searchOrder, searchDriver, searchMerchant, searchPickup, searchDropoff,
+    // searchSender, searchRecipient, searchFleet
+    lodash.each(searchVariables, function (val, key) {
+        $scope['search' + key] = function(event){
+            $location.search(val.param, $scope[val.model]);
+        };
+    });
+
+    /**
+     * Add search DropoffTime
+     * 
+     * @return {void}
+     */
+    $scope.searchDropOffTime = function(event) {
+        $location.search('dropOffTime', moment($scope.dropOffTime).format('YYYY-MM-DD'));
+    }
+
     $scope.chooseFilterBy = function (item) {
         $scope.filterBy = item;
+    }
+
+    var getFilterListPayoutAndInvoice = function (callback) {
+        if (!$scope.isFirstLoadedFilter && !$scope.isFirstLoaded) {
+            getStatus()
+            .then(getMerchants)
+            .then(getFleets)
+            .then(callback);
+        } else {
+            if (!$scope.isFirstLoaded) {
+                callback();
+            }
+            if ($scope.isFirstLoaded) {
+                getStatus()
+                .then(getMerchants)
+                .then(getFleets)
+                .then(callback);
+            }
+        }
     }
 
     $scope.getListParamForPayoutAndInvoicingFeature = function (type) {
@@ -219,93 +359,40 @@ angular.module('adminApp')
             $scope[val] = $location.search()[val] || $scope[val];
         });
 
-        var paramFilter = [];
-        var tempSelectedFilter = [];
-        var isFirstLoadedParam = false;
-        tableFilter.forEach(function (val) {
-            paramFilter[val] = [];
-            tempSelectedFilter[val] = [];
-
-            if ($scope.temp.selectedFilter[val]) {
-                $scope.temp.selectedFilter[val].selectedList.forEach(function (data) {
-                    paramFilter[val].push(data.value);
-                    $scope.temp.isFilterSelected = true;
-                });
-
-                $location.search(val, paramFilter[val]);
-            }
-
-            var paramUrl = $location.search()[val];
-            
-            if (paramUrl && paramUrl.length) {
-                if (!$scope.isFirstLoadedParam) {
-                    paramFilter[val] = paramUrl;
-                    var dataFromUrl = '';
-                    var tempDataFromUrl = [];
-
-                    if (typeof paramUrl !== 'string') {
-                        paramUrl.forEach(function(data){
-                            dataFromUrl = parseFloat(data);
-                            if (isNaN(dataFromUrl)) {
-                                dataFromUrl = data;
-                            }
-                            tempDataFromUrl.push(dataFromUrl);
-                        });
-
-                        paramFilter[val] = tempDataFromUrl;
-                    }
-
-                    if (typeof paramUrl === 'string') {
-                        dataFromUrl = parseFloat(paramUrl);
-                        if (isNaN(dataFromUrl)) {
-                            dataFromUrl = paramUrl;
-                        }
-                        tempDataFromUrl.push(dataFromUrl);
-                        paramFilter[val] = tempDataFromUrl;
-                    }
-
-                    isFirstLoadedParam = true;
-                }
-            }
+        lodash.each(searchVariables, function (val, key) {
+            $scope[val.model] = $location.search()[val.param] || $scope[val.model];
         });
 
-        if (isFirstLoadedParam) {
-            $scope.isFirstLoadedParam = true;
+        lodash.each(chooseVariables, function (val, key) {
+            var value = $location.search()[val.model] || ($scope[val.model]) ? $scope[val.model][val.pick] : '';
+            var findObject = {};
+            findObject[val.pick] = (parseInt(value)) ? parseInt(value) : value;
+            $scope[val.model] = lodash.find($scope[val.collection], findObject);
+        });
+
+        $scope.dropOffTime = $location.search()['dropOffTime'] || $scope.dropOffTime;
+
+        if (!$scope.isFirstLoadedFilter) {
+            $scope.isFirstLoadedFilter = true;
         }
 
         var params = {
             offset: $scope.offset,
-            limit: $scope.itemsByPage,
-            statuses: (paramFilter['OrderStatusString']) ? JSON.stringify(paramFilter['OrderStatusString']) : '',
-            pickupTypes: (paramFilter['PickupTypeDesc']) ? JSON.stringify(paramFilter['PickupTypeDesc']) : '',
-            merchants: (paramFilter['Merchant']) ? JSON.stringify(paramFilter['Merchant']) : '',
-            weights: (paramFilter['PackageWeight']) ? JSON.stringify(paramFilter['PackageWeight']) : '',
-            dropOffCities: (paramFilter['City']) ? JSON.stringify(paramFilter['City']) : '',
-            fleetManagerNames: (paramFilter['FleetName']) ? JSON.stringify(paramFilter['FleetName']) : '',
-            dropOffTimes: (paramFilter['DropoffTimeString']) ? JSON.stringify(paramFilter['DropoffTimeString']) : '',
-            userOrderNumbers: (paramFilter['UserOrderNumber']) ? JSON.stringify(paramFilter['UserOrderNumber']) : '',
-            dropOffZipCodes: (paramFilter['ZipCode']) ? JSON.stringify(paramFilter['ZipCode']) : '',
-            handlingFees: (paramFilter['HandlingFee']) ? JSON.stringify(paramFilter['HandlingFee']) : '',
-            deliveryFees: (paramFilter['OrderCost']) ? JSON.stringify(paramFilter['OrderCost']) : '',
-            logisticShares: (paramFilter['LogisticShare']) ? JSON.stringify(paramFilter['LogisticShare']) : ''
+            limit: $scope.itemsByPage
         };
 
         if (type && type == 'post') {
-            var params = {
-                statuses: (paramFilter['OrderStatusString']) ? paramFilter['OrderStatusString'] : '',
-                pickupTypes: (paramFilter['PickupTypeDesc']) ? paramFilter['PickupTypeDesc'] : '',
-                merchants: (paramFilter['Merchant']) ? paramFilter['Merchant'] : '',
-                weights: (paramFilter['PackageWeight']) ? paramFilter['PackageWeight'] : '',
-                dropOffCities: (paramFilter['City']) ? paramFilter['City'] : '',
-                fleetManagerNames: (paramFilter['FleetName']) ? paramFilter['FleetName'] : '',
-                dropOffTimes: (paramFilter['DropoffTimeString']) ? paramFilter['DropoffTimeString'] : '',
-                userOrderNumbers: (paramFilter['UserOrderNumber']) ? paramFilter['UserOrderNumber'] : '',
-                dropOffZipCodes: (paramFilter['ZipCode']) ? paramFilter['ZipCode'] : '',
-                handlingFees: (paramFilter['HandlingFee']) ? paramFilter['HandlingFee'] : '',
-                deliveryFees: (paramFilter['OrderCost']) ? paramFilter['OrderCost'] : '',
-                logisticShares: (paramFilter['LogisticShare']) ? paramFilter['LogisticShare'] : ''
-            };
+            params = {};
         }
+
+        params.statuses = ($scope.status && $scope.status.value) ? JSON.stringify([$scope.status.value]) : '';
+        params.pickupTypes = ($scope.pickupType && $scope.pickupType.value) ? JSON.stringify([$scope.pickupType.value]) : '';
+        params.merchants = ($scope.merchant && $scope.merchant.value) ? JSON.stringify([$scope.merchant.value]) : '';
+        params.weights = $scope.weight ? JSON.stringify([$scope.weight]) : '';
+        params.fleetManagerNames = ($scope.fleet && $scope.fleet.value) ? JSON.stringify([$scope.fleet.key]) : '';
+        params.dropOffTimes = $scope.dropOffTime ? JSON.stringify([moment($scope.dropOffTime).format('YYYY-MM-DD')]) : '';
+        params.dropOffZipCodes = $scope.zipCode ? JSON.stringify([$scope.zipCode]) : '';
+        params.deliveryFees = $scope.deliveryFee ? JSON.stringify([$scope.deliveryFee]) : '';
 
         if ($scope.filterBy && $scope.filterBy.value) {
             var paramFilerDate = $scope.filterBy.value;
@@ -314,79 +401,6 @@ angular.module('adminApp')
         }
 
         return params;
-    }
-
-    $scope.getFilterListPayoutAndInvoice = function (paramsData) {
-        if (!$scope.isFirstLoadedFilter) {
-            var params = {};
-                params.limit = 1;
-                params.offset = paramsData.offset;
-                params.dropOffTimeStart = paramsData.dropOffTimeStart;
-                params.dropOffTimeEnd = paramsData.dropOffTimeEnd;
-
-            Services2.getListPayoutAndInvoice(params).$promise.then(function (data) {
-                params.limit = data.data.count;
-
-                Services2.getListPayoutAndInvoice(params).$promise.then(function (dataFilter) {
-                    dataFilter.data.rows.forEach(function (val, index, array) {
-                        if (val.DropTime) {
-                            array[index].DropoffTimeString = $filter('date')(val.DropTime, 'dd-MM-yyyy');
-                        }
-                        if (val.DropoffAddress) {
-                            array[index].City = (val.DropoffAddress.City) ? val.DropoffAddress.City.toLowerCase() : '';
-                            array[index].ZipCode = (val.DropoffAddress.ZipCode) ? val.DropoffAddress.ZipCode : '';
-                        }
-                        if (val.OrderStatus && val.OrderStatus.OrderStatus) {
-                            array[index].OrderStatusString = val.OrderStatus.OrderStatus.toUpperCase();
-                            array[index].OrderStatusID = val.OrderStatus.OrderStatusID;
-                        }
-                        if (val.WebstoreUser) {
-                            array[index].Merchant = val.WebstoreUser.FirstName + ' ' + val.WebstoreUser.LastName;
-                            array[index].MerchantID = val.WebstoreUser.UserID;
-                        }
-                        if (val.FleetManager && val.FleetManager.CompanyDetail) {
-                            array[index].FleetName = val.FleetManager.CompanyDetail.CompanyName;
-                        }
-                    });
-
-                    tableFilter.forEach(function (val) {
-                        var dataArray = createUniqueArrayOfObjFromKey(dataFilter.data.rows, 'UserOrderID', val, val);
-                        if (val == 'OrderStatusString') {
-                            var dataArray = createUniqueArrayOfObjFromKey(dataFilter.data.rows, 'UserOrderID', val, 'OrderStatusID');
-                        }
-                        if (val == 'DropoffTimeString') {
-                            var dataArray = createUniqueArrayOfObjFromKey(dataFilter.data.rows, 'UserOrderID', val, 'DropTime');
-                        }
-                        if (val == 'Merchant') {
-                            var dataArray = createUniqueArrayOfObjFromKey(dataFilter.data.rows, 'UserOrderID', val, 'MerchantID');
-                        }
-                        if (val == 'PickupTypeDesc') {
-                            var dataArray = createUniqueArrayOfObjFromKey(dataFilter.data.rows, 'UserOrderID', val, 'PickupType');
-                        }
-
-                        $scope.temp.selectedFilter[val] = {};
-                        $scope.temp.selectedFilter[val].selectedList = [];
-
-                        if ($location.search()[val]) {
-                            $scope.temp.selectedFilter[val].selectedList = lodash.filter(dataArray, function(obj) {
-                                var temp = $location.search()[val];
-                                if (typeof temp === 'string') {
-                                    temp = [temp];
-                                }
-                                if (temp.indexOf(obj.value.toString()) > -1) {
-                                    return obj;
-                                };
-                            });
-                        }
-                        
-                        $scope.temp.selectedFilter[val].filtered = [];
-                        $scope.temp.selectedFilter[val].filtered = dataArray;
-                    });
-                });
-            });
-        }
-
-        $scope.isFirstLoadedFilter = true;
     }
 
     $scope.getListParamForProfitAndLossFeature = function () {
@@ -425,30 +439,31 @@ angular.module('adminApp')
         $scope.temp.selectedList = [];
         $scope.temp.selectedAllList = false;
         $scope.actionPayoutAndInvoice.showTable = false;
-        var params = $scope.getListParamForPayoutAndInvoicingFeature();
-        
-        Services2.getListPayoutAndInvoice(params).$promise.then(function(data) {
-            params.offset = 0;
-            params.limit = data.data.count;
 
-            $scope.getFilterListPayoutAndInvoice(params);
-            $scope.actionPayoutAndInvoice.showTable = true;
-            $scope.totalData = data.data.count;
-            $scope.temp.list = data.data.rows;
-            $scope.displayed = data.data.rows;
-            $scope.tableState.pagination.numberOfPages = Math.ceil(
-                data.data.count / $scope.tableState.pagination.number);
+        getFilterListPayoutAndInvoice(function () {
+            var params = $scope.getListParamForPayoutAndInvoicingFeature();
+            return Services2.getListPayoutAndInvoice(params).$promise.then(function(data) {
+                params.offset = 0;
+                params.limit = data.data.count;
 
-            $scope.temp.list.forEach(function (val, index, array) {
-                if ($scope.temp.selectedAllListTable) {
-                    array[index].Selected = true;
-                    return;
-                }
+                $scope.actionPayoutAndInvoice.showTable = true;
+                $scope.totalData = data.data.count;
+                $scope.temp.list = data.data.rows;
+                $scope.displayed = data.data.rows;
+                $scope.tableState.pagination.numberOfPages = Math.ceil(
+                    data.data.count / $scope.tableState.pagination.number);
+
+                $scope.temp.list.forEach(function (val, index, array) {
+                    if ($scope.temp.selectedAllListTable) {
+                        array[index].Selected = true;
+                        return;
+                    }
+                });
+
+                $rootScope.$emit('stopSpin');
+            }).catch(function (e) {
+                $rootScope.$emit('stopSpin');
             });
-
-            $rootScope.$emit('stopSpin');
-        }).catch(function (e) {
-            $rootScope.$emit('stopSpin');
         });
     }
 
@@ -711,14 +726,7 @@ angular.module('adminApp')
     }
 
     $scope.resetFilter = function () {
-        tableFilter.forEach(function (val) {
-            $location.search(val, null);
-            if ($scope.temp.selectedFilter[val] && $scope.temp.selectedFilter[val].selectedList) {
-                $scope.temp.selectedFilter[val].selectedList = [];
-            }
-        });
-        $scope.offset = 0;
-        $scope.getListPayoutAndInvoice();
+        $state.reload();
     }
 
     $scope.modalTemplateGenerator = function (type, category, nextTemplateName, nextTitle, functionOnSubmit) {
@@ -884,11 +892,11 @@ angular.module('adminApp')
         $scope.tableState = state;
         if ($scope.isFirstLoaded) {
             $scope.tableState.pagination.start = $scope.offset;
-            $scope.isFirstLoaded = false;
         } else {
             $scope.offset = state.pagination.start;
         }
         getFinanceFeature();
+        $scope.isFirstLoaded = false;
     };
 
 });
