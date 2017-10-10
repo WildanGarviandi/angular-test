@@ -319,7 +319,8 @@ angular.module('adminApp')
      * @return {void}
      */
     $scope.searchDropOffTime = function(event) {
-        $location.search('dropOffTime', moment($scope.dropOffTime).format('YYYY-MM-DD'));
+        var dropOffTime = ($scope.dropOffTime) ? moment($scope.dropOffTime).format('YYYY-MM-DD') : '';
+        $location.search('dropOffTime', dropOffTime);
     }
 
     $scope.chooseFilterBy = function (item) {
@@ -726,7 +727,12 @@ angular.module('adminApp')
     }
 
     $scope.resetFilter = function () {
-        $state.reload();
+        var params = {};
+            params.financeFeature = $location.search().financeFeature;
+            params.startFilter = $location.search().startFilter;
+            params.endFilter = $location.search().endFilter;
+
+        $window.location.href = '/finance?' + $httpParamSerializer(params);
     }
 
     $scope.modalTemplateGenerator = function (type, category, nextTemplateName, nextTitle, functionOnSubmit) {

@@ -368,3 +368,7 @@
     margin: auto;
     display: inherit;
 }
+
+.w-100 {
+    width: 100px;
+}
