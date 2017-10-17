@@ -68,6 +68,9 @@ angular.module('adminApp')
             },
             finance: {
                 routes: ['/finance']
+            },
+            auditTrail: {
+                routes: ['/auditTrail']
             }
         };
 
@@ -147,6 +150,7 @@ angular.module('adminApp')
             $scope.menus.deliveryDistribution.menu = config.features.deliveryDistribution.menu;
             $scope.menus.driverSchedule.menu = config.features.driverSchedule.menu;
             $scope.menus.admin.menu = $cookies.get('techSupport') === 'true';
+            $scope.menus.auditTrail.menu = $cookies.get('techSupport') === 'true';
 
             if ($cookies.get('hubAdmin') === 'true') {
                 Object.keys($scope.menus).forEach(function(menu) {

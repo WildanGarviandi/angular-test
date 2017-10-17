@@ -1005,6 +1005,13 @@ angular.module('adminApp')
                 module: 'company',
                 controller: 'fleet'
             }
+        },
+        getAuditTrails: {
+            method: 'GET',
+            url: config.url + ':module',
+            params: {
+                module: 'audit-trail'
+            }
         }
     });
 });
