@@ -36,7 +36,7 @@
             <table st-table="displayed" st-pipe="callServer" class="table table-hover table-main-trip">
                 <thead class="hubs-table-head">
                     <tr>
-                        <th>Transaction ID</th>
+                        <th>Virtual Account</th>
                         <th>Created Time</th>
                         <th>User Type</th>
                         <th>User</th>
@@ -149,7 +149,7 @@
                 <tbody ng-show="!isLoading && displayed.length > 0">
                     <tr ng-if="displayed"></tr>
                     <tr ng-repeat="payment in displayed">
-                        <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.TransactionId}}</td>
+                        <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.VA}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.CreatedDate | date:'dd-MM-yyyy HH:mm:ss'}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.User.UserType.Name}}</td>
                         <td ng-click="detailsPage(payment.CODPaymentID)">{{payment.User.FullName}}</td>
