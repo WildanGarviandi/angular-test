@@ -109,7 +109,7 @@
                 <tr ng-if="displayed"></tr>
                 <tr ng-repeat="d in displayed">
                     <td>{{d.User.FirstName}} {{d.User.LastName}}</td>
-                    <td>{{d.CreatedDate | date:'dd-MM-yyyy h:mm:ss A'}}</td>
+                    <td>{{d.CreatedDate | date:'MM/dd/yyyy HH:mm:ss'}}</td>
                     <td>{{d.PagePath}}</td>
                     <td>{{d.Action}}</td>
                     <td>{{d.DataChanged}}</td>
