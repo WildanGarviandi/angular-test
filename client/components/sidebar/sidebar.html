@@ -345,6 +345,24 @@
                 </a>
             </li>
 
+            <li class="row" ng-show="menus.finance.menu">
+                <a ui-sref="app.finance">
+                    <div class="side-image side-finance-image"
+                        ng-class="{ expanded: expanded, active: menus.finance.active }"></div>
+                    <div class="side-text"
+                        ng-class="{ expanded: expanded, active: menus.finance.active }">Finance</div>
+                </a>
+            </li>
+
+            <li class="row" ng-show="menus.auditTrail.menu">
+                <a ui-sref="app.auditTrail">
+                    <div class="side-image side-auditTrail-image"
+                        ng-class="{ expanded: expanded, active: menus.auditTrail.active }"></div>
+                    <div class="side-text"
+                        ng-class="{ expanded: expanded, active: menus.auditTrail.active }">Audit Trail</div>
+                </a>
+            </li>
+
             <li class="row menu-admin"
                 ng-class="{ active: menus.admin.active }"
                 ng-show="menus.admin.menu">
@@ -353,14 +371,6 @@
                         ng-class="{ expanded: expanded, active: menus.admin.active }"></div>
                     <div class="side-text"
                         ng-class="{ expanded: expanded, active: menus.admin.active }">Admin</div>
-                </a>
-            </li>
-            <li class="row" ng-show="menus.finance.menu">
-                <a ui-sref="app.finance">
-                    <div class="side-image side-finance-image"
-                        ng-class="{ expanded: expanded, active: menus.finance.active }"></div>
-                    <div class="side-text"
-                        ng-class="{ expanded: expanded, active: menus.finance.active }">Finance</div>
                 </a>
             </li>
         </ul>

@@ -217,7 +217,7 @@ angular.module('adminApp')
         var params = {
             offset: $scope.offset,
             limit: $scope.itemsByPage,
-            transactionId: $scope.queryTransactionId,
+            va: $scope.queryTransactionId,
             user: $scope.queryUser,
             status: $scope.status.value,
             paymentMethod: $scope.paymentMethod.value,
@@ -286,7 +286,7 @@ angular.module('adminApp')
         $scope.getPayment();
     }
     $scope.detailsPage = function(id) {
-        window.location = '/codpayment/details/' + id;
+        window.open('/codpayment/details/' + id, '_blank');
     };
     /**
      * Get single trip

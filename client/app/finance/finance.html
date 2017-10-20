@@ -171,7 +171,7 @@
                         <th style="width: 120px">
                             FLEET
                         </th>
-                        <th>Zip<br>Code</th>
+                        <th class="w-100">Zip<br>Code</th>
                         <th>WEIGHT<br>(kg)</th>
                         <th>SHARE<br>(%)</th>
                         <th>HANDLING<br>FEE (Rp)</th>
@@ -194,137 +194,100 @@
                 <tbody>
                     <tr>
                         <th></th>
+                        <th></th>
                         <th>
-                            <select-with-checklist
-                                required
-                                ng-model="temp.selectedFilter['UserOrderNumber'].selectedList"
-                                default-text="Filter..."
-                                unique-field="UserOrderNumber"
-                                text-field="text"
-                                value-field="value"
-                                items="temp.selectedFilter['UserOrderNumber'].filtered">
-                            </select-with-checklist>
+                            <input 
+                                id="date-picker" 
+                                type="text" 
+                                class="form-control input-table" 
+                                ng-model="dropOffTime" 
+                                uib-datepicker-popup
+                                date:'yyyy-MM-dd'
+                                is-open="isDropOffTimeDatePickerOpen"
+                                ng-click="isDropOffTimeDatePickerOpen = !isDropOffTimeDatePickerOpen"
+                                ng-change="searchDropOffTime($event)" />
+                        </th>
+                        <th></th>
+                        <th>
+                            <div class="filter-table">
+                                <ui-select ng-model="status" 
+                                    theme="selectize" 
+                                    on-select="chooseStatus($item)" 
+                                    class="booking-order-type">
+                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                                    <ui-select-choices repeat="ot in statuses | filter: $select.search" selected>
+                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
                         </th>
                         <th>
-                            <select-with-checklist
-                                required
-                                ng-model="temp.selectedFilter['DropoffTimeString'].selectedList"
-                                default-text="Filter..."
-                                unique-field="DropoffTimeString"
-                                text-field="text"
-                                value-field="value"
-                                items="temp.selectedFilter['DropoffTimeString'].filtered">
-                            </select-with-checklist>
+                            <div class="filter-table">
+                                <ui-select ng-model="pickupType" 
+                                    theme="selectize" 
+                                    on-select="choosePickupType($item)" 
+                                    class="booking-order-type">
+                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                                    <ui-select-choices repeat="ot in pickupTypes | filter: $select.search" selected>
+                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
                         </th>
                         <th>
-                            <select-with-checklist
-                                required
-                                ng-model="temp.selectedFilter['City'].selectedList"
-                                default-text="Filter..."
-                                unique-field="City"
-                                text-field="text"
-                                value-field="value"
-                                items="temp.selectedFilter['City'].filtered">
-                            </select-with-checklist>
+                            <div class="filter-table">
+                                <ui-select ng-model="merchant" 
+                                    theme="selectize" 
+                                    on-select="chooseMerchant($item)" 
+                                    class="booking-order-type">
+                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                                    <ui-select-choices repeat="ot in merchants | filter: $select.search" selected>
+                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
                         </th>
                         <th>
-                            <select-with-checklist
-                                required
-                                ng-model="temp.selectedFilter['OrderStatusString'].selectedList"
-                                default-text="Filter..."
-                                unique-field="OrderStatusString"
-                                text-field="text"
-                                value-field="value"
-                                items="temp.selectedFilter['OrderStatusString'].filtered">
-                            </select-with-checklist>
+                            <div class="filter-table">
+                                <ui-select ng-model="fleet" 
+                                    theme="selectize"
+                                    on-select="chooseFleet($item)" 
+                                    class="booking-order-type">
+                                    <ui-select-match class="input-table">{{$select.selected.key}}</ui-select-match>
+                                    <ui-select-choices repeat="ot in fleets | filter: $select.search" selected>
+                                        <span class="input-table" ng-bind-html="ot.key | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </th>
+                        <th class="w-100">
+                            <div class="filter-table">
+                                <input type="search"
+                                    class="form-control input-table"
+                                    value=""
+                                    ng-model="zipCode"
+                                    ng-keyup="searchZipCode($event)">
+                            </div>
                         </th>
                         <th>
-                            <select-with-checklist
-                                required
-                                ng-model="temp.selectedFilter['PickupTypeDesc'].selectedList"
-                                default-text="Filter..."
-                                unique-field="PickupTypeDesc"
-                                text-field="text"
-                                value-field="value"
-                                items="temp.selectedFilter['PickupTypeDesc'].filtered">
-                            </select-with-checklist>
+                            <div class="filter-table">
+                                <input type="search" 
+                                    class="form-control input-table" 
+                                    value="" 
+                                    ng-model="weight" 
+                                    ng-keyup="searchWeight($event)">
+                            </div>
                         </th>
+                        <th></th>
+                        <th></th>
                         <th>
-                            <select-with-checklist
-                                required
-                                ng-model="temp.selectedFilter['Merchant'].selectedList"
-                                default-text="Filter..."
-                                unique-field="Merchant"
-                                text-field="text"
-                                value-field="value"
-                                items="temp.selectedFilter['Merchant'].filtered">
-                            </select-with-checklist>
-                        </th>
-                        <th>
-                            <select-with-checklist
-                                required
-                                ng-model="temp.selectedFilter['FleetName'].selectedList"
-                                default-text="Filter..."
-                                unique-field="FleetName"
-                                text-field="text"
-                                value-field="value"
-                                items="temp.selectedFilter['FleetName'].filtered">
-                            </select-with-checklist>
-                        </th>
-                        <th>
-                            <select-with-checklist
-                                required
-                                ng-model="temp.selectedFilter['ZipCode'].selectedList"
-                                default-text="Filter..."
-                                unique-field="ZipCode"
-                                text-field="text"
-                                value-field="value"
-                                items="temp.selectedFilter['ZipCode'].filtered">
-                            </select-with-checklist>
-                        </th>
-                        <th>
-                            <select-with-checklist
-                                required
-                                ng-model="temp.selectedFilter['PackageWeight'].selectedList"
-                                default-text="Filter..."
-                                unique-field="PackageWeight"
-                                text-field="text"
-                                value-field="value"
-                                items="temp.selectedFilter['PackageWeight'].filtered">
-                            </select-with-checklist>
-                        </th>
-                        <th>
-                            <select-with-checklist
-                                required
-                                ng-model="temp.selectedFilter['LogisticShare'].selectedList"
-                                default-text="Filter..."
-                                unique-field="LogisticShare"
-                                text-field="text"
-                                value-field="value"
-                                items="temp.selectedFilter['LogisticShare'].filtered">
-                            </select-with-checklist>
-                        </th>
-                        <th>
-                            <select-with-checklist
-                                required
-                                ng-model="temp.selectedFilter['HandlingFee'].selectedList"
-                                default-text="Filter..."
-                                unique-field="HandlingFee"
-                                text-field="text"
-                                value-field="value"
-                                items="temp.selectedFilter['HandlingFee'].filtered">
-                            </select-with-checklist>
-                        </th>
-                        <th>
-                            <select-with-checklist
-                                required
-                                ng-model="temp.selectedFilter['OrderCost'].selectedList"
-                                default-text="Filter..."
-                                unique-field="OrderCost"
-                                text-field="text"
-                                value-field="value"
-                                items="temp.selectedFilter['OrderCost'].filtered">
-                            </select-with-checklist>
+                            <div class="filter-table">
+                                <input type="search" 
+                                    class="form-control input-table" 
+                                    value="" 
+                                    ng-model="deliveryFee" 
+                                    ng-keyup="searchDeliveryFee($event)">
+                            </div>
                         </th>
                         <th>
                             <div class="col-xs-6 no-padding">

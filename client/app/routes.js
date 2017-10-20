@@ -569,5 +569,15 @@ angular.module('adminApp')
                 }
             },
             authenticate: true
+        })
+        .state('app.auditTrail', {
+            url: 'auditTrail',
+             views: {
+                'content@': {
+                    templateUrl: 'app/auditTrail/auditTrail.html',
+                    controller: 'AuditTrailCtrl'
+                }
+            },
+            authenticate: true
         });
     });

@@ -1,0 +1,133 @@
+<div class="container-fluid container-hubs">
+    <div class="clearfix"></div>
+    <div class="row-fluid box-header">
+        <div>
+            <div class="col-md-6 col-sm-7">
+                <div class="hub-title-box">
+                    Audit Trail Management
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-5 pull-right">
+                <div class="hub" ng-include="'components/user/user.html'"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 no-padding">
+        <div id="order-navigation" class="col-xs-12 no-padding">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                <button class="btn order-buttons first-row-element col-xs-12" ng-click="clearFilter()">
+                <i class="fa fa-refresh"></i> Reset Filter</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <table st-table="displayed" st-pipe="callServer" class="table table-hover">
+            <thead class="hubs-table-head" ng-show="!isLoading && displayed.length > 0">
+                <tr>
+                    <th>User</th>
+                    <th>Time Stamp</th>
+                    <th>Page</th>
+                    <th>Action</th>
+                    <th>Data Changed</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>
+                        <div class="filter-table">
+                            <input 
+                                type="search"
+                                class="form-control input-table"
+                                value=""
+                                placeholder="search by user"
+                                ng-model="temp.filter.user"
+                                ng-keydown="($event.keyCode === 13) ? searchList() : '';">
+                        </div>
+                    </th>
+                    <th>
+                        <div class="filter-table">
+                            <input 
+                                id="date-picker" 
+                                type="text" 
+                                class="form-control input-table" 
+                                date-range-picker 
+                                ng-model="timestampDatePicker" 
+                                options="optionsDatepicker"
+                                ng-click="setPickerName('timestampDatePicker')" />
+                        </div>
+                    </th>
+                    <th>
+                        <div class="filter-table">
+                            <input 
+                                type="search"
+                                class="form-control input-table"
+                                value=""
+                                placeholder="search by page"
+                                ng-model="temp.filter.page"
+                                ng-keydown="($event.keyCode === 13) ? searchList() : '';">
+                        </div>
+                    </th>
+                    <th>
+                        <div class="filter-table">
+                            <input 
+                                type="search"
+                                class="form-control input-table"
+                                value=""
+                                placeholder="search by action"
+                                ng-model="temp.filter.action"
+                                ng-keydown="($event.keyCode === 13) ? searchList() : '';">
+                        </div>
+                    </th>
+                    <th>
+                        <div class="filter-table">
+                            <input 
+                                type="search"
+                                class="form-control input-table"
+                                value=""
+                                placeholder="search by data changed"
+                                ng-model="temp.filter.dataChanged"
+                                ng-keydown="($event.keyCode === 13) ? searchList() : '';">
+                        </div>
+                    </th>
+                </tr>
+            </tbody>
+            <tbody ng-show="!isLoading && displayed.length == 0">
+                <tr>
+                    <td colspan="5" class="text-center">
+                        No data found
+                    </td>
+                </tr>
+            </tbody>
+            <tbody ng-show="isLoading">
+                <tr>
+                    <td colspan="8" class="text-center">Loading ... </td>
+                </tr>
+            </tbody>
+            <tbody ng-show="!isLoading && displayed.length > 0">
+                <tr ng-if="displayed"></tr>
+                <tr ng-repeat="d in displayed">
+                    <td>{{d.User.FirstName}} {{d.User.LastName}}</td>
+                    <td>{{d.CreatedDate | date:'MM/dd/yyyy HH:mm:ss'}}</td>
+                    <td>{{d.PagePath}}</td>
+                    <td>{{d.Action}}</td>
+                    <td>{{d.DataChanged}}</td>
+                </tr>
+            </tbody>
+            <tfoot ng-show="!isLoading && displayed.length > 0">
+                <tr>
+                    <td colspan="1">
+                        <h5 class="text-primary"><strong>{{displayedFound | number}} records found</strong></h5>
+                    </td>
+                    <td colspan="4" 
+                        class="text-center" 
+                        st-pagination="" 
+                        st-items-by-page="itemsByPage" 
+                        st-displayed-pages='9' st-template='components/table/pagination.html'>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

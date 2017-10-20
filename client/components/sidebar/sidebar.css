@@ -467,6 +467,14 @@
     background-image: url('../../assets/images/nav-customer-price-active.png');
 }
 
+.side-auditTrail-image {
+    background-image: url('../../assets/images/nav-order.png');
+}
+
+.side-auditTrail-image.active {
+    background-image: url('../../assets/images/nav-order-active.png');
+}
+
 #spinner-container {
     position: fixed;
     top: 0;

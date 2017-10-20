@@ -365,7 +365,7 @@ angular.module('adminApp')
     };
 
     $scope.detailsPage = function(id) {
-        window.location = '/codorder/details/' + id;
+        window.open('/codorder/details/' + id,'_blank');
     };
 
     /**
