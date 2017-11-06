@@ -508,6 +508,16 @@
                                                                 <div ng-show="!order.RecipientPhoto" class="col-md-8 summary-from">
                                                                     -
                                                                 </div>
+                                                                <div ng-show="order.RecipientPhoto2" class="col-md-8 summary-from col-md-offset-4">
+                                                                    <img class="failed-image" 
+                                                                        ng-if="order.RecipientPhoto2"
+                                                                        src="{{order.RecipientPhoto2}}">
+                                                                </div>
+                                                                <div ng-show="order.RecipientPhoto3" class="col-md-8 summary-from col-md-offset-4">
+                                                                    <img class="failed-image" 
+                                                                        ng-if="order.RecipientPhoto3"
+                                                                        src="{{order.RecipientPhoto3}}">
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
