@@ -286,6 +286,14 @@ angular.module('adminApp')
                 submodule: 'export'
             }
         },
+        exportWebstoreTotalOrder: {
+            method: 'GET',
+            params: {
+                module: 'webstore',
+                submodule: 'export',
+                controller: 'webstore-total-order'
+            }
+        },
         getVehicles: {
             method: 'GET',
             params: {
