@@ -692,6 +692,48 @@ angular.module('adminApp')
                 controller: 'goal'
             }
         },
+        getDailyNewMerchants: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'daily-new-merchant'
+            }
+        },
+        getDailyTotalOrders: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'daily-total-orders'
+            }
+        },
+        getDailyTotalRevenue: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'daily-total-revenue'
+            }
+        },
+        getTopLocationOrder: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'top-location-order'
+            }
+        },
+        getTopActiveMerchant: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'total-active-merchant'
+            }
+        },
+        getTopInactiveMerchant: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'total-inactive-merchant'
+            }
+        },
         getReasonReturns: {
             method: 'GET',
             params: {

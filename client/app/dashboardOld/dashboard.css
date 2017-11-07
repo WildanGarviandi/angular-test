@@ -1,0 +1,150 @@
+* {
+    font-family: Helvetica,serif;
+}
+
+.top-stat {
+    margin-top: 20px;
+}
+
+.top-stat-box-goal {
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    background-color: #a6a6a6;
+    color: white;
+    min-height: 80px;
+}
+
+.top-stat-total-orders {
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    background-color: #a6a6a6;
+    color: white;
+    min-height: 80px;
+    width: 11.11%;
+}
+
+.title-total-orders {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.date-total-orders {
+    font-size: 16px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.sum-total-orders {
+    font-size: 40px;
+    position: absolute;
+    top: 0px;
+    right: 10px;
+}
+
+.top-stat-box-goal a {
+    color: white;
+}
+
+.top-stat-box-goal a:hover {
+    color: #5cb85c;
+}
+
+.top-stat-box-type {
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: white;
+    min-height: 80px;
+}
+
+.title-chart {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.title-statistics {
+    font-weight: bold;
+    font-size: 12px;
+    text-align: center;
+}
+
+.side-stat-box {
+    text-align: center;
+    font-size: 18px;
+    text-transform: uppercase;
+    background-color: #a6a6a6;
+    color: white;
+}
+
+.container-status {
+    width:10%;
+}
+
+.count-stat-box {
+    text-align: center;
+    font-size: 12px;
+    text-transform: uppercase;
+    background-color: #5cb85c;
+    color: white;
+    margin-bottom: 45px;
+    min-height: 75px;
+    cursor: pointer;
+}
+
+.merchant-box {
+    background-color: white; 
+    margin-top: 40px;
+    height: 100%;
+}
+
+.merchant-title {
+    margin-left: 20px; 
+    font-size: 24px;
+}
+
+.merchant-content {
+    background-color: white;
+}
+
+.graph-content {
+    background-color: white;
+}
+
+.box-red {
+    background-color: #ff5a60;
+}
+
+.box-green {
+    background-color: #5cb85c;
+}
+
+.warning-image {
+    width: 280px;
+    height: 200px;
+}
+
+.status-list {
+    text-align: center;
+    color: #333;
+    font-weight: bold;
+}
+
+.status-red {
+    background-color: #ff5a60;
+}
+
+.status-green {
+    background-color: #5cb85c;
+}
+
+.status-blue {
+    background-color: #66b3ff;
+}
+
+.status-yellow {
+    background-color: #f0ad4e;
+}
