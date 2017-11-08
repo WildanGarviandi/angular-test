@@ -685,11 +685,11 @@ angular.module('adminApp')
                             }
 
                             if (findRowColumn) {
-                                var emptyColumn = (offset + 2) - dataArray[findRowColumn.row].length;
+                                var emptyColumn = (offset + 1) - dataArray[findRowColumn.row].length;
                                 for (var i=0; i < emptyColumn; i++) {
                                     dataArray[findRowColumn.row].push(0);
                                 }
-                                dataArray[findRowColumn.row].push(val.Distance);
+                                dataArray[findRowColumn.row].push(val.TotalOrder);
                             }
                         });
                     }
