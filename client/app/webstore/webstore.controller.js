@@ -1083,21 +1083,43 @@ angular.module('adminApp')
         });
     }
 
-    $scope.export = function () {
-        var type = 'webstore';
+    $scope.exportDailyWebstoreModal = function () {
+        $scope.dataOnModal = {};
+
+        return ngDialog.open({
+            template: 'modalDailyWebstoreTotalOrders',
+            scope: $scope,
+            className: 'ngdialog-theme-default',
+            closeByDocument: false
+        });
+    }
+
+    $scope.export = function (type) {
         var maxExport = 0;
         var params = {};
             params = getWebstoresParam();
             params.limit = 1;
 
-        Services2.exportWebstore(params).$promise
-        .then(function (data) {
-            maxExport = data.data.count;
+        if (type == 'webstore') {
+            Services2.exportWebstore(params).$promise
+            .then(function (data) {
+                maxExport = data.data.count;
+                var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + maxExport;
+                var params = {};
+                params = getWebstoresParam();
+                $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+            });
+        }
+
+        if (type == 'dailyWebstore') {
             var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + maxExport;
             var params = {};
                 params = getWebstoresParam();
+                params.start = $scope.dataOnModal.start;
+                params.end = $scope.dataOnModal.end;
+
             $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
-        });
+        }
     }
 
   });

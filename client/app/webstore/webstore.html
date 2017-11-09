@@ -34,8 +34,14 @@
                 <i class="fa fa-refresh"></i> Reset Filter</button>
         </div>
         <div class="col-md-2 col-xs-12">
-            <button class="btn btn-green col-xs-12"
-                ng-click="export()">Export</button>
+            <button class="btn btn-green dropdown-toggle col-xs-12" type="button" data-toggle="dropdown">
+                Export
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu col-xs-12">
+                <li><a ng-click="export('webstore')">Data</a></li>
+                <li><a ng-click="exportDailyWebstoreModal()">Daily Order</a></li>
+            </ul>
         </div>
     </div>
 
@@ -231,6 +237,78 @@
                         class="btn btn-green col-md-12" 
                         ng-disabled="!temp.referralCode" 
                         ng-click="updateRefferalCode()">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="modalDailyWebstoreTotalOrders">
+    <div class="content-wrapper booking-popup notification-popup container-fluid no-padding">
+        <div class="col-md-12 no-padding">
+            <p><b>Daily Order</b></p>
+            <div class="col-md-12 no-padding mb15">
+                <div class="col-md-4 no-padding">
+                    <p>Date Start</p>
+                </div>
+                <div class="col-md-8 no-padding">
+                    <p class="input-group date-picker-new"> 
+                        <input type="text"
+                            class="form-control border-right-none"
+                            ng-model="dataOnModal.start"
+                            uib-datepicker-popup="d MMMM yyyy"
+                            date:'yyyy-MM-dd'
+                            is-open="isStartDateOpen"
+                            placeholder="Start"
+                            show-weeks="false"
+                            datepicker-options="datePickerOptions"
+                            show-button-bar="false"
+                            ng-click="isStartDateOpen = !isStartDateOpen" />
+                        <span class="input-group-btn">
+                            <button type="button"
+                                class="btn btn-default"
+                                ng-click="isStartDateOpen = !isStartDateOpen">
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-12 no-padding mb15">
+                <div class="col-md-4 no-padding">
+                    <p>Date End</p>
+                </div>
+                <div class="col-md-8 no-padding">
+                    <p class="input-group date-picker-new"> 
+                        <input type="text"
+                            class="form-control border-right-none"
+                            ng-model="dataOnModal.end"
+                            uib-datepicker-popup="d MMMM yyyy"
+                            date:'yyyy-MM-dd'
+                            is-open="isEndDateOpen"
+                            placeholder="End"
+                            show-weeks="false"
+                            datepicker-options="datePickerOptions"
+                            show-button-bar="false"
+                            ng-click="isEndDateOpen = !isEndDateOpen" />
+                        <span class="input-group-btn">
+                            <button type="button"
+                                class="btn btn-default"
+                                ng-click="isEndDateOpen = !isEndDateOpen">
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12 no-padding">
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="" class="btn btn-default col-md-12" ng-click="closeModal()">Cancel</button>
+                </div>
+                <div class="col-md-6 col-xs-12 no-padding">
+                    <button id="updateRefferalCode"
+                        class="btn btn-green col-md-12"
+                        ng-click="export('dailyWebstore')">Export</button>
                 </div>
             </div>
         </div>

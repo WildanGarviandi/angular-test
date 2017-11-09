@@ -617,6 +617,102 @@ angular.module('adminApp')
             });
         }
 
+        if (type == 'dailyWebstore') {
+            $scope.isExportTypeExist = true;
+            customInit(function () {
+                var start = moment(params.start);
+                var end = moment(params.end);
+                var diff = Math.ceil(end.diff(start, 'days')) + 1;
+
+                limit = 1;
+                batch = diff;
+                maxExport = diff;
+                $scope.progress.maxExport = diff;
+
+                params.limit = limit;
+                params.pickupDate = moment(start).toDate();
+            });
+
+            if (offset) {
+                var date = moment(params.pickupDate);
+                params.pickupDate = moment(date.add(limit, 'days')).toDate();
+            }
+
+            return Services2.exportWebstoreTotalOrder(params).$promise
+            .then(function(data) {
+                var indexDate = 4;
+                var rowContent = indexDate + 1;
+
+                batchError = 0;
+
+                var findRowFromWebstoreName = function (webstore) {
+                    var result = false;
+                    angular.forEach(dataArray, function (val, key) {
+                        if (key > indexDate) {
+                            if (dataArray[key][0] == webstore) {
+                                result = {};
+                                result.row = key;
+                                result.column = offset;
+                            }
+                        }
+                    });
+                    return result;
+                }
+
+                var dailyWebstoreArray = function (data, batchPosition) {
+                    if (data && data.data) {
+                        if (batchPosition == 0) {
+                            dataArray.push(['Daily Webstore Total Order']);
+                            dataArray.push(['PT Etobee Teknologi Indonesia']);
+                            dataArray.push(['For '+ moment(params.start).format('DD MMMM YYYY') +' - '+ moment(params.end).format('DD MMMM YYYY')]);
+                            dataArray.push(['']);
+                            dataArray.push(['Webstore']);
+                        }
+
+                        dataArray[indexDate].push(data.data.date);
+
+                        angular.forEach(data.data.result, function (val, key) {
+                            var findRowColumn = findRowFromWebstoreName(val.Name);
+                            var newRowContent = [];
+
+                            if (!findRowColumn) {
+                                newRowContent.push(val.Name);
+                                for (var i=0; i < offset; i++) {
+                                    newRowContent.push(0);
+                                }
+                                newRowContent.push(val.TotalOrder);
+                                dataArray.push(newRowContent);
+                            }
+
+                            if (findRowColumn) {
+                                var emptyColumn = (offset + 1) - dataArray[findRowColumn.row].length;
+                                for (var i=0; i < emptyColumn; i++) {
+                                    dataArray[findRowColumn.row].push(0);
+                                }
+                                dataArray[findRowColumn.row].push(val.TotalOrder);
+                            }
+                        });
+                    }
+
+                    angular.forEach(dataArray, function (val, key) {
+                        if (key > indexDate) {
+                            if (!dataArray[key][offset + 1]) {
+                                dataArray[key][offset + 1] = 0;
+                            }
+                        }
+                    });
+                };
+
+                successFunction(data, '', dailyWebstoreArray);
+            }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
+                getDataJson(offset);
+            });
+        }
+
     }
 
     var fetchDataJson = function (type) {

@@ -10,180 +10,109 @@
             <div class="col-md-3 col-sm-5 pull-right">
                 <div class="hub" ng-include="'components/user/user.html'"></div>
             </div>
-            <div class="col-md-3 col-sm-12">
-                <div class="hub-search">
-                </div>
-            </div>
         </div>
     </div>
-    <div class="clearfix"></div>
-    <div class="row-fluid top-stat">
-        <div class="col-md-3 col-sm-7 top-stat-box-goal well well-sm">
-            <div>
-                Week {{currentWeek}} Goal
-                ({{currentWeekStart}} - {{currentWeekEnd}})
+    
+    <div class="container-content">
+        <div class="col-md-12 no-padding mb10">
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                <ui-select ng-model="dashboardFeature"
+                    theme="selectize"
+                    ng-disabled="disabled"
+                    on-select="chooseDashboardFeature($item)">
+                    <ui-select-match placeholder="Choose dashboard feature ...">
+                        {{ $select.selected.key }}
+                    </ui-select-match>
+                    <ui-select-choices repeat="f in dashboardFeatures | filter: $select.search" selected>
+                        <span ng-bind-html="f.key | highlight: $select.search"></span>
+                    </ui-select-choices>
+                </ui-select>
             </div>
-            <div ng-show="activeGoal > 0">
-                {{ summaryTotal }} / <a href="#" onbeforesave="setGoal($data)" editable-text="activeGoal">{{ activeGoal }}</a>
-            </div>
-            <div ng-show="activeGoal === 0">
-                {{ summaryTotal }} / 
-                <a href="#" onbeforesave="setGoal($data)" editable-text="0">
-                    <span ng-hide="isEditing" class="">
-                        Not Set
+        </div>
+        <div class="col-md-12 no-padding mb5" ng-show="temp.show.filter">
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                <p class="input-group date-picker-new"> 
+                    <input type="text"
+                        class="form-control border-right-none"
+                        ng-model="startFilter"
+                        uib-datepicker-popup="d MMMM yyyy"
+                        date:'yyyy-MM-dd'
+                        is-open="isStartDropoffDatePickerOpen"
+                        placeholder="From"
+                        datepicker-options="datePickerOptions"
+                        show-button-bar="false"
+                        ng-click="isStartDropoffDatePickerOpen = !isStartDropoffDatePickerOpen" />
+                    <span class="input-group-btn">
+                        <button type="button"
+                            class="btn btn-default"
+                            ng-click="isStartDropoffDatePickerOpen = !isStartDropoffDatePickerOpen">
+                            <i class="fa fa-caret-down"></i>
+                        </button>
                     </span>
-                </a>
-            </div>
-        </span>
-        </div>
-        <div class="col-md-3 col-sm-7 top-stat-box-goal well well-sm">
-            <div>
-                Delivered
-            </div>
-            <div>
-                {{ summaryDelivered }} / {{ summaryTotal }}
-            </div>
-        </div>
-        <div class="col-md-1 col-sm-7 top-stat-box-type well well-sm box-{{samedayColor}}">
-            <div>
-                Same Day
-            </div>
-            <div>
-                {{ samedaySLA | number:2 }} %
-            </div>
-        </div>
-        <div class="col-md-1 col-sm-7 top-stat-box-type well well-sm box-{{nextdayColor}}">
-            <div>
-                Next Day
-            </div>
-            <div>
-                {{ nextdaySLA | number:2 }} %
-            </div>
-        </div>
-        <div class="col-md-1 col-sm-7 top-stat-box-type well well-sm box-{{ondemandColor}}">
-            <div>
-                On-Demand
-            </div>
-            <div>
-                {{ ondemandSLA | number:2 }} %
-            </div>
-        </div>
-        <div class="col-md-1 col-sm-7 top-stat-box-type well well-sm box-{{regularColor}}">
-            <div>
-                Regular
-            </div>
-            <div>
-                {{ regularSLA | number:2 }} %
-            </div>
-        </div>
-        <div class="col-md-2 col-sm-7 top-stat-box-goal well well-sm box-{{totalColor}}">
-            <div>
-                Total
-            </div>
-            <div>
-                {{ totalSLA | number:2 }} %
-            </div>
-        </div>
-    </div>
-    <div class="clearfix"></div>
-    <div class="row-fluid top-stat">
-        <div class="title-total-orders">
-            Total Orders
-        </div>
-        <div ng-repeat="orders in ordersPerDay" class="col-md-1 col-sm-8 top-stat-total-orders well well-sm">
-            <div class="date-total-orders">
-                {{orders.day}}
-            </div>
-            <div class="sum-total-orders">
-                {{orders.total}}
-            </div>
-        </div>
-        
-    </div>
-    <div class="clearfix"></div>
-    <div class="merchant-box" ng-repeat="merchant in activeMerchant">
-        <div class="merchant-title">
-            <a href="#" onbeforesave="chooseMerchant($data, $index)" editable-select="merchant1" e-ng-options="m.key as m.value for m in merchants">
-                {{ showMerchant($index) }}
-            </a>
-        </div>
-        <div class="merchant-content">
-            <div ng-mouseover="onMerchantHover($index, 'total')" class="graph-content col-md-5 col-sm-7">
-                <hr>
-                <p class="title-chart">
-                    Total Order
                 </p>
-                <hr>
-                <canvas id="horizontal" class="chart chart-horizontal-bar"
-                    chart-data="merchant.dataTotal" chart-labels="labels" chart-series="series"
-                    chart-options="options" chart-colors="colours" height="260" chart-click="onBarClick"
-                </canvas>
             </div>
-            <div ng-mouseover="onMerchantHover($index, 'remaining')" class="graph-content col-md-5 col-sm-7">
-                <hr>
-                <p class="title-chart">
-                    Remaining Order
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                <p class="input-group date-picker-new"> 
+                    <input type="text"
+                        class="form-control border-right-none"
+                        ng-model="endFilter"
+                        uib-datepicker-popup="d MMMM yyyy"
+                        date:'yyyy-MM-dd'
+                        is-open="isEndDropoffDatePickerOpen"
+                        placeholder="To"
+                        datepicker-options="datePickerOptions"
+                        show-button-bar="false"
+                        ng-click="isEndDropoffDatePickerOpen = !isEndDropoffDatePickerOpen" />
+                    <span class="input-group-btn">
+                        <button type="button"
+                            class="btn btn-default"
+                            ng-click="isEndDropoffDatePickerOpen = !isEndDropoffDatePickerOpen">
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                    </span>
                 </p>
-                <hr>
-                <canvas id="horizontal" class="chart chart-horizontal-bar"
-                    chart-data="merchant.dataRemaining" chart-labels="labels" chart-series="series"
-                    chart-colors="colours" height="260" chart-click="onBarClick"
-                </canvas>
             </div>
-            <div class="graph-content col-md-2 col-sm-7">
-                <p class="title-statistics">
-                    Week {{currentWeek}} Statistics ({{currentWeekStart}} - {{currentWeekEnd}})
-                </p>
-                <div class="side-stat-box well well-sm">
-                    <div>
-                        Delivered
-                    </div>
-                    <div>
-                        {{ merchant.summaryDelivered }} / {{ merchant.summaryTotal }}
-                    </div>
+            <div class="col-lg-1 col-md-3 col-sm-4 col-xs-6">
+                <button class="btn btn-green col-xs-12" 
+                    ng-click="filter()" 
+                    ng-disabled="!(startFilter && endFilter)">Filter</button>
+            </div>
+        </div>
+
+        <div class="col-md-12" ng-show="temp.show.chart">
+            <div class="bg-white col-md-12" style="padding-top: 15px; padding-bottom: 15px">
+                <div class="col-md-8">
+                    <canvas id="lineChart" class="chart chart-line"
+                        chart-data="temp.chart.data" 
+                        chart-labels="temp.chart.labels" 
+                        chart-colors="temp.chart.colors"
+                        chart-dataset-override="temp.chart.settings">
+                    </canvas> 
                 </div>
-                <div class="side-stat-box well well-sm box-{{merchant.samedayColor}}">
-                    <div>
-                        Same Day
-                    </div>
-                    <div>
-                        {{ merchant.samedaySLA | number:2 }} %
-                    </div>
-                </div>
-                <div class="side-stat-box well well-sm box-{{merchant.nextdayColor}}">
-                    <div>
-                        Next Day
-                    </div>
-                    <div>
-                        {{ merchant.nextdaySLA | number:2 }} %
-                    </div>
-                </div>
-                <div class="side-stat-box well well-sm box-{{merchant.ondemandColor}}">
-                    <div>
-                        On-Demand
-                    </div>
-                    <div>
-                        {{ merchant.ondemandSLA | number:2 }} %
-                    </div>
-                </div>
-                <div class="side-stat-box well well-sm box-{{merchant.regularColor}}">
-                    <div>
-                        Regular
-                    </div>
-                    <div>
-                        {{ merchant.regularSLA | number:2 }} %
-                    </div>
-                </div>
-                <div class="side-stat-box well well-sm box-{{merchant.totalColor}}">
-                    <div>
-                        Total
-                    </div>
-                    <div>
-                        {{ merchant.totalSLA | number:2 }} %
-                    </div>
+                <div class="col-md-4">
+                    <p><b>From: {{startFilter | date:'dd-MM-yyyy'}}</b></p>
+                    <p><b>End: {{endFilter | date:'dd-MM-yyyy'}}</b></p>
+                    <p>Total {{dashboardFeature.key}}: {{temp.total}}</p>
                 </div>
             </div>
-        </div>      
-        <div class="clearfix"></div>
+        </div>
+
+        <div class="col-md-12" ng-show="temp.show.table">
+            <div class="bg-white col-md-12" style="padding-top: 15px; padding-bottom: 15px">
+                <table class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <td ng-repeat="h in temp.table.head">{{h.value}}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="b in temp.table.data">
+                            <td ng-repeat="h in temp.table.head">{{b[h.key]}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </div>

@@ -286,6 +286,14 @@ angular.module('adminApp')
                 submodule: 'export'
             }
         },
+        exportWebstoreTotalOrder: {
+            method: 'GET',
+            params: {
+                module: 'webstore',
+                submodule: 'export',
+                controller: 'webstore-total-order'
+            }
+        },
         getVehicles: {
             method: 'GET',
             params: {
@@ -690,6 +698,48 @@ angular.module('adminApp')
             params: {
                 module: 'dashboard',
                 controller: 'goal'
+            }
+        },
+        getDailyNewMerchants: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'daily-new-merchant'
+            }
+        },
+        getDailyTotalOrders: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'daily-total-orders'
+            }
+        },
+        getDailyTotalRevenue: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'daily-total-revenue'
+            }
+        },
+        getTopLocationOrder: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'top-location-order'
+            }
+        },
+        getTopActiveMerchant: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'total-active-merchant'
+            }
+        },
+        getTopInactiveMerchant: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'total-inactive-merchant'
             }
         },
         getReasonReturns: {
