@@ -116,8 +116,6 @@ angular.module('adminApp')
         $scope.temp.chart.settings = [{
             label: "Line chart",
             borderWidth: 3,
-            hoverBackgroundColor: "rgba(255,99,132,0.4)",
-            hoverBorderColor: "rgba(255,99,132,1)",
             type: 'line',
             fill: false
         }];
@@ -140,6 +138,7 @@ angular.module('adminApp')
             createLineChart(labels, data);
             $rootScope.$emit('stopSpin');
             $scope.temp.show.chart = true;
+            $scope.temp.total = total;
         });
     }
 
