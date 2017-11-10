@@ -112,7 +112,7 @@ angular.module('adminApp')
         $scope.temp.chart = {};
         $scope.temp.chart.colors = ['#ff5b60'];
         $scope.temp.chart.labels = label ? label : [];
-        $scope.temp.chart.data = data ? data : [];
+        $scope.temp.chart.data = data ? [data] : [[]];
         $scope.temp.chart.settings = [{
             label: "Line chart",
             borderWidth: 3,
