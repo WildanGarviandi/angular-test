@@ -232,6 +232,7 @@ function mainConfig() {
             ReasonID: 11
         },
         packageDimensionID: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
+        canCancellableOrderStatus: [1, 2, 3, 4, 6, 15],
         canChangeToPickup: [6],
         canChangeToMissing: [3, 4, 15],
         canChangeToClaimed: [17, 18, 19],
