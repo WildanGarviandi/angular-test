@@ -218,6 +218,7 @@ angular.module('adminApp')
     $scope.canChangeToClaimed = config.canChangeToClaimed;
     $scope.canChangeToClaimedVendor = config.canChangeToClaimedVendor;
     $scope.canChangeToClaimedMerchant = config.canChangeToClaimedMerchant;
+    $scope.canCancellableOrderStatus = config.canCancellableOrderStatus;
 
     $scope.newDeliveryFee = 0;
     $scope.isUpdateDeliveryFee = false;
@@ -664,10 +665,10 @@ angular.module('adminApp')
                     $scope.canBeReassigned = true; 
                 }
             });
-            $scope.canBeCancelled = true;
-            $scope.notCancellableOrderStatus.forEach(function (status) {
-                if ($scope.order.OrderStatus.OrderStatusID === status || !$scope.features.order.cancel) { 
-                    $scope.canBeCancelled = false; 
+            $scope.canBeCancelled = false;
+            $scope.canCancellableOrderStatus.forEach(function (status) {
+                if ($scope.order.OrderStatus.OrderStatusID === status && $scope.features.order.cancel) { 
+                    $scope.canBeCancelled = true; 
                 }
             });
             $scope.canBeDelivered = false;
@@ -2510,7 +2511,7 @@ angular.module('adminApp')
         $scope.selectedOrders.forEach(function(order) {
             orderIDs.push(order.UserOrderID);
             orderNumbers.push(order.UserOrderNumber);
-            if ($scope.notCancellableOrderStatus.indexOf(order.OrderStatus.OrderStatusID) !== -1) {
+            if ($scope.canCancellableOrderStatus.indexOf(order.OrderStatus.OrderStatusID) === -1) {
                 orderNumbersFail.push(order.UserOrderNumber);
             }
         });
@@ -2520,7 +2521,7 @@ angular.module('adminApp')
         if (orderNumbersFail.length > 0) {
             var notAllowedStatus = '';
             lodash.each($scope.statuses, function (val, key) {
-                if ($scope.notCancellableOrderStatus.indexOf(val.value) !== -1) {
+                if ($scope.canCancellableOrderStatus.indexOf(val.value) === -1) {
                     notAllowedStatus += ' '+val.key;
                 }
             });
