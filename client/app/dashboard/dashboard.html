@@ -97,6 +97,21 @@
             </div>
         </div>
 
+        <div class="col-md-12" ng-show="temp.show.multipleChart">
+            <div class="bg-white col-md-12" style="padding-top: 15px; padding-bottom: 15px">
+                <p><b>From: {{startFilter | date:'dd-MM-yyyy'}}</b> - <b>End: {{endFilter | date:'dd-MM-yyyy'}}</b></p>
+                <div class="col-md-6" ng-repeat="(key, value) in temp.multipleChart">
+                    <p><b>{{value.title}}</b> <small>Total: {{value.total}}</small></p>
+                    <canvas id="lineChart-{{key}}" class="chart chart-line"
+                        chart-data="value.data" 
+                        chart-labels="value.labels" 
+                        chart-colors="value.colors"
+                        chart-dataset-override="value.settings">
+                    </canvas> 
+                </div>
+            </div>
+        </div>
+
         <div class="col-md-12" ng-show="temp.show.table">
             <div class="bg-white col-md-12" style="padding-top: 15px; padding-bottom: 15px">
                 <table class="table table-responsive">
