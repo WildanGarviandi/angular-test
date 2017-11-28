@@ -270,15 +270,34 @@ angular.module('adminApp')
     }
 
     var getWebsiteTraffic = function () {
+        $scope.temp.multipleChart = [];
         var params = {};
             params.startDate = moment($scope.startFilter).format('YYYY-MM-DD');
             params.endDate = moment($scope.endFilter).format('YYYY-MM-DD');
 
+        var colors = ['#ff5b60', '#4a90e2', '#38b393', '#ffa500'];
+
+        var chart = {};
+            chart.colors = colors;
+            chart.labels = [];
+            chart.data = [];
+            chart.settings = [];
+            chart.total = [];
+            chart.title = [];
+            chart.options = {};
+            chart.options.legend = { display: true };
+
         var getTraffic = function (website, id) {
             params.id = id;
 
-            Services2.getWebSessionAnalytic(params).$promise
+            return Services2.getWebSessionAnalytic(params).$promise
             .then(function (res) {
+                var settings = {};
+                    settings.label = website;
+                    settings.borderWidth = 3;
+                    settings.type = 'line';
+                    settings.fill = false;
+
                 var data = [];
                 var labels = [];
                 var total = 0;
@@ -287,24 +306,28 @@ angular.module('adminApp')
                     labels.push(moment(val.Date).format('DD-MM-YYYY'));
                     total += parseInt(val.TotalSessions);
                 });
-                
-                var chart = createMultipleLineChart(labels, data);
-                    chart.total = total;
-                    chart.title = website;
 
-                $scope.temp.multipleChart.push(chart);
+
+                chart.labels = labels;
+                chart.settings.push(settings);
+                chart.data.push(data);
+                chart.total.push(total);
+                chart.title.push(website);
+
                 $rootScope.$emit('stopSpin');
                 $scope.temp.show.multipleChart = true;
+
+                return;
             });
         }
 
         var getViewID = function () {
-            $scope.temp.multipleChart = [];
             Services2.getWebsiteAnalyticsList(params).$promise
             .then(function (res) {
                 angular.forEach(res.data, function (val) {
                     getTraffic(val.Website, val.ViewID);
                 });
+                $scope.temp.multipleChart = chart;
             });
         };
 
