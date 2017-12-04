@@ -742,6 +742,21 @@ angular.module('adminApp')
                 controller: 'total-inactive-merchant'
             }
         },
+        getWebsiteAnalyticsList: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'website-analytics-list'
+            }
+        },
+        getWebSessionAnalytic: {
+            method: 'GET',
+            params: {
+                module: 'dashboard',
+                controller: 'web-session-analytic',
+                id: null
+            }
+        },
         getReasonReturns: {
             method: 'GET',
             params: {

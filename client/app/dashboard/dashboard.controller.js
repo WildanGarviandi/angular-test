@@ -38,6 +38,7 @@ angular.module('adminApp')
     $scope.temp = {};
     $scope.temp.show = {};
     $scope.temp.chart = {};
+    $scope.temp.multipleChart = [];
     $scope.temp.table = {};
 
     $scope.startFilter = $location.search().startFilter || null;
@@ -65,6 +66,9 @@ angular.module('adminApp')
         }, {
             key: 'Revenue',
             value: 6
+        }, {
+            key: 'Website traffic',
+            value: 7
         }
     ];
     $scope.dashboardFeature = $scope.dashboardFeatures[0];
@@ -74,8 +78,9 @@ angular.module('adminApp')
         $scope.temp.show.filter = false;
         $scope.temp.show.table = false;
         $scope.temp.show.chart = false;
+        $scope.temp.show.multipleChart = false;
         if (feature.value) {
-            if ([1, 2, 6].indexOf(feature.value) !== -1) {
+            if ([1, 2, 6, 7].indexOf(feature.value) !== -1) {
                 $scope.temp.show.filter = true;
             } else {
                 $scope.filter();
@@ -105,6 +110,9 @@ angular.module('adminApp')
             case 6:
                 getRevenue();
                 break;
+            case 7:
+                getWebsiteTraffic();
+                break;
         }
     }
 
@@ -119,6 +127,20 @@ angular.module('adminApp')
             type: 'line',
             fill: false
         }];
+    };
+
+    var createMultipleLineChart = function (label, data) {
+        var chart = {};
+            chart.colors = ['#ff5b60'];
+            chart.labels = label ? label : [];
+            chart.data = data ? [data] : [[]];
+            chart.settings = [{
+                label: "Line chart",
+                borderWidth: 3,
+                type: 'line',
+                fill: false
+            }];
+        return chart;
     };
 
     var getNewMerchant = function () {
@@ -245,5 +267,70 @@ angular.module('adminApp')
             $scope.temp.show.chart = true;
             $scope.temp.total = config.currency + ' ' + $filter('number')(total);
         });
+    }
+
+    var getWebsiteTraffic = function () {
+        $scope.temp.multipleChart = [];
+        var params = {};
+            params.startDate = moment($scope.startFilter).format('YYYY-MM-DD');
+            params.endDate = moment($scope.endFilter).format('YYYY-MM-DD');
+
+        var colors = ['#ff5b60', '#4a90e2', '#38b393', '#ffa500'];
+
+        var chart = {};
+            chart.colors = colors;
+            chart.labels = [];
+            chart.data = [];
+            chart.settings = [];
+            chart.total = [];
+            chart.title = [];
+            chart.options = {};
+            chart.options.legend = { display: true };
+
+        var getTraffic = function (website, id) {
+            params.id = id;
+
+            return Services2.getWebSessionAnalytic(params).$promise
+            .then(function (res) {
+                var settings = {};
+                    settings.label = website;
+                    settings.borderWidth = 3;
+                    settings.type = 'line';
+                    settings.fill = false;
+
+                var data = [];
+                var labels = [];
+                var total = 0;
+                angular.forEach(res.data, function (val) {
+                    data.push(val.TotalSessions);
+                    labels.push(moment(val.Date).format('DD-MM-YYYY'));
+                    total += parseInt(val.TotalSessions);
+                });
+
+
+                chart.labels = labels;
+                chart.settings.push(settings);
+                chart.data.push(data);
+                chart.total.push(total);
+                chart.title.push(website);
+
+                $rootScope.$emit('stopSpin');
+                $scope.temp.show.multipleChart = true;
+
+                return;
+            });
+        }
+
+        var getViewID = function () {
+            Services2.getWebsiteAnalyticsList(params).$promise
+            .then(function (res) {
+                angular.forEach(res.data, function (val) {
+                    getTraffic(val.Website, val.ViewID);
+                });
+                $scope.temp.multipleChart = chart;
+            });
+        };
+
+        getViewID();
     }
 });
