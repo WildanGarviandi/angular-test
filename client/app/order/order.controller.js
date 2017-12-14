@@ -132,6 +132,8 @@ angular.module('adminApp')
 
     $scope.isModalOpen = {};
     $scope.urlUploadedPic = '';
+    $scope.urlUploadedPic2 = '';
+    $scope.urlUploadedPic3 = '';
     $scope.temp = {};
 
     /*
@@ -3436,10 +3438,12 @@ angular.module('adminApp')
      */
     $scope.openUploadPODmodal = function () {
         $scope.urlUploadedPic = '';
+        $scope.urlUploadedPic2 = '';
+        $scope.urlUploadedPic3 = '';
         ngDialog.open({
             template: 'uploadPODModal',
             scope: $scope,
-            className: 'ngdialog-theme-default reassign-fleet'
+            className: 'ngdialog-theme-default reassign-fleet modal-custom'
         });
     }
 
@@ -3448,17 +3452,19 @@ angular.module('adminApp')
      * @return {[type]}        [description]
      */
     $scope.uploadPOD = function () {
-        if (!$scope.urlUploadedPic) {
-            return SweetAlert.swal({
-                title: 'POD required',
-                text: 'POD cannot be empty',
-                type: 'error'
-            });
+        var params = {};
+        if ($scope.urlUploadedPic) {
+            params.podUrl = $scope.urlUploadedPic;
         }
 
-        var params = {
-            podUrl: $scope.urlUploadedPic
-        };
+        if ($scope.urlUploadedPic2) {
+            params.podUrl = $scope.urlUploadedPic2;
+            params.recipientPhoto = 2;
+        }
+        if ($scope.urlUploadedPic3) {
+            params.podUrl = $scope.urlUploadedPic3;
+            params.recipientPhoto = 3;
+        }
 
         $rootScope.$emit('startSpin');
         ngDialog.close();
@@ -3592,9 +3598,11 @@ angular.module('adminApp')
      * @param  {File} file - image to be uploaded
      * 
      */
-    $scope.uploadPic = function (file) {
+    $scope.uploadPic = function (file, type) {
         $rootScope.$emit('startSpin');
         $scope.urlUploadedPic = '';
+        $scope.urlUploadedPic2 = '';
+        $scope.urlUploadedPic3 = '';
         if (file) {
             $scope.f = file;
             file.upload = Upload.upload({
@@ -3608,7 +3616,15 @@ angular.module('adminApp')
                         if ($scope.isModalOpen.rerouteModal) {
                             $scope.customFleetData.receipt = response.data.data.Location;
                         }
-                        $scope.urlUploadedPic = response.data.data.Location;
+                        if (!type) {
+                            $scope.urlUploadedPic = response.data.data.Location;
+                        }
+                        if (type && type == 2) {
+                            $scope.urlUploadedPic2 = response.data.data.Location;
+                        }
+                        if (type && type == 3) {
+                            $scope.urlUploadedPic3 = response.data.data.Location;
+                        }
                     } else {
                         alert('Uploading picture failed. Please try again');
                         $scope.errorMsg = 'Uploading picture failed. Please try again';

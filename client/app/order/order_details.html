@@ -1268,27 +1268,59 @@
 </script>
 
 <script type="text/ng-template" id="uploadPODModal">
-    <div class="container-fluid">
-        <h4>Upload POD</h4>
-        <div class="row no-margin">
-            <div class="label-payment">
-                POD :
-            </div>
+    <div class="header-wrapper modal-header row no-margin">
+        <h4 class="text-center">Upload POD</h4>
+    </div>
+    <div class="content-wrapper modal-body row no-margin">
+        <div class="col-xs-12">
             <div class="col-xs-12 no-padding">
-                <div class="col-md-5 no-padding">
-                    <img class="col-xs-12 no-padding" ng-hide="!order.RecipientPhoto || urlUploadedPic" src="{{order.RecipientPhoto}}">
-                    <img class="col-xs-12 no-padding" ng-show="urlUploadedPic" src="{{urlUploadedPic}}">
-                    <p ng-hide="order.RecipientPhoto"><small class="red">No POD Added</small></p>
-                </div>
-                <div class="col-md-7">
-                    <button class="btn btn-default" ngf-select="uploadPic($file)" ng-model="file" 
-                        ngf-model-invalid="errorFile" type="file" accept="image/*">Upload POD</button>
-                </div>
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th width="200">POD</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <img class="col-xs-12 no-padding" ng-hide="!order.RecipientPhoto || urlUploadedPic" src="{{order.RecipientPhoto}}">
+                                <img class="col-xs-12 no-padding" ng-show="urlUploadedPic" src="{{urlUploadedPic}}">
+                                <p ng-hide="order.RecipientPhoto"><small class="red">No POD Added</small></p>
+                            </td>
+                            <td>
+                                <button class="btn btn-default" ngf-select="uploadPic($file)" ng-model="file" 
+                                ngf-model-invalid="errorFile" type="file" accept="image/*">Upload POD</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img class="col-xs-12 no-padding" ng-hide="!order.RecipientPhoto2 || urlUploadedPic2" src="{{order.RecipientPhoto2}}">
+                                <img class="col-xs-12 no-padding" ng-show="urlUploadedPic2" src="{{urlUploadedPic2}}">
+                                <p ng-hide="order.RecipientPhoto2"><small class="red">No POD 2 Added</small></p>
+                            </td>
+                            <td>
+                                <button class="btn btn-default" ngf-select="uploadPic($file, 2)" ng-model="file" 
+                                ngf-model-invalid="errorFile" type="file" accept="image/*">Upload POD 2</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img class="col-xs-12 no-padding" ng-hide="!order.RecipientPhoto3 || urlUploadedPic3" src="{{order.RecipientPhoto3}}">
+                                <img class="col-xs-12 no-padding" ng-show="urlUploadedPic3" src="{{urlUploadedPic3}}">
+                                <p ng-hide="order.RecipientPhoto3"><small class="red">No POD 3 Added</small></p>
+                            </td>
+                            <td>
+                                <button class="btn btn-default" ngf-select="uploadPic($file, 3)" ng-model="file" 
+                                ngf-model-invalid="errorFile" type="file" accept="image/*">Upload POD 3</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="row no-margin">
-            <br>
-            <button class="btn btn-primary" ng-disabled="!urlUploadedPic" ng-click="uploadPOD()">Submit</button>
+        <div class="col-xs-12 mt15 mb15">
+            <button class="btn btn-blue col-xs-6" ng-click="uploadPOD()">Submit</button>
         </div>
     </div>
 </script>
