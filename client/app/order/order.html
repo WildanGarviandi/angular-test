@@ -536,7 +536,10 @@
                                     order.FleetManager.CompanyDetail.CompanyName}}</td>
                             <td>{{order.Driver.FirstName}} {{order.Driver.LastName}}</td>
                             <td tooltip-placement="top" 
-                                uib-tooltip="{{order.ReturnedWarehouseLocation}}">{{order.OrderStatus.OrderStatus}}</td>
+                                uib-tooltip="{{order.ReturnedWarehouseLocation}}">
+                                {{order.OrderStatus.OrderStatus}}
+                                <small ng-show="order.CurrentRouteType"><br>({{order.CurrentRouteType}})</small>
+                            </td>
                             <td>{{order.CurrentRouteDetail}}</td>
                             <td>{{order.PickupTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
                             <td>{{order.DropoffTime | date:'MM/dd/yyyy HH:mm:ss a'}}</td>
