@@ -132,6 +132,8 @@ angular.module('adminApp')
 
     $scope.isModalOpen = {};
     $scope.urlUploadedPic = '';
+    $scope.urlUploadedPic2 = '';
+    $scope.urlUploadedPic3 = '';
     $scope.temp = {};
 
     /*
@@ -3436,10 +3438,12 @@ angular.module('adminApp')
      */
     $scope.openUploadPODmodal = function () {
         $scope.urlUploadedPic = '';
+        $scope.urlUploadedPic2 = '';
+        $scope.urlUploadedPic3 = '';
         ngDialog.open({
             template: 'uploadPODModal',
             scope: $scope,
-            className: 'ngdialog-theme-default reassign-fleet'
+            className: 'ngdialog-theme-default reassign-fleet modal-custom'
         });
     }
 
@@ -3448,31 +3452,55 @@ angular.module('adminApp')
      * @return {[type]}        [description]
      */
     $scope.uploadPOD = function () {
-        if (!$scope.urlUploadedPic) {
-            return SweetAlert.swal({
-                title: 'POD required',
-                text: 'POD cannot be empty',
-                type: 'error'
+        var data = [];
+        if ($scope.urlUploadedPic) {
+            data.push({
+                podUrl : $scope.urlUploadedPic
             });
         }
 
-        var params = {
-            podUrl: $scope.urlUploadedPic
-        };
+        if ($scope.urlUploadedPic2) {
+            data.push({
+                podUrl : $scope.urlUploadedPic2,
+                recipientPhoto : 2
+            });
+        }
+        if ($scope.urlUploadedPic3) {
+            data.push({
+                podUrl : $scope.urlUploadedPic3,
+                recipientPhoto : 3
+            });
+        }
+
+        var error = [];
+        var uploadPOD = function (params) {
+            return Services2.setRecpientPhoto({
+                orderID: $scope.order.UserOrderID
+            }, params).$promise.then(function (result) {
+                return result;
+            })
+            .catch(function (e) {
+                return error.push(e.data.error.message);
+            });
+        }
 
         $rootScope.$emit('startSpin');
-        ngDialog.close();
-        Services2.setRecpientPhoto({
-            orderID: $scope.order.UserOrderID
-        }, params).$promise.then(function (result) {
+        data.reduce(function(p, param) {
+            return p.then(function() {
+                return uploadPOD(param);
+            });
+        }, $q.when(true)).then(function(finalResult) {
             $rootScope.$emit('stopSpin');
-            SweetAlert.swal('POD uploaded successfully');
-            $state.reload();
-        })
-        .catch(function (e) {
+            if (error.length) {
+                SweetAlert.swal('Failed in upload POD', error.join('\n'));
+            } else {
+                ngDialog.close();
+                SweetAlert.swal('POD uploaded successfully');
+                $state.reload();
+            }
+        }, function(err) {
             $rootScope.$emit('stopSpin');
-            SweetAlert.swal('Failed in upload POD', e.data.error.message);
-            $state.reload();
+            SweetAlert.swal('Failed in upload POD', err);
         });
     };
 
@@ -3592,9 +3620,8 @@ angular.module('adminApp')
      * @param  {File} file - image to be uploaded
      * 
      */
-    $scope.uploadPic = function (file) {
+    $scope.uploadPic = function (file, type) {
         $rootScope.$emit('startSpin');
-        $scope.urlUploadedPic = '';
         if (file) {
             $scope.f = file;
             file.upload = Upload.upload({
@@ -3608,7 +3635,15 @@ angular.module('adminApp')
                         if ($scope.isModalOpen.rerouteModal) {
                             $scope.customFleetData.receipt = response.data.data.Location;
                         }
-                        $scope.urlUploadedPic = response.data.data.Location;
+                        if (!type) {
+                            $scope.urlUploadedPic = response.data.data.Location;
+                        }
+                        if (type && type == 2) {
+                            $scope.urlUploadedPic2 = response.data.data.Location;
+                        }
+                        if (type && type == 3) {
+                            $scope.urlUploadedPic3 = response.data.data.Location;
+                        }
                     } else {
                         alert('Uploading picture failed. Please try again');
                         $scope.errorMsg = 'Uploading picture failed. Please try again';
