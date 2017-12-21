@@ -1013,6 +1013,14 @@ angular.module('adminApp')
                 controller: 'uploadableJson'
             }
         },
+        exportOrderCheckpointJson: {
+            method: 'GET',
+            params: {
+                module: 'order',
+                submodule: 'export',
+                controller: 'order-checkpoint'
+            }
+        },
         setRecpientPhoto: {
             method: 'POST',
             url: config.url + ':module/:controller/:orderID',

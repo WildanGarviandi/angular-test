@@ -1954,6 +1954,18 @@ angular.module('adminApp')
             var url = 'order/export/completed';
         } else if (type === 'standard') {
             var url = 'order/export/combined';
+        } else if (type === 'checkpoint') {
+            var url = 'order/export/order-checkpoint';
+                params.isCount = 1;
+            
+            return Services2.exportOrderCheckpointJson(params).$promise
+            .then(function(data) {
+                delete params['isCount'];
+                
+                var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + data.data.Count;
+                $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+                return;
+            });
         }
         
         if (type == 'standard' || type == 'uploadable') {
@@ -1992,6 +2004,18 @@ angular.module('adminApp')
             var url = 'order/export/completed';
         } else if (type === 'standard') {
             var url = 'order/export/combined';
+        } else if (type === 'checkpoint') {
+            var url = 'order/export/order-checkpoint';
+                params.isCount = 1;
+            
+            return Services2.exportOrderCheckpointJson(params).$promise
+            .then(function(data) {
+                delete params['isCount'];
+
+                var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + data.data.Count;
+                $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+                return;
+            });
         }
 
         if (type == 'standard' || type == 'uploadable') {
