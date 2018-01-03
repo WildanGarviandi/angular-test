@@ -215,6 +215,22 @@ angular.module('adminApp')
             });
         }
 
+        if (type == 'checkpoint') {
+            $scope.isExportTypeExist = true;
+
+            return Services2.exportOrderCheckpointJson(params).$promise
+            .then(function(data) {
+                batchError = 0;
+                successFunction(data);
+            }).catch(function (e) {
+                batchError++;
+                if (batchError > limitError) {
+                    return errorFunction(e.data.error.message);
+                }
+                getDataJson(offset);
+            });
+        }
+
         if (type == 'returnedOrders') {
             $scope.isExportTypeExist = true;
 

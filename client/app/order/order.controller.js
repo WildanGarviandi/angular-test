@@ -474,6 +474,7 @@ angular.module('adminApp')
                 }
 
                 array[index].CurrentRouteDetail = '-';
+                array[index].CurrentRouteType = '';
                 if (val.CurrentRoute && val.CurrentRoute.OrderStatus) {
                     var route = val.CurrentRoute;
                     var origin = ((route.OriginHub && route.OriginHub.Name) || "Merchant");
@@ -486,6 +487,18 @@ angular.module('adminApp')
                     } else {
                         destination = ((route.DestinationHub && route.DestinationHub.Name) || "DESTINATION");
                         array[index].CurrentRouteDetail = "Arrived at " + destination
+                    }
+
+                    if (val.OrderStatus.OrderStatusID == 4) { // IN-TRANSIT
+                        if (route.OriginHub) {
+                            array[index].CurrentRouteType = 'LAST MILE';
+                        }
+                        if (route.DestinationHub) {
+                            array[index].CurrentRouteType = 'FIRST MILE';
+                        }
+                        if (route.DestinationHub && route.OriginHub) {
+                            array[index].CurrentRouteType = 'INTERHUB';
+                        }
                     }
                 }
 
@@ -689,6 +702,7 @@ angular.module('adminApp')
             }
             $scope.order.PaymentType = ($scope.order.PaymentType === 2) ? 'Wallet' : 'Cash';
             $scope.order.CurrentRouteDetail = '-';
+            $scope.order.CurrentRouteType = '';
             if ($scope.order.CurrentRoute && $scope.order.CurrentRoute.OrderStatus) {
                 var route = $scope.order.CurrentRoute;
                 var origin = ((route.OriginHub && route.OriginHub.Name) || "Merchant");
@@ -701,6 +715,17 @@ angular.module('adminApp')
                 } else {
                     destination = ((route.DestinationHub && route.DestinationHub.Name) || "DESTINATION");
                     $scope.order.CurrentRouteDetail = "Arrived at " + destination
+                }
+                if ($scope.order.OrderStatus.OrderStatusID == 4) { // IN-TRANSIT
+                    if (route.OriginHub) {
+                        $scope.order.CurrentRouteType = 'LAST MILE';
+                    }
+                    if (route.DestinationHub) {
+                        $scope.order.CurrentRouteType = 'FIRST MILE';
+                    }
+                    if (route.DestinationHub && route.OriginHub) {
+                        $scope.order.CurrentRouteType = 'INTERHUB';
+                    }
                 }
             }
             $scope.order.ReturnedWarehouseLocation = '';
@@ -1929,6 +1954,18 @@ angular.module('adminApp')
             var url = 'order/export/completed';
         } else if (type === 'standard') {
             var url = 'order/export/combined';
+        } else if (type === 'checkpoint') {
+            var url = 'order/export/order-checkpoint';
+                params.isCount = 1;
+            
+            return Services2.exportOrderCheckpointJson(params).$promise
+            .then(function(data) {
+                delete params['isCount'];
+                
+                var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + data.data.Count;
+                $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+                return;
+            });
         }
         
         if (type == 'standard' || type == 'uploadable') {
@@ -1967,6 +2004,18 @@ angular.module('adminApp')
             var url = 'order/export/completed';
         } else if (type === 'standard') {
             var url = 'order/export/combined';
+        } else if (type === 'checkpoint') {
+            var url = 'order/export/order-checkpoint';
+                params.isCount = 1;
+            
+            return Services2.exportOrderCheckpointJson(params).$promise
+            .then(function(data) {
+                delete params['isCount'];
+
+                var mandatoryUrl = 'exportType=' + type + '&' + 'maxExport=' + data.data.Count;
+                $window.open('/export?' + mandatoryUrl + '&' + $httpParamSerializer(params));
+                return;
+            });
         }
 
         if (type == 'standard' || type == 'uploadable') {
