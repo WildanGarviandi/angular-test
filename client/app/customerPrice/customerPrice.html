@@ -4,7 +4,7 @@
         <div>
             <div class="col-md-6 col-sm-7">
                 <div class="hub-title-box">
-                    New Customer Pricing (NDS dan REG)
+                    New Customer Pricing (NDS and REG)
                 </div>
             </div>
             <div class="col-md-6 col-sm-5">
@@ -22,12 +22,13 @@
                 <ui-select ng-model="merchant"
                     theme="selectize"
                     tagging="tagHandler"
+                    reset-search-input="false"
                     on-select="chooseMerchant($item)">
                     <ui-select-match placeholder="Merchant">
                         {{ $select.selected.key }}
                     </ui-select-match>
-                    <ui-select-choices repeat="f in merchants | filter: $select.search" selected>
-                        <span ng-bind-html="f.key | highlight: $select.search"></span>
+                    <ui-select-choices refresh="getMerchants($select)" refresh-delay="300" minimum-input-length="3" repeat="merchant in merchants">
+                        <span ng-bind-html="merchant.key | highlight: $select.search"></span>
                     </ui-select-choices>
                 </ui-select>
             </div>

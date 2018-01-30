@@ -133,9 +133,16 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    var getMerchants = function() {
+    $scope.getMerchants = function($select) {
         var params = {};
+            params.name = $select ? $select.search : '';
             params.status = 2;
+            params.limit = 5;
+
+            $scope.merchants = [{
+                key: 'Choose Merchant',
+                value: '',
+            }];
 
         return Webstores.getWebstore(params).$promise.then(function (data) {
             $scope.merchants = [{
@@ -167,7 +174,7 @@ angular.module('adminApp')
             $scope[key] = lodash.find($scope[val], { 'value': (parseInt(value)) ? parseInt(value) : value });
         });
 
-        params.merchantID = $scope.merchant.value;
+        params.merchantID = $scope.merchant ? $scope.merchant.value : '';
         params.pickupType = $scope.pickupType.value;
         params.originID = $scope.port.value;
 
@@ -182,7 +189,7 @@ angular.module('adminApp')
         $rootScope.$emit('startSpin');
 
         getDefaultValues()
-        .then(getMerchants)
+        .then($scope.getMerchants)
         .then(getPorts)
         .then(function () {
             var params = getCurrentParam();
