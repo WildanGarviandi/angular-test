@@ -1727,7 +1727,12 @@ angular.module('adminApp')
                 return result;
             }
             if (stringData.charAt(0) !== '0') {
-                return stringData.substring(config.countryCode.length - 1);
+                if(stringData.match(/^-{0,1}\d+$/)) {                    
+                    return stringData.substring(config.countryCode.length - 1);
+                }
+                if(stringData.match(/^\d+\.\d+$/)) {
+                    return stringData.substring(config.countryCode.length - 1);
+                }
             }
             if (stringData.charAt(0) === '0') {
                 return stringData.substring(1);
