@@ -21,6 +21,7 @@ angular.module('adminApp')
             Upload,
             $q,
             SweetAlert,
+            Printer,
             $cookies,
             $timeout,
             $httpParamSerializer
@@ -3895,4 +3896,32 @@ angular.module('adminApp')
         });
     }
     
+    var barcodeGenerator = function (value) {
+        var canvas = document.createElement("canvas");
+        var settings = {
+            height: 20,
+            width: 2,
+            fontSize: 14
+        };
+
+        JsBarcode(canvas, value, settings);
+        return canvas.toDataURL("image/png");
+    }
+
+    $scope.print = function () {
+        $scope.selectedOrders.forEach(function (val, index, array) {
+            array[index].Barcode = barcodeGenerator(val.UserOrderNumber);
+        });
+
+        var templateUrl = '../../assets/prints/prebookedOrdersWithData.html';
+        var data = {};
+            data.orders = $scope.selectedOrders;
+            data.setting = {
+                paperSize: 'airwayBill',
+                paperOrientation: 'landscape',
+                cssURL: ['../../app/prebookedOrder/printPrebookedOrder.css']
+            };
+
+        Printer.print(templateUrl, data);
+    }
 });
