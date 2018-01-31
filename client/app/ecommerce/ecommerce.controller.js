@@ -152,11 +152,14 @@ angular.module('adminApp')
      * 
      * @return {void}
      */
-    var getWebstores = function() {
+    $scope.getWebstores = function($select) {
         return $q(function (resolve) {
             var params = {};
+                params.name = $select ? $select.search : '';
                 params.status = 2;
+                params.limit = 5;
 
+            $scope.webstores = [$scope.input.webstore];                
             Services2.getWebstores(params).$promise.then(function (result) {
                 result.data.webstores.forEach(function(v) {
                     $scope.webstores.push({key: v.webstore.FirstName.concat(' ', v.webstore.LastName), value: v.webstore.UserID});
@@ -532,7 +535,7 @@ angular.module('adminApp')
 
     $rootScope.$emit('startSpin');
     getDefaultValues()
-    .then(getWebstores)
+    .then($scope.getWebstores)
     .then(getPlaces)
     .then(function () {
         buildColumnDefs();

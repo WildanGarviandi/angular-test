@@ -20,13 +20,14 @@
             <div class="col-md-3">
                 Select Webstore :
                 <ui-select ng-model="input.webstore"
-                    theme="bootstrap"
+                    theme="selectize"
                     tagging="tagHandler"
+                    reset-search-input="false"
                     on-select="chooseWebstore($item)">
-                    <ui-select-match class="ui-select-match" placeholder="Search or choose webstore">
+                    <ui-select-match placeholder="Search or choose webstore">
                         {{ $select.selected.key }}
                     </ui-select-match>
-                    <ui-select-choices class="ui-select-choices" repeat="m in webstores | filter: $select.search" selected>
+                    <ui-select-choices refresh="getWebstores($select)" refresh-delay="300" minimum-input-length="3" repeat="m in webstores">
                         <span ng-bind-html="m.key | highlight: $select.search"></span>
                     </ui-select-choices>
                 </ui-select>
